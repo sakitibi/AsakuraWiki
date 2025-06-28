@@ -35,6 +35,9 @@ export default function Home() {
                 setPages(flattened);
             }
 
+            console.log('fetchPages data:', data);
+            console.log('fetchPages error:', error);
+
             setLoading(false);
         }
 
