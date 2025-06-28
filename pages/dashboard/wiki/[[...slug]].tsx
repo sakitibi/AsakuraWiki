@@ -89,7 +89,7 @@ export default function WikiSettingsPage() {
         const { error: pageError } = await supabase
             .from('wiki_pages')
             .delete()
-            .eq('slug', slug);
+            .eq('wiki_slug', slugStr);  // wiki_slug で削除対象を指定する
 
         // 2. 親Wiki本体（wikis）を削除
         const { error: wikiError } = await supabase
