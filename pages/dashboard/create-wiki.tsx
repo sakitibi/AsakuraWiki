@@ -10,7 +10,6 @@ const supabase = createClient(
 export default function CreateWikiPage() {
     const [wikiId, setWikiId] = useState('');
     const [title, setTitle] = useState('');
-    const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [agree, setAgree] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -32,7 +31,7 @@ export default function CreateWikiPage() {
             .from('wikis')
             .insert([{
                 slug,
-                name: name,
+                name: title,
                 description,
                 owner_id: user.id,
                 edit_mode: 'public',      // 初期値を決めておく
