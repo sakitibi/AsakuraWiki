@@ -1,0 +1,40 @@
+body{
+    background-image: linear-gradient(to right, #8be4ad, #00892e);
+    background-attachment: fixed;
+}
+
+button {
+    position: relative;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    background: none;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: linear-gradient(to left, #58ec91, #0b6e2c);
+    transition: filter 0.3s ease, transform 0.1s ease;
+}
+
+button:hover::before {
+    filter: brightness(1.1);
+}
+
+button:active::before {
+    filter: brightness(0.85);
+    transform: scale(0.98);
+}
+
+button span {
+    position: relative;
+    z-index: 1;
+}

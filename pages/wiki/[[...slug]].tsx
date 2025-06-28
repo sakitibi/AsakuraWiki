@@ -1,0 +1,56 @@
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
+
+type Page = {
+    title: string;
+    content: string;
+};
+
+export default function WikiPage() {
+    const router = useRouter();
+    const { slug } = router.query;
+    const [page, setPage] = useState<Page | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    // slugが配列の場合は結合
+    const slugStr = Array.isArray(slug) ? slug.join('/') : slug;
+
+    useEffect(() => {
+        if (!slugStr) return;
+
+        const fetchPage = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wiki/${slugStr}`);
+                if (!res.ok) throw new Error(`ページ取得エラー: ${res.status}`);
+                const data = await res.json();
+                setPage(data);
+                setError(null);
+            } catch (e: any) {
+                setError(e.message || '不明なエラー');
+            }
+        };
+
+        fetchPage();
+    }, [slugStr]);
+
+    const handleEdit = () => {
+        router.push(`/dashboard/${slugStr}/edit`);
+    };
+
+    if (error) return <div style={{ color: 'red' }}>エラー: {error}</div>;
+    if (!page) return <div>読み込み中...</div>;
+
+    return (
+        <>
+            <Head>
+                <title>{page.title}</title>
+            </Head>
+            <div>
+                <div dangerouslySetInnerHTML={{ __html: page.content }} />
+                <br />
+                <button onClick={handleEdit}>このページを編集</button>
+            </div>
+        </>
+    );
+}
