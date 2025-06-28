@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { createClient } from '@supabase/supabase-js';
 import { useUser } from '@supabase/auth-helpers-react';
+import Head from 'next/head';
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -70,51 +71,102 @@ export default function WikiSettingsPage() {
         }
     };
 
+    const handleDelete = async () => {
+        if (!confirm('本当にこのWikiを削除しますか？この操作は元に戻せません。')) return;
+
+        setLoading(true);
+
+        // 1. 子ページ（wiki_pages）を削除
+        const { error: pageError } = await supabase
+            .from('wiki_pages')
+            .delete()
+            .eq('slug', slug);
+
+        // 2. 親Wiki本体（wikis）を削除
+        const { error: wikiError } = await supabase
+            .from('wikis')
+            .delete()
+            .eq('slug', slug);
+
+        setLoading(false);
+
+        if (pageError || wikiError) {
+            alert('削除に失敗しました: ' + (pageError?.message || wikiError?.message));
+            return;
+        }
+
+        alert('Wikiを削除しました');
+        router.push('/');
+    };
+
     if (loading) return <p>読み込み中...</p>;
 
     return (
-        <main style={{ padding: '2rem', maxWidth: 600 }}>
-        <h1>🔧 Wiki設定</h1>
-        {errorMsg ? (
-            <p style={{ color: 'red' }}>{errorMsg}</p>
-        ) : (
-            <form onSubmit={handleUpdate}>
-            <label>
-                Wikiタイトル:
-                <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{ width: '100%' }}
-                required
-                />
-            </label>
-            <br /><br />
-            <label>
-                説明:
-                <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                style={{ width: '100%', height: 100 }}
-                />
-            </label>
-            <br /><br />
-            <label>
-            編集モード:
-            <select
-                value={editMode}
-                onChange={(e) => setEditMode(e.target.value)}
-                style={{ width: '100%' }}
-            >
-                <option value="private">🔒 ログインユーザーのみ編集可</option>
-                <option value="public">🌐 誰でも編集可</option>
-            </select>
-            </label>
-            <br /><br />
-            <button type="submit" disabled={loading}>
-                <span>{loading ? '保存中…' : '保存'}</span>
-            </button>
-            </form>
-        )}
-        </main>
+        <>
+            <Head>
+                <style jsx global>{`
+                    /* start css */
+                    #delete-wiki-button::before{
+                        content: '';
+                        position: absolute;
+                        inset: 0;
+                        z-index: 0;
+                        background-image: linear-gradient(to left,rgb(103, 6, 6),rgb(219, 102, 102)) !important;
+                        transition: filter 0.3s ease, transform 0.1s ease;
+                    }
+                `}
+                </style>
+            </Head>
+            <main style={{ padding: '2rem', maxWidth: 600 }}>
+                <h1>🔧 Wiki設定</h1>
+                {errorMsg ? (
+                    <p style={{ color: 'red' }}>{errorMsg}</p>
+                ) : (
+                    <div id="settings-container">
+                        <form onSubmit={handleUpdate}>
+                            <label>
+                                Wikiタイトル:
+                                <input
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                style={{ width: '100%' }}
+                                required
+                                />
+                            </label>
+                            <br /><br />
+                            <label>
+                                説明:
+                                <textarea
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                style={{ width: '100%', height: 100 }}
+                                />
+                            </label>
+                            <br /><br />
+                            <label>
+                            編集モード:
+                            <select
+                                value={editMode}
+                                onChange={(e) => setEditMode(e.target.value)}
+                                style={{ width: '100%' }}
+                            >
+                                <option value="private">🔒 ログインユーザーのみ編集可</option>
+                                <option value="public">🌐 誰でも編集可</option>
+                            </select>
+                            </label>
+                            <br /><br />
+                            <button type="submit" disabled={loading}>
+                                <span>{loading ? '保存中…' : '保存'}</span>
+                            </button>
+                        </form>
+                        <div style={{ marginTop: '2rem' }}>
+                        <hr />
+                        <br />
+                        <button id='delete-wiki-button' onClick={handleDelete}>このWikiを削除する</button>
+                        </div>
+                    </div>
+                )}
+            </main>
+        </>
     );
 }
