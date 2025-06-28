@@ -16,13 +16,17 @@ const supabase = createClient(
 export default function WikiPage() {
     const router = useRouter();
     const { slug } = router.query;
+    let url:any = null;
     const [page, setPage] = useState<Page | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const url = new URL(location.href);
     const [content, setContent] = useState('');
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
+
+    if(typeof window !== 'undefined'){
+        url = new URL(location.href);
+    }
 
     // slugが配列の場合は結合
     const slugStr = Array.isArray(slug) ? slug.join('/') : slug;
