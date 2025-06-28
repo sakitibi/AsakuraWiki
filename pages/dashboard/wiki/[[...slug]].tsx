@@ -28,36 +28,40 @@ export default function WikiSettingsPage() {
         if (!slugStr || !user) return;
 
         const fetchWiki = async () => {
-        setLoading(true);
-        const { data, error } = await supabase
-            .from('wikis')
-            .select('name, description, owner_id, edit_mode')
-            .eq('slug', slugStr)
-            .single();
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('wikis')
+                .select('name, description, owner_id, edit_mode')
+                .eq('slug', slugStr)
+                .single();
 
-        if (error) {
-            console.error('Supabase fetchWiki error:', error);
-            setErrorMsg('Wikiの読み込みに失敗しました。');
+            console.log('❗️Supabase fetch result:', { data, error });
+
+            if (error) {
+                // error.message だけでなく error.code や error.details も出しておく
+                console.error('SupabaseError:', error);
+                setErrorMsg('Wikiの読み込みに失敗しました。');
+                setLoading(false);
+                return;
+            }
+
+            // 以下はオリジナルの処理
+            if (data.owner_id !== user.id) {
+                setErrorMsg('このWikiの管理者ではありません。');
+                setLoading(false);
+                return;
+            }
+
+            setWiki(data);
+            setName(data.name);
+            setDescription(data.description);
+            setEditMode(
+            data.edit_mode === 'private'
+                ? 'private'
+                : 'public'
+            );
+            setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
             setLoading(false);
-            return;
-        }
-
-        if (data.owner_id !== user.id) {
-            setErrorMsg('このWikiの管理者ではありません。');
-            setLoading(false);
-            return;
-        }
-
-        setWiki(data);
-        setName(data.name);
-        setDescription(data.description);
-        setEditMode(
-        data.edit_mode === 'private'
-            ? 'private'
-            : 'public'
-        );
-        setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
-        setLoading(false);
         };
 
         fetchWiki();
@@ -75,9 +79,9 @@ export default function WikiSettingsPage() {
         setLoading(false);
 
         if (error) {
-        alert('更新に失敗しました: ' + error.message);
+            alert('更新に失敗しました: ' + error.message);
         } else {
-        alert('設定を保存しました');
+            alert('設定を保存しました');
         }
     };
 
