@@ -73,7 +73,9 @@ export default function WikiPage() {
             alert('更新に失敗しました: ' + error.message);
         } else {
             router.push(`/wiki/${slugStr}`);
-            location.href = `/wiki/${slugStr}`;
+            setTimeout(() => {
+                location.href = `/wiki/${slugStr}`;
+            }, 200);
         }
     };
 
