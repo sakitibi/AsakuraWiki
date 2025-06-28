@@ -74,7 +74,7 @@ export default function Home() {
             <br />
                 <button onClick={NewWikiPage}><span>＋ 新しいWikiを作る</span></button>
             </main>
-            <footer>
+            <footer style={{textAlign: "center"}}>
                 <p>Copyright 2025 13ninstudio All rights Reserved</p>
                 <p>当Wikiサービスはオープンソースプロジェクトです</p>
             </footer>
