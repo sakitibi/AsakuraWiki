@@ -86,16 +86,17 @@ export default function WikiSettingsPage() {
         setLoading(true);
 
         // 1. 子ページ（wiki_pages）を削除
+        // wiki_pages 削除時は wiki_slug で親Wikiのページを一括削除
         const { error: pageError } = await supabase
             .from('wiki_pages')
             .delete()
-            .eq('slug', slugStr);  // wiki_slug で削除対象を指定する
+            .eq('wiki_slug', slugStr);  // ← 親Wikiのslugをキーに削除
 
-        // 2. 親Wiki本体（wikis）を削除
+        // wikis 削除はこれでOK
         const { error: wikiError } = await supabase
             .from('wikis')
             .delete()
-            .eq('slug', slug);
+            .eq('slug', slugStr);
 
         setLoading(false);
 
