@@ -103,7 +103,7 @@ export default function CreateWikiPage() {
                 onChange={(e) => setAgree(e.target.checked)}
                 required
             />
-            <a href='https://sakitibi-com9.webnode.jp/page/10'>利用規約</a>に同意します
+            <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>利用規約</a>に同意します
             </label>
             <br /><br />
             <button type="submit" disabled={loading}>
