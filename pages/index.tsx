@@ -9,7 +9,7 @@ const supabase = createClient(
 
 type WikiPage = {
     slug: string;
-    title: string;
+    name: string;
     updated_at: string;
 };
 
@@ -20,8 +20,8 @@ export default function Home() {
     useEffect(() => {
         async function fetchPages() {
         const { data, error } = await supabase
-            .from('wiki_pages')
-            .select('slug, title, updated_at')
+            .from('wikis')
+            .select('slug, name, updated_at')
             .order('updated_at', { ascending: false });
 
         if (error) {
@@ -51,17 +51,17 @@ export default function Home() {
                     <p>まだページがありません。</p>
                 ) : (
                     <ul>
-                    {pages.map((page) => (
-                        <li key={page.slug}>
-                        <Link href={`/wiki/${page.slug}`}>
-                            <button>
-                                <span>
-                                    <strong>{page.title} Wiki*</strong>
-                                </span>
-                            </button>
+                    {pages.map((wiki) => (
+                    <li key={wiki.slug}>
+                        <Link href={`/wiki/${wiki.slug}`}>
+                        <button>
+                            <span>
+                            <strong>{wiki.name} Wiki*</strong>
+                            </span>
+                        </button>
                         </Link>{' '}
-                        <small>（{new Date(page.updated_at).toLocaleString()}）</small>
-                        </li>
+                        <small>（{new Date(wiki.updated_at).toLocaleString()}）</small>
+                    </li>
                     ))}
                     </ul>
                 )}
