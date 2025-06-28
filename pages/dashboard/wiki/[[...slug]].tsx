@@ -104,7 +104,8 @@ export default function WikiSettingsPage() {
     return (
         <>
             <Head>
-                <style jsx global>{`
+                <style jsx global>
+                {`
                     /* start css */
                     #delete-wiki-button::before{
                         content: '';
@@ -114,6 +115,7 @@ export default function WikiSettingsPage() {
                         background-image: linear-gradient(to left,rgb(103, 6, 6),rgb(219, 102, 102)) !important;
                         transition: filter 0.3s ease, transform 0.1s ease;
                     }
+                    /* end css */
                 `}
                 </style>
             </Head>
@@ -162,7 +164,7 @@ export default function WikiSettingsPage() {
                         <div style={{ marginTop: '2rem' }}>
                         <hr />
                         <br />
-                        <button id='delete-wiki-button' onClick={handleDelete}>このWikiを削除する</button>
+                        <button id='delete-wiki-button' onClick={handleDelete}><span>このWikiを削除する</span></button>
                         </div>
                     </div>
                 )}

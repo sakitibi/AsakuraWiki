@@ -6,7 +6,7 @@ export default function Custom404() {
             <Head>
                 <style jsx global>
                 {`
-                    /*!
+                    /*
                     * Copyright 2025-2025 13ninstudio, Inc.
                     * All Rights Reserved
                     */
