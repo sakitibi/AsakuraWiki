@@ -69,7 +69,7 @@ export default function WikiSettingsPage() {
         const { error } = await supabase
         .from('wikis')
         .update({ name, description, edit_mode: editMode, updated_at: new Date() })
-        .eq('slug', slug);
+        .eq('slug', slugStr);
 
         setLoading(false);
 
@@ -89,7 +89,7 @@ export default function WikiSettingsPage() {
         const { error: pageError } = await supabase
             .from('wiki_pages')
             .delete()
-            .eq('wiki_slug', slugStr);  // wiki_slug で削除対象を指定する
+            .eq('slug', slugStr);  // wiki_slug で削除対象を指定する
 
         // 2. 親Wiki本体（wikis）を削除
         const { error: wikiError } = await supabase

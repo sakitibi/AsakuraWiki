@@ -48,15 +48,18 @@ export default function CreateWikiPage() {
         }
 
         // 2) wiki_pages テーブルに「ホーム」ページを挿入（お好みで）
+        // 例：ホームページのslugは固定で "home" にする
+        // ホームページを作成する例
         const { error: pageError } = await supabase
-            .from('wiki_pages')
-            .insert([{
-                slug,
-                title: 'ホーム',
-                content: 'ようこそ！',
-                created_at: new Date(),
-                updated_at: new Date(),
-            }]);
+        .from('wiki_pages')
+        .insert([{
+            wiki_slug: slug,    // 親Wikiのslugを外部キーで指定
+            slug: 'home',       // ページごとのslug
+            title: 'ホーム',
+            content: 'ようこそ！',
+            created_at: new Date(),
+            updated_at: new Date(),
+        }]);
 
         if (pageError) {
             // ここはエラーでもWiki自体は作成済みなので、ログに残す程度か再試行を促す
