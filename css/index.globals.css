@@ -1,5 +1,5 @@
 body{
-    background-image: linear-gradient(to right, #8be4ad, #00892e, #0f9d45, #0a9739, #8be4ad, #00892e);
+    background-image: linear-gradient(to right, #2eca6a, #00892e, #0f9d45, #0a9739, #2eca6a, #4fe681);
     background-size: 300% 100%;
     background-attachment: fixed;
     animation: bg-color 150s linear infinite;
