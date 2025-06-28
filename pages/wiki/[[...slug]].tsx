@@ -16,20 +16,22 @@ const supabase = createClient(
 export default function WikiPage() {
     const router = useRouter();
     const { slug } = router.query;
-    let url:any = null;
     const [page, setPage] = useState<Page | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [content, setContent] = useState('');
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
+    const [url, setUrl] = useState<URL | null>(null);
 
-    if(typeof window !== 'undefined'){
-        url = new URL(location.href);
-    }
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setUrl(new URL(window.location.href));
+        }
+    }, []);
 
     // slugが配列の場合は結合
-    const slugStr = Array.isArray(slug) ? slug.join('/') : slug;
+    const slugStr = Array.isArray(slug) ? slug.join('/') : slug ?? '';
 
     useEffect(() => {
         if (!slug) return;
@@ -108,7 +110,7 @@ export default function WikiPage() {
     if (!page) return <div>読み込み中...</div>;
 
     return (
-        url.searchParams.get("cmd") === 'edit' ? (
+        url?.searchParams.get("cmd") === 'edit' ? (
             <>
                 <Head>
                     <title>{page.title}を編集</title>
