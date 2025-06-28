@@ -35,7 +35,7 @@ export default function WikiPage() {
     }, [slugStr]);
 
     const handleEdit = () => {
-        router.push(`/dashboard/${slugStr}/edit`);
+        router.push(`/wiki/${slugStr}/::cmd/edit`);
     };
 
     if (error) return <div style={{ color: 'red' }}>エラー: {error}</div>;
