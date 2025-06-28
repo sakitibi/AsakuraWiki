@@ -78,7 +78,7 @@ export default function WikiPage() {
 
     const handleEdit = () => {
         router.push(`/wiki/${slugStr}?cmd=edit`);
-        location.reload();
+        location.href = `/wiki/${slugStr}?cmd=edit`;
     };
 
     function parseAccordion(text?: string | null): string {
