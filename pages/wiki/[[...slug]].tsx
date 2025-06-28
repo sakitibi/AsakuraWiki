@@ -154,7 +154,7 @@ export default function WikiPage() {
         <div>
             <div dangerouslySetInnerHTML={{ __html: parseAccordion(page.content) }} />
             <br />
-            <button onClick={handleEdit}>このページを編集</button>
+            <button onClick={handleEdit}><span>このページを編集</span></button>
         </div>
         </>
     );

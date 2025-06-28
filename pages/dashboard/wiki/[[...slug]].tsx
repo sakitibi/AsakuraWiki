@@ -14,44 +14,54 @@ export default function WikiSettingsPage() {
     const { slug } = router.query;
     const user = useUser();
 
-    const [wiki, setWiki] = useState<{ name: string; description: string } | null>(null);
+    // slug を文字列に正規化
+    const slugStr = Array.isArray(slug) ? slug.join('/') : slug ?? '';
+
+    const [wiki, setWiki] = useState<{ name: string; description: string; edit_mode: string; owner_id: string } | null>(null);
     const [name, setName] = useState('');
-    const [editMode, setEditMode] = useState('public');
     const [description, setDescription] = useState('');
+    const [editMode, setEditMode] = useState<'public' | 'private'>('public');
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
-        if (!slug || !user) return;
+        if (!slugStr || !user) return;
 
         const fetchWiki = async () => {
-            const { data, error } = await supabase
+        setLoading(true);
+        const { data, error } = await supabase
             .from('wikis')
-            .select('name, description, owner_id, edit_mode') // ← 必ず edit_mode を取得
-            .eq('slug', slug)
+            .select('name, description, owner_id, edit_mode')
+            .eq('slug', slugStr)
             .single();
 
-            if (error) {
-                setErrorMsg('Wikiの読み込みに失敗しました。');
-                setLoading(false);
-                return;
-            }
-
-            if (data.owner_id !== user.id) {
-                setErrorMsg('このWikiの管理者ではありません。');
-                setLoading(false);
-                return;
-            }
-
-            setWiki(data);
-            setName(data.name);
-            setDescription(data.description);
-            setEditMode(data.edit_mode || 'public'); // ✅ ここで data.edit_mode を使う
+        if (error) {
+            console.error('Supabase fetchWiki error:', error);
+            setErrorMsg('Wikiの読み込みに失敗しました。');
             setLoading(false);
+            return;
+        }
+
+        if (data.owner_id !== user.id) {
+            setErrorMsg('このWikiの管理者ではありません。');
+            setLoading(false);
+            return;
+        }
+
+        setWiki(data);
+        setName(data.name);
+        setDescription(data.description);
+        setEditMode(
+        data.edit_mode === 'private'
+            ? 'private'
+            : 'public'
+        );
+        setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
+        setLoading(false);
         };
 
         fetchWiki();
-    }, [slug, user]);
+    }, [slugStr, user]);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -149,9 +159,10 @@ export default function WikiSettingsPage() {
                             編集モード:
                             <select
                                 value={editMode}
-                                onChange={(e) => setEditMode(e.target.value)}
-                                style={{ width: '100%' }}
-                            >
+                                onChange={(e) =>
+                                    setEditMode(e.target.value as 'public' | 'private')
+                                }
+                                >
                                 <option value="private">🔒 ログインユーザーのみ編集可</option>
                                 <option value="public">🌐 誰でも編集可</option>
                             </select>
