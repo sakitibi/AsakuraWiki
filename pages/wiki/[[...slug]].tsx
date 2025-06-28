@@ -16,159 +16,142 @@ const supabase = createClient(
 export default function WikiPage() {
     const router = useRouter();
     const { slug } = router.query;
+
+    // slugを文字列に変換（キャッチオール対応）
+    const slugStr = Array.isArray(slug) ? slug.join('/') : slug ?? '';
+
     const [page, setPage] = useState<Page | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [content, setContent] = useState('');
     const [title, setTitle] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [content, setContent] = useState('');
+    const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [url, setUrl] = useState<URL | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            setUrl(new URL(window.location.href));
+        setUrl(new URL(window.location.href));
         }
     }, []);
 
-    // slugが配列の場合は結合
-    const slugStr = Array.isArray(slug) ? slug.join('/') : slug ?? '';
-
     useEffect(() => {
-        if (!slug) return;
+        if (!slugStr) return;
+        setLoading(true);
+
         (async () => {
         const { data, error } = await supabase
             .from('wiki_pages')
             .select('title, content')
-            .eq('slug', slug)
+            .eq('slug', slugStr)
             .single();
 
         if (error) {
-            setErrorMsg('ページの読み込みに失敗しました');
+            setError('ページの読み込みに失敗しました');
+            setPage(null);
         } else {
+            setPage(data);
             setTitle(data.title);
             setContent(data.content);
+            setError(null);
         }
         setLoading(false);
         })();
-    }, [slug]);
+    }, [slugStr]);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         const { error } = await supabase
         .from('wiki_pages')
         .update({ title, content, updated_at: new Date() })
-        .eq('slug', slug);
+        .eq('slug', slugStr);
 
         setLoading(false);
+
         if (error) {
         alert('更新に失敗しました: ' + error.message);
         } else {
-        router.push(`/wiki/${slug}`);
+        router.push(`/wiki/${slugStr}`);
         }
     };
-
-    useEffect(() => {
-        if (!slugStr) return;
-
-        const fetchPage = async () => {
-            try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wiki/${slugStr}`);
-                if (!res.ok) throw new Error(`ページ取得エラー: ${res.status}`);
-                const data = await res.json();
-                setPage(data);
-                setError(null);
-            } catch (e: any) {
-                setError(e.message || '不明なエラー');
-            }
-        };
-
-        fetchPage();
-    }, [slugStr]);
 
     const handleEdit = () => {
         router.push(`/wiki/${slugStr}?cmd=edit`);
     };
 
-    function parseAccordion(content: string): string {
-        return content.replace(
-            /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g,
-            (_, title, level, state, body) => {
-                const openAttr = state === 'open' ? 'open' : '';
-                const headingTag = level === '*' ? 'h3' : level === '**' ? 'h4' : 'h5';
-                return `
-                    <details ${openAttr}>
-                        <summary><${headingTag}>${title}</${headingTag}></summary>
-                        <div>${body.trim().replace(/\n/g, '<br>')}</div>
-                    </details>
-                `;
-            }
+    function parseAccordion(text: string): string {
+        return text.replace(
+        /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g,
+        (_, title, level, state, body) => {
+            const openAttr = state === 'open' ? 'open' : '';
+            const headingTag = level === '*' ? 'h3' : level === '**' ? 'h4' : 'h5';
+            return `
+            <details ${openAttr}>
+                <summary><${headingTag}>${title}</${headingTag}></summary>
+                <div>${body.trim().replace(/\n/g, '<br>')}</div>
+            </details>
+            `;
+        }
         );
     }
 
-    if (error) return <div style={{ color: 'red' }}>エラー: {error}</div>;
-    if (!page) return <div>読み込み中...</div>;
+    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    if (loading || !page) return <div>読み込み中…</div>;
 
-    return (
-        url?.searchParams.get("cmd") === 'edit' ? (
-            <>
-                <Head>
-                    <title>{page.title}を編集</title>
-                </Head>
-                <div>
-                    <main style={{ padding: '2rem', maxWidth: 600 }}>
-                        <h1>📝 ページ編集</h1>
-                        {errorMsg ? (
-                            <p style={{ color: 'red' }}>{errorMsg}</p>
-                        ) : (
-                            <form onSubmit={handleUpdate}>
-                            <label>
-                                タイトル:
-                                <input
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                required
-                                style={{ width: '100%' }}
-                                />
-                            </label>
-                            <br /><br />
-                            <label>
-                                内容:
-                                <textarea
-                                    value={content}
-                                    onChange={(e) => setContent(e.target.value)}
-                                    style={{ width: '100%', height: 200 }}
-                                />
-                            </label>
-
-                            <br /><br />
-                            <h2>プレビュー:</h2>
-                            <div
-                                style={{ border: '1px solid #ccc', padding: '1rem', background: '#f9f9f9' }}
-                                dangerouslySetInnerHTML={{ __html: parseAccordion(content) }}
-                            />
-
-                            <br /><br />
-                            <button type="submit" disabled={loading}>
-                                <span>{loading ? '保存中…' : '保存'}</span>
-                            </button>
-                            </form>
-                        )}
-                    </main>
-                </div>
-            </>
-        ) : (
-            <>
-                <Head>
-                    <title>{page.title}</title>
-                </Head>
-                <div>
-                    <div dangerouslySetInnerHTML={{ __html: parseAccordion(page.content) }} />
-                    <br />
-                    <button onClick={handleEdit}><span>このページを編集</span></button>
-                </div>
-            </>
-        )
-        
+    return url?.searchParams.get('cmd') === 'edit' ? (
+        <>
+        <Head>
+            <title>{page.title} を編集</title>
+        </Head>
+        <main style={{ padding: '2rem', maxWidth: 600 }}>
+            <h1>📝 ページ編集</h1>
+            {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
+            <form onSubmit={handleUpdate}>
+            <label>
+                タイトル:
+                <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                style={{ width: '100%' }}
+                />
+            </label>
+            <br />
+            <br />
+            <label>
+                内容:
+                <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                style={{ width: '100%', height: 200 }}
+                />
+            </label>
+            <br />
+            <br />
+            <h2>プレビュー:</h2>
+            <div
+                style={{ border: '1px solid #ccc', padding: '1rem', background: '#f9f9f9' }}
+                dangerouslySetInnerHTML={{ __html: parseAccordion(content) }}
+            />
+            <br />
+            <br />
+            <button type="submit" disabled={loading}>
+                {loading ? '保存中…' : '保存'}
+            </button>
+            </form>
+        </main>
+        </>
+    ) : (
+        <>
+        <Head>
+            <title>{page.title}</title>
+        </Head>
+        <div>
+            <div dangerouslySetInnerHTML={{ __html: parseAccordion(page.content) }} />
+            <br />
+            <button onClick={handleEdit}>このページを編集</button>
+        </div>
+        </>
     );
 }
