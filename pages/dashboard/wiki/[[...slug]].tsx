@@ -46,11 +46,11 @@ export default function WikiSettingsPage() {
                 setLoading(false);
                 return;
             }
-            /*if (data.owner_id !== user.id) {
+            if (data.owner_id !== user.id) {
                 setErrorMsg('この Wiki の管理者ではありません。');
                 setLoading(false);
                 return;
-            }*/
+            }
 
             setWiki(data);
             setName(data.name);

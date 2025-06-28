@@ -70,9 +70,10 @@ export default function WikiPage() {
         setLoading(false);
 
         if (error) {
-        alert('更新に失敗しました: ' + error.message);
+            alert('更新に失敗しました: ' + error.message);
         } else {
-        router.push(`/wiki/${slugStr}`);
+            router.push(`/wiki/${slugStr}`);
+            location.href = `/wiki/${slugStr}`;
         }
     };
 
