@@ -1,6 +1,7 @@
 body{
     background-image: linear-gradient(to right, #8be4ad, #00892e);
     background-attachment: fixed;
+    animation: bg-color 150s infinite;
 }
 
 button {
@@ -37,4 +38,22 @@ button:active::before {
 button span {
     position: relative;
     z-index: 1;
+}
+
+@keyframes bg-color{
+    from{
+        background-image: linear-gradient(to right, #8be4ad, #00892e);
+    }
+    25%{
+        background-image: linear-gradient(to right, #0f9d45, #0a9739);
+    }
+    50%{
+        background-image: linear-gradient(to right, #00892e, #8be4ad);
+    }
+    75%{
+        background-image: linear-gradient(to right, #0a9739, #0f9d45);
+    }
+    to{
+        background-image: linear-gradient(to right, #8be4ad, #00892e);
+    }
 }

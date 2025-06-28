@@ -19,17 +19,17 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchPages() {
-        const { data, error } = await supabase
-            .from('wiki_pages')
-            .select('slug, title, updated_at, wikis(name)')
-            .order('updated_at', { ascending: false });
+            const { data, error } = await supabase
+                .from('wiki_pages')
+                .select('slug, title, updated_at, wikis(name)')
+                .order('updated_at', { ascending: false });
 
             if (error) {
                 console.error('Error fetching wiki pages:', error.message);
             } else {
                 const flattened: WikiPage[] = data.map((d: any) => ({
                     slug: d.slug,
-                    name: d.wikis?.name ?? '(無名Wiki)',  // ← ✅ 修正
+                    name: d.wikis?.[0]?.name ?? '(無名Wiki)',  // ← 配列対応に修正
                     updated_at: d.updated_at,
                 }));
                 setPages(flattened);
