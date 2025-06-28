@@ -16,47 +16,54 @@ export default function CreateWikiPage() {
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    e.preventDefault();
+    if (!agree) { alert('利用規約に同意してください。'); return; }
+    setLoading(true);
 
-        if (!agree) {
-            alert('利用規約に同意してください。');
-            return;
-        }
+    // ログインユーザー取得
+    const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { alert('ログインしてください'); setLoading(false); return; }
 
-        setLoading(true);
+        const slug = wikiId.trim().toLowerCase();
 
-        const {
-        data: { user },
-        } = await supabase.auth.getUser();
+        // 1) wikis テーブルに挿入
+        const {error: wikiError} = await supabase
+            .from('wikis')
+            .insert([{
+                slug,
+                name: title,
+                description,
+                owner_id: user.id,
+                edit_mode: 'public',      // 初期値を決めておく
+                created_at: new Date(),
+                updated_at: new Date(),
+            }])
+            .select()
+            .single();
 
-        if (!user) {
-            alert('ログインしてください');
+        if (wikiError) {
+            alert('Wiki本体の作成に失敗しました: ' + wikiError.message);
             setLoading(false);
             return;
         }
 
-        const slug = wikiId.trim().toLowerCase();
+        // 2) wiki_pages テーブルに「ホーム」ページを挿入（お好みで）
+        const { error: pageError } = await supabase
+            .from('wiki_pages')
+            .insert([{
+                slug,
+                title: 'ホーム',
+                content: 'ようこそ！',
+                created_at: new Date(),
+                updated_at: new Date(),
+            }]);
 
-        const { data, error } = await supabase
-        .from('wiki_pages')  // ← ← ← テーブル名をここに合わせる
-        .insert([
-            {
-            slug,
-            title,
-            description,
-            owner_id: user.id,
-            },
-        ])
-        .select()
-        .single();
-
-        setLoading(false);
-
-        if (error) {
-            alert('作成に失敗しました: ' + error.message);
-            return;
+        if (pageError) {
+            // ここはエラーでもWiki自体は作成済みなので、ログに残す程度か再試行を促す
+            console.error('wiki_pages insert error:', pageError);
         }
 
+        setLoading(false);
         router.push(`/wiki/${slug}`);
     };
 
