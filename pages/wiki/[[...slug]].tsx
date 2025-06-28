@@ -80,19 +80,23 @@ export default function WikiPage() {
         router.push(`/wiki/${slugStr}?cmd=edit`);
     };
 
-    function parseAccordion(text: string): string {
+    function parseAccordion(text?: string | null): string {
+        if (typeof text !== 'string') {
+            // null/undefined/その他を受け取ったら空文字列を返す
+            return '';
+        }
         return text.replace(
-        /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g,
-        (_, title, level, state, body) => {
+            /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g,
+            (_, title, level, state, body) => {
             const openAttr = state === 'open' ? 'open' : '';
             const headingTag = level === '*' ? 'h3' : level === '**' ? 'h4' : 'h5';
             return `
-            <details ${openAttr}>
+                <details ${openAttr}>
                 <summary><${headingTag}>${title}</${headingTag}></summary>
                 <div>${body.trim().replace(/\n/g, '<br>')}</div>
-            </details>
+                </details>
             `;
-        }
+            }
         );
     }
 
