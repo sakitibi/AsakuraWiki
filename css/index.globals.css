@@ -1,7 +1,8 @@
 body{
-    background-image: linear-gradient(to right, #8be4ad, #00892e);
+    background-image: linear-gradient(to right, #8be4ad, #00892e, #0f9d45, #0a9739, #8be4ad, #00892e);
+    background-size: 300% 100%;
     background-attachment: fixed;
-    animation: bg-color 150s infinite;
+    animation: bg-color 150s linear infinite;
 }
 
 button {
@@ -42,18 +43,18 @@ button span {
 
 @keyframes bg-color{
     from{
-        background-image: linear-gradient(to right, #8be4ad, #00892e);
+        background-position: 0% 0%;
     }
     25%{
-        background-image: linear-gradient(to right, #0f9d45, #0a9739);
+        background-position: 75% 0%;
     }
     50%{
-        background-image: linear-gradient(to right, #00892e, #8be4ad);
+        background-position: 150% 0%;
     }
     75%{
-        background-image: linear-gradient(to right, #0a9739, #0f9d45);
+        background-position: 225% 0%;
     }
     to{
-        background-image: linear-gradient(to right, #8be4ad, #00892e);
+        background-position: 300% 0%;
     }
 }
