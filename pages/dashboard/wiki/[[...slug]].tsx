@@ -30,24 +30,24 @@ export default function WikiSettingsPage() {
         const fetchWiki = async () => {
             setLoading(true);
             const { data, error } = await supabase
-                .from('wikis')
-                .select('name, description, owner_id, edit_mode')
-                .eq('slug', slugStr)
-                .single();
-
-            console.log('❗️Supabase fetch result:', { data, error });
+            .from('wikis')
+            .select('name, description, owner_id, edit_mode')
+            .eq('slug', slugStr)
+            .maybeSingle();
 
             if (error) {
-                // error.message だけでなく error.code や error.details も出しておく
-                console.error('SupabaseError:', error);
-                setErrorMsg('Wikiの読み込みに失敗しました。');
+                console.error('Supabase fetch error:', error);
+                setErrorMsg('サーバーエラーが発生しました。');
                 setLoading(false);
                 return;
             }
-
-            // 以下はオリジナルの処理
+            if (!data) {
+                setErrorMsg('指定された Wiki は存在しません。');
+                setLoading(false);
+                return;
+            }
             if (data.owner_id !== user.id) {
-                setErrorMsg('このWikiの管理者ではありません。');
+                setErrorMsg('この Wiki の管理者ではありません。');
                 setLoading(false);
                 return;
             }
@@ -55,11 +55,6 @@ export default function WikiSettingsPage() {
             setWiki(data);
             setName(data.name);
             setDescription(data.description);
-            setEditMode(
-            data.edit_mode === 'private'
-                ? 'private'
-                : 'public'
-            );
             setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
             setLoading(false);
         };
