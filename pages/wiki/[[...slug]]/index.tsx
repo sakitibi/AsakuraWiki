@@ -38,6 +38,22 @@ export default function WikiPage() {
         router.push(`/wiki/${slugStr}/::cmd/edit`);
     };
 
+    function parseAccordion(content: string): string {
+        return content.replace(
+            /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g,
+            (_, title, level, state, body) => {
+                const openAttr = state === 'open' ? 'open' : '';
+                const headingTag = level === '*' ? 'h3' : level === '**' ? 'h4' : 'h5';
+                return `
+                    <details ${openAttr}>
+                        <summary><${headingTag}>${title}</${headingTag}></summary>
+                        <div>${body.trim().replace(/\n/g, '<br>')}</div>
+                    </details>
+                `;
+            }
+        );
+    }
+
     if (error) return <div style={{ color: 'red' }}>エラー: {error}</div>;
     if (!page) return <div>読み込み中...</div>;
 
@@ -47,7 +63,7 @@ export default function WikiPage() {
                 <title>{page.title}</title>
             </Head>
             <div>
-                <div dangerouslySetInnerHTML={{ __html: page.content }} />
+                <div dangerouslySetInnerHTML={{ __html: parseAccordion(page.content) }} />
                 <br />
                 <button onClick={handleEdit}><span>このページを編集</span></button>
             </div>
