@@ -15,10 +15,12 @@ const supabase = createClient(
 
 export default function WikiPage() {
     const router = useRouter();
-    const { slug } = router.query;
+    const { wikiSlug, pageSlug } = router.query;
 
-    // slugを文字列に変換（キャッチオール対応）
-    const slugStr = Array.isArray(slug) ? slug.join('/') : slug ?? '';
+    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const pageSlugStr = Array.isArray(pageSlug)
+        ? pageSlug.join('/')
+        : pageSlug ?? 'home'; // デフォルトページ
 
     const [page, setPage] = useState<Page | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -35,17 +37,18 @@ export default function WikiPage() {
     }, []);
 
     useEffect(() => {
-        if (!slugStr) return;
+        if (!wikiSlugStr || !pageSlugStr) return;
         setLoading(true);
 
         (async () => {
         const { data, error } = await supabase
             .from('wiki_pages')
             .select('title, content')
-            .eq('slug', slugStr)
-            .single();
+            .eq('wiki_slug', wikiSlugStr)
+            .eq('slug', pageSlugStr)
+            .maybeSingle();
 
-        if (error) {
+        if (error || !data) {
             setError('ページの読み込みに失敗しました');
             setPage(null);
         } else {
@@ -56,7 +59,7 @@ export default function WikiPage() {
         }
         setLoading(false);
         })();
-    }, [slugStr]);
+    }, [wikiSlugStr, pageSlugStr]);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -65,42 +68,36 @@ export default function WikiPage() {
         const { error } = await supabase
         .from('wiki_pages')
         .update({ title, content, updated_at: new Date() })
-        .eq('slug', slugStr);
+        .eq('wiki_slug', wikiSlugStr)
+        .eq('slug', pageSlugStr);
 
         setLoading(false);
 
         if (error) {
-            alert('更新に失敗しました: ' + error.message);
+        alert('更新に失敗しました: ' + error.message);
         } else {
-            router.push(`/wiki/${slugStr}`);
-            setTimeout(() => {
-                location.href = `/wiki/${slugStr}`;
-            }, 200);
+        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
         }
     };
 
     const handleEdit = () => {
-        router.push(`/wiki/${slugStr}?cmd=edit`);
-        location.href = `/wiki/${slugStr}?cmd=edit`;
+        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}?cmd=edit`);
     };
 
     function parseAccordion(text?: string | null): string {
-        if (typeof text !== 'string') {
-            // null/undefined/その他を受け取ったら空文字列を返す
-            return '';
-        }
+        if (typeof text !== 'string') return '';
         return text.replace(
-            /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g,
-            (_, title, level, state, body) => {
+        /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g,
+        (_, title, level, state, body) => {
             const openAttr = state === 'open' ? 'open' : '';
             const headingTag = level === '*' ? 'h3' : level === '**' ? 'h4' : 'h5';
             return `
-                <details ${openAttr}>
+            <details ${openAttr}>
                 <summary><${headingTag}>${title}</${headingTag}></summary>
                 <div>${body.trim().replace(/\n/g, '<br>')}</div>
-                </details>
+            </details>
             `;
-            }
+        }
         );
     }
 
@@ -125,8 +122,7 @@ export default function WikiPage() {
                 style={{ width: '100%' }}
                 />
             </label>
-            <br />
-            <br />
+            <br /><br />
             <label>
                 内容:
                 <textarea
@@ -135,19 +131,19 @@ export default function WikiPage() {
                 style={{ width: '100%', height: 200 }}
                 />
             </label>
-            <br />
-            <br />
+            <br /><br />
             <h2>プレビュー:</h2>
             <div
-                style={{ border: '1px solid #ccc', padding: '1rem', background: '#f9f9f9' }}
+                style={{
+                border: '1px solid #ccc',
+                padding: '1rem',
+                background: '#f9f9f9',
+                }}
                 dangerouslySetInnerHTML={{ __html: parseAccordion(content) }}
             />
-            <br />
-            <br />
+            <br /><br />
             <button type="submit" disabled={loading}>
-                <span>
-                    {loading ? '保存中…' : '保存'}
-                </span>
+                {loading ? '保存中…' : '保存'}
             </button>
             </form>
         </main>
@@ -160,7 +156,9 @@ export default function WikiPage() {
         <div>
             <div dangerouslySetInnerHTML={{ __html: parseAccordion(page.content) }} />
             <br />
-            <button onClick={handleEdit}><span>このページを編集</span></button>
+            <button onClick={handleEdit}>
+            <span>このページを編集</span>
+            </button>
         </div>
         </>
     );

@@ -11,12 +11,11 @@ const supabase = createClient(
 
 export default function WikiSettingsPage() {
     const router = useRouter();
-    const { slug } = router.query;
+    const { wikiSlug } = router.query;
     const user = useUser();
 
     // slug を文字列に正規化
-    const slugStr = Array.isArray(slug) ? slug.join('/') : slug ?? '';
-
+    const slugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const [wiki, setWiki] = useState<{ name: string; description: string; edit_mode: string; owner_id: string } | null>(null);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
