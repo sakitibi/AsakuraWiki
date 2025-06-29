@@ -1,5 +1,4 @@
 import React from 'react';
-import './calendar2.css';
 
 export interface Calendar2Props {
     year: number;
