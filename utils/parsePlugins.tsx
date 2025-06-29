@@ -2,7 +2,7 @@ import React from 'react';
 import Calendar2 from '@/components/Calendar2';
 import CommentForm from '@/components/CommentForm';
 import RealTimeComments from '@/components/RealTimeComments';
-//import PagedComments from '@/components/PagesComments';
+import PagedComments from '@/components/PagesComments';
 import { DATEDIF, DATEVALUE } from './dateFunctions';
 
 type Context = {
@@ -126,15 +126,15 @@ export function parseWikiContent(
             );
         }
         // 7) #pcomment
-        /*else if (m[14]) {
+        else if (m[14]) {
             nodes.push(
                 <PagedComments
                 key={`pc-${m.index}`}
                 wikiSlug={wikiSlug}
                 pageSlug={pageSlug}
-                /
+                />
             );
-        }*/
+        }
 
         lastIndex = re.lastIndex;
     }
