@@ -18,7 +18,7 @@ button {
     overflow: hidden;
 }
 
-input {
+input:not([type=submit],[type=checkbox]) {
     width: 100%;
 }
 
