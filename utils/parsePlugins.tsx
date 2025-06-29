@@ -17,17 +17,17 @@ export function parseWikiContent(content: string): React.ReactNode[] {
 
         // 2) #calendar2(...) にマッチした場合
         if (m[1] && m[2]) {
-        const year = parseInt(m[1], 10)
-        const month = parseInt(m[2], 10)
-        const hideHolidays = m[3] === 'off'
-        nodes.push(
-            <Calendar2
-            key={`cal-${year}-${month}-${m.index}`}
-            year={year}
-            month={month}
-            hideHolidays={hideHolidays}
-            />
-        )
+            const year = parseInt(m[1], 10)
+            const month = parseInt(m[2], 10)
+            const hideHolidays = m[3] === 'off'
+            nodes.push(
+                <Calendar2
+                key={`cal-${year}-${month}-${m.index}`}
+                year={year}
+                month={month}
+                hideHolidays={hideHolidays}
+                />
+            )
         }
         // 3) #accordion(...) にマッチした場合
         else if (m[4]) {
@@ -53,6 +53,8 @@ export function parseWikiContent(content: string): React.ReactNode[] {
 
         lastIndex = re.lastIndex
     }
+
+    console.log(m)
 
     // 4) 残りのテキスト
     if (lastIndex < content.length) {
