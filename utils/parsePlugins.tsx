@@ -95,6 +95,7 @@ export function parseWikiContent(
                         borderRight: '1px solid #ea94bc',
                         borderTop: '1px solid #ea94bc',
                         padding: '0.25em',
+                        backgroundColor: '#fad6e7'
                     }
                     : level === '**'
                     ? { borderColor: '#ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em' }
