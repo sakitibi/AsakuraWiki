@@ -66,7 +66,7 @@ export default function Home() {
                     <ul>
                     {pages.map((wiki) => (
                     <li key={wiki.slug}>
-                        <Link href={`/wiki/${wiki.wikiSlug}/${wiki.pageSlug || 'home'}`}>
+                        <Link href={`/wiki/${wiki.wikiSlug}/${wiki.pageSlug || 'FrontPage'}`}>
                         <button>
                             <span>
                             <strong>{wiki.name} Wiki*</strong>
@@ -83,6 +83,11 @@ export default function Home() {
                 <button onClick={NewWikiPage}><span>＋ 新しいWikiを作る</span></button>
             </main>
             <footer style={{textAlign: "center"}}>
+                <div id="menu">
+                    <ul>
+                        
+                    </ul>
+                </div>
                 <p>Copyright 2025 13ninstudio All rights Reserved</p>
                 <p>当Wikiサービスはオープンソースプロジェクトです</p>
             </footer>

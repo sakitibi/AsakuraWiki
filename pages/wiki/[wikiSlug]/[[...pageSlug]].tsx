@@ -93,6 +93,7 @@ export default function WikiPage() {
             pathname: `/wiki/${wikiSlugStr}`,
             query: { cmd: 'edit', page: pageSlugStr },
         });
+        location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
     };
 
     // エラー or 読み込み中
