@@ -30,7 +30,7 @@ export default function Home() {
             } else {
                 const flattened: WikiPage[] = data.map((d: any) => ({
                     slug: d.slug,
-                    name: d.wikis?.[0]?.name ?? '(無名Wiki)',  // ← 配列対応に修正
+                    name: d.wikis?.name ?? '(無名Wiki)',  // ← 配列ではなくオブジェクト
                     updated_at: d.updated_at,
                 }));
                 setPages(flattened);
