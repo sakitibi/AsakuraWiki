@@ -22,31 +22,32 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchPages() {
-        // 例: fk_wiki_slug という名前のリレーションを使う場合
-        const { data, error } = await supabase
+            const { data, error } = await supabase
             .from('wiki_pages')
-            .select('slug, title, updated_at, page_slug, wiki_slug, wikis!fk_wiki_slug(name, slug)') // slugも指定
+            .select('slug, title, updated_at, page_slug, wiki_slug, wikis!fk_wiki_slug(name, slug)')
             .order('updated_at', { ascending: false });
-
-            if (!error && data) {
-            const flattened: WikiPage[] = data.map((d: any) => ({
-                slug: d.slug,
-                name: d.wikis?.name ?? '(無名Wiki)',
-                updated_at: d.updated_at,
-                pageSlug: d.page_slug,
-                wikiSlug: d.wikis?.slug ?? '',   // ここで親Wikiのslugをセット
-            }));
-            setPages(flattened);
-        }
 
             console.log('fetchPages data:', data);
             console.log('fetchPages error:', error);
+
+            if (!error && data) {
+                const flattened: WikiPage[] = data.map((d: any) => ({
+                    slug: d.slug,
+                    name: d.wikis?.name ?? '(無名Wiki)',
+                    updated_at: d.updated_at,
+                    pageSlug: d.page_slug,
+                    wikiSlug: d.wikis?.slug ?? '',
+                }));
+                console.log('flattened:', flattened);
+                setPages(flattened);
+            }
 
             setLoading(false);
         }
 
         fetchPages();
     }, []);
+
 
     const NewWikiPage = () => {
         location.href = "/dashboard/create-wiki";
