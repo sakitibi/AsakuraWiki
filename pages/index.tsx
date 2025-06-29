@@ -25,7 +25,7 @@ export default function Home() {
         // 例: fk_wiki_slug という名前のリレーションを使う場合
         const { data, error } = await supabase
             .from('wiki_pages')
-            .select('slug, title, updated_at, page_slug, wikis!fk_wiki_slug(name)')
+            .select('slug, title, updated_at, page_slug, wiki_slug, wikis!fk_wiki_slug(name, slug)') // slugも指定
             .order('updated_at', { ascending: false });
 
             if (!error && data) {
@@ -33,7 +33,8 @@ export default function Home() {
                 slug: d.slug,
                 name: d.wikis?.name ?? '(無名Wiki)',
                 updated_at: d.updated_at,
-                pageSlug: d.page_slug, // ここでスネークケース→キャメルケース変換
+                pageSlug: d.page_slug,
+                wikiSlug: d.wikis?.slug ?? '',   // ここで親Wikiのslugをセット
             }));
             setPages(flattened);
         }
