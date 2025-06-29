@@ -3,6 +3,9 @@ body{
     background-size: 300% 100%;
     background-attachment: fixed;
     animation: bg-color 150s linear infinite;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: bold;
 }
 
 button {
