@@ -85,8 +85,16 @@ export default function Home() {
             <footer>
                 <div id="menu">
                     <ul>
-                        <li><Link href="/">ホーム</Link></li>
-                        <li><Link href="/about">当レンタルWikiについて</Link></li>
+                        <li>
+                            <Link href="/">
+                                <button><span>ホーム</span></button>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/about">
+                                <button><span>当レンタルWikiについて</span></button>
+                            </Link>
+                        </li>
                     </ul>
                 </div>
                 <div style={{textAlign: "center"}}>
