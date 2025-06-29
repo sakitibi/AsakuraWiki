@@ -142,7 +142,9 @@ export default function WikiPage() {
                 </div>
                 <br /><br />
                 <button type="submit" disabled={loading}>
-                {loading ? '保存中…' : '保存'}
+                    <span>
+                        {loading ? '保存中…' : '保存'}
+                    </span>
                 </button>
             </form>
             </main>
@@ -155,7 +157,7 @@ export default function WikiPage() {
                 ))}
             </div>
             <br />
-            <button onClick={handleEdit}>このページを編集</button>
+            <button onClick={handleEdit}><span>このページを編集</span></button>
             </div>
         )}
         </>
