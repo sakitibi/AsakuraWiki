@@ -19,8 +19,8 @@ export function parseWikiContent(
     const DATEDIF_RE   = /#DATEDIF\(\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([YMD])\s*\)/
     const DATEVALUE_RE = /#DATEVALUE\(\s*([^)]+)\s*\)/
     const ACC_RE        = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/
-    const COMMENT_RE    = /(#comment)\b/             // m[12]
-    const RTCM_RE       = /(#rtcomment)(?:\(\))?\b/  // m[13]
+    const COMMENT_RE    = /(#comment)\b/
+    const RTCM_RE       = /(#rtcomment)(?:\(\))?\b/
 
     const re = new RegExp(
         [
@@ -36,59 +36,81 @@ export function parseWikiContent(
 
     let m: RegExpExecArray | null
     while ((m = re.exec(content))) {
-        // ← 何がマッチしているかデバッグしたいときはここに console.log(m)
         if (m.index > lastIndex) {
             nodes.push(content.slice(lastIndex, m.index))
         }
 
+        // #calendar2
         if (m[1] && m[2]) {
-            // #calendar2
             const year = +m[1], month = +m[2], off = m[3] === 'off'
-            nodes.push(<Calendar2 key={m.index} year={year} month={month} hideHolidays={off} />)
+            nodes.push(
+                <Calendar2
+                key={m.index}
+                year={year}
+                month={month}
+                hideHolidays={off}
+                />
+            )
         }
+        // #DATEDIF
         else if (m[4] && m[5] && m[6]) {
-            // #DATEDIF
             const val = DATEDIF(m[4], m[5], m[6] as any)
-            nodes.push(<span key={m.index}>{isNaN(val)? 'ERR': val}</span>)
+            nodes.push(<span key={m.index}>{isNaN(val) ? 'ERR' : val}</span>)
         }
+        // #DATEVALUE
         else if (m[7]) {
-            // #DATEVALUE
             const val = DATEVALUE(m[7])
-            nodes.push(<span key={m.index}>{isNaN(val)? 'ERR': val}</span>)
+            nodes.push(<span key={m.index}>{isNaN(val) ? 'ERR' : val}</span>)
         }
+        // #accordion
         else if (m[8] && m[9] && m[10] && m[11] !== undefined) {
-            // #accordion
-            const title = m[8], lvl = m[9], open = m[10] === 'open', body = m[11]
-            const Tag = lvl === '*' ? 'h2' : lvl === '**' ? 'h3' : 'h4'
+            const title   = m[8]
+            const lvl     = m[9]           // '*' | '**' | '***'
+            const open    = m[10] === 'open'
+            const body    = m[11]
             const children = parseWikiContent(body, context)
 
-            function Accordion({ title, level, initiallyOpen, children }: {
+            function Accordion({
+                title,
+                level,
+                initiallyOpen,
+                children,
+            }: {
                 title: string
                 level: '*' | '**' | '***'
                 initiallyOpen: boolean
                 children: React.ReactNode
             }) {
-            const [isOpen, setIsOpen] = useState(initiallyOpen)
-            const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
-
-            const iconPath = isOpen
+                const [isOpen, setIsOpen] = useState(initiallyOpen)
+                const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
+                const iconPath = isOpen
                 ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
                 : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z'
+                const headingStyle =
+                level === '*'
+                    ? {
+                        borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
+                        borderStyle: 'solid',
+                        borderWidth: '1px',
+                        borderRight: '1px solid #ea94bc',
+                        borderTop: '1px solid #ea94bc',
+                        padding: '0.25em',
+                    }
+                    : level === '**'
+                    ? { borderColor: '#ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em' }
+                    : { borderLeft: '15px solid #ea94bc', paddingLeft: '0.5em' }
 
-            const headingStyle = level === '*'
-                ? { borderColor: 'currentcolor currentcolor #ea94bc #ea94bc', borderRight: '1px solid #ea94bc', borderTop: '1px solid #ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em' }
-                : level === '**'
-                ? { borderColor: '#ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em' }
-                : { borderLeft: '15px solid #ea94bc', paddingLeft: '0.5em' }
-
-            return (
-                <div className={isOpen ? 'open' : 'closed'} style={{ display: 'block', unicodeBidi: 'isolate', cursor:'pointer'}}>
-                {React.createElement(
+                return (
+                <div
+                    className={isOpen ? 'open' : 'closed'}
+                    style={{ display: 'block', unicodeBidi: 'isolate', cursor: 'pointer' }}
+                >
+                    {React.createElement(
                     Tag,
                     { style: headingStyle, onClick: () => setIsOpen(!isOpen) },
                     [
-                    title,
-                    <svg
+                        title,
+                        <svg
                         key="icon"
                         aria-hidden="true"
                         focusable="false"
@@ -98,21 +120,41 @@ export function parseWikiContent(
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 448 512"
                         style={{ marginLeft: '0.5em', width: '1em', height: '1em' }}
-                    >
+                        >
                         <path fill="currentColor" d={iconPath} />
-                    </svg>,
+                        </svg>,
                     ]
-                )}
-                {isOpen && <div>{children}</div>}
+                    )}
+                    {isOpen && <div>{children}</div>}
                 </div>
-            )
+                )
             }
+
+            // ← ここで必ず nodes に追加する
+            nodes.push(
+                <Accordion
+                key={m.index}
+                title={title}
+                level={lvl as '*' | '**' | '***'}
+                initiallyOpen={open}
+                >
+                {children}
+                </Accordion>
+            )
         }
+        // #comment
         else if (m[12] === '#comment') {
             nodes.push(<CommentForm key={m.index} />)
         }
+        // #rtcomment
         else if (m[13] === '#rtcomment') {
-            nodes.push(<RealTimeComments key={m.index} wikiSlug={wikiSlug} pageSlug={pageSlug} />)
+            nodes.push(
+                <RealTimeComments
+                key={m.index}
+                wikiSlug={wikiSlug}
+                pageSlug={pageSlug}
+                />
+            )
         }
 
         lastIndex = re.lastIndex
