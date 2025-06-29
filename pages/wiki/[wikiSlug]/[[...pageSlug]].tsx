@@ -18,30 +18,26 @@ export default function WikiPage() {
     const router = useRouter()
     const { wikiSlug, pageSlug } = router.query
 
-    // クエリパラメータ→文字列化
-    const wikiSlugStr = Array.isArray(wikiSlug)
-        ? wikiSlug.join('/')
-        : wikiSlug ?? ''
-    const pageSlugStr = Array.isArray(pageSlug)
-        ? pageSlug.join('/')
-        : pageSlug ?? 'home'
+    // クエリ→文字列化
+    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? ''
+    const pageSlugStr = Array.isArray(pageSlug) ? pageSlug.join('/') : pageSlug ?? 'home'
 
-    // ページデータ管理
-    const [page, setPage]             = useState<Page | null>(null)
-    const [loading, setLoading]       = useState(false)
-    const [error, setError]           = useState<string | null>(null)
-    const [title, setTitle]           = useState('')
-    const [content, setContent]       = useState('')
-    const [url, setUrl]               = useState<URL | null>(null)
+    // state
+    const [page, setPage]       = useState<Page | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError]     = useState<string | null>(null)
+    const [title, setTitle]     = useState('')
+    const [content, setContent] = useState('')  // ← textarea の中身
+    const [urlObj, setUrlObj]   = useState<URL | null>(null)
 
     // URL取得（編集モード判定用）
     useEffect(() => {
         if (typeof window !== 'undefined') {
-        setUrl(new URL(window.location.href))
+        setUrlObj(new URL(window.location.href))
         }
     }, [])
 
-    // Supabase からページ読み込み
+    // Supabase から読み込み
     useEffect(() => {
         if (!wikiSlugStr || !pageSlugStr) return
         setLoading(true)
@@ -79,25 +75,25 @@ export default function WikiPage() {
         setLoading(false)
 
         if (error) {
-            alert('更新に失敗しました: ' + error.message)
+        alert('更新に失敗しました: ' + error.message)
         } else {
-            // 更新後は表示モードへ
-            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
+        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`)
         }
     }
 
-    // 編集モードへの切り替え
+    // 編集モード切り替え
     const handleEdit = () => {
-        location.href = `${location.href}?cmd=edit`;
+        router.push(`${router.asPath}?cmd=edit`)
     }
 
-    // エラー表示 or 読み込み中
+    // エラー or 読み込み中
     if (error)   return <div style={{ color: 'red' }}>{error}</div>
     if (loading || !page) return <div>読み込み中…</div>
 
-    // parse に渡すコンテキスト
+    const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
     const context = { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr }
-    const isEdit  = url?.searchParams.get('cmd') === 'edit'
+    // プレビュー or 閲覧コンテンツ
+    const parseTarget = isEdit ? content : page.content
 
     return (
         <>
@@ -109,7 +105,7 @@ export default function WikiPage() {
         </Head>
 
         {isEdit ? (
-            <main style={{ padding:  '2rem', maxWidth: 600 }}>
+            <main style={{ padding: '2rem', maxWidth: 600 }}>
             <h1>📝 ページ編集</h1>
             <form onSubmit={handleUpdate}>
                 <label>
@@ -122,7 +118,6 @@ export default function WikiPage() {
                 />
                 </label>
                 <br /><br />
-
                 <label>
                 内容:
                 <textarea
@@ -132,26 +127,22 @@ export default function WikiPage() {
                 ></textarea>
                 </label>
                 <br /><br />
-
                 <h2>プレビュー：</h2>
                 <div
                 style={{
-                    border:      '1px solid #ccc',
-                    padding:     '1rem',
-                    background:  '#f9f9f9',
-                    minHeight:   100
+                    border: '1px solid #ccc',
+                    padding: '1rem',
+                    background: '#f9f9f9',
+                    minHeight: 100
                 }}
                 >
-                {parseWikiContent(page.content, context).map((node,i)=> (
+                {parseWikiContent(parseTarget, context).map((node, i) => (
                     <React.Fragment key={i}>{node}</React.Fragment>
                 ))}
                 </div>
-
                 <br /><br />
                 <button type="submit" disabled={loading}>
-                    <span>
-                        {loading ? '保存中…' : '保存'}
-                    </span>
+                {loading ? '保存中…' : '保存'}
                 </button>
             </form>
             </main>
@@ -159,16 +150,12 @@ export default function WikiPage() {
             <div style={{ padding: '2rem', maxWidth: 800 }}>
             <h1>{page.title}</h1>
             <div>
-                {parseWikiContent(page.content, context).map((node,i)=> (
+                {parseWikiContent(parseTarget, context).map((node, i) => (
                 <React.Fragment key={i}>{node}</React.Fragment>
                 ))}
             </div>
             <br />
-            <button onClick={handleEdit}>
-                <span>
-                    このページを編集
-                </span>
-            </button>
+            <button onClick={handleEdit}>このページを編集</button>
             </div>
         )}
         </>
