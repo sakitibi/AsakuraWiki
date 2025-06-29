@@ -95,16 +95,16 @@ export function parseWikiContent(
                         borderRight: '1px solid #ea94bc',
                         borderTop: '1px solid #ea94bc',
                         padding: '0.25em',
-                        backgroundColor: '#fad6e7'
+                        backgroundColor: '#fad6e7',
+                        cursor: 'pointer'
                     }
                     : level === '**'
-                    ? { borderColor: '#ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em' }
-                    : { borderLeft: '15px solid #ea94bc', paddingLeft: '0.5em' }
-
+                    ? { borderColor: '#ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em', cursor: 'pointer' }
+                    : { borderLeft: '15px solid #ea94bc', paddingLeft: '0.5em', cursor: 'pointer' }
                 return (
                 <div
                     className={isOpen ? 'open' : 'closed'}
-                    style={{ display: 'block', unicodeBidi: 'isolate', cursor: 'pointer' }}
+                    style={{ display: 'block', unicodeBidi: 'isolate', }}
                 >
                     {React.createElement(
                     Tag,
