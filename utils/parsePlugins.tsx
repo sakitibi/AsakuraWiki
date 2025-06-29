@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Calendar2 from '@/components/Calendar2'
 import CommentForm from '@/components/CommentForm'
 import RealTimeComments from '@/components/RealTimeComments'
@@ -62,63 +62,51 @@ export function parseWikiContent(
             const Tag = lvl === '*' ? 'h2' : lvl === '**' ? 'h3' : 'h4'
             const children = parseWikiContent(body, context)
 
-            const iconPath = open
-                ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z' // minus
-                : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z' // plus
+            function Accordion({ title, level, initiallyOpen, children }: {
+                title: string
+                level: '*' | '**' | '***'
+                initiallyOpen: boolean
+                children: React.ReactNode
+            }) {
+            const [isOpen, setIsOpen] = useState(initiallyOpen)
+            const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
 
-            const headingStyle =
-            Tag === 'h2'
-                ? {
-                    borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
-                    borderRight: '1px solid #ea94bc',
-                    borderTop: '1px solid #ea94bc',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    padding: '0.25em',
-                }
-                : Tag === 'h3'
-                ? {
-                    borderColor: '#ea94bc',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    padding: '0.25em',
-                }
-                : Tag === 'h4'
-                ? {
-                    borderLeft: '15px solid #ea94bc',
-                    paddingLeft: '0.5em',
-                }
-                : {}
+            const iconPath = isOpen
+                ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
+                : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z'
 
-            nodes.push(
-            <div
-                key={m.index}
-                className={open ? 'open' : 'closed'}
-                style={{ display: 'block', unicodeBidi: 'isolate' }}
-            >
+            const headingStyle = level === '*'
+                ? { borderColor: 'currentcolor currentcolor #ea94bc #ea94bc', borderRight: '1px solid #ea94bc', borderTop: '1px solid #ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em' }
+                : level === '**'
+                ? { borderColor: '#ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em' }
+                : { borderLeft: '15px solid #ea94bc', paddingLeft: '0.5em' }
+
+            return (
+                <div className={isOpen ? 'open' : 'closed'} style={{ display: 'block', unicodeBidi: 'isolate', cursor:'pointer'}}>
                 {React.createElement(
-                Tag,
-                { style: headingStyle },
-                [
+                    Tag,
+                    { style: headingStyle, onClick: () => setIsOpen(!isOpen) },
+                    [
                     title,
                     <svg
-                    key="icon"
-                    aria-hidden="true"
-                    focusable="false"
-                    data-prefix="fas"
-                    data-icon={open ? 'square-minus' : 'square-plus'}
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                    style={{ marginLeft: '0.5em', width: '1em', height: '1em' }}
+                        key="icon"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fas"
+                        data-icon={isOpen ? 'square-minus' : 'square-plus'}
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        style={{ marginLeft: '0.5em', width: '1em', height: '1em' }}
                     >
-                    <path fill="currentColor" d={iconPath} />
+                        <path fill="currentColor" d={iconPath} />
                     </svg>,
-                ]
+                    ]
                 )}
-                <div>{children}</div>
-            </div>
+                {isOpen && <div>{children}</div>}
+                </div>
             )
+            }
         }
         else if (m[12] === '#comment') {
             nodes.push(<CommentForm key={m.index} />)
