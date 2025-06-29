@@ -148,9 +148,7 @@ export default function WikiPage() {
             </div>
             <br /><br />
             <button type="submit" disabled={loading}>
-                <span>
-                    {loading ? '保存中…' : '保存'}
-                </span>
+                <span>{loading ? '保存中…' : '保存'}</span>
             </button>
             </form>
         </main>

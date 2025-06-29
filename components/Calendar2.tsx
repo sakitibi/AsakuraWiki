@@ -15,16 +15,13 @@ const Calendar2: React.FC<Calendar2Props> = ({
     const daysInMonth = new Date(year, month, 0).getDate();
     const firstDay = new Date(year, month - 1, 1).getDay();
 
-    // weeks: array of rows, each row is array of <td> nodes
     const weeks: React.ReactNode[][] = [[]];
     let weekIndex = 0;
 
-    // fill leading empty cells
     for (let i = 0; i < firstDay; i++) {
         weeks[weekIndex].push(<td key={`empty-${i}`} />);
     }
 
-    // fill days
     for (let d = 1; d <= daysInMonth; d++) {
         if (weeks[weekIndex].length === 7) {
         weekIndex++;

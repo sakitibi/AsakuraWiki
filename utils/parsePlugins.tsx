@@ -1,52 +1,44 @@
 import React from 'react'
 import Calendar2 from '@/components/Calendar2'
 
-export function parseWikiContent(
-    content: string
-    ): React.ReactNode[] {
+export function parseWikiContent(content: string): React.ReactNode[] {
     const nodes: React.ReactNode[] = []
-    let cursor = 0
+    let lastIndex = 0
 
-    // プラグイン or アコーディオンの正規表現をまとめて
-    const re = /#calendar2\((\d{6})(?:,(off))?\)|#accordion\(([^,]+),(\*{1,3}),(open|close)\)\{\{([\s\S]*?)\}\}/g
+    // カレンダーとアコーディオンを両方拾えるように両方の正規表現を OR でまとめる
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g
     let m: RegExpExecArray | null
 
     while ((m = re.exec(content))) {
-        // 置き換え前のプレーン文字テキストを追加
-        if (m.index > cursor) {
-        nodes.push(content.slice(cursor, m.index))
+        // 1) マッチ前のテキストを push
+        if (m.index > lastIndex) {
+        nodes.push(content.slice(lastIndex, m.index))
         }
 
-        // calendar2 マッチ
-        if (m[0].startsWith('#calendar2')) {
-        const yyyymm = m[1]!
-        const off = m[2] === 'off'
-        const year = Number(yyyymm.slice(0, 4))
-        const month = Number(yyyymm.slice(4))
+        // 2) #calendar2(...) にマッチした場合
+        if (m[1] && m[2]) {
+        const year = parseInt(m[1], 10)
+        const month = parseInt(m[2], 10)
+        const hideHolidays = m[3] === 'off'
         nodes.push(
             <Calendar2
             key={`cal-${year}-${month}-${m.index}`}
             year={year}
             month={month}
-            hideHolidays={off}
+            hideHolidays={hideHolidays}
             />
         )
         }
-        // accordion マッチ
-        else if (m[0].startsWith('#accordion')) {
-        const title = m[3]!
-        const level = m[4]!  // "*", "**", "***"
-        const state = m[5]!  // "open"|"close"
-        const body = m[6]!
+        // 3) #accordion(...) にマッチした場合
+        else if (m[4]) {
+        const title = m[4]
+        const level = m[5]!   // "*", "**", "***"
+        const isOpen = m[6] === 'open'
+        const body = m[7]!
         const Heading = level === '*' ? 'h3' : level === '**' ? 'h4' : 'h5'
         nodes.push(
-            <details
-            key={`acc-${title}-${m.index}`}
-            open={state === 'open'}
-            >
-            <summary>
-                {React.createElement(Heading, null, title)}
-            </summary>
+            <details key={`acc-${m.index}`} open={isOpen}>
+            <summary>{React.createElement(Heading, {}, title)}</summary>
             <div>
                 {body.split('\n').map((line, i) => (
                 <React.Fragment key={i}>
@@ -59,12 +51,13 @@ export function parseWikiContent(
         )
         }
 
-        cursor = m.index + m[0].length
+        lastIndex = re.lastIndex
     }
 
-    // 残りテキスト
-    if (cursor < content.length) {
-        nodes.push(content.slice(cursor))
+    // 4) 残りのテキスト
+    if (lastIndex < content.length) {
+        nodes.push(content.slice(lastIndex))
     }
+
     return nodes
 }
