@@ -11,6 +11,9 @@ type WikiPage = {
     slug: string;
     name: string;
     updated_at: string;
+    // 追加（必要なら）
+    wikiSlug?: string;
+    pageSlug?: string;
 };
 
 export default function Home() {
@@ -22,19 +25,18 @@ export default function Home() {
         // 例: fk_wiki_slug という名前のリレーションを使う場合
         const { data, error } = await supabase
             .from('wiki_pages')
-            .select('slug, title, updated_at, wikis!fk_wiki_slug(name)')
+            .select('slug, title, updated_at, page_slug, wikis!fk_wiki_slug(name)')
             .order('updated_at', { ascending: false });
 
-            if (error) {
-                console.error('Error fetching wiki pages:', error.message);
-            } else {
-                const flattened: WikiPage[] = data.map((d: any) => ({
-                    slug: d.slug,
-                    name: d.wikis?.name ?? '(無名Wiki)',  // ← 配列ではなくオブジェクト
-                    updated_at: d.updated_at,
-                }));
-                setPages(flattened);
-            }
+            if (!error && data) {
+            const flattened: WikiPage[] = data.map((d: any) => ({
+                slug: d.slug,
+                name: d.wikis?.name ?? '(無名Wiki)',
+                updated_at: d.updated_at,
+                pageSlug: d.page_slug, // ここでスネークケース→キャメルケース変換
+            }));
+            setPages(flattened);
+        }
 
             console.log('fetchPages data:', data);
             console.log('fetchPages error:', error);
@@ -62,7 +64,7 @@ export default function Home() {
                     <ul>
                     {pages.map((wiki) => (
                     <li key={wiki.slug}>
-                        <Link href={`/wiki/${wiki.slug}`}>
+                        <Link href={`/wiki/${wiki.wikiSlug}/${wiki.pageSlug || 'home'}`}>
                         <button>
                             <span>
                             <strong>{wiki.name} Wiki*</strong>
