@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { parseWikiContent } from '@/utils/parsePlugins'
+import React from 'react';
 import Head from 'next/head';
 
 type Page = {
@@ -135,15 +137,20 @@ export default function WikiPage() {
             <h2>プレビュー:</h2>
             <div
                 style={{
-                border: '1px solid #ccc',
-                padding: '1rem',
-                background: '#f9f9f9',
+                    border: '1px solid #ccc',
+                    padding: '1rem',
+                    background: '#f9f9f9',
                 }}
-                dangerouslySetInnerHTML={{ __html: parseAccordion(content) }}
-            />
+                >
+                {parseWikiContent(content).map((node, i) => (
+                    <React.Fragment key={i}>{node}</React.Fragment>
+                ))}
+            </div>
             <br /><br />
             <button type="submit" disabled={loading}>
-                {loading ? '保存中…' : '保存'}
+                <span>
+                    {loading ? '保存中…' : '保存'}
+                </span>
             </button>
             </form>
         </main>
@@ -154,7 +161,11 @@ export default function WikiPage() {
             <title>{page.title}</title>
         </Head>
         <div>
-            <div dangerouslySetInnerHTML={{ __html: parseAccordion(page.content) }} />
+            <div>
+                {parseWikiContent(page.content).map((node, i) => (
+                    <React.Fragment key={i}>{node}</React.Fragment>
+                ))}
+            </div>
             <br />
             <button onClick={handleEdit}>
             <span>このページを編集</span>
