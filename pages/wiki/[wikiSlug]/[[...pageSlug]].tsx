@@ -79,16 +79,16 @@ export default function WikiPage() {
         setLoading(false)
 
         if (error) {
-        alert('更新に失敗しました: ' + error.message)
+            alert('更新に失敗しました: ' + error.message)
         } else {
-        // 更新後は表示モードへ
-        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`)
+            // 更新後は表示モードへ
+            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
         }
     }
 
     // 編集モードへの切り替え
     const handleEdit = () => {
-        router.push(`${router.asPath}?cmd=edit`)
+        location.href = `${location.href}?cmd=edit`;
     }
 
     // エラー表示 or 読み込み中
@@ -149,7 +149,9 @@ export default function WikiPage() {
 
                 <br /><br />
                 <button type="submit" disabled={loading}>
-                {loading ? '保存中…' : '保存'}
+                    <span>
+                        {loading ? '保存中…' : '保存'}
+                    </span>
                 </button>
             </form>
             </main>
@@ -163,7 +165,9 @@ export default function WikiPage() {
             </div>
             <br />
             <button onClick={handleEdit}>
-                このページを編集
+                <span>
+                    このページを編集
+                </span>
             </button>
             </div>
         )}

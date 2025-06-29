@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient, RealtimeChannel } from '@supabase/supabase-js'
 
-// 方法①（おすすめ）：注釈を外して推論に任せる
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -16,34 +15,32 @@ interface Comment {
     created_at: string
 }
 
-export default function RealTimeComments({
-    wikiSlug,
-    pageSlug
-}: {
+type Props = {
     wikiSlug: string
     pageSlug: string
-}) {
+}
+
+export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
     const [comments, setComments] = useState<Comment[]>([])
 
     useEffect(() => {
         if (!wikiSlug || !pageSlug) return
 
-        // 初回ロード
-    ;(async () => {
-        // from の型引数を外し、結果を Comment[] として扱う
-        const res = await supabase
-            .from('comments')
-            .select('*')
-            .eq('wiki_slug', wikiSlug)
-            .eq('page_slug', pageSlug)
-            .order('created_at', { ascending: true })
+        // ── 初回ロード ──
+        ;(async () => {
+            const res = await supabase
+                .from('comments')
+                .select('*')
+                .eq('wiki_slug', wikiSlug)
+                .eq('page_slug', pageSlug)
+                .order('created_at', { ascending: true })
 
-        // data は any[] | null なので、自前で Comment[] にキャスト
-        const data = res.data as Comment[] | null
-        setComments(data || [])
-    })()
+            // Supabase v2 は data:any[] | null なのでキャスト
+            const data = (res.data as Comment[]) || []
+            setComments(data)
+        })()
 
-        // リアルタイム購読のセットアップ
+        // ── リアルタイム購読 ──
         const channel: RealtimeChannel = supabase
         .channel(`comments-${wikiSlug}-${pageSlug}`)
         .on(
@@ -52,7 +49,7 @@ export default function RealTimeComments({
             event: 'INSERT',
             schema: 'public',
             table: 'comments',
-            filter: `wiki_slug=eq.${wikiSlug},page_slug=eq.${pageSlug}`
+            filter: `wiki_slug=eq.${wikiSlug},page_slug=eq.${pageSlug}`,
             },
             (payload: { new: Comment }) => {
             setComments(prev => [...prev, payload.new])
@@ -60,7 +57,7 @@ export default function RealTimeComments({
         )
         .subscribe()
 
-        // クリーンアップ
+        // ── クリーンアップ ──
         return () => {
             supabase.removeChannel(channel)
         }
@@ -70,7 +67,9 @@ export default function RealTimeComments({
         <ul>
         {comments.map(c => (
             <li key={c.id}>
-            <strong>{c.name}</strong>: {c.body}
+            <strong>{c.name}</strong> ({new Date(c.created_at).toLocaleString()}):
+            <br />
+            {c.body}
             </li>
         ))}
         </ul>

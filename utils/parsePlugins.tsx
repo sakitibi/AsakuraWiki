@@ -28,7 +28,7 @@ export function parseWikiContent(
     const ACC_RE        = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/;
     const COMMENT_RE    = /#comment\b/;
     const RTCM_RE       = /#rtcomment\b/;
-    const PCOMM_RE      = /#pcomment\b/;
+    //const PCOMM_RE      = /#pcomment\b/;
 
     // 全体を OR 結合して g フラグを付与
     const re = new RegExp(
@@ -39,7 +39,7 @@ export function parseWikiContent(
         ACC_RE.source,
         COMMENT_RE.source,
         RTCM_RE.source,
-        PCOMM_RE.source,
+        //PCOMM_RE.source,
         ].join('|'),
         'g'
     );
