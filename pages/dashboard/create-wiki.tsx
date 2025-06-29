@@ -54,7 +54,7 @@ export default function CreateWikiPage() {
         .from('wiki_pages')
         .insert([{
             wiki_slug: slug,    // 親Wikiのslugを外部キーで指定
-            slug: 'home',       // ページごとのslug
+            slug: 'FrontPage',       // ページごとのslug
             title: 'ホーム',
             content: 'ようこそ！',
             created_at: new Date(),
