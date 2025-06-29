@@ -18,6 +18,10 @@ button {
     overflow: hidden;
 }
 
+input {
+    width: 100%;
+}
+
 button::before {
     content: '';
     position: absolute;

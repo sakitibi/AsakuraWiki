@@ -85,7 +85,8 @@ export default function Home() {
             <footer style={{textAlign: "center"}}>
                 <div id="menu">
                     <ul>
-                        
+                        <li><Link href="/">ホーム</Link></li>
+                        <li><Link href="/about">当レンタルWikiについて</Link></li>
                     </ul>
                 </div>
                 <p>Copyright 2025 13ninstudio All rights Reserved</p>
