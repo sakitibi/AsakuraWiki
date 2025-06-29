@@ -142,7 +142,7 @@ export default function WikiPage() {
                     minHeight:   100
                 }}
                 >
-                {parseWikiContent(content, context).map((node, i) => (
+                {parseWikiContent(page.content, context).map((node,i)=> (
                     <React.Fragment key={i}>{node}</React.Fragment>
                 ))}
                 </div>
@@ -159,7 +159,7 @@ export default function WikiPage() {
             <div style={{ padding: '2rem', maxWidth: 800 }}>
             <h1>{page.title}</h1>
             <div>
-                {parseWikiContent(page.content, context).map((node, i) => (
+                {parseWikiContent(page.content, context).map((node,i)=> (
                 <React.Fragment key={i}>{node}</React.Fragment>
                 ))}
             </div>
