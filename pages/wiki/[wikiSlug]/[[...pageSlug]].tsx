@@ -75,15 +75,17 @@ export default function WikiPage() {
         setLoading(false)
 
         if (error) {
-        alert('更新に失敗しました: ' + error.message)
+            alert('更新に失敗しました: ' + error.message);
         } else {
-        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`)
+            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
         }
     }
 
     // 編集モード切り替え
     const handleEdit = () => {
-        router.push(`${router.asPath}?cmd=edit`)
+        router.push(`${router.asPath}?cmd=edit`);
+        location.href = `${router.asPath}?cmd=edit`;
     }
 
     // エラー or 読み込み中
