@@ -15,7 +15,7 @@ export default function Home() {
                 <p>使いやすいレンタルWikiサービスを目指しています。</p>
                 <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
             </main>
-            <footer style={{textAlign: "center"}}>
+            <footer>
                 <div id="menu">
                     <ul>
                         <li>
@@ -30,8 +30,10 @@ export default function Home() {
                         </li>
                     </ul>
                 </div>
-                <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                <p>当Wikiサービスはオープンソースプロジェクトです</p>
+                <div style={{textAlign: "center"}}>
+                    <p>Copyright 2025 13ninstudio All rights Reserved</p>
+                    <p>当Wikiサービスはオープンソースプロジェクトです</p>
+                </div>
             </footer>
         </>
     );
