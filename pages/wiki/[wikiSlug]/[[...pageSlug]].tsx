@@ -16,7 +16,8 @@ const supabase = createClient(
 
 export default function WikiPage() {
     const router = useRouter()
-    const { wikiSlug, pageSlug, page: pageQuery } = router.query;
+    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
+    const cmdStr = typeof cmd === 'string' ? cmd : '';
 
     // クエリ→文字列化
         const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
@@ -87,6 +88,41 @@ export default function WikiPage() {
         }
     }
 
+    useEffect(() => {
+        if (cmdStr !== 'delete') return;
+        if (!pageSlugStr || !wikiSlugStr) return;
+
+        if (pageSlugStr === 'FrontPage') {
+            alert('FrontPage は削除できません');
+            router.replace(`/wiki/${wikiSlugStr}`);
+            return;
+        }
+
+        const confirmAndDelete = async () => {
+            const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
+            if (!ok) {
+                router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+                return;
+            }
+
+            const { error } = await supabase
+                .from('wiki_pages')
+                .delete()
+                .eq('wiki_slug', wikiSlugStr)
+                .eq('slug', pageSlugStr);
+
+            if (error) {
+                alert('削除に失敗しました: ' + error.message);
+            } else {
+                alert('削除しました');
+            }
+
+            router.replace(`/wiki/${wikiSlugStr}`);
+        };
+
+        confirmAndDelete();
+    }, [cmdStr, pageSlugStr, wikiSlugStr]);
+
     // 編集モード切り替え
     const handleEdit = () => {
         router.push({
@@ -95,6 +131,14 @@ export default function WikiPage() {
         });
         location.href = `/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`;
     };
+
+    const handleDelete = () => {
+        router.push({
+            pathname: `/wiki/${wikiSlugStr}`,
+            query: { cmd: 'delete', page: pageSlugStr },
+        });
+        location.href = `/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`;
+    }
 
     // エラー or 読み込み中
     if (error)   return <div style={{ color: 'red' }}>{error}</div>
@@ -167,6 +211,7 @@ export default function WikiPage() {
             </div>
             <br />
             <button onClick={handleEdit}><span>このページを編集</span></button>
+            <button onClick={handleDelete}><span>このページを削除</span></button>
             </div>
         )}
         </>

@@ -121,7 +121,9 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
                 disabled={isSending}
                 style={{ padding: '0.5em 1em', backgroundColor: '#ea94bc', color: 'white', border: 'none', cursor: 'pointer' }}
             >
-                {isSending ? '送信中...' : '送信'}
+                <span>
+                    {isSending ? '送信中...' : '送信'}
+                </span>
             </button>
         </div>
     )
