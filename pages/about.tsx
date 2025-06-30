@@ -28,6 +28,13 @@ export default function Home() {
                                 <button><span>当レンタルWikiについて</span></button>
                             </Link>
                         </li>
+                        <li>
+                            <Link href="/ru/about">
+                                <button>
+                                    <span>ロシア語</span>
+                                </button>
+                            </Link>
+                        </li>
                     </ul>
                 </div>
                 <div style={{textAlign: "center"}}>

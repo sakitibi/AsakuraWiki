@@ -28,6 +28,9 @@ export default function Home() {
                                 <button><span>Об этом вики-сайте по аренде</span></button>
                             </Link>
                         </li>
+                        <li>
+                            <Link href="/about"><button><span>японский</span></button></Link>
+                        </li>
                     </ul>
                 </div>
                 <div style={{textAlign: "center"}}>

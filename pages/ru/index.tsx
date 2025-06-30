@@ -80,7 +80,7 @@ export default function Home() {
                 )}
             </div>
             <br />
-                <button onClick={NewWikiPage}><span>+ Создать новую Вики</span></button>
+                <button onClick={NewWikiPage}><span>+ Создать новую Вики (японский)</span></button>
             </main>
             <footer>
                 <div id="menu">
@@ -94,6 +94,9 @@ export default function Home() {
                             <Link href="/ru/about">
                                 <button><span>Об этом вики-сайте по аренде</span></button>
                             </Link>
+                        </li>
+                        <li>
+                            <Link href="/"><button><span>японский</span></button></Link>
                         </li>
                     </ul>
                 </div>
