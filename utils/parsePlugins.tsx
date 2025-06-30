@@ -6,66 +6,67 @@ import { DATEDIF, DATEVALUE } from './dateFunctions'
 
 export type Context = { wikiSlug: string; pageSlug: string }
 
-/** Wiki 本文中のプラグイン構文を ReactNode 配列に変換 */
-export function parseWikiContent(
-    content: string,
-    context: Context
-): React.ReactNode[] {
-    const nodes: React.ReactNode[] = []
-    let lastEnd = 0
-
-    // 正規表現定義
-    const ACC_RE = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{([\s\S]*?)\}\}/g
-    const INLINE_RE = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment\b|#comment\b/g
-
-    // 1. アコーディオンブロックを先に抽出
-    let m: RegExpExecArray | null
-    while ((m = ACC_RE.exec(content))) {
-        // アコーディオン前のプレーンテキストを再帰解析
-        if (m.index > lastEnd) {
-            nodes.push(...parseWikiContent(content.slice(lastEnd, m.index), context))
-        }
-        // アコーディオンの引数とボディ
-        const [, title, level, state, body] = m
-        const initiallyOpen = state === 'open'
-        const children = parseWikiContent(body, context)
-
-        // アコーディオンコンポーネント
-        nodes.push(
-        <Accordion
-            key={m.index}
-            title={title}
-            level={level as '*' | '**' | '***'}
-            initiallyOpen={initiallyOpen}
-        >
-            {children}
-        </Accordion>
-        )
-
-        lastEnd = ACC_RE.lastIndex
+/**
+ * ネスト可能なアコーディオンブロックを文字列から抽出します
+ */
+function extractAccordions(content: string) {
+    type Block = {
+        prefix?: string
+        title?: string
+        level?: '*' | '**' | '***'
+        isOpen?: boolean
+        body?: string
     }
 
-    // アコーディオン後の残りテキスト
-    const tail = content.slice(lastEnd)
-    if (!tail) return nodes
+    const blocks: Block[] = []
+    let cursor = 0
+    const startRe = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{/g
 
-    // 2. プレーンテキスト部をインラインプラグインで置換
-    let plainLast = 0
-    while ((m = INLINE_RE.exec(tail))) {
-        if (m.index > plainLast) {
-        nodes.push(tail.slice(plainLast, m.index))
+    while (true) {
+        startRe.lastIndex = cursor
+        const m = startRe.exec(content)
+        if (!m) break
+        const [whole, title, lvl, state] = m
+        const bodyStart = m.index + whole.length
+        let depth = 1
+        let i = bodyStart
+        while (i < content.length && depth > 0) {
+            if (content.slice(i, i + 2) === '{{') {
+                depth++
+                i += 2
+            } else if (content.slice(i, i + 2) === '}}') {
+                depth--
+                i += 2
+            } else {
+                i++
+            }
+        }
+        const body = content.slice(bodyStart, i - 2)
+        blocks.push({ prefix: content.slice(cursor, m.index) })
+        blocks.push({ title: title.trim(), level: lvl as any, isOpen: state === 'open', body })
+        cursor = i
+    }
+
+    blocks.push({ prefix: content.slice(cursor) })
+    return blocks
+}
+
+/** インラインプラグインを処理します */
+function parseInline(text: string, context: Context): React.ReactNode[] {
+    const { wikiSlug, pageSlug } = context
+    const nodes: React.ReactNode[] = []
+    let last = 0
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment/g
+    let m: RegExpExecArray | null
+
+    while ((m = re.exec(text))) {
+        if (m.index > last) {
+            nodes.push(text.slice(last, m.index))
         }
         const token = m[0]
         if (token.startsWith('#calendar2')) {
             const [, y, mo, off] = m
-            nodes.push(
-                <Calendar2
-                key={m.index}
-                year={+y}
-                month={+mo}
-                hideHolidays={off === 'off'}
-                />
-            )
+            nodes.push(<Calendar2 key={m.index} year={+y} month={+mo} hideHolidays={off === 'off'} />)
         } else if (token.startsWith('#DATEDIF')) {
             const val = DATEDIF(m[4], m[5], m[6] as any)
             nodes.push(<span key={m.index}>{isNaN(val) ? 'ERR' : val}</span>)
@@ -74,79 +75,59 @@ export function parseWikiContent(
             nodes.push(<span key={m.index}>{isNaN(val) ? 'ERR' : val}</span>)
         } else if (token === '#comment') {
             nodes.push(<CommentForm key={m.index} />)
-        } else if (token === '#rtcomment') {
+        } else if (token.startsWith('#rtcomment')) {
+            nodes.push(<RealTimeComments key={m.index} wikiSlug={wikiSlug} pageSlug={pageSlug} />)
+        }
+        last = re.lastIndex
+    }
+    if (last < text.length) nodes.push(text.slice(last))
+    return nodes
+}
+
+    /**
+     * アコーディオンとインラインプラグインを再帰的にパースするメイン関数
+     */
+    export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
+    const nodes: React.ReactNode[] = []
+    const blocks = extractAccordions(content)
+
+    blocks.forEach((blk, idx) => {
+        // prefix 部分をインライン処理
+        if (blk.prefix) {
+            nodes.push(...parseInline(blk.prefix, context))
+        }
+        // アコーディオンブロック
+        if (blk.title) {
+            const children = parseWikiContent(blk.body!, context)
             nodes.push(
-                <RealTimeComments
-                key={m.index}
-                wikiSlug={context.wikiSlug}
-                pageSlug={context.pageSlug}
-                />
+                <Accordion key={`acc-${idx}`} title={blk.title!} level={blk.level!} initiallyOpen={blk.isOpen!}>
+                {children}
+                </Accordion>
             )
         }
-        plainLast = INLINE_RE.lastIndex
-    }
-
-    // 残りテキスト
-    if (plainLast < tail.length) {
-        nodes.push(tail.slice(plainLast))
-    }
+    })
 
     return nodes
 }
 
-    /** Accordion コンポーネント */
-function Accordion({
-    title,
-    level,
-    initiallyOpen,
-    children,
-    }: {
-    title: string
-    level: '*' | '**' | '***'
-    initiallyOpen: boolean
-    children: React.ReactNode
-}) {
-    const [isOpen, setIsOpen] = useState(initiallyOpen)
+/** Accordion コンポーネント */
+function Accordion({ title, level, initiallyOpen, children, }: { title: string; level: '*' | '**' | '***'; initiallyOpen: boolean; children: React.ReactNode; }) {
+    const [open, setOpen] = useState(initiallyOpen)
     const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
-    const iconPath = isOpen
+    const iconPath = open
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
-        : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z'
-    const headingStyle =
-        level === '*'
-        ? {
-            borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
-            borderStyle: 'solid',
-            borderWidth: '1px',
-            padding: '0.25em',
-            backgroundColor: '#fad6e7',
-            cursor: 'pointer',
-            }
-        : level === '**'
-        ? { borderColor: '#ea94bc', borderStyle: 'solid', borderWidth: '1px', padding: '0.25em', cursor: 'pointer' }
-        : { borderLeft: '15px solid #ea94bc', paddingLeft: '0.5em', cursor: 'pointer' }
+        : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7c24-24 c24s-24-10.7-24-24z'
+    const headingStyle = { cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5em', border: '1px solid #ccc' }
+
     return (
-        <div className={isOpen ? 'open' : 'closed'} style={{ marginBottom: '1rem' }}>
-        {React.createElement(
-            Tag,
-            { style: headingStyle, onClick: () => setIsOpen(!isOpen) },
-            [
-            title,
-            <svg
-                key="icon"
-                aria-hidden="true"
-                focusable="false"
-                data-prefix="fas"
-                data-icon={isOpen ? 'square-minus' : 'square-plus'}
-                role="img"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                style={{ marginLeft: '0.5em', width: '1em', height: '1em' }}
-            >
-                <path fill="currentColor" d={iconPath} />
-            </svg>,
-            ]
-        )}
-        {isOpen && <div style={{ padding: '0.5em 0' }}>{children}</div>}
+        <div style={{ margin: '1em 0' }}>
+        <Tag onClick={() => setOpen(!open)} style={headingStyle}>
+            {title}
+            <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
+            <path fill="currentColor" d={iconPath} />
+            </svg>
+        </Tag>
+        {open && <div style={{ paddingLeft: '1em' }}>{children}</div>}
         </div>
     )
 }

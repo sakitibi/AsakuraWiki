@@ -49,7 +49,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
             event: 'INSERT',
             schema: 'public',
             table: 'comments',
-            filter: `wiki_slug=eq.${wikiSlug},page_slug=eq.${pageSlug}`,
+            filter: `wiki_slug=eq.${wikiSlug} and page_slug=eq.${pageSlug}`,
             },
             (payload: { new: Comment }) => {
             setComments(prev => [...prev, payload.new])
