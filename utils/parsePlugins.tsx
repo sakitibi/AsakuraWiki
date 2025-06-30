@@ -148,12 +148,12 @@ export function parseWikiContent(
             nodes.push(<CommentForm key={m.index} />)
         }
         // #rtcomment
-        else if (m[13] === '#rtcomment') {
+        else if (m[0].startsWith('#rtcomment')) {
             nodes.push(
                 <RealTimeComments
-                key={m.index}
-                wikiSlug={wikiSlug}
-                pageSlug={pageSlug}
+                    key={m.index}
+                    wikiSlug={wikiSlug}
+                    pageSlug={pageSlug}
                 />
             )
         }
