@@ -97,34 +97,34 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
                     </li>
                 ))}
             </ul>
+            <form onSubmit={handleSubmit}>
+                <div style={{ marginBottom: '0.5em' }}>
+                    <input
+                        type="text"
+                        placeholder="名前"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        style={{ padding: '0.5em', width: '100%', marginBottom: '0.5em' }}
+                    />
+                    <textarea
+                        placeholder="コメント"
+                        value={body}
+                        onChange={e => setBody(e.target.value)}
+                        rows={3}
+                        style={{ padding: '0.5em', width: '100%' }}
+                        required
+                    />
+                </div>
 
-            <div style={{ marginBottom: '0.5em' }}>
-                <input
-                    type="text"
-                    placeholder="名前"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    style={{ padding: '0.5em', width: '100%', marginBottom: '0.5em' }}
-                />
-                <textarea
-                    placeholder="コメント"
-                    value={body}
-                    onChange={e => setBody(e.target.value)}
-                    rows={3}
-                    style={{ padding: '0.5em', width: '100%' }}
-                    required
-                />
-            </div>
-
-            <button
-                onClick={handleSubmit}
-                disabled={isSending}
-                style={{ padding: '0.5em 1em', backgroundColor: '#ea94bc', color: 'white', border: 'none', cursor: 'pointer' }}
-            >
-                <span>
-                    {isSending ? '送信中...' : '送信'}
-                </span>
-            </button>
+                <button
+                    disabled={isSending}
+                    style={{ padding: '0.5em 1em', backgroundColor: '#ea94bc', color: 'white', border: 'none', cursor: 'pointer' }}
+                >
+                    <span>
+                        {isSending ? '送信中...' : '送信'}
+                    </span>
+                </button>
+            </form>
         </div>
     )
 }
