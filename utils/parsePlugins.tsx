@@ -76,7 +76,14 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
         } else if (token === '#comment') {
             nodes.push(<CommentForm key={m.index} />)
         } else if (token.startsWith('#rtcomment')) {
-            nodes.push(<RealTimeComments key={m.index} wikiSlug={wikiSlug} pageSlug={pageSlug} />)
+            console.log('⚡️ RTCOMMENT FOUND in text:', text);
+            nodes.push(
+                <RealTimeComments
+                key={m.index}
+                wikiSlug={wikiSlug}
+                pageSlug={pageSlug}
+                />
+            );
         }
         last = re.lastIndex
     }
