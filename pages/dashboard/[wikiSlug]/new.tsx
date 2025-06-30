@@ -11,7 +11,8 @@ const supabase = createClient(
 export default function NewPage() {
     const router = useRouter();
     const user = useUser();
-    const { wiki_slug } = router.query;
+    const { wikiSlug } = router.query; // ✅ 変数名統一
+    const wikiSlugStr = typeof wikiSlug === 'string' ? wikiSlug : '';
 
     const [title, setTitle] = useState('');
     const [slug, setSlug] = useState('');
@@ -19,38 +20,41 @@ export default function NewPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [loading, setLoading] = useState(false);
 
+    // ✅ wikiSlug が確定してから実行
     useEffect(() => {
-        if (!wiki_slug || typeof wiki_slug !== 'string') return;
+        if (!wikiSlugStr) return;
 
         const fetchEditMode = async () => {
-        const { data, error } = await supabase
-            .from('wikis')
-            .select('edit_mode')
-            .eq('slug', wiki_slug)
-            .maybeSingle();
+            const { data, error } = await supabase
+                .from('wikis')
+                .select('edit_mode')
+                .eq('slug', wikiSlugStr)
+                .maybeSingle();
 
-        if (error || !data) {
-            alert('Wikiの設定取得に失敗しました');
-            return;
-        }
+            if (error || !data) {
+                alert('Wikiの設定取得に失敗しました');
+                return;
+            }
 
-        setEditMode(data.edit_mode);
+            setEditMode(data.edit_mode);
         };
 
         fetchEditMode();
-    }, [wiki_slug]);
+    }, [wikiSlugStr]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // 🔐 プライベートWikiならログイン必須
         if (editMode === 'private' && !user) {
             alert('このWikiはログインしないとページ作成できません');
+            router.push('/login');
             return;
         }
 
-        if (editMode === 'private' && !user) {
-            alert('ログインが必要です');
-            router.push('/login'); // 例：ログイン画面に飛ばす
+        if (!wikiSlugStr) {
+            alert('Wikiの識別子が無効です');
+            return;
         }
 
         setLoading(true);
@@ -59,11 +63,11 @@ export default function NewPage() {
         .from('wiki_pages')
         .insert([
             {
-            wiki_slug,
+            wiki_slug: wikiSlugStr,
             slug,
             title,
             content,
-            author_id: user!.id,
+            author_id: user?.id ?? null, // 安全化
             }
         ])
         .select()
@@ -76,8 +80,12 @@ export default function NewPage() {
             return;
         }
 
-        router.push(`/wiki/${wiki_slug}/${slug}`);
+        // ✅ 正常なWikiページにリダイレクト
+        router.push(`/wiki/${wikiSlugStr}/${slug}`);
     };
+
+    // ✅ クエリ未確定時はローディング画面
+    if (!router.isReady) return <div>読み込み中…</div>;
 
     return (
         <main style={{ padding: '2rem', maxWidth: 600 }}>
@@ -113,8 +121,10 @@ export default function NewPage() {
             />
             </label>
             <br /><br />
-            <button type="submit" disabled={loading}>
-            {loading ? '作成中…' : 'ページ作成'}
+            <button type="submit" disabled={loading || !wikiSlugStr}>
+                <span>
+                    {loading ? '作成中…' : 'ページ作成'}
+                </span>
             </button>
         </form>
         </main>
