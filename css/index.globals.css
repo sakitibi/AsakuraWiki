@@ -1,0 +1,67 @@
+body{
+    background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
+    background-size: 300% 100%;
+    background-attachment: fixed;
+    animation: bg-color 150s linear infinite;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: bold;
+}
+
+button {
+    position: relative;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    background: none;
+    overflow: hidden;
+}
+
+input:not([type=submit],[type=checkbox]) {
+    width: 100%;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: linear-gradient(to left, #58ec91, #0b6e2c);
+    transition: filter 0.3s ease, transform 0.1s ease;
+}
+
+button:hover::before {
+    filter: brightness(1.1);
+}
+
+button:active::before {
+    filter: brightness(0.85);
+    transform: scale(0.98);
+}
+
+button span {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes bg-color{
+    from{
+        background-position: 0% 0%;
+    }
+    25%{
+        background-position: 75% 0%;
+    }
+    50%{
+        background-position: 150% 0%;
+    }
+    75%{
+        background-position: 225% 0%;
+    }
+    to{
+        background-position: 300% 0%;
+    }
+}
