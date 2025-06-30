@@ -24,7 +24,12 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
     const [comments, setComments] = useState<Comment[]>([])
 
     useEffect(() => {
-        if (!wikiSlug || !pageSlug) return
+        console.log("📌 wikiSlug:", wikiSlug)
+        console.log("📌 pageSlug:", pageSlug)
+        if (!wikiSlug || !pageSlug) {
+            console.warn("⚠️ wikiSlug または pageSlug が未定義");
+            return
+        }
 
         // ── 初回ロード ──
         ;(async () => {
