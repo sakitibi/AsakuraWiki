@@ -38,9 +38,8 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
                 .select('*')
                 .eq('wiki_slug', wikiSlug)
                 .eq('page_slug', pageSlug)
-                .order('created_at', { ascending: true })
 
-            // Supabase v2 は data:any[] | null なのでキャスト
+            console.log("💬 コメント取得結果:", res.data)
             const data = (res.data as Comment[]) || []
             setComments(data)
         })()
