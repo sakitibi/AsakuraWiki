@@ -96,6 +96,11 @@ export default function Home() {
                             </Link>
                         </li>
                         <li>
+                            <Link href="/login">
+                                <button><span>ログイン/新規登録</span></button>
+                            </Link>
+                        </li>
+                        <li>
                             <Link href="/ru"><button><span>ロシア語</span></button></Link>
                         </li>
                     </ul>
