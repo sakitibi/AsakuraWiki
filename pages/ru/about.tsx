@@ -29,6 +29,11 @@ export default function Home() {
                             </Link>
                         </li>
                         <li>
+                            <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
+                                <button><span>Войти/Зарегистрироваться (японский)</span></button>
+                            </Link>
+                        </li>
+                        <li>
                             <Link href="/about"><button><span>японский</span></button></Link>
                         </li>
                     </ul>
