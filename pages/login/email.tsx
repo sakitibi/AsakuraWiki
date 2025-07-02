@@ -52,6 +52,8 @@ export default function LoginPage() {
                 <input
                     type='text'
                     placeholder='ユーザー名'
+                    required
+                    style={{ width: '100%', padding: '0.5rem' }}
                 />
                 <br /><br />
                 {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
