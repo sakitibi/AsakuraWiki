@@ -118,6 +118,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
 
                 <button
                     disabled={isSending}
+                    className="comment-submit"
                     style={{ padding: '0.5em 1em', backgroundColor: '#ea94bc', color: 'white', border: 'none', cursor: 'pointer' }}
                 >
                     <span>

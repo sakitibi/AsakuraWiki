@@ -32,7 +32,7 @@ export default function CommentForm() {
                 ></textarea>
                 </label>
                 <br />
-                <button type="submit"><span>送信</span></button>
+                <button type="submit" className="comment-submit"><span>送信</span></button>
             </form>
         </div>
     );

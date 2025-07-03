@@ -149,6 +149,25 @@ export default function WikiPage() {
     // プレビュー or 閲覧コンテンツ
     const parseTarget = isEdit ? content : page.content
 
+    let commentSubmit:any = null;
+
+    
+    const CommentSubmitInterval = setInterval(() => {
+        if(typeof document.getElementsByClassName("comment-submit") === 'undefined'){
+            if(typeof document.getElementsByClassName("comment-submit") !== 'undefined'){
+                commentSubmit = document.getElementsByClassName("comment-submit");
+            }
+
+            if ((isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage")) {
+                for(let i = 0; i < commentSubmit.length; i++){
+                    commentSubmit[i].setAttribute("disabled", "true");
+                }
+            }
+        } else {
+            clearInterval(CommentSubmitInterval);
+        }
+    }, 1000);
+
     return (
         <>
         <Head>
