@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { createClient } from '@supabase/supabase-js'
 import { parseWikiContent } from '@/utils/parsePlugins'
+import { setTimeout } from 'timers/promises'
 
 type Page = {
     title: string
@@ -151,7 +152,6 @@ export default function WikiPage() {
 
     let commentSubmit:any = null;
 
-    
     const CommentSubmitInterval = setInterval(() => {
         if(typeof document.getElementsByClassName("comment-submit") === 'undefined'){
             if(typeof document.getElementsByClassName("comment-submit") !== 'undefined'){
@@ -164,7 +164,9 @@ export default function WikiPage() {
                 }
             }
         } else {
-            clearInterval(CommentSubmitInterval);
+            setTimeout(() => {
+                clearInterval(CommentSubmitInterval);
+            }, 1000);
         }
     }, 1000);
 
