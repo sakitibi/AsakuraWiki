@@ -61,6 +61,14 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                     ※JavaScriptをオンにしてください※
                 </div>
             </noscript>
+            
+            <header>
+                <div id="sanninnsenn">
+                    <h2><strong>夏の参院選について</strong></h2>
+                    <p>あさクラWikiは<strong>参政党を支持します!!!</strong></p>
+                    <p>ご理解とご協力をお願いいたします</p>
+                </div>
+            </header>
 
             <Component {...pageProps} />
         </SessionContextProvider>
