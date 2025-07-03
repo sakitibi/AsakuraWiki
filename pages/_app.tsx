@@ -67,6 +67,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                     <h2><strong>夏の参院選について</strong></h2>
                     <p>あさクラWikiは<strong>参政党を支持します!!!</strong></p>
                     <p>ご理解とご協力をお願いいたします</p>
+                    <div id="russia">
+                        <h3><strong>О летних выборах в Палату советников</strong></h3>
+                        <p>АсакураWiki <strong>поддерживает Партию избирательного права!!!</strong></p>
+                        <p>Мы ценим ваше понимание и сотрудничество.</p>
+                    </div>
                 </div>
             </header>
 
