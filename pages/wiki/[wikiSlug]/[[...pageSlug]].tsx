@@ -164,8 +164,9 @@ export default function WikiPage() {
                 }
             }
         } else {
-            setTimeout(() => {
+            const ClearInterval = setInterval(() => {
                 clearInterval(CommentSubmitInterval);
+                clearInterval(ClearInterval);
             }, 1000);
         }
     }, 1000);
