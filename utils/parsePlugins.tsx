@@ -142,7 +142,8 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             borderColor: '#ea94bc',
             color: '#000',
             margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            padding: '.3em .3em .15em .5em',
+            cursor: 'pointer'
         }
     : {};
 
