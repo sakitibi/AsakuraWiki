@@ -140,7 +140,10 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
         marginInlineStart: '0px',
         marginInlineEnd: '0px',
         fontWeight: 'bold',
-        unicodeBidi: 'isolate'
+        unicodeBidi: 'isolate',
+        borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
+        borderRight: '1px solid #ea94bc',
+        borderTop: '1px solid #ea94bc'
     }
     : level === '**'
         ? {
