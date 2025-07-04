@@ -143,7 +143,8 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
         unicodeBidi: 'isolate',
         borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
         borderRight: '1px solid #ea94bc',
-        borderTop: '1px solid #ea94bc'
+        borderTop: '1px solid #ea94bc',
+        cursor: 'pointer'
     }
     : level === '**'
         ? {
