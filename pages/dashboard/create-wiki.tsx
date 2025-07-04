@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { createClient } from '@supabase/supabase-js';
-import Script from 'next/script';
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -72,15 +71,6 @@ export default function CreateWikiPage() {
 
 
     };
-    const [verified, setVerified] = useState(false);
-    useEffect(() => {
-        grecaptcha.render('html_element', {
-            sitekey: '6LdFaXcrAAAAAHSP8Y7wacDh3vX_7VkS0VqED0Jn',
-            callback: (response:any) => {
-                setVerified(true);
-            }
-        });
-    }, []);
 
     return (
         <>
@@ -128,34 +118,12 @@ export default function CreateWikiPage() {
                 />
                 <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>利用規約</a>に同意します
                 </label>
-                <br /><br />
-                <div id="recaptcha">
-                    {verified ? (
-                        <section className="hero is-primary is-fullheight">
-                        </section>
-                    ) : (
-                        <section className="hero is-fullheight">
-                            <div className="hero-body">
-                                <div style={{
-                                    marginRight: 'auto',
-                                    marginLeft: 'auto',
-                                    textAlign: 'center',
-                                    width: '300px',
-                                    marginTop: '20px'
-                                }}>
-                                    <div id="html_element"></div>
-                                </div>
-                            </div>
-                        </section>
-                    )}
-                </div>
                 <br/><br/>
                 <button type="submit" disabled={loading}>
                 <span>{loading ? '作成中…' : 'Wikiを作成'}</span>
                 </button>
             </form>
             </main>
-            <Script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></Script>
         </>
     );
 }
