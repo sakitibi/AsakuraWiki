@@ -72,8 +72,25 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         <p>Мы ценим ваше понимание и сотрудничество.</p>
                     </div>
                 </div>
+                <div id="warning">
+                    <h2>警告</h2>
+                    <details>
+                        <summary><strong>こちらの人は非常に悪質です</strong></summary>
+                        <ul>
+                            <li>ネットワークID：1p6LXgw3</li>
+                            <li>ブラウザID：3cXGwELF</li>
+                            <li>IPアドレス：14.9.86.64</li>
+                            <li>COOKIE：8f408a2cabb2c21ce69103d2df32153edbad2c070f3</li>
+                            <li>Hostname：M014009086064.v4.enabler.ne.jp</li>
+                            <li>UA：Chrome 137.0.0/Windows 10</li>
+                            <li>SMSトークン：2f044389-7cb8-414c-9fde-d141c9df70da</li>
+                            <li>地域：青森県</li>
+                            <li>プロバイダ：日本ネットワークイネイブラー株式会社</li>
+                            <li>理由：大規模なWikiページ荒らし</li>
+                        </ul>
+                    </details>
+                </div>
             </header>
-
             <Component {...pageProps} />
         </SessionContextProvider>
     );
