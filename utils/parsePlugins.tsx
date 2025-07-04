@@ -129,7 +129,15 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
         backgroundColor: '#fad6e7',
         border: '0',
         borderBottom: '1px solid',
-        borderLeft: '15px solid'
+        borderLeft: '15px solid',
+        display: 'block',
+        fontSize: '1.5em',
+        marginBlockStart: '0.83em',
+        marginBlockEnd: '0.83em',
+        marginInlineStart: '0px',
+        marginInlineEnd: '0px',
+        fontWeight: 'bold',
+        unicodeBidi: 'isolate'
     }
     : level === '**'
         ? {
