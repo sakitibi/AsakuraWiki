@@ -37,7 +37,7 @@ export function DATEDIF(
  * @param dateText - "YYYY-MM-DD" または "MM/DD/YYYY" 形式の文字列
  * @returns シリアル日付 (1900-01-01 を 1 とした日数)
  */
-const EXCEL_EPOCH = new Date(Date.UTC(1899, 11, 31)).getTime()
+const EXCEL_EPOCH = new Date(Date.UTC(2025, 6, 5)).getTime()
 export function DATEVALUE(dateText: string): number {
     const d = new Date(dateText)
     if (isNaN(d.getTime())) return NaN
