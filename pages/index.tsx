@@ -20,41 +20,44 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchPages() {
-        // wiki_pages と wikis テーブルをリレーション取得
-        const { data, error } = await supabase
-        .from('wiki_pages')
-        .select(`
-            wiki_slug,
-            slug,
-            updated_at,
-            wikis!fk_wiki_slug (name, slug)
-        `)
-        .order('updated_at', { ascending: false })
-            console.log('SUPABASE DATA ▶', data)
-            console.log('SUPABASE ERROR▶', error)
+            const { data, error } = await supabase
+            .from('wiki_pages')
+            .select(`
+                wiki_slug,
+                slug,
+                updated_at,
+                wikis!fk_wiki_slug (name, slug)
+            `)
+            .order('updated_at', { ascending: false })
 
-        if (error) {
-            console.error('fetchPages error:', error)
-        } else if (data) {
-        const flattened: WikiPage[] = data.map((d: any) => {
-            // ここを変更
-            const wiki = d.wikis
-            ? d.wikis
-            : { name: '(無名Wiki)', slug: '' }
-
-            return {
-            wikiSlug:   d.wiki_slug,
-            pageSlug:   d.slug,
-            name:       wiki.name,
-            updated_at: d.updated_at,
+            if (error) {
+                console.error('fetchPages error:', error)
+                setLoading(false)
+                return
             }
-        })
+            if (!data) {
+                setLoading(false)
+                return
+            }
 
-        setPages(flattened)
-        }
-        setLoading(false)
-        }
+            // 1) ページごとに flatten
+            const flattened = data.map((d: any) => ({
+                wikiSlug:   d.wiki_slug,
+                pageSlug:   d.slug,
+                name:       d.wikis?.name ?? '(無名Wiki)',
+                updated_at: d.updated_at,
+            }))
 
+            // 2) wikiSlug ごとに最新１件だけ残す
+            const unique = flattened.filter(
+                (item, idx, arr) =>
+                // arr の中で最初に現れる同じ wikiSlug の index と一致するものだけ残す
+                arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
+            )
+
+            setPages(unique)
+            setLoading(false);
+        }
         fetchPages()
     }, [])
 
