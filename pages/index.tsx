@@ -36,20 +36,21 @@ export default function Home() {
         if (error) {
             console.error('fetchPages error:', error)
         } else if (data) {
-            const flattened: WikiPage[] = data.map((d: any) => {
-            // wikis は配列なので先頭要素を参照
-            const wiki = Array.isArray(d.wikis) && d.wikis[0]
-                ? d.wikis[0]
-                : { name: '(無名Wiki)', slug: '' }
+        const flattened: WikiPage[] = data.map((d: any) => {
+            // ここを変更
+            const wiki = d.wikis
+            ? d.wikis
+            : { name: '(無名Wiki)', slug: '' }
 
             return {
-                wikiSlug: d.wiki_slug,
-                pageSlug: d.slug,
-                name: wiki.name,
-                updated_at: d.updated_at,
+            wikiSlug:   d.wiki_slug,
+            pageSlug:   d.slug,
+            name:       wiki.name,
+            updated_at: d.updated_at,
             }
-            })
-            setPages(flattened)
+        })
+
+        setPages(flattened)
         }
         setLoading(false)
         }
