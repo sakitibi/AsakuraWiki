@@ -161,7 +161,7 @@ export default function WikiPage() {
     };
 
     const handleDelete = () => {
-        if(editMode === 'private' && user){
+        if(editMode === 'public' && !user){
             alert("403 Forbidden あなたは削除する権限がありません");
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
