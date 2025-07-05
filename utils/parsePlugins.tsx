@@ -56,7 +56,8 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
     const { wikiSlug, pageSlug } = context
     const nodes: React.ReactNode[] = []
     let last = 0
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|(\*{3}\s*[^\n]+)|(\*{2}\s*[^\n]+)|(\*\s*[^\n]+)/g
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|^(\*{3})[ \t]*([^\n]+)|^(\*{2})[ \t]*([^\n]+)|^(\*)[ \t]*([^\n]+)/gm
+
     let m: RegExpExecArray | null
 
     while ((m = re.exec(text))) {
