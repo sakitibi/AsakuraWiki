@@ -90,7 +90,7 @@ function parseOtherInline(
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = [];
     let last = 0, m: RegExpExecArray | null;
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment/g;
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr/g;
 
     while ((m = re.exec(line))) {
         if (m.index > last) nodes.push(line.slice(last, m.index));
@@ -110,6 +110,8 @@ function parseOtherInline(
             nodes.push(<CommentForm key={key} />);
         } else if (token.startsWith("#rtcomment")) {
             nodes.push(<RealTimeComments key={key} wikiSlug={wikiSlug} pageSlug={pageSlug} />);
+        } else if (token === "#hr") {
+            nodes.push(<hr key={key} />);
         }
 
         last = re.lastIndex;
