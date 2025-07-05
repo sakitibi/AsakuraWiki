@@ -22,17 +22,14 @@ export default function Home() {
         async function fetchPages() {
         // wiki_pages と wikis テーブルをリレーション取得
         const { data, error } = await supabase
-            .from('wiki_pages')
-            .select(`
+        .from('wiki_pages')
+        .select(`
             wiki_slug,
             slug,
             updated_at,
-            wikis (
-                name,
-                slug
-            )
-            `)
-            .order('updated_at', { ascending: false })
+            wikis!fk_wiki_slug (name, slug)
+        `)
+        .order('updated_at', { ascending: false })
             console.log('SUPABASE DATA ▶', data)
             console.log('SUPABASE ERROR▶', error)
 
