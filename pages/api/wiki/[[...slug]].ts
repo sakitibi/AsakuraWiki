@@ -11,42 +11,56 @@ export default async function handler(
     res: NextApiResponse
 ) {
     try {
-        // slug は [wikiSlug, ...pageSlugParts]
+        // クエリから [wikiSlug, ...pageSlugParts] を取得
         const raw = req.query.slug
-        const parts = Array.isArray(raw) ? raw : typeof raw === 'string' ? [raw] : []
+        const parts = Array.isArray(raw)
+        ? raw
+        : typeof raw === 'string'
+        ? [raw]
+        : []
         if (parts.length === 0) {
         return res.status(400).json({ error: 'Invalid path' })
         }
-
         const wikiSlug = parts[0]
-        // pageSlugParts が空なら FrontPage をデフォルト
         const pageSlug = parts.slice(1).join('/') || 'FrontPage'
 
         if (req.method === 'GET') {
-        // content のみ取得
+        // 必要なフィールドをすべて列挙して取得
         const { data, error } = await supabase
             .from('wiki_pages')
-            .select('content')
+            .select(`
+            id,
+            wiki_id,
+            slug,
+            wiki_slug,
+            title,
+            content,
+            description,
+            owner_id,
+            author_id,
+            created_at,
+            updated_at
+            `)
             .eq('wiki_slug', wikiSlug)
             .eq('slug', pageSlug)
             .maybeSingle()
 
         if (error) {
-            console.error(error)
+            console.error('Supabase GET error:', error)
             return res.status(500).json({ error: error.message })
         }
         if (!data) {
             return res.status(404).json({ error: 'Page not found' })
         }
 
-        // { content: '…' }
-        return res.status(200).json({ content: data.content })
+        // 取得したレコードをそのまま返却
+        return res.status(200).json(data)
         }
 
         if (req.method === 'PUT') {
         const { content, title } = req.body
         if (typeof content !== 'string' || typeof title !== 'string') {
-            return res.status(400).json({ error: 'Invalid body' })
+            return res.status(400).json({ error: 'Invalid request body' })
         }
 
         const { error } = await supabase
@@ -56,7 +70,7 @@ export default async function handler(
             .eq('slug', pageSlug)
 
         if (error) {
-            console.error(error)
+            console.error('Supabase PUT error:', error)
             return res.status(500).json({ error: error.message })
         }
 
@@ -66,7 +80,7 @@ export default async function handler(
         res.setHeader('Allow', ['GET', 'PUT'])
         return res.status(405).json({ error: 'Method not allowed' })
     } catch (e) {
-        console.error(e)
-        return res.status(500).json({ error: 'Internal error' })
+        console.error('API exception:', e)
+        return res.status(500).json({ error: 'Internal server error' })
     }
 }
