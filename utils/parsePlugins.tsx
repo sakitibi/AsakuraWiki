@@ -165,7 +165,17 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             padding: '.3em .3em .15em .5em',
             cursor: 'pointer'
         }
-    : {};
+    : {
+        borderLeft: '15px solid #ea94bc',
+        cursor: 'pointer',
+        display: 'block',
+        marginBlockStart: '1.33em',
+        marginBlockEnd: '1.33em',
+        marginInlineStart: '0px',
+        marginInlineEnd: '0px',
+        fontWeight: 'bold',
+        unicodeBidi: 'isolate'
+    };
 
     return (
         <div style={{ margin: '1em 0' }}>
