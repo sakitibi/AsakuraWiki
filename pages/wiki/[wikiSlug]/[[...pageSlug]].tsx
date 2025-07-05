@@ -68,14 +68,6 @@ export default function WikiPage() {
 
             const isPrivate = wikiData.edit_mode === 'private';
 
-            // 2. ログインしてないのにprivateの場合は拒否
-            if (isPrivate && !user) {
-                if(isEdit){
-                    setError("403 Forbidden あなたは編集する権限がありません");
-                    return;
-                }
-            }
-
             // 3. ページ取得
             const { data: pageData, error: pageError } = await supabase
                 .from('wiki_pages')
@@ -102,8 +94,9 @@ export default function WikiPage() {
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (editMode === 'private' && !user) {
-            alert('ログインしないと編集できません');
+        if(editMode === 'private' && !user){
+            alert("403 Forbidden あなたは編集する権限がありません");
+            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
         }
 
@@ -168,6 +161,11 @@ export default function WikiPage() {
     };
 
     const handleDelete = () => {
+        if(editMode === 'private' && !user){
+            alert("403 Forbidden あなたは削除する権限がありません");
+            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
+            return;
+        }
         router.push({
             pathname: `/wiki/${wikiSlugStr}`,
             query: { cmd: 'delete', page: pageSlugStr },
@@ -266,12 +264,10 @@ export default function WikiPage() {
                     ))}
                 </div>
                 <br />
-                {(editMode === 'private' && !user) ? null : (
-                    <>
+                    <div>
                         <button onClick={handleEdit}><span>このページを編集</span></button>
                         <button onClick={handleDelete}><span>このページを削除</span></button>
-                    </>
-                )}
+                    </div>
                 </div>
             )}
         </>
