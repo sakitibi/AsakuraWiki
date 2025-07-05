@@ -33,6 +33,8 @@ export default function Home() {
             )
             `)
             .order('updated_at', { ascending: false })
+            console.log('SUPABASE DATA ▶', data)
+            console.log('SUPABASE ERROR▶', error)
 
         if (error) {
             console.error('fetchPages error:', error)
