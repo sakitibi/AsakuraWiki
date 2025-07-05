@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import Calendar2 from '@/components/Calendar2'
 import CommentForm from '@/components/CommentForm'
 import RealTimeComments from '@/components/RealTimeComments'
+import PageList from '@/components/PageList';
+import IncludePage from '@/components/IncludePage';
+import TableOfContents from '@/components/TableOfContents';
 import { DATEDIF, DATEVALUE } from './dateFunctions'
 
 export type Context = { wikiSlug: string; pageSlug: string }
@@ -90,7 +93,9 @@ function parseOtherInline(
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = [];
     let last = 0, m: RegExpExecArray | null;
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr/g;
+    // parseOtherInline 内
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#ls(?:\(([^)]+)\))?|#include\(([^)]+)\)|#contents/g;
+
 
     while ((m = re.exec(line))) {
         if (m.index > last) nodes.push(line.slice(last, m.index));
@@ -112,6 +117,21 @@ function parseOtherInline(
             nodes.push(<RealTimeComments key={key} wikiSlug={wikiSlug} pageSlug={pageSlug} />);
         } else if (token === "#hr") {
             nodes.push(<hr key={key} />);
+        }  // #ls
+        else if (token.startsWith('#ls')) {
+            // m[8] にオプションの prefix が入る
+            const prefix = m[8] || undefined;
+            nodes.push(<PageList key={key} prefix={prefix} />);
+        }
+        // #include(pageName)
+        else if (token.startsWith('#include')) {
+            // m[9] にページ名が入る
+            const pageName = m[9]!;
+            nodes.push(<IncludePage key={key} page={pageName} />);
+        }
+        // #contents
+        else if (token === '#contents') {
+            nodes.push(<TableOfContents key={key} />);
         }
 
         last = re.lastIndex;
