@@ -21,35 +21,42 @@ export default function Home() {
     useEffect(() => {
         async function fetchPages() {
             const { data, error } = await supabase
-                .from('wiki_pages')
-                .select(`
+            .from('wiki_pages')
+            .select(`
                 wiki_slug,
                 slug,
                 updated_at,
-                wikis (
-                    name,
-                    slug
-                )
-                `)
-                .order('updated_at', { ascending: false })
+                wikis!fk_wiki_slug (name, slug)
+            `)
+            .order('updated_at', { ascending: false })
 
             if (error) {
                 console.error('fetchPages error:', error)
-            } else if (data) {
-                const flattened = data.map((d: any) => {
-                const wiki = Array.isArray(d.wikis) && d.wikis[0]
-                    ? d.wikis[0]
-                    : { name: '(無名Wiki)', slug: '' }
-                return {
-                    wikiSlug: d.wiki_slug,
-                    pageSlug: d.slug,
-                    name: wiki.name,
-                    updated_at: d.updated_at,
-                }
-                })
-                setPages(flattened)
+                setLoading(false)
+                return
             }
-            setLoading(false)
+            if (!data) {
+                setLoading(false)
+                return
+            }
+
+            // 1) ページごとに flatten
+            const flattened = data.map((d: any) => ({
+                wikiSlug:   d.wiki_slug,
+                pageSlug:   d.slug,
+                name:       d.wikis?.name ?? '(無名Wiki)',
+                updated_at: d.updated_at,
+            }))
+
+            // 2) wikiSlug ごとに最新１件だけ残す
+            const unique = flattened.filter(
+                (item, idx, arr) =>
+                // arr の中で最初に現れる同じ wikiSlug の index と一致するものだけ残す
+                arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
+            )
+
+            setPages(unique)
+            setLoading(false);
         }
         fetchPages()
     }, [])
