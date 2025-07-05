@@ -98,21 +98,21 @@ export default function WikiPage() {
             alert("403 Forbidden あなたは編集する権限がありません");
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
-        }
-
-        setLoading(true);
-        const { error } = await supabase
-        .from('wiki_pages')
-        .update({ title, content, updated_at: new Date() })
-        .eq('wiki_slug', wikiSlugStr)
-        .eq('slug', pageSlugStr)
-        setLoading(false)
-
-        if (error) {
-            alert('更新に失敗しました: ' + error.message);
         } else {
-            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
+            setLoading(true);
+            const { error } = await supabase
+            .from('wiki_pages')
+            .update({ title, content, updated_at: new Date() })
+            .eq('wiki_slug', wikiSlugStr)
+            .eq('slug', pageSlugStr)
+            setLoading(false)
+
+            if (error) {
+                alert('更新に失敗しました: ' + error.message);
+            } else {
+                router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+                location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
+            }
         }
     }
 
@@ -165,12 +165,13 @@ export default function WikiPage() {
             alert("403 Forbidden あなたは削除する権限がありません");
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
+        } else {
+            router.push({
+                pathname: `/wiki/${wikiSlugStr}`,
+                query: { cmd: 'delete', page: pageSlugStr },
+            });
+            location.href = `/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`;
         }
-        router.push({
-            pathname: `/wiki/${wikiSlugStr}`,
-            query: { cmd: 'delete', page: pageSlugStr },
-        });
-        location.href = `/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`;
     }
 
     // エラー or 読み込み中
