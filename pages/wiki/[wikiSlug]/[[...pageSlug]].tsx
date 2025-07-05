@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { createClient } from '@supabase/supabase-js'
 import { parseWikiContent } from '@/utils/parsePlugins'
+import { useUser } from '@supabase/auth-helpers-react';
 
 type Page = {
     title: string
@@ -16,6 +17,7 @@ const supabase = createClient(
 
 export default function WikiPage() {
     const router = useRouter()
+    const user = useUser();
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const cmdStr = typeof cmd === 'string' ? cmd : '';
 
@@ -35,6 +37,7 @@ export default function WikiPage() {
     const [title, setTitle]     = useState('')
     const [content, setContent] = useState('')  // ← textarea の中身
     const [urlObj, setUrlObj]   = useState<URL | null>(null)
+    const [editMode, setEditMode] = useState<'private' | 'public'>('public');
 
     // URL取得（編集モード判定用）
     useEffect(() => {
@@ -45,29 +48,54 @@ export default function WikiPage() {
 
     // Supabase から読み込み
     useEffect(() => {
-        if (!wikiSlugStr || !pageSlugStr) return
-        setLoading(true)
+        if (!wikiSlugStr || !pageSlugStr) return;
 
-        ;(async () => {
-        const { data, error } = await supabase
-            .from('wiki_pages')
-            .select('title, content')
-            .eq('wiki_slug', wikiSlugStr)
-            .eq('slug', pageSlugStr)
-            .maybeSingle()
+        setLoading(true);
 
-        if (error || !data) {
-            setError('ページの読み込みに失敗しました')
-            setPage(null)
-        } else {
-            setPage(data)
-            setTitle(data.title)
-            setContent(data.content)
-            setError(null)
-        }
-        setLoading(false)
-        })()
-    }, [wikiSlugStr, pageSlugStr])
+        (async () => {
+            // 1. 対象のWikiの編集モード取得
+            const { data: wikiData, error: wikiError } = await supabase
+                .from('wikis')
+                .select('edit_mode')
+                .eq('slug', wikiSlugStr)
+                .maybeSingle();
+
+            if (wikiError || !wikiData) {
+                setError('Wikiの情報取得に失敗しました');
+                setLoading(false);
+                return;
+            }
+
+            const isPrivate = wikiData.edit_mode === 'private';
+
+            // 2. ログインしてないのにprivateの場合は拒否
+            if (isPrivate && !user) {
+                setError('このWikiはログインしないと閲覧できません');
+                setLoading(false);
+                return;
+            }
+
+            // 3. ページ取得
+            const { data: pageData, error: pageError } = await supabase
+                .from('wiki_pages')
+                .select('title, content')
+                .eq('wiki_slug', wikiSlugStr)
+                .eq('slug', pageSlugStr)
+                .maybeSingle();
+
+            if (pageError || !pageData) {
+                setError('ページの読み込みに失敗しました');
+                setPage(null);
+            } else {
+                setPage(pageData);
+                setTitle(pageData.title);
+                setContent(pageData.content);
+                setError(null);
+            }
+
+            setLoading(false);
+        })();
+    }, [wikiSlugStr, pageSlugStr, user]);
 
     // 更新処理
     const handleUpdate = async (e: React.FormEvent) => {
