@@ -70,9 +70,16 @@ export default function WikiPage() {
 
             // 2. ログインしてないのにprivateの場合は拒否
             if (isPrivate && !user) {
-                setError('このWikiはログインしないと閲覧できません');
-                setLoading(false);
-                return;
+                if(isEdit){
+                    setError("403 Forbidden あなたは編集する権限がありません");
+                    return;
+                } else {
+                    setInterval(() => {
+                        document.querySelectorAll("button").forEach((button) => {
+                            button.setAttribute("disabled", "true");
+                        });
+                    }, 50);
+                }
             }
 
             // 3. ページ取得
@@ -99,8 +106,14 @@ export default function WikiPage() {
 
     // 更新処理
     const handleUpdate = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setLoading(true)
+        e.preventDefault();
+
+        if (editMode === 'private' && !user) {
+            alert('ログインしないと編集できません');
+            return;
+        }
+
+        setLoading(true);
         const { error } = await supabase
         .from('wiki_pages')
         .update({ title, content, updated_at: new Date() })
