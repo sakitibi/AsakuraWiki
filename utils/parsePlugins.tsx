@@ -84,6 +84,23 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
                 pageSlug={pageSlug}
                 />
             );
+        } else if (/^\*{1,3}/.test(token)) {
+            // トークンが "*" "**" "***" のいずれか
+            const lvl = (token.match(/^\*{1,3}/)![0] as '*'|'**'|'***')
+            // 直後のテキスト（行末まで）をタイトルに
+            const rest = text.slice(m.index + token.length)
+            const title = rest.split('\n', 1)[0].trim()
+
+            nodes.push(
+                <Header
+                key={m.index}
+                level={lvl}
+                title={title}
+                />
+            )
+            // 見出し行を飛ばす
+            last = m.index + token.length + title.length
+            continue
         }
         last = re.lastIndex
     }
@@ -190,6 +207,72 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             </svg>
         </Tag>
         {open && <div style={{ paddingLeft: '1em', }}>{children}</div>}
+        </div>
+    )
+}
+
+/** Header コンポーネント */
+function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }) {
+    const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
+    const headingStyle: React.CSSProperties = level === '*'
+    ? {
+        color: '#000',
+        margin: '.2em 0 .5em',
+        padding: '.3em .3em .15em .5em',
+        backgroundColor: '#fad6e7',
+        border: '0',
+        borderBottom: '1px solid',
+        borderLeft: '15px solid',
+        display: 'block',
+        fontSize: '1.5em',
+        marginBlockStart: '0.83em',
+        marginBlockEnd: '0.83em',
+        marginInlineStart: '0px',
+        marginInlineEnd: '0px',
+        fontWeight: 'bold',
+        unicodeBidi: 'isolate',
+        borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
+        borderRight: '1px solid #ea94bc',
+        borderTop: '1px solid #ea94bc',
+    }
+    : level === '**'
+        ? {
+            display: 'block',
+            fontSize: '1.17em',
+            marginBlockStart: '1em',
+            marginBlockEnd: '1em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            border: '1px solid',
+            borderLeft: '15px solid',
+            backgroundColor: 'transparent',
+            borderColor: '#ea94bc',
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em',
+        }
+    : {
+        borderLeft: '15px solid #ea94bc',
+        display: 'block',
+        marginBlockStart: '1.33em',
+        marginBlockEnd: '1.33em',
+        marginInlineStart: '0px',
+        marginInlineEnd: '0px',
+        fontWeight: 'bold',
+        unicodeBidi: 'isolate',
+        backgroundColor: 'transparent',
+        color: '#000',
+        margin: '.2em 0 .5em',
+        padding: '.3em .3em .15em .5em'
+    };
+
+    return (
+        <div style={{ margin: '1em 0' }}>
+            <Tag style={headingStyle}>
+                {title}
+            </Tag>
         </div>
     )
 }
