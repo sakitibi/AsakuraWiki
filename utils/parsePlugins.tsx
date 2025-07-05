@@ -53,72 +53,70 @@ function extractAccordions(content: string) {
 
 /** インラインプラグインを処理します */
 function parseInline(text: string, context: Context): React.ReactNode[] {
-    const { wikiSlug, pageSlug } = context
-    const nodes: React.ReactNode[] = []
-    let last = 0
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|^(\*{3})[ \t]*([^\n]+)|^(\*{2})[ \t]*([^\n]+)|^(\*)[ \t]*([^\n]+)/gm
+    const { wikiSlug, pageSlug } = context;
+    const nodes: React.ReactNode[] = [];
+    let nodeKey = 0;
 
-    let m: RegExpExecArray | null
-
-    while ((m = re.exec(text))) {
-        if (m.index > last) {
-            nodes.push(text.slice(last, m.index))
-        }
-        const token = m[0]
-        if (token.startsWith('#calendar2')) {
-            const [, y, mo, off] = m
-            nodes.push(<Calendar2 key={m.index} year={+y} month={+mo} hideHolidays={off === 'off'} />)
-        } else if (token.startsWith('#DATEDIF')) {
-            const val = DATEDIF(m[4], m[5], m[6] as any)
-            nodes.push(<span key={m.index}>{isNaN(val) ? 'ERR' : val}</span>)
-        } else if (token.startsWith('#DATEVALUE')) {
-            const val = DATEVALUE(m[7])
-            nodes.push(<span key={m.index}>{isNaN(val) ? 'ERR' : val}</span>)
-        } else if (token === '#comment') {
-            nodes.push(<CommentForm key={m.index} />)
-        } else if (token.startsWith('#rtcomment')) {
-            console.log('⚡️ RTCOMMENT FOUND in text:', text);
+    text.split("\n").forEach((line) => {
+        // 1) 行頭が "*","**","***" 見出しか?
+        const headingMatch = line.match(/^(\*{1,3})\s*(.+)/);
+        if (headingMatch) {
+            const [ , stars, title ] = headingMatch;
             nodes.push(
-                <RealTimeComments
-                key={m.index}
-                wikiSlug={wikiSlug}
-                pageSlug={pageSlug}
+                <Header
+                key={`hdr-${nodeKey++}`}
+                level={stars as "*" | "**" | "***"}
+                title={title}
                 />
             );
-        } else if (m[7]) {
-                nodes.push(
-                <Header
-                    key={m.index}
-                    level={m[7] as "***"}
-                    title={m[8].trim()}
-                />
-                );
-            }
-            // 行頭 ** 見出し
-            else if (m[9]) {
-                nodes.push(
-                <Header
-                    key={m.index}
-                    level={m[9] as "**"}
-                    title={m[10].trim()}
-                />
-                );
-            }
-            // 行頭 * 見出し
-            else if (m[11]) {
-                nodes.push(
-                <Header
-                    key={m.index}
-                    level={m[11] as "*"}
-                    title={m[12].trim()}
-                />
-                );
-            }
+            return;
+        }
 
-            last = re.lastIndex;
+        // 2) 見出し以外のインラインプラグインを処理する
+        //    ここでは既存の re を使って text ノードを分解するヘルパーを想定
+        nodes.push(...parseOtherInline(line, wikiSlug, pageSlug, nodeKey));
+        nodeKey += 10; // 適当にキーを進める
+    });
+
+    return nodes;
+}
+
+/** 既存の #calendar2 や #comment 系を処理するヘルパー */
+function parseOtherInline(
+    line: string,
+    wikiSlug: string,
+    pageSlug: string,
+    baseKey: number
+): React.ReactNode[] {
+    const nodes: React.ReactNode[] = [];
+    let last = 0, m: RegExpExecArray | null;
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment/g;
+
+    while ((m = re.exec(line))) {
+        if (m.index > last) nodes.push(line.slice(last, m.index));
+        const token = m[0];
+        const key = `inl-${baseKey}-${m.index}`;
+
+        if (token.startsWith("#calendar2")) {
+            const [, y, mo, off] = m;
+            nodes.push(<Calendar2 key={key} year={+y} month={+mo} hideHolidays={off === "off"} />);
+        } else if (token.startsWith("#DATEDIF")) {
+            const val = DATEDIF(m[4], m[5], m[6] as any);
+            nodes.push(<span key={key}>{isNaN(val) ? "ERR" : val}</span>);
+        } else if (token.startsWith("#DATEVALUE")) {
+            const val = DATEVALUE(m[7]);
+            nodes.push(<span key={key}>{isNaN(val) ? "ERR" : val}</span>);
+        } else if (token === "#comment") {
+            nodes.push(<CommentForm key={key} />);
+        } else if (token.startsWith("#rtcomment")) {
+            nodes.push(<RealTimeComments key={key} wikiSlug={wikiSlug} pageSlug={pageSlug} />);
+        }
+
+        last = re.lastIndex;
     }
-    if (last < text.length) nodes.push(text.slice(last))
-    return nodes
+
+    if (last < line.length) nodes.push(line.slice(last));
+    return nodes;
 }
 
     /**
