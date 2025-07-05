@@ -85,25 +85,37 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
                 pageSlug={pageSlug}
                 />
             );
-        } else if (/^\*{1,3}/.test(token)) {
-            // トークンが "*" "**" "***" のいずれか
-            const lvl = (token.match(/^\*{1,3}/)![0] as '*'|'**'|'***')
-            // 直後のテキスト（行末まで）をタイトルに
-            const rest = text.slice(m.index + token.length)
-            const title = rest.split('\n', 1)[0].trim()
-
-            nodes.push(
+        } else if (m[7]) {
+                nodes.push(
                 <Header
-                key={m.index}
-                level={lvl}
-                title={title}
+                    key={m.index}
+                    level={m[7] as "***"}
+                    title={m[8].trim()}
                 />
-            )
-            // 見出し行を飛ばす
-            last = m.index + token.length + title.length
-            continue
-        }
-        last = re.lastIndex
+                );
+            }
+            // 行頭 ** 見出し
+            else if (m[9]) {
+                nodes.push(
+                <Header
+                    key={m.index}
+                    level={m[9] as "**"}
+                    title={m[10].trim()}
+                />
+                );
+            }
+            // 行頭 * 見出し
+            else if (m[11]) {
+                nodes.push(
+                <Header
+                    key={m.index}
+                    level={m[11] as "*"}
+                    title={m[12].trim()}
+                />
+                );
+            }
+
+            last = re.lastIndex;
     }
     if (last < text.length) nodes.push(text.slice(last))
     return nodes

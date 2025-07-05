@@ -84,7 +84,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                             <li>Hostname：M014009086064.v4.enabler.ne.jp</li>
                             <li>UA：Chrome 137.0.0/Windows 10</li>
                             <li>SMSトークン：2f044389-7cb8-414c-9fde-d141c9df70da</li>
-                            <li>地域：青森県</li>
+                            <li>地域：青森県八戸市</li>
                             <li>プロバイダ：日本ネットワークイネイブラー株式会社</li>
                             <li>理由：大規模なWikiページ荒らし</li>
                         </ul>
