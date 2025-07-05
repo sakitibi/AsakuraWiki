@@ -198,7 +198,7 @@ export default function WikiPage() {
                 <textarea
                     value={content}
                     onChange={e => setContent(e.target.value)}
-                    style={{ width: '100%', height: 200, marginTop: 4 }}
+                    style={{ width: '200%', height: 500, marginTop: 4 }}
                 ></textarea>
                 </label>
                 <br /><br />
