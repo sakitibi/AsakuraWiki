@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import Calendar2 from '@/components/Calendar2'
 import CommentForm from '@/components/CommentForm'
 import RealTimeComments from '@/components/RealTimeComments'
-import PageList from '@/components/PageList';
-import IncludePage from '@/components/IncludePage';
-import TableOfContents from '@/components/TableOfContents';
+import PageList from '@/components/PageList'
+import PageList2 from '@/components/PageList2'
+import IncludePage from '@/components/IncludePage'
+import TableOfContents from '@/components/TableOfContents'
 import { DATEDIF, DATEVALUE } from './dateFunctions'
 
 export type Context = { wikiSlug: string; pageSlug: string }
@@ -85,54 +86,102 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
 }
 
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
-function parseOtherInline(
+export function parseOtherInline(
     line: string,
     wikiSlug: string,
     pageSlug: string,
     baseKey: number
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = []
-    let last = 0, m: RegExpExecArray | null
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#ls(?:\(([^)]+)\))?|#include\(([^)]+)\)|#contents/g
+    let last = 0
+    let m: RegExpExecArray | null
+
+    // 各プラグインを順次キャプチャする正規表現
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents/giu
 
     while ((m = re.exec(line))) {
-        if (m.index > last) nodes.push(line.slice(last, m.index))
-        const token = m[0]
-        const key   = `inl-${baseKey}-${m.index}`;
-
-        if (token.startsWith("#calendar2")) {
-            const [, y, mo, off] = m;
-            nodes.push(<Calendar2 key={key} year={+y} month={+mo} hideHolidays={off === "off"} />);
-        } else if (token.startsWith("#DATEDIF")) {
-            const val = DATEDIF(m[4], m[5], m[6] as any);
-            nodes.push(<span key={key}>{isNaN(val) ? "ERR" : val}</span>);
-        } else if (token.startsWith("#DATEVALUE")) {
-            const val = DATEVALUE(m[7]);
-            nodes.push(<span key={key}>{isNaN(val) ? "ERR" : val}</span>);
-        } else if (token === "#comment") {
-            nodes.push(<CommentForm key={key} />);
-        } else if (token.startsWith("#rtcomment")) {
-            nodes.push(<RealTimeComments key={key} wikiSlug={wikiSlug} pageSlug={pageSlug} />);
-        } else if (token === "#hr") {
-            nodes.push(<hr key={key} />);
-        }  // #ls
-        else if (token.startsWith('#ls')) {
-            // m[8] にオプションの prefix が入る
-            const prefix = m[8] || undefined;
-            nodes.push(<PageList key={key} prefix={prefix} />);
+        // トークンの手前テキストをそのまま文字ノードに
+        if (m.index > last) {
+            nodes.push(line.slice(last, m.index))
         }
-        // #include(pageName)
-        else if (token.startsWith('#include')) {
-            // m[9] に "ページ名|CSS_URL,flag" が丸ごと入っている
-            const arg = m[9]!.trim()
-            const [first, flag] = arg.split(',').map(s => s.trim())
+        const token = m[0]
+        const key = `inl-${baseKey}-${m.index}`
 
-            // フラグでタイトル表示制御
+        // --- plugin branches ---
+        // #calendar2(Y,M,off?)
+        if (token.startsWith('#calendar2')) {
+            const [, y, mo, off] = m
+            nodes.push(
+                <Calendar2
+                    key={key}
+                    year={+y}
+                    month={+mo}
+                    hideHolidays={off === 'off'}
+                />
+            )
+        }
+        // #DATEDIF(d1,d2,unit)
+        else if (token.startsWith('#DATEDIF')) {
+            const val = DATEDIF(m[4], m[5], m[6] as any)
+            nodes.push(<span key={key}>{isNaN(val) ? 'ERR' : val}</span>)
+        }
+        // #DATEVALUE(str)
+        else if (token.startsWith('#DATEVALUE')) {
+            const val = DATEVALUE(m[7])
+            nodes.push(<span key={key}>{isNaN(val) ? 'ERR' : val}</span>)
+        }
+        // #comment
+        else if (token === '#comment') {
+            nodes.push(<CommentForm key={key} />)
+        }
+        // #rtcomment
+        else if (token.startsWith('#rtcomment')) {
+            nodes.push(
+                <RealTimeComments
+                    key={key}
+                    wikiSlug={wikiSlug}
+                    pageSlug={pageSlug}
+                />
+            )
+        }
+        // #hr
+        else if (token === '#hr') {
+            nodes.push(<hr key={key} />)
+        }
+        // #ls([title])
+        else if (token.startsWith('#ls')) {
+            const prefix = m[8]?.trim() || undefined
+            nodes.push(<PageList key={key} prefix={prefix} />)
+        }
+        // #ls2(pattern[,…][,…][,…])
+        else if (token.startsWith('#ls2')) {
+            // m[9] = パターン (例: 'Foo/')
+            // m[10] = [オプションリスト]
+            // m[11] = {include,...} ブロック型オプション
+            // m[12] = 表示用ラベル
+            const pattern = m[9].trim()
+            const opts = m[10]?.split(',').map(s => s.trim()) ?? []
+            const blockOpts = m[11]?.split(',').map(s => s.trim()) ?? []
+            const label = m[12]?.trim()
+
+            nodes.push(
+                <PageList2
+                    key={key}
+                    wikiSlug={wikiSlug}
+                    pattern={pattern}
+                    options={[...opts, ...blockOpts]}
+                    label={label}
+                />
+            )
+        }
+        // #include(pageName|css,flag)
+        else if (token.startsWith('#include')) {
+            const arg = m[13]!.trim()
+            const [first, flag] = arg.split(',').map(s => s.trim())
             let showTitle: boolean | undefined
             if (flag === 'notitle') showTitle = false
             else if (flag === 'title') showTitle = true
 
-            // ページ名 と CSS_URL を分離
             let pageName = first
             let stylesheetURL: string | undefined
             if (first.includes('|')) {
@@ -153,14 +202,18 @@ function parseOtherInline(
         }
         // #contents
         else if (token === '#contents') {
-            nodes.push(<TableOfContents key={key} />);
+            nodes.push(<TableOfContents key={key} />)
         }
 
-        last = re.lastIndex;
+        // 次マッチ開始位置を更新
+        last = re.lastIndex
     }
 
-    if (last < line.length) nodes.push(line.slice(last));
-    return nodes;
+    // 最後に残ったテキスト
+    if (last < line.length) {
+        nodes.push(line.slice(last))
+    }
+    return nodes
 }
 
     /**
