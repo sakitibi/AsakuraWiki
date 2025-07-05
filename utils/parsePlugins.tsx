@@ -91,16 +91,14 @@ function parseOtherInline(
     pageSlug: string,
     baseKey: number
 ): React.ReactNode[] {
-    const nodes: React.ReactNode[] = [];
-    let last = 0, m: RegExpExecArray | null;
-    // parseOtherInline 内
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#ls(?:\(([^)]+)\))?|#include\(([^)]+)\)|#contents/g;
-
+    const nodes: React.ReactNode[] = []
+    let last = 0, m: RegExpExecArray | null
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#ls(?:\(([^)]+)\))?|#include\(([^)]+)\)|#contents/g
 
     while ((m = re.exec(line))) {
-        if (m.index > last) nodes.push(line.slice(last, m.index));
-        const token = m[0];
-        const key = `inl-${baseKey}-${m.index}`;
+        if (m.index > last) nodes.push(line.slice(last, m.index))
+        const token = m[0]
+        const key   = `inl-${baseKey}-${m.index}`;
 
         if (token.startsWith("#calendar2")) {
             const [, y, mo, off] = m;
@@ -125,9 +123,33 @@ function parseOtherInline(
         }
         // #include(pageName)
         else if (token.startsWith('#include')) {
-            // m[9] にページ名が入る
-            const pageName = m[9]!;
-            nodes.push(<IncludePage key={key} page={pageName} />);
+            // m[9] に "ページ名|CSS_URL,flag" が丸ごと入っている
+            const arg = m[9]!.trim()
+            const [first, flag] = arg.split(',').map(s => s.trim())
+
+            // フラグでタイトル表示制御
+            let showTitle: boolean | undefined
+            if (flag === 'notitle') showTitle = false
+            else if (flag === 'title') showTitle = true
+
+            // ページ名 と CSS_URL を分離
+            let pageName = first
+            let stylesheetURL: string | undefined
+            if (first.includes('|')) {
+                const [name, css] = first.split('|', 2).map(s => s.trim())
+                pageName = name
+                stylesheetURL = css
+            }
+
+            nodes.push(
+                <IncludePage
+                    key={key}
+                    wikiSlug={wikiSlug}
+                    page={pageName}
+                    showTitle={showTitle}
+                    stylesheetURL={stylesheetURL}
+                />
+            )
         }
         // #contents
         else if (token === '#contents') {
