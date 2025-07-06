@@ -22,6 +22,7 @@ export default function WikiSettingsPage() {
     const [editMode, setEditMode] = useState<'public' | 'private'>('public');
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
+    const [designColor, setdesignColor] = useState<'pink' | 'default'>('default');
 
     useEffect(() => {
         if (!slugStr || !user) return;
@@ -67,7 +68,7 @@ export default function WikiSettingsPage() {
 
         const { error } = await supabase
         .from('wikis')
-        .update({ name, description, edit_mode: editMode, updated_at: new Date() })
+        .update({ name, description, edit_mode: editMode, updated_at: new Date(), design_color: designColor })
         .eq('slug', slugStr);
 
         setLoading(false);
@@ -165,6 +166,19 @@ export default function WikiSettingsPage() {
                                 <option value="private">🔒 ログインユーザーのみ編集可</option>
                                 <option value="public">🌐 誰でも編集可</option>
                             </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                デザイン:
+                                <select
+                                    value={designColor}
+                                    onChange={(e) => 
+                                        setdesignColor(e.target.value as 'pink' | 'default')
+                                    }
+                                    >
+                                    <option value="default">デフォルト</option>
+                                    <option value="pink">ピンク</option>
+                                </select>
                             </label>
                             <br /><br />
                             <button type="submit" disabled={loading}>
