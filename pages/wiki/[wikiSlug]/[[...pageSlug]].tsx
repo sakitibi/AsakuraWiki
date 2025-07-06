@@ -15,16 +15,6 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-const [designColor, setDesignColor] = useState<'pink' | 'default' | null>(null);
-
-useEffect(() => {
-    async function fetchColor() {
-        const color = await fetchDesignColor();
-        setDesignColor(color);
-    }
-    fetchColor();
-}, []);
-
 async function fetchDesignColor() {
     const { data, error } = await supabase
         .from('wikis')
@@ -63,6 +53,26 @@ export default function WikiPage() {
     const [content, setContent] = useState('')  // ← textarea の中身
     const [urlObj, setUrlObj]   = useState<URL | null>(null)
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
+    const [designColor, setDesignColor] = useState<'pink' | 'default' | null>(null);
+
+    useEffect(() => {
+        async function fetchColor() {
+        const { data, error } = await supabase
+            .from('wikis')
+            .select('design_color')
+            .limit(1)
+            .single();
+
+        if (error) {
+            console.error('デザインカラー取得エラー:', error);
+            return;
+        }
+
+        setDesignColor(data.design_color);
+        }
+
+        fetchColor();
+    }, []);
 
     // URL取得（編集モード判定用）
     useEffect(() => {
