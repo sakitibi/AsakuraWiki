@@ -119,22 +119,28 @@ export default function WikiPage() {
                 setError(null);
             }
 
-            useEffect(() => {
-                document.body.classList.add('wiki-font');
-                if (designColor === 'pink') {
-                    document.body.classList.add('pink');
-                }
-
-                // クリーンアップ関数でクラスを削除
-                return () => {
-                    document.body.classList.remove('wiki-font');
-                    document.body.classList.remove('pink');
-                };
-            }, [designColor]);
-
             setLoading(false);
         })();
     }, [wikiSlugStr, pageSlugStr, user]);
+
+    useEffect(() => {
+        document.querySelectorAll(".wiki-font").forEach((wikiFont) => {
+            wikiFont.classList.add('wiki-font');
+        });
+        if (designColor === 'pink') {
+            document.querySelectorAll(".wiki-font").forEach((wikiFont) => {
+                wikiFont.classList.add('pink');
+            });
+        }
+
+        // クリーンアップ関数でクラスを削除
+        return () => {
+            document.querySelectorAll(".wiki-font").forEach((wikiFont) => {
+                wikiFont.classList.remove('wiki-font');
+                wikiFont.classList.remove('pink');
+            })
+        };
+    }, [designColor]);
 
     // 更新処理
     const handleUpdate = async (e: React.FormEvent) => {
