@@ -124,21 +124,14 @@ export default function WikiPage() {
     }, [wikiSlugStr, pageSlugStr, user]);
 
     useEffect(() => {
-        document.querySelectorAll(".wiki-font").forEach((wikiFont) => {
-            wikiFont.classList.add('wiki-font');
-        });
+        document.body.classList.add('wiki-font');
         if (designColor === 'pink') {
-            document.querySelectorAll(".wiki-font").forEach((wikiFont) => {
-                wikiFont.classList.add('pink');
-            });
+            document.body.classList.add('pink');
         }
 
-        // クリーンアップ関数でクラスを削除
         return () => {
-            document.querySelectorAll(".wiki-font").forEach((wikiFont) => {
-                wikiFont.classList.remove('wiki-font');
-                wikiFont.classList.remove('pink');
-            })
+            document.body.classList.remove('wiki-font');
+            document.body.classList.remove('pink');
         };
     }, [designColor]);
 
@@ -264,7 +257,7 @@ export default function WikiPage() {
                     {isEdit ? ' を編集' : ''}
                 </title>
             </Head>
-            <div className="wiki-font">
+            <div>
                 {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
                     <main style={{ padding: '2rem', maxWidth: 600 }}>
                     <h1>📝 ページ編集</h1>
