@@ -64,6 +64,24 @@ async function fetchDesignColor() {
             background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
             transition: filter 0.3s ease, transform 0.1s ease;
         }
+
+        @keyframes bg-color{
+            from{
+                background-position: 0% 0%;
+            }
+            25%{
+                background-position: 75% 0%;
+            }
+            50%{
+                background-position: 150% 0%;
+            }
+            75%{
+                background-position: 225% 0%;
+            }
+            to{
+                background-position: 300% 0%;
+            }
+        }
     `;
 
     styleString = designColor === 'pink'
@@ -123,8 +141,6 @@ export default function WikiPage() {
                 setLoading(false);
                 return;
             }
-
-            const isPrivate = wikiData.edit_mode === 'private';
 
             // 3. ページ取得
             const { data: pageData, error: pageError } = await supabase
@@ -271,7 +287,7 @@ export default function WikiPage() {
                 </title>
                 <style jsx global>{styleString}</style>
             </Head>
-            <body className='wiki-font'>
+            <body className="wiki-font">
                 {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
                     <main style={{ padding: '2rem', maxWidth: 600 }}>
                     <h1>📝 ページ編集</h1>
