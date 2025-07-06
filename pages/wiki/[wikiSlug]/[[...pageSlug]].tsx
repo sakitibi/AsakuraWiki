@@ -17,6 +17,34 @@ const supabase = createClient(
 
 let designColor: 'pink' | 'default' | null = null;
 
+const commonStyle = `
+    html, body {
+        font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+        font-size: 12px !important;
+    }
+`;
+
+const pinkStyle = `
+    body {
+        background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
+        background-size: 300% 100%;
+        background-attachment: fixed;
+        animation: bg-color 150s linear infinite;
+        font-size: 15px;
+        font-style: normal;
+        font-weight: bold;
+    }
+
+    button::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
+        transition: filter 0.3s ease, transform 0.1s ease;
+    }
+`;
+
 async function fetchDesignColor() {
     const { data, error } = await supabase
         .from('wikis')
@@ -234,33 +262,8 @@ export default function WikiPage() {
                     {isEdit ? ' を編集' : ''}
                 </title>
                 <style jsx global>{`
-                    /* 共通スタイル */
-                    html, body {
-                    font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
-                    font-size: 12px !important;
-                    }
-
-                    /* ピンクデザイン用スタイル */
-                    ${designColor === 'pink' ? `
-                    body {
-                        background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
-                        background-size: 300% 100%;
-                        background-attachment: fixed;
-                        animation: bg-color 150s linear infinite;
-                        font-size: 15px;
-                        font-style: normal;
-                        font-weight: bold;
-                    }
-
-                    button::before {
-                        content: '';
-                        position: absolute;
-                        inset: 0;
-                        z-index: 0;
-                        background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
-                        transition: filter 0.3s ease, transform 0.1s ease;
-                    }
-                    ` : ''}
+                    ${commonStyle}
+                    ${designColor === 'pink' ? pinkStyle : ''}
                 `}</style>
             </Head>
             {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
