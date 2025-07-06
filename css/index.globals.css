@@ -8,6 +8,11 @@ body{
     font-weight: bold;
 }
 
+body.wiki-font{
+    font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+    font-size: 12px;
+}
+
 button {
     position: relative;
     padding: 10px 20px;

@@ -269,64 +269,66 @@ export default function WikiPage() {
                 </title>
                 <style jsx global>{styleString}</style>
             </Head>
-            {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
-                <main style={{ padding: '2rem', maxWidth: 600 }}>
-                <h1>📝 ページ編集</h1>
-                <form onSubmit={handleUpdate}>
-                    <label>
-                    タイトル:
-                    <input
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                        required
-                        style={{ width: '100%', marginTop: 4 }}
-                    />
-                    </label>
-                    <br /><br />
-                    <label>
-                    内容:
-                    <textarea
-                        value={content}
-                        onChange={e => setContent(e.target.value)}
-                        style={{ width: '200%', height: 500, marginTop: 4 }}
-                    ></textarea>
-                    </label>
-                    <br /><br />
-                    <h2>プレビュー：</h2>
-                    <div
-                    style={{
-                        border: '1px solid #ccc',
-                        padding: '1rem',
-                        background: '#f9f9f9',
-                        minHeight: 100
-                    }}
-                    >
-                    {parseWikiContent(parseTarget, context).map((node, i) => (
-                        <React.Fragment key={i}>{node}</React.Fragment>
-                    ))}
-                    </div>
-                    <br /><br />
-                    <button type="submit" disabled={loading}>
-                        <span>
-                            {loading ? '保存中…' : '保存'}
-                        </span>
-                    </button>
-                </form>
-                </main>
-            ) : (
-                <div style={{ padding: '2rem', maxWidth: 800 }}>
-                <div>
-                    {parseWikiContent(parseTarget, context).map((node, i) => (
-                    <React.Fragment key={i}>{node}</React.Fragment>
-                    ))}
-                </div>
-                <br />
+            <body className='wiki-font'>
+                {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
+                    <main style={{ padding: '2rem', maxWidth: 600 }}>
+                    <h1>📝 ページ編集</h1>
+                    <form onSubmit={handleUpdate}>
+                        <label>
+                        タイトル:
+                        <input
+                            value={title}
+                            onChange={e => setTitle(e.target.value)}
+                            required
+                            style={{ width: '100%', marginTop: 4 }}
+                        />
+                        </label>
+                        <br /><br />
+                        <label>
+                        内容:
+                        <textarea
+                            value={content}
+                            onChange={e => setContent(e.target.value)}
+                            style={{ width: '200%', height: 500, marginTop: 4 }}
+                        ></textarea>
+                        </label>
+                        <br /><br />
+                        <h2>プレビュー：</h2>
+                        <div
+                        style={{
+                            border: '1px solid #ccc',
+                            padding: '1rem',
+                            background: '#f9f9f9',
+                            minHeight: 100
+                        }}
+                        >
+                        {parseWikiContent(parseTarget, context).map((node, i) => (
+                            <React.Fragment key={i}>{node}</React.Fragment>
+                        ))}
+                        </div>
+                        <br /><br />
+                        <button type="submit" disabled={loading}>
+                            <span>
+                                {loading ? '保存中…' : '保存'}
+                            </span>
+                        </button>
+                    </form>
+                    </main>
+                ) : (
+                    <div style={{ padding: '2rem', maxWidth: 800 }}>
                     <div>
-                        <button onClick={handleEdit}><span>このページを編集</span></button>
-                        <button onClick={handleDelete}><span>このページを削除</span></button>
+                        {parseWikiContent(parseTarget, context).map((node, i) => (
+                        <React.Fragment key={i}>{node}</React.Fragment>
+                        ))}
                     </div>
-                </div>
-            )}
+                    <br />
+                        <div>
+                            <button onClick={handleEdit}><span>このページを編集</span></button>
+                            <button onClick={handleDelete}><span>このページを削除</span></button>
+                        </div>
+                    </div>
+                )}
+            </body>
         </>
     )
 }
