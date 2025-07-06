@@ -16,7 +16,7 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-let designColor: 'pink' | 'blue' |'default' | null = null;
+let designColor: 'pink' | 'blue' | 'yellow' | 'default' | null = null;
 
 async function fetchDesignColor() {
     const { data, error } = await supabase
@@ -318,6 +318,26 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             borderColor: 'currentcolor currentcolor #86b8e2 #86b8e2',
             borderRight: '1px solid #86b8e2',
             borderTop: '1px solid #86b8e2',
+            cursor: 'pointer'
+        } : designColor === 'yellow' ? {
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em',
+            backgroundColor: '#feeaa4',
+            border: '0',
+            borderBottom: '1px solid',
+            borderLeft: '15px solid',
+            display: 'block',
+            fontSize: '1.5em',
+            marginBlockStart: '0.83em',
+            marginBlockEnd: '0.83em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            borderColor: 'currentcolor currentcolor #fdd341 #fdd341',
+            borderRight: '1px solid #fdd341',
+            borderTop: '1px solid #fdd341',
             cursor: 'pointer'
         } : {
             color: '#000',
