@@ -211,6 +211,15 @@ export default function WikiPage() {
                 {page.title}
                 {isEdit ? ' を編集' : ''}
                 </title>
+                <style jsx global>
+                    {`
+                        /* css start */
+                        *{
+                            font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+                            font-size: 12px;
+                        }
+                    `}
+                </style>
             </Head>
 
             {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
