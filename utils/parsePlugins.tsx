@@ -16,7 +16,7 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-let designColor: 'pink' | 'default' | null = null;
+let designColor: 'pink' | 'blue' |'default' | null = null;
 
 async function fetchDesignColor() {
     const { data, error } = await supabase
@@ -299,6 +299,26 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             borderRight: '1px solid #ea94bc',
             borderTop: '1px solid #ea94bc',
             cursor: 'pointer'
+        } : designColor === 'blue' ? {
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em',
+            backgroundColor: '#cce3f8',
+            border: '0',
+            borderBottom: '1px solid',
+            borderLeft: '15px solid',
+            display: 'block',
+            fontSize: '1.5em',
+            marginBlockStart: '0.83em',
+            marginBlockEnd: '0.83em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            borderColor: 'currentcolor currentcolor #86b8e2 #86b8e2',
+            borderRight: '1px solid #86b8e2',
+            borderTop: '1px solid #86b8e2',
+            cursor: 'pointer'
         } : {
             color: '#000',
             margin: '.2em 0 .5em',
@@ -341,6 +361,23 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
                 margin: '.2em 0 .5em',
                 padding: '.3em .3em .15em .5em',
                 cursor: 'pointer'
+            } : designColor === 'blue' ? {
+                display: 'block',
+                fontSize: '1.17em',
+                marginBlockStart: '1em',
+                marginBlockEnd: '1em',
+                marginInlineStart: '0px',
+                marginInlineEnd: '0px',
+                fontWeight: 'bold',
+                unicodeBidi: 'isolate',
+                border: '1px solid',
+                borderLeft: '15px solid',
+                backgroundColor: 'transparent',
+                borderColor: '#86b8e2',
+                color: '#000',
+                margin: '.2em 0 .5em',
+                padding: '.3em .3em .15em .5em',
+                cursor: 'pointer'
             } : {
                 display: 'block',
                 fontSize: '1.17em',
@@ -364,6 +401,20 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
         designColor === 'pink' ?
         {
             borderLeft: '15px solid #ea94bc',
+            cursor: 'pointer',
+            display: 'block',
+            marginBlockStart: '1.33em',
+            marginBlockEnd: '1.33em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            backgroundColor: 'transparent',
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em'
+        } : designColor === 'blue' ? {
+            borderLeft: '15px solid #86b8e2',
             cursor: 'pointer',
             display: 'block',
             marginBlockStart: '1.33em',
@@ -430,6 +481,25 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
             borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
             borderRight: '1px solid #ea94bc',
             borderTop: '1px solid #ea94bc',
+        } : designColor === 'blue' ? {
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em',
+            backgroundColor: '#cce3f8',
+            border: '0',
+            borderBottom: '1px solid',
+            borderLeft: '15px solid',
+            display: 'block',
+            fontSize: '1.5em',
+            marginBlockStart: '0.83em',
+            marginBlockEnd: '0.83em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            borderColor: 'currentcolor currentcolor #86b8e2 #86b8e2',
+            borderRight: '1px solid #86b8e2',
+            borderTop: '1px solid #86b8e2',
         } : {
             color: '#000',
             margin: '.2em 0 .5em',
@@ -470,6 +540,22 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
                 color: '#000',
                 margin: '.2em 0 .5em',
                 padding: '.3em .3em .15em .5em',
+            } : designColor === 'blue' ? {
+                display: 'block',
+                fontSize: '1.17em',
+                marginBlockStart: '1em',
+                marginBlockEnd: '1em',
+                marginInlineStart: '0px',
+                marginInlineEnd: '0px',
+                fontWeight: 'bold',
+                unicodeBidi: 'isolate',
+                border: '1px solid',
+                borderLeft: '15px solid',
+                backgroundColor: 'transparent',
+                borderColor: '#86b8e2',
+                color: '#000',
+                margin: '.2em 0 .5em',
+                padding: '.3em .3em .15em .5em',
             } : {
                 display: 'block',
                 fontSize: '1.17em',
@@ -492,6 +578,19 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
         designColor === 'pink' ?
         {
             borderLeft: '15px solid #ea94bc',
+            display: 'block',
+            marginBlockStart: '1.33em',
+            marginBlockEnd: '1.33em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            backgroundColor: 'transparent',
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em'
+        } : designColor === 'blue' ? {
+            borderLeft: '15px solid #86b8e2',
             display: 'block',
             marginBlockStart: '1.33em',
             marginBlockEnd: '1.33em',
