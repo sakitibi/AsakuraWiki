@@ -15,7 +15,15 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-let designColor: 'pink' | 'default' | null = null;
+const [designColor, setDesignColor] = useState<'pink' | 'default' | null>(null);
+
+useEffect(() => {
+    async function fetchColor() {
+        const color = await fetchDesignColor();
+        setDesignColor(color);
+    }
+    fetchColor();
+}, []);
 
 async function fetchDesignColor() {
     const { data, error } = await supabase
@@ -31,11 +39,6 @@ async function fetchDesignColor() {
 
     return data.design_color;
 }
-
-(async function () {
-    designColor = await fetchDesignColor();
-    console.log('取得したデザインカラー:', designColor);
-})();
 
 export default function WikiPage() {
     const router = useRouter()
@@ -243,7 +246,7 @@ export default function WikiPage() {
                     {isEdit ? ' を編集' : ''}
                 </title>
             </Head>
-            <body className="wiki-font">
+            <div className="wiki-font">
                 {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
                     <main style={{ padding: '2rem', maxWidth: 600 }}>
                     <h1>📝 ページ編集</h1>
@@ -302,7 +305,7 @@ export default function WikiPage() {
                         </div>
                     </div>
                 )}
-            </body>
+            </div>
         </>
     )
 }
