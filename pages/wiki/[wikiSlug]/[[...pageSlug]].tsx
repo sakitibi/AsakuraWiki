@@ -284,6 +284,8 @@ export default function WikiPage() {
         }
     }, 1000);
 
+    console.log(styleString);
+
     return (
         <>
             <Head>
