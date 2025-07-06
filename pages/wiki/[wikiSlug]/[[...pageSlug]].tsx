@@ -214,7 +214,7 @@ export default function WikiPage() {
                 <style jsx global>
                     {`
                         /* css start */
-                        main{
+                        #content *{
                             font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
                             font-size: 12px;
                         }
@@ -223,7 +223,7 @@ export default function WikiPage() {
             </Head>
 
             {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
-                <main style={{ padding: '2rem', maxWidth: 600 }}>
+                <main style={{ padding: '2rem', maxWidth: 600 }} id="content">
                 <h1>📝 ページ編集</h1>
                 <form onSubmit={handleUpdate}>
                     <label>
