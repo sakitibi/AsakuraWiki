@@ -22,7 +22,7 @@ export default function WikiSettingsPage() {
     const [editMode, setEditMode] = useState<'public' | 'private'>('public');
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
-    const [designColor, setdesignColor] = useState<'pink' | 'blue' | 'default'>('default');
+    const [designColor, setdesignColor] = useState<'pink' | 'blue' | 'yellow' |'default'>('default');
 
     useEffect(() => {
         if (!slugStr || !user) return;
@@ -56,7 +56,12 @@ export default function WikiSettingsPage() {
             setName(data.name);
             setDescription(data.description);
             setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
-            setdesignColor(data.design_color === 'pink' ? 'pink' : data.design_color === 'blue' ? 'blue' : 'default');
+            setdesignColor(
+                data.design_color === 'pink' ? 'pink' : 
+                data.design_color === 'blue' ? 'blue' : 
+                data.design_color === 'yellow' ? 'yellow': 
+                'default'
+            );
             setLoading(false);
         };
 
@@ -174,12 +179,13 @@ export default function WikiSettingsPage() {
                                 <select
                                     value={designColor}
                                     onChange={(e) => 
-                                        setdesignColor(e.target.value as 'pink' | 'blue' | 'default')
+                                        setdesignColor(e.target.value as 'pink' | 'blue' | 'yellow' |'default')
                                     }
                                     >
                                     <option value="default">デフォルト</option>
                                     <option value="pink">ピンク</option>
                                     <option value="blue">ブルー</option>
+                                    <option value="yellow">イエロー</option>
                                 </select>
                             </label>
                             <br /><br />
