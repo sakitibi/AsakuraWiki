@@ -13,7 +13,29 @@ type Page = {
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+);
+
+let designColor: 'pink' | 'default' | null = null;
+
+async function fetchDesignColor() {
+    const { data, error } = await supabase
+        .from('wikis')
+        .select('design_color')
+        .limit(1)
+        .single();
+
+    if (error) {
+        console.error('データ取得エラー:', error);
+        return null;
+    }
+
+    return data.design_color;
+}
+
+(async function () {
+    designColor = await fetchDesignColor();
+    console.log('取得したデザインカラー:', designColor);
+})();
 
 export default function WikiPage() {
     const router = useRouter()
@@ -214,16 +236,41 @@ export default function WikiPage() {
                 <style jsx global>
                     {`
                         /* css start */
-                        #content *{
+                        html{
                             font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
                             font-size: 12px;
                         }
+                        /* css end */
                     `}
                 </style>
-            </Head>
+                {designColor === 'pink' ? (
+                    <style jsx global>
+                        {`
+                            /* only design pink css start */
+                            body{
+                                background-image: linear-gradient(to right,rgb(233, 120, 203),rgb(231, 110, 185),rgb(217, 70, 195),rgb(185, 21, 164),rgb(217, 75, 198),rgb(215, 113, 221)) !important;
+                                background-size: 300% 100%;
+                                background-attachment: fixed;
+                                animation: bg-color 150s linear infinite;
+                                font-size: 15px;
+                                font-style: normal;
+                                font-weight: bold;
+                            }
 
+                            button::before {
+                                content: '';
+                                position: absolute;
+                                inset: 0;
+                                z-index: 0;
+                                background-image: linear-gradient(to left,rgb(244, 164, 229)rgb(199, 17, 157)7) !important;
+                                transition: filter 0.3s ease, transform 0.1s ease;
+                            }
+                        `}
+                    </style>
+                ) : (null)}
+            </Head>
             {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
-                <main style={{ padding: '2rem', maxWidth: 600 }} id="content">
+                <main style={{ padding: '2rem', maxWidth: 600 }}>
                 <h1>📝 ページ編集</h1>
                 <form onSubmit={handleUpdate}>
                     <label>

@@ -30,7 +30,7 @@ button::before {
     position: absolute;
     inset: 0;
     z-index: 0;
-    background-image: linear-gradient(to left, #58ec91, #0b6e2c);
+    background-image: linear-gradient(to left, #1ce369, #076727);
     transition: filter 0.3s ease, transform 0.1s ease;
 }
 
