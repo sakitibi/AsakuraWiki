@@ -17,6 +17,26 @@ const supabase = createClient(
 
 let designColor: 'pink' | 'default' | null = null;
 
+async function fetchDesignColor() {
+    const { data, error } = await supabase
+        .from('wikis')
+        .select('design_color')
+        .limit(1)
+        .single();
+
+    if (error) {
+        console.error('データ取得エラー:', error);
+        return null;
+    }
+
+    return data.design_color;
+}
+
+(async function () {
+    designColor = await fetchDesignColor();
+    console.log('取得したデザインカラー:', designColor);
+})();
+
 const commonStyle = `
     html, body {
         font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
@@ -50,26 +70,6 @@ const styleString = designColor === 'pink'
     : commonStyle;
 
 console.log('styleString:', styleString);
-
-async function fetchDesignColor() {
-    const { data, error } = await supabase
-        .from('wikis')
-        .select('design_color')
-        .limit(1)
-        .single();
-
-    if (error) {
-        console.error('データ取得エラー:', error);
-        return null;
-    }
-
-    return data.design_color;
-}
-
-(async function () {
-    designColor = await fetchDesignColor();
-    console.log('取得したデザインカラー:', designColor);
-})();
 
 export default function WikiPage() {
     const router = useRouter()
