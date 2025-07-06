@@ -447,10 +447,10 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
     return (
         <div style={{ margin: '1em 0' }}>
         <Tag onClick={() => setOpen(!open)} style={headingStyle}>
-            {title}
             <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
             <path fill="currentColor" d={iconPath} />
             </svg>
+            {title}
         </Tag>
         {open && <div style={{ paddingLeft: '1em', }}>{children}</div>}
         </div>
