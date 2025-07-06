@@ -31,7 +31,7 @@ export default function WikiSettingsPage() {
             setLoading(true);
             const { data, error } = await supabase
             .from('wikis')
-            .select('name, description, owner_id, edit_mode')
+            .select('name, description, owner_id, edit_mode, design_color')
             .eq('slug', slugStr)
             .maybeSingle();
 
@@ -56,6 +56,7 @@ export default function WikiSettingsPage() {
             setName(data.name);
             setDescription(data.description);
             setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
+            setdesignColor(data.design_color === 'pink' ? 'pink' : 'default');
             setLoading(false);
         };
 
