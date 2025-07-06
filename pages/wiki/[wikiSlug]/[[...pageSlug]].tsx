@@ -214,7 +214,7 @@ export default function WikiPage() {
                 <style jsx global>
                     {`
                         /* css start */
-                        main *{
+                        main{
                             font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
                             font-size: 12px;
                         }
