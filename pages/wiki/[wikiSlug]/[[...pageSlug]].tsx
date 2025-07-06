@@ -230,45 +230,38 @@ export default function WikiPage() {
         <>
             <Head>
                 <title>
-                {page.title}
-                {isEdit ? ' を編集' : ''}
+                    {page.title}
+                    {isEdit ? ' を編集' : ''}
                 </title>
-                <style jsx global>
-                    {`
-                        /* css start */
-                        html, body{
-                            font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
-                            font-size: 12px !important;
-                        }
-                        /* css end */
-                    `}
-                </style>
-                {designColor === 'pink' ? (
-                    <style jsx global>
-                        {`
-                            /* only design pink css start */
-                            body{
-                                background-image: linear-gradient(to right,rgb(233, 120, 203),rgb(231, 110, 185),rgb(217, 70, 195),rgb(185, 21, 164),rgb(217, 75, 198),rgb(215, 113, 221)) !important;
-                                background-size: 300% 100%;
-                                background-attachment: fixed;
-                                animation: bg-color 150s linear infinite;
-                                font-size: 15px;
-                                font-style: normal;
-                                font-weight: bold;
-                            }
+                <style jsx global>{`
+                    /* 共通スタイル */
+                    html, body {
+                    font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+                    font-size: 12px !important;
+                    }
 
-                            button::before {
-                                content: '';
-                                position: absolute;
-                                inset: 0;
-                                z-index: 0;
-                                background-image: linear-gradient(to left,rgb(244, 164, 229),rgb(199, 17, 157)) !important;
-                                transition: filter 0.3s ease, transform 0.1s ease;
-                            }
-                            /* only design pink css end */
-                        `}
-                    </style>
-                ) : (null)}
+                    /* ピンクデザイン用スタイル */
+                    ${designColor === 'pink' ? `
+                    body {
+                        background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
+                        background-size: 300% 100%;
+                        background-attachment: fixed;
+                        animation: bg-color 150s linear infinite;
+                        font-size: 15px;
+                        font-style: normal;
+                        font-weight: bold;
+                    }
+
+                    button::before {
+                        content: '';
+                        position: absolute;
+                        inset: 0;
+                        z-index: 0;
+                        background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
+                        transition: filter 0.3s ease, transform 0.1s ease;
+                    }
+                    ` : ''}
+                `}</style>
             </Head>
             {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
                 <main style={{ padding: '2rem', maxWidth: 600 }}>
