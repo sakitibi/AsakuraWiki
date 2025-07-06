@@ -237,8 +237,8 @@ export default function WikiPage() {
                     {`
                         /* css start */
                         html{
-                            font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-                            font-size: 12px;
+                            font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+                            font-size: 12px !important;
                         }
                         /* css end */
                     `}
