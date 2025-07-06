@@ -265,7 +265,7 @@ export default function WikiPage() {
                     {page.title}
                     {isEdit ? ' を編集' : ''}
                 </title>
-                <style jsx global>{styleString}</style>
+                <style jsx global>{`${styleString}`}</style>
             </Head>
             {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
                 <main style={{ padding: '2rem', maxWidth: 600 }}>
