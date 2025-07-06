@@ -262,7 +262,7 @@ export default function WikiPage() {
                                 position: absolute;
                                 inset: 0;
                                 z-index: 0;
-                                background-image: linear-gradient(to left,rgb(244, 164, 229)rgb(199, 17, 157)7) !important;
+                                background-image: linear-gradient(to left,rgb(244, 164, 229),rgb(199, 17, 157)) !important;
                                 transition: filter 0.3s ease, transform 0.1s ease;
                             }
                         `}
