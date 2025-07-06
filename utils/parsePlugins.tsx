@@ -410,58 +410,114 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
 function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }) {
     const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
     const headingStyle: React.CSSProperties = level === '*'
-    ? {
-        color: '#000',
-        margin: '.2em 0 .5em',
-        padding: '.3em .3em .15em .5em',
-        backgroundColor: '#fad6e7',
-        border: '0',
-        borderBottom: '1px solid',
-        borderLeft: '15px solid',
-        display: 'block',
-        fontSize: '1.5em',
-        marginBlockStart: '0.83em',
-        marginBlockEnd: '0.83em',
-        marginInlineStart: '0px',
-        marginInlineEnd: '0px',
-        fontWeight: 'bold',
-        unicodeBidi: 'isolate',
-        borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
-        borderRight: '1px solid #ea94bc',
-        borderTop: '1px solid #ea94bc',
-    }
-    : level === '**'
-        ? {
+    ? (
+        designColor === 'pink' ? {
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em',
+            backgroundColor: '#fad6e7',
+            border: '0',
+            borderBottom: '1px solid',
+            borderLeft: '15px solid',
             display: 'block',
-            fontSize: '1.17em',
-            marginBlockStart: '1em',
-            marginBlockEnd: '1em',
+            fontSize: '1.5em',
+            marginBlockStart: '0.83em',
+            marginBlockEnd: '0.83em',
             marginInlineStart: '0px',
             marginInlineEnd: '0px',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
-            border: '1px solid',
-            borderLeft: '15px solid',
-            backgroundColor: 'transparent',
-            borderColor: '#ea94bc',
+            borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
+            borderRight: '1px solid #ea94bc',
+            borderTop: '1px solid #ea94bc',
+        } : {
             color: '#000',
             margin: '.2em 0 .5em',
             padding: '.3em .3em .15em .5em',
+            backgroundColor: '#d1f0a0',
+            border: '0',
+            borderBottom: '1px solid',
+            borderLeft: '15px solid',
+            display: 'block',
+            fontSize: '1.5em',
+            marginBlockStart: '0.83em',
+            marginBlockEnd: '0.83em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            borderColor: 'currentcolor currentcolor #afd965 #afd965',
+            borderRight: '1px solid #afd965',
+            borderTop: '1px solid #afd965',
         }
-    : {
-        borderLeft: '15px solid #ea94bc',
-        display: 'block',
-        marginBlockStart: '1.33em',
-        marginBlockEnd: '1.33em',
-        marginInlineStart: '0px',
-        marginInlineEnd: '0px',
-        fontWeight: 'bold',
-        unicodeBidi: 'isolate',
-        backgroundColor: 'transparent',
-        color: '#000',
-        margin: '.2em 0 .5em',
-        padding: '.3em .3em .15em .5em'
-    };
+    )
+    : level === '**' ?
+        (
+            designColor === 'pink'
+            ? {
+                display: 'block',
+                fontSize: '1.17em',
+                marginBlockStart: '1em',
+                marginBlockEnd: '1em',
+                marginInlineStart: '0px',
+                marginInlineEnd: '0px',
+                fontWeight: 'bold',
+                unicodeBidi: 'isolate',
+                border: '1px solid',
+                borderLeft: '15px solid',
+                backgroundColor: 'transparent',
+                borderColor: '#ea94bc',
+                color: '#000',
+                margin: '.2em 0 .5em',
+                padding: '.3em .3em .15em .5em',
+            } : {
+                display: 'block',
+                fontSize: '1.17em',
+                marginBlockStart: '1em',
+                marginBlockEnd: '1em',
+                marginInlineStart: '0px',
+                marginInlineEnd: '0px',
+                fontWeight: 'bold',
+                unicodeBidi: 'isolate',
+                border: '1px solid',
+                borderLeft: '15px solid',
+                backgroundColor: 'transparent',
+                borderColor: '#afd965',
+                color: '#000',
+                margin: '.2em 0 .5em',
+                padding: '.3em .3em .15em .5em',
+            }
+        )
+    : (
+        designColor === 'pink' ?
+        {
+            borderLeft: '15px solid #ea94bc',
+            display: 'block',
+            marginBlockStart: '1.33em',
+            marginBlockEnd: '1.33em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            backgroundColor: 'transparent',
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em'
+        } : {
+            borderLeft: '15px solid #afd965',
+            display: 'block',
+            marginBlockStart: '1.33em',
+            marginBlockEnd: '1.33em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            backgroundColor: 'transparent',
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em'
+        }
+    )
 
     return (
         <div style={{ margin: '1em 0' }}>
