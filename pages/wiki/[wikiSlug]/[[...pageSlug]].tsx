@@ -49,6 +49,8 @@ const styleString = designColor === 'pink'
     ? `${commonStyle}\n${pinkStyle}`
     : commonStyle;
 
+console.log('styleString:', styleString);
+
 async function fetchDesignColor() {
     const { data, error } = await supabase
         .from('wikis')
