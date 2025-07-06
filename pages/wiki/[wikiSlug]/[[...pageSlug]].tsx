@@ -119,16 +119,18 @@ export default function WikiPage() {
                 setError(null);
             }
 
-            async function applyDesignColor() {
-                document.body.classList.add('wiki-font'); // 既存クラスを保持
+            useEffect(() => {
+                document.body.classList.add('wiki-font');
                 if (designColor === 'pink') {
                     document.body.classList.add('pink');
-                } else {
-                    document.body.classList.remove('pink');
                 }
-            }
 
-            applyDesignColor();
+                // クリーンアップ関数でクラスを削除
+                return () => {
+                    document.body.classList.remove('wiki-font');
+                    document.body.classList.remove('pink');
+                };
+            }, [designColor]);
 
             setLoading(false);
         })();
