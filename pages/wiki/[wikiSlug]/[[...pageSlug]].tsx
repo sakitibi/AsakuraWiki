@@ -236,7 +236,7 @@ export default function WikiPage() {
                 <style jsx global>
                     {`
                         /* css start */
-                        html{
+                        html, body{
                             font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
                             font-size: 12px !important;
                         }
@@ -265,6 +265,7 @@ export default function WikiPage() {
                                 background-image: linear-gradient(to left,rgb(244, 164, 229),rgb(199, 17, 157)) !important;
                                 transition: filter 0.3s ease, transform 0.1s ease;
                             }
+                            /* only design pink css end */
                         `}
                     </style>
                 ) : (null)}
