@@ -45,6 +45,10 @@ const pinkStyle = `
     }
 `;
 
+const styleString = designColor === 'pink'
+    ? `${commonStyle}\n${pinkStyle}`
+    : commonStyle;
+
 async function fetchDesignColor() {
     const { data, error } = await supabase
         .from('wikis')
@@ -261,10 +265,7 @@ export default function WikiPage() {
                     {page.title}
                     {isEdit ? ' を編集' : ''}
                 </title>
-                <style jsx global>{`
-                    ${commonStyle}
-                    ${designColor === 'pink' ? pinkStyle : ''}
-                `}</style>
+                <style jsx global>{styleString}</style>
             </Head>
             {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
                 <main style={{ padding: '2rem', maxWidth: 600 }}>
