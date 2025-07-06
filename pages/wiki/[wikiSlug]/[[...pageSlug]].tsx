@@ -16,6 +16,9 @@ const supabase = createClient(
 );
 
 let designColor: 'pink' | 'default' | null = null;
+let commonStyle: string | null = null;
+let pinkStyle: string | null = null;
+let styleString: string | null = null;
 
 async function fetchDesignColor() {
     const { data, error } = await supabase
@@ -35,41 +38,40 @@ async function fetchDesignColor() {
 (async function () {
     designColor = await fetchDesignColor();
     console.log('取得したデザインカラー:', designColor);
+    commonStyle = `
+        html, body {
+            font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+            font-size: 12px !important;
+        }
+    `;
+
+    pinkStyle = `
+        body {
+            background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
+            background-size: 300% 100%;
+            background-attachment: fixed;
+            animation: bg-color 150s linear infinite;
+            font-size: 15px;
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
+            transition: filter 0.3s ease, transform 0.1s ease;
+        }
+    `;
+
+    styleString = designColor === 'pink'
+        ? `${commonStyle}\n${pinkStyle}`
+        : commonStyle;
+
+    console.log('styleString:', styleString);
 })();
-
-const commonStyle = `
-    html, body {
-        font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
-        font-size: 12px !important;
-    }
-`;
-
-const pinkStyle = `
-    body {
-        background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
-        background-size: 300% 100%;
-        background-attachment: fixed;
-        animation: bg-color 150s linear infinite;
-        font-size: 15px;
-        font-style: normal;
-        font-weight: bold;
-    }
-
-    button::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
-        transition: filter 0.3s ease, transform 0.1s ease;
-    }
-`;
-
-const styleString = designColor === 'pink'
-    ? `${commonStyle}\n${pinkStyle}`
-    : commonStyle;
-
-console.log('styleString:', styleString);
 
 export default function WikiPage() {
     const router = useRouter()
