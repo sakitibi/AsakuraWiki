@@ -10,6 +10,8 @@ import { DATEDIF, DATEVALUE } from './dateFunctions'
 
 export type Context = { wikiSlug: string; pageSlug: string }
 
+const designColor = useState<'pink' | 'default'>('default');
+
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
  */
@@ -250,27 +252,49 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7c24-24 c24s-24-10.7-24-24z'
     const headingStyle: React.CSSProperties = level === '*'
-    ? {
-        color: '#000',
-        margin: '.2em 0 .5em',
-        padding: '.3em .3em .15em .5em',
-        backgroundColor: '#fad6e7',
-        border: '0',
-        borderBottom: '1px solid',
-        borderLeft: '15px solid',
-        display: 'block',
-        fontSize: '1.5em',
-        marginBlockStart: '0.83em',
-        marginBlockEnd: '0.83em',
-        marginInlineStart: '0px',
-        marginInlineEnd: '0px',
-        fontWeight: 'bold',
-        unicodeBidi: 'isolate',
-        borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
-        borderRight: '1px solid #ea94bc',
-        borderTop: '1px solid #ea94bc',
-        cursor: 'pointer'
-    }
+    ? (
+        designColor[0] === 'pink' ? {
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em',
+            backgroundColor: '#fad6e7',
+            border: '0',
+            borderBottom: '1px solid',
+            borderLeft: '15px solid',
+            display: 'block',
+            fontSize: '1.5em',
+            marginBlockStart: '0.83em',
+            marginBlockEnd: '0.83em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
+            borderRight: '1px solid #ea94bc',
+            borderTop: '1px solid #ea94bc',
+            cursor: 'pointer'
+        } : {
+            color: '#000',
+            margin: '.2em 0 .5em',
+            padding: '.3em .3em .15em .5em',
+            backgroundColor: '#d1f0a0',
+            border: '0',
+            borderBottom: '1px solid',
+            borderLeft: '15px solid',
+            display: 'block',
+            fontSize: '1.5em',
+            marginBlockStart: '0.83em',
+            marginBlockEnd: '0.83em',
+            marginInlineStart: '0px',
+            marginInlineEnd: '0px',
+            fontWeight: 'bold',
+            unicodeBidi: 'isolate',
+            borderColor: 'currentcolor currentcolor #afd965 #afd965',
+            borderRight: '1px solid #afd965',
+            borderTop: '1px solid #afd965',
+            cursor: 'pointer'
+        }
+    )
     : level === '**'
         ? {
             display: 'block',
