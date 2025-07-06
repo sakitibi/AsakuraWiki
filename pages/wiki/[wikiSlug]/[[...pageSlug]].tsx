@@ -53,7 +53,7 @@ export default function WikiPage() {
     const [content, setContent] = useState('')  // ← textarea の中身
     const [urlObj, setUrlObj]   = useState<URL | null>(null)
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
-    const [designColor, setDesignColor] = useState<'pink' | 'default' | null>(null);
+    const [designColor, setDesignColor] = useState<'pink' | 'blue' |'default' | null>(null);
 
     useEffect(() => {
         async function fetchColor() {
@@ -127,11 +127,14 @@ export default function WikiPage() {
         document.body.classList.add('wiki-font');
         if (designColor === 'pink') {
             document.body.classList.add('pink');
+        } else if(designColor === 'blue') {
+            document.body.classList.add('blue');
         }
 
         return () => {
             document.body.classList.remove('wiki-font');
             document.body.classList.remove('pink');
+            document.body.classList.remove('blue');
         };
     }, [designColor]);
 
