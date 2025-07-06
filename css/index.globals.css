@@ -13,6 +13,17 @@ body.wiki-font{
     font-size: 12px;
 }
 
+body.wiki-font.pink {
+    background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
+    background-size: 300% 100%;
+    background-attachment: fixed;
+    animation: bg-color 150s linear infinite;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: bold;
+    font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
+}
+
 button {
     position: relative;
     padding: 10px 20px;
@@ -36,6 +47,15 @@ button::before {
     inset: 0;
     z-index: 0;
     background-image: linear-gradient(to left, #1ce369, #076727);
+    transition: filter 0.3s ease, transform 0.1s ease;
+}
+
+.wiki-font.pink button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
     transition: filter 0.3s ease, transform 0.1s ease;
 }
 

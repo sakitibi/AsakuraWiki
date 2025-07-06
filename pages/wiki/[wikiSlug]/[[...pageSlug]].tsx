@@ -16,9 +16,6 @@ const supabase = createClient(
 );
 
 let designColor: 'pink' | 'default' | null = null;
-let commonStyle: string | null = null;
-let pinkStyle: string | null = null;
-let styleString: string | null = null;
 
 async function fetchDesignColor() {
     const { data, error } = await supabase
@@ -34,6 +31,11 @@ async function fetchDesignColor() {
 
     return data.design_color;
 }
+
+(async function () {
+    designColor = await fetchDesignColor();
+    console.log('取得したデザインカラー:', designColor);
+})();
 
 export default function WikiPage() {
     const router = useRouter()
@@ -58,68 +60,6 @@ export default function WikiPage() {
     const [content, setContent] = useState('')  // ← textarea の中身
     const [urlObj, setUrlObj]   = useState<URL | null>(null)
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
-    const [styleString, setStyleString] = useState<string | null>(null);
-
-    useEffect(() => {
-        async function fetchDesignColor() {
-        const { data, error } = await supabase
-            .from('wikis')
-            .select('design_color')
-            .limit(1)
-            .single();
-
-        if (error) {
-            console.error('デザインカラー取得エラー:', error);
-            return;
-        }
-
-        const designColor = data.design_color;
-
-        const commonStyle = `
-            html, body {
-            font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
-            font-size: 12px !important;
-            }
-        `;
-
-        const pinkStyle = `
-            body {
-            background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
-            background-size: 300% 100%;
-            background-attachment: fixed;
-            animation: bg-color 150s linear infinite;
-            font-size: 15px;
-            font-style: normal;
-            font-weight: bold;
-            }
-
-            button::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
-            transition: filter 0.3s ease, transform 0.1s ease;
-            }
-
-            @keyframes bg-color {
-            0% { background-position: 0% 0%; }
-            25% { background-position: 75% 0%; }
-            50% { background-position: 150% 0%; }
-            75% { background-position: 225% 0%; }
-            100% { background-position: 300% 0%; }
-            }
-        `;
-
-        const fullStyle = designColor === 'pink'
-            ? `${commonStyle}\n${pinkStyle}`
-            : commonStyle;
-
-        setStyleString(fullStyle);
-        }
-
-        fetchDesignColor();
-    }, []);
 
     // URL取得（編集モード判定用）
     useEffect(() => {
@@ -165,6 +105,17 @@ export default function WikiPage() {
                 setContent(pageData.content);
                 setError(null);
             }
+
+            async function applyDesignColor() {
+                document.body.classList.add('wiki-font'); // 既存クラスを保持
+                if (designColor === 'pink') {
+                    document.body.classList.add('pink');
+                } else {
+                    document.body.classList.remove('pink');
+                }
+            }
+
+            applyDesignColor();
 
             setLoading(false);
         })();
@@ -284,8 +235,6 @@ export default function WikiPage() {
         }
     }, 1000);
 
-    console.log(styleString);
-
     return (
         <>
             <Head>
@@ -293,7 +242,6 @@ export default function WikiPage() {
                     {page.title}
                     {isEdit ? ' を編集' : ''}
                 </title>
-                <style jsx global>{styleString}</style>
             </Head>
             <body className="wiki-font">
                 {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
