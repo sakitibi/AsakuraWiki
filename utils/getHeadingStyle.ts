@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -29,7 +27,13 @@ async function fetchDesignColor() {
     console.log('取得したデザインカラー:', designColor);
 })();
 
-export default function Header({ level }: { level: '*' | '**' | '***'; },type:string,children:string) {
+type Props = {
+    type?: string;
+    children: React.ReactNode;
+};
+
+function Header({ level }: { level: '*' | '**' | '***'; }) {
+    const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
     const headingStyle: React.CSSProperties = level === '*'
     ? (
         designColor === 'pink' ? {
@@ -235,22 +239,4 @@ export default function Header({ level }: { level: '*' | '**' | '***'; },type:st
             padding: '.3em .3em .15em .5em'
         }
     )
-    if (type === 'header') {
-        const style = headingStyle; // 見出しレベルを仮に '*' に固定
-        return (
-            <table className="sel-content-table">
-                <thead>
-                    <tr>
-                        <th style={style}>{children}</th>
-                    </tr>
-                </thead>
-            </table>
-        );
-    }
-
-    return (
-        <div className={`sel-content ${type ? `sel-${type}` : ''}`}>
-            {children}
-        </div>
-    );
 }
