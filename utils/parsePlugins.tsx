@@ -7,6 +7,8 @@ import PageList from '@/components/PageList'
 import PageList2 from '@/components/PageList2'
 import IncludePage from '@/components/IncludePage'
 import TableOfContents from '@/components/TableOfContents'
+import SelContainer from '@/components/SelContainer';
+import SelContent from '@/components/SelContent';
 import { DATEDIF, DATEVALUE } from './dateFunctions'
 
 export type Context = { wikiSlug: string; pageSlug: string }
@@ -248,27 +250,64 @@ export function parseOtherInline(
      * アコーディオンとインラインプラグインを再帰的にパースするメイン関数
      */
     export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
-    const nodes: React.ReactNode[] = []
-    const blocks = extractAccordions(content)
+        const nodes: React.ReactNode[] = []
+        // 1. #sel_container{{...}} を分割して処理
+        const selContainerRe = /#sel_container\s*\{\{([\s\S]*?)\}\}/g;
+        let lastIndex = 0;
+        let selMatch: RegExpExecArray | null;
 
-    blocks.forEach((blk, idx) => {
-        // prefix 部分をインライン処理
-        if (blk.prefix) {
-            nodes.push(...parseInline(blk.prefix, context))
-        }
-        // アコーディオンブロック
-        if (blk.title) {
-            const children = parseWikiContent(blk.body!, context)
-            nodes.push(
-                <Accordion key={`acc-${idx}`} title={blk.title!} level={blk.level!} initiallyOpen={blk.isOpen!}>
-                {children}
-                </Accordion>
-            )
-        }
-    })
+        while ((selMatch = selContainerRe.exec(content))) {
+            const matchIndex = selMatch.index;
+            const matchText = selMatch[0];
+            const body = selMatch[1];
 
-    return nodes
-}
+            // sel_container 前の部分
+            const before = content.slice(lastIndex, matchIndex);
+            nodes.push(...parseInline(before, context));
+
+            // 複数行・複数セミコロン区切り対応の &sel_content を抽出
+            const contentItems: React.ReactNode[] = [];
+            const itemRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
+            let itemMatch: RegExpExecArray | null;
+
+            while ((itemMatch = itemRe.exec(body))) {
+                const [, type, inner] = itemMatch;
+                contentItems.push(
+                    <SelContent key={`sel-${matchIndex}-${itemMatch.index}`} type={type?.trim() || ''}>
+                        {inner.trim()}
+                    </SelContent>
+                );
+            }
+
+            nodes.push(<SelContainer key={`sel-${matchIndex}`}>{contentItems}</SelContainer>);
+            lastIndex = matchIndex + matchText.length;
+        }
+
+        // sel_container 後の残りをアコーディオン解析へ渡す
+        const rest = content.slice(lastIndex);
+        const blocks = extractAccordions(rest);
+
+        blocks.forEach((blk, idx) => {
+            if (blk.prefix) {
+                nodes.push(...parseInline(blk.prefix, context));
+            }
+            if (blk.title) {
+                const children = parseWikiContent(blk.body!, context);
+                nodes.push(
+                    <Accordion
+                        key={`acc-${idx}`}
+                        title={blk.title!}
+                        level={blk.level!}
+                        initiallyOpen={blk.isOpen!}
+                    >
+                        {children}
+                    </Accordion>
+                );
+            }
+        });
+
+        return nodes;
+    }
 
 /** Accordion コンポーネント */
 function Accordion({ title, level, initiallyOpen, children, }: { title: string; level: '*' | '**' | '***'; initiallyOpen: boolean; children: React.ReactNode; }) {
