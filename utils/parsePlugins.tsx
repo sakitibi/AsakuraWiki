@@ -276,7 +276,6 @@ export function parseOtherInline(
             });
             return nodes;
         }
-
         // 2. アコーディオンがなかった場合に sel_container を処理
         return parseWikiContentFragment(content, context);
     }
@@ -293,7 +292,7 @@ export function parseOtherInline(
             const fullMatch = match[0];
             const containerBody = match[1];
 
-            // 前の通常テキストを処理
+            // container の前の通常テキスト
             const before = content.slice(lastIndex, matchIndex);
             nodes.push(...parseInline(before, context));
 
@@ -302,7 +301,9 @@ export function parseOtherInline(
             let rowMatch: RegExpExecArray | null;
 
             while ((rowMatch = rowRe.exec(containerBody))) {
+                const rowIndex = matchIndex + rowMatch.index; // container 全体からの index に補正
                 const rowBody = rowMatch[1];
+
                 const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
                 const selContents: React.ReactNode[] = [];
                 let contentMatch: RegExpExecArray | null;
@@ -310,20 +311,20 @@ export function parseOtherInline(
                 while ((contentMatch = contentRe.exec(rowBody))) {
                     const [, type, inner] = contentMatch;
                     selContents.push(
-                        <SelContent key={`sel-${matchIndex}-${rowMatch.index}-${contentMatch.index}`} type={type?.trim() || ''}>
+                        <SelContent key={`sel-${rowIndex}-${contentMatch.index}`} type={type?.trim() || ''}>
                             {inner.trim()}
                         </SelContent>
                     );
                 }
 
-                rowItems.push(<SelRow key={`sel-row-${matchIndex}-${rowMatch.index}`}>{selContents}</SelRow>);
+                rowItems.push(<SelRow key={`sel-row-${rowIndex}`}>{selContents}</SelRow>);
             }
 
             nodes.push(<SelContainer key={`sel-container-${matchIndex}`}>{rowItems}</SelContainer>);
             lastIndex = matchIndex + fullMatch.length;
         }
 
-        // 残りを処理
+        // 残り部分のテキストも処理
         const rest = content.slice(lastIndex);
         nodes.push(...parseInline(rest, context));
 
