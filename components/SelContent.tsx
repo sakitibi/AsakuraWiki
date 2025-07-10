@@ -45,7 +45,7 @@ export default function SelContent({ type, children }: SelContentProps) {
         boxSizing: 'border-box',
         lineHeight: '1.6em'
     }
-    const headingStyle: React.CSSProperties = type === 'header' || type === 'subheader' || type === 'miniheader'
+    const headingStyle: React.CSSProperties = type === 'header'
     ? (
         designColor === 'pink' ? {
             display: 'table-cell',
