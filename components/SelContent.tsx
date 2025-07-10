@@ -244,13 +244,9 @@ export default function SelContent({ type, level, children }: SelContentProps) {
     if (type === 'header') {
         const style = headingStyle; // 見出しレベルを仮に '*' に固定
         return (
-            <table className="sel-content-table">
-                <thead>
-                    <tr>
-                        <th style={style}>{children}</th>
-                    </tr>
-                </thead>
-            </table>
+                <tr>
+                    <th style={style}>{children}</th>
+                </tr>
         );
     }
 
