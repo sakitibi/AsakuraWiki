@@ -279,21 +279,56 @@ export function parseOtherInline(
         // 2. アコーディオンがなかった場合に sel_container を処理
         return parseWikiContentFragment(content, context);
     }
+
+    function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
+        const results: { body: string; start: number; end: number }[] = [];
+        const startTag = '#sel_container{{';
+        let pos = 0;
+
+        while (pos < content.length) {
+            const startIdx = content.indexOf(startTag, pos);
+            if (startIdx === -1) break;
+
+            let braceLevel = 0;
+            let endIdx = -1;
+
+            for (let i = startIdx + startTag.length; i < content.length; i++) {
+                if (content.slice(i, i + 2) === '{{') {
+                    braceLevel++;
+                    i++;
+                } else if (content.slice(i, i + 2) === '}}') {
+                    if (braceLevel === 0) {
+                        endIdx = i;
+                        break;
+                    } else {
+                        braceLevel--;
+                        i++;
+                    }
+                }
+            }
+
+            if (endIdx !== -1) {
+                const body = content.slice(startIdx + startTag.length, endIdx).trim();
+                results.push({ body, start: startIdx, end: endIdx + 2 }); // include closing braces
+                pos = endIdx + 2;
+            } else {
+                // 閉じタグが見つからなかった
+                break;
+            }
+        }
+
+        return results;
+    }
     
     function parseWikiContentFragment(content: string, context: Context): React.ReactNode[] {
         const nodes: React.ReactNode[] = [];
+        const containers = extractSelContainers(content);
 
-        const containerRe = /#sel_container\s*\{\{([\s\S]*?)\}\}/g;
         let lastIndex = 0;
-        let match: RegExpExecArray | null;
 
-        while ((match = containerRe.exec(content))) {
-            const matchIndex = match.index;
-            const fullMatch = match[0];
-            const containerBody = match[1];
-
-            // container の前の通常テキスト
-            const before = content.slice(lastIndex, matchIndex);
+        for (const { body: containerBody, start, end } of containers) {
+            // 前のテキストを処理
+            const before = content.slice(lastIndex, start);
             nodes.push(...parseInline(before, context));
 
             const rowRe = /#sel_row\s*\{\{([\s\S]*?)\}\}/g;
@@ -301,7 +336,6 @@ export function parseOtherInline(
             let rowMatch: RegExpExecArray | null;
 
             while ((rowMatch = rowRe.exec(containerBody))) {
-                const rowIndex = matchIndex + rowMatch.index; // container 全体からの index に補正
                 const rowBody = rowMatch[1];
 
                 const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
@@ -311,20 +345,20 @@ export function parseOtherInline(
                 while ((contentMatch = contentRe.exec(rowBody))) {
                     const [, type, inner] = contentMatch;
                     selContents.push(
-                        <SelContent key={`sel-${rowIndex}-${contentMatch.index}`} type={type?.trim() || ''}>
+                        <SelContent key={`sel-${start}-${rowMatch.index}-${contentMatch.index}`} type={type?.trim() || ''}>
                             {inner.trim()}
                         </SelContent>
                     );
                 }
 
-                rowItems.push(<SelRow key={`sel-row-${rowIndex}`}>{selContents}</SelRow>);
+                rowItems.push(<SelRow key={`sel-row-${start}-${rowMatch.index}`}>{selContents}</SelRow>);
             }
 
-            nodes.push(<SelContainer key={`sel-container-${matchIndex}`}>{rowItems}</SelContainer>);
-            lastIndex = matchIndex + fullMatch.length;
+            nodes.push(<SelContainer key={`sel-container-${start}`}>{rowItems}</SelContainer>);
+            lastIndex = end;
         }
 
-        // 残り部分のテキストも処理
+        // 残りを処理
         const rest = content.slice(lastIndex);
         nodes.push(...parseInline(rest, context));
 
