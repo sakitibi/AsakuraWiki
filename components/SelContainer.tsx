@@ -9,5 +9,5 @@ const containerStyle: React.CSSProperties = {
 };
 
 export default function SelContainer({ children }: { children: React.ReactNode }) {
-    return <div className="sel-container">{children}</div>;
+    return <table className="sel-container"><tbody>{children}</tbody></table>;
 }

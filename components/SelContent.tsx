@@ -249,8 +249,8 @@ export default function Header({ level }: { level: '*' | '**' | '***'; },type:st
     }
 
     return (
-        <div className={`sel-content ${type ? `sel-${type}` : ''}`}>
-            {children}
-        </div>
+        <tr className={`sel-content ${type ? `sel-${type}` : ''}`}>
+            <td>{children}</td>
+        </tr>
     );
 }
