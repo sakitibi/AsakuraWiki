@@ -249,7 +249,7 @@ export default function SelContent({ type, children }: SelContentProps) {
     if (type === 'header' || type === 'subheader' || type === 'miniheader') {
         const style = headingStyle; // 見出しレベルを仮に '*' に固定
         return (
-            <th style={style && commonsStyle}>{children}</th>
+            <th style={{...commonsStyle, ...headingStyle}}>{children}</th>
         );
     }
 
