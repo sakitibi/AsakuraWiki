@@ -1,7 +1,7 @@
 # *
 User-agent: *
 Allow: /
-Deny: /login/
+Disallow: /login/
 
 # Host
 Host: https://asakura-wiki.vercel.app
