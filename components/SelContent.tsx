@@ -35,6 +35,12 @@ type SelContentProps = {
 };
 
 export default function SelContent({ type, children }: SelContentProps) {
+    const commonsStyle: React.CSSProperties = {
+        border: '1px solid #a9a9a9',
+        color: 'inherit',
+        margin: '1px',
+        padding: '3px'
+    }
     const headingStyle: React.CSSProperties = type === 'header' || type === 'subheader' || type === 'miniheader'
     ? (
         designColor === 'pink' ? {
@@ -243,12 +249,12 @@ export default function SelContent({ type, children }: SelContentProps) {
     if (type === 'header' || type === 'subheader' || type === 'miniheader') {
         const style = headingStyle; // 見出しレベルを仮に '*' に固定
         return (
-            <th style={style}>{children}</th>
+            <th style={style && commonsStyle}>{children}</th>
         );
     }
 
     return (
-        <td className={`sel-content ${type ? `sel-${type}` : ''}`}>
+        <td className={`sel-content ${type ? `sel-${type}` : ''}`} style={commonsStyle}>
             {children}
         </td>
     );
