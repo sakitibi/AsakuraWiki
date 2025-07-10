@@ -1,11 +1,12 @@
 import React from 'react';
 
 const containerStyle: React.CSSProperties = {
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    padding: '1em',
-    background: '#f5f5f5',
-    marginBottom: '1.5em',
+    border: '0',
+    borderCollapse: 'collapse',
+    padding: '0',
+    textAlign: 'left',
+    textIndent: 'initial',
+    borderSpacing: '2px'
 };
 
 export default function SelContainer({ children }: { children: React.ReactNode }) {
