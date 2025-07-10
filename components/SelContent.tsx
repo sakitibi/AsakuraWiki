@@ -29,7 +29,13 @@ async function fetchDesignColor() {
     console.log('取得したデザインカラー:', designColor);
 })();
 
-export default function Header({ level }: { level: '*' | '**' | '***'; },type:string,children:string) {
+type SelContentProps = {
+    type: string;
+    level: '*' | '**' | '***';
+    children: React.ReactNode;
+};
+
+export default function SelContent({ type, level, children }: SelContentProps) {
     const headingStyle: React.CSSProperties = level === '*'
     ? (
         designColor === 'pink' ? {

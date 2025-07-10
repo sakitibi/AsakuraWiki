@@ -120,7 +120,7 @@ export function parseOtherInline(
     line: string,
     wikiSlug: string,
     pageSlug: string,
-    baseKey: number
+    baseKey: number,
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = []
     let last = 0
@@ -273,7 +273,7 @@ export function parseOtherInline(
             while ((itemMatch = itemRe.exec(body))) {
                 const [, type, inner] = itemMatch;
                 contentItems.push(
-                    <SelContent key={`sel-${matchIndex}-${itemMatch.index}`} type={type?.trim() || ''}>
+                    <SelContent key={`sel-${matchIndex}-${itemMatch.index}`} level="*" type={type?.trim() || ''}>
                         {inner.trim()}
                     </SelContent>
                 );
