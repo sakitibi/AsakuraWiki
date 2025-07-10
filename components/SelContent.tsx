@@ -35,7 +35,7 @@ type SelContentProps = {
 };
 
 export default function SelContent({ type, children }: SelContentProps) {
-    const headingStyle: React.CSSProperties = type === 'header'
+    const headingStyle: React.CSSProperties = type === 'header' || type === 'subheader' || type === 'miniheader'
     ? (
         designColor === 'pink' ? {
             color: '#000',
