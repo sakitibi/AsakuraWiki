@@ -109,57 +109,33 @@ export default function SelContent({ type, children }: SelContentProps) {
     : (
         designColor === 'pink' ?
         {
-            borderLeft: '15px solid #ea94bc',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
+            display: 'table-cell',
+            verticalAlign: 'inherit',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#fad6e7'
         } : designColor === 'blue' ? {
-            borderLeft: '15px solid #86b8e2',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
+            display: 'table-cell',
+            verticalAlign: 'inherit',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#cce3f8'
         } : designColor === 'yellow' ? {
-            borderLeft: '15px solid #fdd341',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
+            display: 'table-cell',
+            verticalAlign: 'inherit',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#feeaa4'
         } : {
-            borderLeft: '15px solid #afd965',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
+            display: 'table-cell',
+            verticalAlign: 'inherit',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#d1f0a0'
         }
     )
     if (type === 'header' || type === 'subheader' || type === 'miniheader') {
