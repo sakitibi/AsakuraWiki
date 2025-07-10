@@ -250,8 +250,39 @@ export function parseOtherInline(
      * アコーディオンとインラインプラグインを再帰的にパースするメイン関数
      */
     export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
-        const nodes: React.ReactNode[] = []
-        // 1. #sel_container{{...}} を分割して処理
+        const nodes: React.ReactNode[] = [];
+
+        // 1. アコーディオンを先に抜き出す
+        const blocks = extractAccordions(content);
+        if (blocks.length > 0) {
+            blocks.forEach((blk, idx) => {
+                if (blk.prefix) {
+                    nodes.push(...parseWikiContentFragment(blk.prefix, context));
+                }
+                if (blk.title) {
+                    const children = parseWikiContent(blk.body!, context); // 再帰的に中身を処理
+                    nodes.push(
+                        <Accordion
+                            key={`acc-${idx}`}
+                            title={blk.title!}
+                            level={blk.level!}
+                            initiallyOpen={blk.isOpen!}
+                        >
+                            {children}
+                        </Accordion>
+                    );
+                }
+            });
+            return nodes;
+        }
+
+        // 2. アコーディオンがなかった場合に sel_container を処理
+        return parseWikiContentFragment(content, context);
+    }
+
+    function parseWikiContentFragment(content: string, context: Context): React.ReactNode[] {
+        const nodes: React.ReactNode[] = [];
+
         const selContainerRe = /#sel_container\s*\{\{([\s\S]*?)\}\}/g;
         let lastIndex = 0;
         let selMatch: RegExpExecArray | null;
@@ -261,11 +292,11 @@ export function parseOtherInline(
             const matchText = selMatch[0];
             const body = selMatch[1];
 
-            // sel_container 前の部分
+            // sel_container 前の部分（通常テキスト）
             const before = content.slice(lastIndex, matchIndex);
             nodes.push(...parseInline(before, context));
 
-            // 複数行・複数セミコロン区切り対応の &sel_content を抽出
+            // &sel_content() を抽出
             const contentItems: React.ReactNode[] = [];
             const itemRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
             let itemMatch: RegExpExecArray | null;
@@ -283,28 +314,9 @@ export function parseOtherInline(
             lastIndex = matchIndex + matchText.length;
         }
 
-        // sel_container 後の残りをアコーディオン解析へ渡す
+        // 残りのテキスト
         const rest = content.slice(lastIndex);
-        const blocks = extractAccordions(rest);
-
-        blocks.forEach((blk, idx) => {
-            if (blk.prefix) {
-                nodes.push(...parseInline(blk.prefix, context));
-            }
-            if (blk.title) {
-                const children = parseWikiContent(blk.body!, context);
-                nodes.push(
-                    <Accordion
-                        key={`acc-${idx}`}
-                        title={blk.title!}
-                        level={blk.level!}
-                        initiallyOpen={blk.isOpen!}
-                    >
-                        {children}
-                    </Accordion>
-                );
-            }
-        });
+        nodes.push(...parseInline(rest, context));
 
         return nodes;
     }
