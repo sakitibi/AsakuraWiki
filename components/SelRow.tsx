@@ -8,6 +8,6 @@ const containerStyle: React.CSSProperties = {
     marginBottom: '1.5em',
 };
 
-export default function SelContainer({ children }: { children: React.ReactNode }) {
-    return <table className="sel-container" style={containerStyle}><tbody>{children}</tbody></table>;
+export default function SelRow({ children }: { children: React.ReactNode }) {
+    return <tr className="sel-row">{children}</tr>;
 }

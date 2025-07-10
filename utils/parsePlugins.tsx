@@ -8,6 +8,7 @@ import PageList2 from '@/components/PageList2'
 import IncludePage from '@/components/IncludePage'
 import TableOfContents from '@/components/TableOfContents'
 import SelContainer from '@/components/SelContainer';
+import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
 import { DATEDIF, DATEVALUE } from './dateFunctions'
 
@@ -279,42 +280,50 @@ export function parseOtherInline(
         // 2. アコーディオンがなかった場合に sel_container を処理
         return parseWikiContentFragment(content, context);
     }
-
+    
     function parseWikiContentFragment(content: string, context: Context): React.ReactNode[] {
         const nodes: React.ReactNode[] = [];
 
-        const selContainerRe = /#sel_container\s*\{\{([\s\S]*?)\}\}/g;
+        const containerRe = /#sel_container\s*\{\{([\s\S]*?)\}\}/g;
         let lastIndex = 0;
-        let selMatch: RegExpExecArray | null;
+        let match: RegExpExecArray | null;
 
-        while ((selMatch = selContainerRe.exec(content))) {
-            const matchIndex = selMatch.index;
-            const matchText = selMatch[0];
-            const body = selMatch[1];
+        while ((match = containerRe.exec(content))) {
+            const matchIndex = match.index;
+            const fullMatch = match[0];
+            const containerBody = match[1];
 
-            // sel_container 前の部分（通常テキスト）
+            // 前の通常テキストを処理
             const before = content.slice(lastIndex, matchIndex);
             nodes.push(...parseInline(before, context));
 
-            // &sel_content() を抽出
-            const contentItems: React.ReactNode[] = [];
-            const itemRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
-            let itemMatch: RegExpExecArray | null;
+            const rowRe = /#sel_row\s*\{\{([\s\S]*?)\}\}/g;
+            const rowItems: React.ReactNode[] = [];
+            let rowMatch: RegExpExecArray | null;
 
-            while ((itemMatch = itemRe.exec(body))) {
-                const [, type, inner] = itemMatch;
-                contentItems.push(
-                    <SelContent key={`sel-${matchIndex}-${itemMatch.index}`} level="*" type={type?.trim() || ''}>
-                        {inner.trim()}
-                    </SelContent>
-                );
+            while ((rowMatch = rowRe.exec(containerBody))) {
+                const rowBody = rowMatch[1];
+                const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
+                const selContents: React.ReactNode[] = [];
+                let contentMatch: RegExpExecArray | null;
+
+                while ((contentMatch = contentRe.exec(rowBody))) {
+                    const [, type, inner] = contentMatch;
+                    selContents.push(
+                        <SelContent key={`sel-${matchIndex}-${rowMatch.index}-${contentMatch.index}`} type={type?.trim() || ''}>
+                            {inner.trim()}
+                        </SelContent>
+                    );
+                }
+
+                rowItems.push(<SelRow key={`sel-row-${matchIndex}-${rowMatch.index}`}>{selContents}</SelRow>);
             }
 
-            nodes.push(<SelContainer key={`sel-${matchIndex}`}>{contentItems}</SelContainer>);
-            lastIndex = matchIndex + matchText.length;
+            nodes.push(<SelContainer key={`sel-container-${matchIndex}`}>{rowItems}</SelContainer>);
+            lastIndex = matchIndex + fullMatch.length;
         }
 
-        // 残りのテキスト
+        // 残りを処理
         const rest = content.slice(lastIndex);
         nodes.push(...parseInline(rest, context));
 

@@ -31,12 +31,11 @@ async function fetchDesignColor() {
 
 type SelContentProps = {
     type: string;
-    level: '*' | '**' | '***';
     children: React.ReactNode;
 };
 
-export default function SelContent({ type, level, children }: SelContentProps) {
-    const headingStyle: React.CSSProperties = level === '*'
+export default function SelContent({ type, children }: SelContentProps) {
+    const headingStyle: React.CSSProperties = type === 'header'
     ? (
         designColor === 'pink' ? {
             color: '#000',
@@ -116,7 +115,7 @@ export default function SelContent({ type, level, children }: SelContentProps) {
             borderTop: '1px solid #afd965',
         }
     )
-    : level === '**' ?
+    : type === 'subheader' ?
         (
             designColor === 'pink'
             ? {
@@ -241,7 +240,7 @@ export default function SelContent({ type, level, children }: SelContentProps) {
             padding: '.3em .3em .15em .5em'
         }
     )
-    if (type === 'header') {
+    if (type === 'header' || type === 'subheader' || type === 'miniheader') {
         const style = headingStyle; // 見出しレベルを仮に '*' に固定
         return (
                 <tr>
