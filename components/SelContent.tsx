@@ -53,28 +53,24 @@ export default function SelContent({ type, children }: SelContentProps) {
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
             backgroundColor: '#fad6e7',
-            textAlign: 'center'
         } : designColor === 'blue' ? {
             display: 'table-cell',
             verticalAlign: 'inherit',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
-            backgroundColor: '#cce3f8',
-            textAlign: 'center'
+            backgroundColor: '#cce3f8'
         } : designColor === 'yellow' ? {
             display: 'table-cell',
             verticalAlign: 'inherit',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
-            backgroundColor: '#feeaa4',
-            textAlign: 'center'
+            backgroundColor: '#feeaa4'
         } : {
             display: 'table-cell',
             verticalAlign: 'inherit',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
-            backgroundColor: '#d1f0a0',
-            textAlign: 'center'
+            backgroundColor: '#d1f0a0'
         }
     )
     : type === 'subheader' ?
