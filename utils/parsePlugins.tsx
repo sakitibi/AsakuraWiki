@@ -687,65 +687,13 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
         (
             designColor === 'pink'
             ? {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em'
+                borderColor: '#ea94bc'
             } : designColor === 'blue' ? {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em'
+                borderColor: '#86b8e2'
             } : designColor === 'yellow' ? {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em'
+                borderColor: '#fdd341'
             } : {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em'
+                borderColor: '#afd965'
             }
         )
     : (
