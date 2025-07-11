@@ -711,7 +711,7 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
 
     return (
         <div style={{ margin: '1em 0' }}>
-            <Tag style={{...headingStyle, ...commonsStyle}}>
+            <Tag style={{...commonsStyle, ...headingStyle}}>
                 {title}
             </Tag>
         </div>
