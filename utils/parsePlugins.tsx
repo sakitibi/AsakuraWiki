@@ -372,13 +372,12 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
     const iconPath = open
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7c24-24 c24s-24-10.7-24-24z'
-    const headingStyle: React.CSSProperties = level === '*'
+    const commonsStyle: React.CSSProperties = level === '*'
     ? (
-        designColor === 'pink' ? {
+        {
             color: '#000',
             margin: '.2em 0 .5em',
             padding: '.3em .3em .15em .5em',
-            backgroundColor: '#fad6e7',
             border: '0',
             borderBottom: '1px solid',
             borderLeft: '15px solid',
@@ -390,76 +389,12 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             marginInlineEnd: '0px',
             fontWeight: 'bold',
             unicodeBidi: 'isolate',
-            borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
-            borderRight: '1px solid #ea94bc',
-            borderTop: '1px solid #ea94bc',
-            cursor: 'pointer'
-        } : designColor === 'blue' ? {
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em',
-            backgroundColor: '#cce3f8',
-            border: '0',
-            borderBottom: '1px solid',
-            borderLeft: '15px solid',
-            display: 'block',
-            fontSize: '1.5em',
-            marginBlockStart: '0.83em',
-            marginBlockEnd: '0.83em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            borderColor: 'currentcolor currentcolor #86b8e2 #86b8e2',
-            borderRight: '1px solid #86b8e2',
-            borderTop: '1px solid #86b8e2',
-            cursor: 'pointer'
-        } : designColor === 'yellow' ? {
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em',
-            backgroundColor: '#feeaa4',
-            border: '0',
-            borderBottom: '1px solid',
-            borderLeft: '15px solid',
-            display: 'block',
-            fontSize: '1.5em',
-            marginBlockStart: '0.83em',
-            marginBlockEnd: '0.83em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            borderColor: 'currentcolor currentcolor #fdd341 #fdd341',
-            borderRight: '1px solid #fdd341',
-            borderTop: '1px solid #fdd341',
-            cursor: 'pointer'
-        } : {
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em',
-            backgroundColor: '#d1f0a0',
-            border: '0',
-            borderBottom: '1px solid',
-            borderLeft: '15px solid',
-            display: 'block',
-            fontSize: '1.5em',
-            marginBlockStart: '0.83em',
-            marginBlockEnd: '0.83em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            borderColor: 'currentcolor currentcolor #afd965 #afd965',
-            borderRight: '1px solid #afd965',
-            borderTop: '1px solid #afd965',
             cursor: 'pointer'
         }
     )
     : level === '**' ?
         (
-            designColor === 'pink'
-            ? {
+            {
                 display: 'block',
                 fontSize: '1.17em',
                 marginBlockStart: '1em',
@@ -471,58 +406,6 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
                 border: '1px solid',
                 borderLeft: '15px solid',
                 backgroundColor: 'transparent',
-                borderColor: '#ea94bc',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em',
-                cursor: 'pointer'
-            } : designColor === 'blue' ? {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                borderColor: '#86b8e2',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em',
-                cursor: 'pointer'
-            } : designColor === 'yellow' ? {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                borderColor: '#fdd341',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em',
-                cursor: 'pointer'
-            } : {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                borderColor: '#afd965',
                 color: '#000',
                 margin: '.2em 0 .5em',
                 padding: '.3em .3em .15em .5em',
@@ -530,51 +413,7 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             }
         )
     : (
-        designColor === 'pink' ?
         {
-            borderLeft: '15px solid #ea94bc',
-            cursor: 'pointer',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
-        } : designColor === 'blue' ? {
-            borderLeft: '15px solid #86b8e2',
-            cursor: 'pointer',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
-        } : designColor === 'yellow' ? {
-            borderLeft: '15px solid #fdd341',
-            cursor: 'pointer',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
-        } : {
-            borderLeft: '15px solid #afd965',
             cursor: 'pointer',
             display: 'block',
             marginBlockStart: '1.33em',
@@ -589,10 +428,59 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             padding: '.3em .3em .15em .5em'
         }
     )
+    const headingStyle: React.CSSProperties = level === '*'
+    ? (
+        designColor === 'pink' ? {
+            backgroundColor: '#fad6e7',
+            borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
+            borderRight: '1px solid #ea94bc',
+            borderTop: '1px solid #ea94bc'
+        } : designColor === 'blue' ? {
+            backgroundColor: '#cce3f8',
+            borderColor: 'currentcolor currentcolor #86b8e2 #86b8e2',
+            borderRight: '1px solid #86b8e2',
+            borderTop: '1px solid #86b8e2'
+        } : designColor === 'yellow' ? {
+            backgroundColor: '#feeaa4',
+            borderColor: 'currentcolor currentcolor #fdd341 #fdd341',
+            borderRight: '1px solid #fdd341',
+            borderTop: '1px solid #fdd341'
+        } : {
+            backgroundColor: '#d1f0a0',
+            borderColor: 'currentcolor currentcolor #afd965 #afd965',
+            borderRight: '1px solid #afd965',
+            borderTop: '1px solid #afd965'
+        }
+    )
+    : level === '**' ?
+        (
+            designColor === 'pink'
+            ? {
+                borderColor: '#ea94bc'
+            } : designColor === 'blue' ? {
+                borderColor: '#86b8e2'
+            } : designColor === 'yellow' ? {
+                borderColor: '#fdd341'
+            } : {
+                borderColor: '#afd965'
+            }
+        )
+    : (
+        designColor === 'pink' ?
+        {
+            borderLeft: '15px solid #ea94bc'
+        } : designColor === 'blue' ? {
+            borderLeft: '15px solid #86b8e2'
+        } : designColor === 'yellow' ? {
+            borderLeft: '15px solid #fdd341'
+        } : {
+            borderLeft: '15px solid #afd965'
+        }
+    )
 
     return (
         <div style={{ margin: '1em 0' }}>
-        <Tag onClick={() => setOpen(!open)} style={headingStyle}>
+        <Tag onClick={() => setOpen(!open)} style={{...commonsStyle,...headingStyle}}>
             <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
             <path fill="currentColor" d={iconPath} />
             </svg>
