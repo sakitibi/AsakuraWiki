@@ -43,33 +43,21 @@ export default function SelContent({ type, children }: SelContentProps) {
         wordWrap: 'normal',
         fontSize: '1em',
         boxSizing: 'border-box',
-        lineHeight: '1.6em'
+        lineHeight: '1.6em',
+        display: 'table-cell',
+        verticalAlign: 'inherit',
+        fontWeight: 'bold',
+        unicodeBidi: 'isolate',
     }
     const headingStyle: React.CSSProperties = type === 'header'
     ? (
         designColor === 'pink' ? {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: '#fad6e7',
         } : designColor === 'blue' ? {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: '#cce3f8'
         } : designColor === 'yellow' ? {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: '#feeaa4'
         } : {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: '#d1f0a0'
         }
     )
@@ -77,31 +65,15 @@ export default function SelContent({ type, children }: SelContentProps) {
         (
             designColor === 'pink'
             ? {
-                display: 'table-cell',
-                verticalAlign: 'inherit',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
                 backgroundColor: 'transparent',
                 borderColor: '#fad6e7'
             } : designColor === 'blue' ? {
-                display: 'table-cell',
-                verticalAlign: 'inherit',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
                 backgroundColor: 'transparent',
                 borderColor: '#cce3f8'
             } : designColor === 'yellow' ? {
-                display: 'table-cell',
-                verticalAlign: 'inherit',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
                 backgroundColor: 'transparent',
                 borderColor: '#feeaa4'
             } : {
-                display: 'table-cell',
-                verticalAlign: 'inherit',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
                 backgroundColor: 'transparent',
                 borderColor: '#d1f0a0'
             }
@@ -109,31 +81,15 @@ export default function SelContent({ type, children }: SelContentProps) {
     : (
         designColor === 'pink' ?
         {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
             borderLeft: '#fad6e7'
         } : designColor === 'blue' ? {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
             borderLeft: '#cce3f8'
         } : designColor === 'yellow' ? {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
             borderLeft: '#feeaa4'
         } : {
-            display: 'table-cell',
-            verticalAlign: 'inherit',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
             backgroundColor: 'transparent',
             borderLeft: '#d1f0a0'
         }
