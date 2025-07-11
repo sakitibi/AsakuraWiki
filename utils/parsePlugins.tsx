@@ -787,7 +787,6 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
             margin: '.2em 0 .5em',
             padding: '.3em .3em .15em .5em'
         } : {
-            borderLeft: '15px solid #afd965',
             display: 'block',
             marginBlockStart: '1.33em',
             marginBlockEnd: '1.33em',
