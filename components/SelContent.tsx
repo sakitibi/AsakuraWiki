@@ -47,7 +47,7 @@ export default function SelContent({ type, children }: SelContentProps) {
         display: 'table-cell',
         verticalAlign: 'inherit',
         fontWeight: 'bold',
-        unicodeBidi: 'isolate',
+        unicodeBidi: 'isolate'
     }
     const headingStyle: React.CSSProperties = type === 'header'
     ? (
