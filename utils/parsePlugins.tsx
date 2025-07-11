@@ -699,53 +699,13 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
     : (
         designColor === 'pink' ?
         {
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#ea94bc'
         } : designColor === 'blue' ? {
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#86b8e2'
         } : designColor === 'yellow' ? {
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#fdd341'
         } : {
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
+            borderLeft: '#afd965'
         }
     )
 
