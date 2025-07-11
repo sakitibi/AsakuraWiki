@@ -69,10 +69,11 @@ export default function Home() {
     return (
         <>
             <Head>
+                <title>無料 レンタル WIKI サービス あさクラWIKI</title>
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
             </Head>
             <main style={{ padding: '2rem' }}>
-                <h1>AsakuraWiki</h1>
+                <h1>あさクラWiki</h1>
                 {loading ? (
                 <p>Loading...</p>
                 ) : pages.length === 0 ? (
@@ -82,7 +83,7 @@ export default function Home() {
                     {pages.map((wp) => (
                     <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
                         <Link
-                        href={`/wiki/${wp.wikiSlug}/${wp.pageSlug || 'FrontPage'}`}
+                        href={`/wiki/${wp.wikiSlug}`}
                         >
                         <button>
                             <span>
