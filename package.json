@@ -10,6 +10,7 @@
     "server": "ts-node server/index.ts"
   },
   "dependencies": {
+    "@studio-freight/lenis": "^1.0.42",
     "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/supabase-js": "^2.50.2",
     "cors": "^2.8.5",
