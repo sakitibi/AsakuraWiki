@@ -24,3 +24,10 @@
         width: 33px;
     }
 }
+
+@media (max-width: 767px) {
+    .fullWidthXs {
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+    }
+}
