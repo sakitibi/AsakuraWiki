@@ -1,0 +1,133 @@
+/* @mixin系統は早めに */
+@mixin background{
+    background-size: 300% 100%;
+    background-attachment: fixed;
+    animation: bg-color 150s linear infinite;
+    font-style: normal;
+    font-weight: bold;
+}
+
+body{
+    &:not(.wiki-font.pink,.wiki-font.blue,.wiki-font.yellow){
+        background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
+        font-size: 15px;
+        @include background;
+    }
+    &.wiki-font{
+        font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+        font-size: 12px;
+        font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
+        @include background;
+        &.pink {
+            background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
+            & button::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                background-image: linear-gradient(to left, rgb(244, 164, 229), rgb(199, 17, 157)) !important;
+                transition: filter 0.3s ease, transform 0.1s ease;
+            }
+        }
+        &.blue {
+            background-image: linear-gradient(to right, rgb(146, 221, 244), rgb(45, 161, 200), rgb(29, 75, 192), rgb(43, 91, 235), rgb(75, 139, 217), rgb(113, 183, 221)) !important;
+            & button::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                background-image: linear-gradient(to left, rgb(164, 212, 244), rgb(17, 102, 199)) !important;
+                transition: filter 0.3s ease, transform 0.1s ease;
+            }
+        }
+        &.yellow {
+            background-image: linear-gradient(to right, rgb(237, 187, 25), rgb(197, 153, 20), rgb(149, 106, 12), rgb(162, 119, 11), rgb(209, 142, 19), rgb(234, 191, 73)) !important;
+            & button::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                background-image: linear-gradient(to left, rgb(236, 195, 46), rgb(165, 126, 10)) !important;
+                transition: filter 0.3s ease, transform 0.1s ease;
+            }
+        }
+        & hr{
+            background-color: #777;
+            border: 0;
+            color: #777;
+            height: 1px;
+            display: block;
+            margin-block-start: 0.5em;
+            margin-inline-start: auto;
+            unicode-bidi: isolate;
+            overflow: visible;
+            border-style: inset;
+            border-width: 1px;
+        }
+    }
+}
+
+button {
+    position: relative;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    background: none;
+    overflow: hidden;
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-image: linear-gradient(to left, #1ce369, #076727);
+        transition: filter 0.3s ease, transform 0.1s ease;
+    }
+    &:active::before {
+        filter: brightness(0.85);
+        transform: scale(0.98);
+    }
+    &:hover::before {
+        filter: brightness(1.1);
+    }
+    &>*{
+        position: relative;
+        z-index: 1;
+    }
+    &:disabled{
+        cursor:not-allowed;
+    }
+}
+
+input:not([type=submit],[type=checkbox]) {
+    width: 100%;
+}
+
+@keyframes bg-color{
+    from{
+        background-position: 0% 0%;
+    }
+    25%{
+        background-position: 75% 0%;
+    }
+    50%{
+        background-position: 150% 0%;
+    }
+    75%{
+        background-position: 225% 0%;
+    }
+    to{
+        background-position: 300% 0%;
+    }
+}
+
+header{
+    text-align: center;
+}
+
+#sanninnsenn{
+    font-weight: bold;
+}
