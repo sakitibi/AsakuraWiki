@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { createClient } from '@supabase/supabase-js';
+import styles from 'css/index.min.module.css';
 
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,19 +21,6 @@ export default function Home() {
     const [loading, setLoading] = useState(true)
 
     const H2Styles:React.CSSProperties = {
-        alignItems: 'center',
-        backgroundColor: '#cce19b',
-        backgroundImage: 'url("https://wikiwiki.jp/pa/assets/84566d2e21c8bbef1c53.png")',
-        color: '#566b1c',
-        display: 'flex',
-        fontSize: '20px',
-        fontWeight: '700',
-        justifyContent: 'center',
-        padding: '.5em 1em',
-        textAlign: 'center',
-        lineHeight: '1.2',
-        marginBottom: '.5rem',
-        marginTop: '0',
         marginBlockStart: '0.83em',
         marginBlockEnd: '0.83em',
         marginInlineStart: '0px',
@@ -111,7 +99,7 @@ export default function Home() {
                 ) : (
                 <div id="wikis">
                     <div id="update-wiki">
-                        <h2 style={H2Styles}>最近更新されたWiki</h2>
+                        <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>最近更新されたWiki</h2>
                         <ul>
                             {pages.map((wp) => (
                             <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>

@@ -2,7 +2,7 @@ import { LenisProvider } from 'utils/LenisProvider';
 import type { AppProps } from 'next/app';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { supabase } from '../lib/supabaseClient';
-import '../css/index.globals.min.css';
+import '../css/index.min.globals.css';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
