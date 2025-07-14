@@ -8,8 +8,10 @@
 }
 
 body{
-    &:not(.wiki-font.pink,.wiki-font.blue,.wiki-font.yellow){
+    &:not(.wiki-font){
         font-family: Noto Sans Japanese, sans-serif !important;
+    }
+    &:not(.wiki-font.pink,.wiki-font.blue,.wiki-font.yellow){
         background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
         font-size: 15px;
         @include background;
