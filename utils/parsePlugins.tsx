@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { createClient } from '@supabase/supabase-js';
 import Calendar2 from '@/components/Calendar2'
 import CommentForm from '@/components/CommentForm'
 import RealTimeComments from '@/components/RealTimeComments'
@@ -10,14 +9,10 @@ import TableOfContents from '@/components/TableOfContents'
 import SelContainer from '@/components/SelContainer';
 import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
-import { DATEDIF, DATEVALUE } from './dateFunctions'
+import { DATEDIF, DATEVALUE } from './dateFunctions';
+import { supabase } from 'lib/supabaseClient';
 
 export type Context = { wikiSlug: string; pageSlug: string }
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 let designColor: 'pink' | 'blue' | 'yellow' | 'default' | null = null;
 

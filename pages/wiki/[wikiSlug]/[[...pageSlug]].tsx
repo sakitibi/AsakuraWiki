@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { createClient } from '@supabase/supabase-js'
 import { parseWikiContent } from '@/utils/parsePlugins'
 import { useUser } from '@supabase/auth-helpers-react';
+import { supabase } from 'lib/supabaseClient';
 
 type Page = {
     title: string
     content: string
 }
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 async function fetchDesignColor() {
     const { data, error } = await supabase

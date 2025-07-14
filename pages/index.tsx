@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from 'lib/supabaseClient';
 import styles from 'css/index.min.module.css';
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 type WikiPage = {
     wikiSlug: string
