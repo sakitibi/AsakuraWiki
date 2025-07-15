@@ -123,6 +123,16 @@ export default function Home() {
                     </span>
                 </button>
             </main>
+            <aside>
+                <div className={styles.pForBeginner}>
+                    <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
+                    <ul className={styles.pForBeginner__list}>
+                        <li className={styles.pForBeginner__item}>
+                            <a href="/wiki/sample">サンプルWiki</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
             <footer>
                 <nav id="menu">
                 <ul>

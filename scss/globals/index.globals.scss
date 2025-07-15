@@ -3,6 +3,17 @@
 body{
     &:not(.wiki-font){
         font-family: Noto Sans Japanese, sans-serif !important;
+        & ul {
+            display: block;
+            list-style-type: disc;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            padding-inline-start: 40px;
+            unicode-bidi: isolate;
+        }
+        *, :after, :before {
+            box-sizing: border-box;
+        }
     }
     &:not(.wiki-font.pink,.wiki-font.blue,.wiki-font.yellow){
         background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
@@ -84,6 +95,20 @@ button {
 
 input:not([type=submit],[type=checkbox]) {
     width: 100%;
+}
+
+a, a:active, a:focus, a:hover {
+    color: #ef8688;
+    -webkit-text-decoration: underline;
+    text-decoration: underline;
+}
+a {
+    color: #337ab7;
+}
+
+a:-webkit-any-link {
+    color: -webkit-link;
+    cursor: pointer;
 }
 
 @keyframes bg-color{
