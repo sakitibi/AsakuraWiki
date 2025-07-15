@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import styles from 'css/index.min.module.css';
 
 export default function Home() {
     return (
@@ -15,6 +16,16 @@ export default function Home() {
                 <p>使いやすいレンタルWikiサービスを目指しています。</p>
                 <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
             </main>
+            <aside>
+                <div className={styles.pForBeginner}>
+                    <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
+                    <ul className={styles.pForBeginner__list}>
+                        <li className={styles.pForBeginner__item}>
+                            <a href="/wiki/sample">サンプルWiki</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
             <footer>
                 <div id="menu">
                     <ul>
