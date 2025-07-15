@@ -208,7 +208,7 @@ export default function WikiPage() {
         <>
             <Head>
                 <title>マイ鉄ネット撲滅委員会</title>
-                <link rel="shortcut icon"  href="https://yt3.googleusercontent.com/v7jFh1s12m5j5kVyFRtA8ddwVAUqlUNgGkb3A2i3uX6Zns-C28SaSWb3-9gtOnDZADTGfqzsjw=s160-c-k-c0x00ffffff-no-rj"/>
+                <link rel="shortcut icon"  href="https://pbs.twimg.com/profile_images/1564577297281085440/6q8goeNB.jpg"/>
             </Head>
             <div>
                 <div style={{ padding: '2rem', maxWidth: 800 }}>
