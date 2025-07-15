@@ -85,84 +85,86 @@ export default function Home() {
                 </style>
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
             </Head>
-            <main style={{ padding: '2rem' }}>
-                <h1>あさクラWiki</h1>
-                {loading ? (
-                <p>Loading...</p>
-                ) : pages.length === 0 ? (
-                <p>まだページがありません。</p>
-                ) : (
-                <div id="wikis">
-                    <div id="update-wiki">
-                        <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>最近更新されたWiki</h2>
-                        <ul>
-                            {pages.map((wp) => (
-                            <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
-                                <Link
-                                href={`/wiki/${wp.wikiSlug}`}
-                                >
-                                <button>
-                                    <span>
-                                        <strong>{wp.name} Wiki*</strong>
-                                    </span>
-                                </button>
-                                </Link>{' '}
-                                <small>
-                                （{new Date(wp.updated_at).toLocaleString()}）
-                                </small>
+            <div id="contents">
+                <main style={{ padding: '2rem' }}>
+                    <h1>あさクラWiki</h1>
+                    {loading ? (
+                    <p>Loading...</p>
+                    ) : pages.length === 0 ? (
+                    <p>まだページがありません。</p>
+                    ) : (
+                    <div id="wikis">
+                        <div id="update-wiki">
+                            <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>最近更新されたWiki</h2>
+                            <ul>
+                                {pages.map((wp) => (
+                                <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
+                                    <Link
+                                    href={`/wiki/${wp.wikiSlug}`}
+                                    >
+                                    <button>
+                                        <span>
+                                            <strong>{wp.name} Wiki*</strong>
+                                        </span>
+                                    </button>
+                                    </Link>{' '}
+                                    <small>
+                                    （{new Date(wp.updated_at).toLocaleString()}）
+                                    </small>
+                                </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                    )}
+                    <br />
+                    <button onClick={goCreateWiki}>
+                        <span>
+                            ＋ 新しいWikiを作る
+                        </span>
+                    </button>
+                </main>
+                <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
+                    <div className={styles.pForBeginner}>
+                        <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
+                        <ul className={styles.pForBeginner__list}>
+                            <li className={styles.pForBeginner__item}>
+                                <a href="/wiki/sample">サンプルWiki</a>
                             </li>
-                            ))}
                         </ul>
                     </div>
-                </div>
-                )}
-                <br />
-                <button onClick={goCreateWiki}>
-                    <span>
-                        ＋ 新しいWikiを作る
-                    </span>
-                </button>
-            </main>
-            <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                <div className={styles.pForBeginner}>
-                    <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
-                    <ul className={styles.pForBeginner__list}>
-                        <li className={styles.pForBeginner__item}>
-                            <a href="/wiki/sample">サンプルWiki</a>
+                </aside>
+                <footer>
+                    <nav id="menu">
+                    <ul>
+                        <li>
+                            <Link href="/">
+                                <button><span>ホーム</span></button>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/about">
+                                <button><span>当レンタルWikiについて</span></button>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
+                                <button><span>ログイン/新規登録</span></button>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/ru">
+                                <button><span>ロシア語</span></button>
+                            </Link>
                         </li>
                     </ul>
-                </div>
-            </aside>
-            <footer>
-                <nav id="menu">
-                <ul>
-                    <li>
-                        <Link href="/">
-                            <button><span>ホーム</span></button>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/about">
-                            <button><span>当レンタルWikiについて</span></button>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                            <button><span>ログイン/新規登録</span></button>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/ru">
-                            <button><span>ロシア語</span></button>
-                        </Link>
-                    </li>
-                </ul>
-                </nav>
-                <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                <p>当Wikiサービスはオープンソースプロジェクトです</p>
-                </div>
-            </footer>
+                    </nav>
+                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                    <p>Copyright 2025 13ninstudio All rights Reserved</p>
+                    <p>当Wikiサービスはオープンソースプロジェクトです</p>
+                    </div>
+                </footer>
+            </div>
         </>
     )
 }
