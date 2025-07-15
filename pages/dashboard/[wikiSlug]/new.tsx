@@ -68,6 +68,11 @@ export default function NewPage() {
             return;
         }
 
+        if (slug.trim().toLowerCase().endsWith('.askr')) {
+            alert('ページIDの末尾に「.askr」を使用することはできません。');
+            return;
+        }
+
         setLoading(true);
 
         const { data, error } = await supabase
