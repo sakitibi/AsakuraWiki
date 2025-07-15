@@ -25,7 +25,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         }
 
         // その他の `.askr` → `.なし` にリダイレクト（トップは除外）
-        if (pathname !== '/' && pathname.endsWith('.askr')) {
+        if (pathname !== '/' && pathname !== "/.askr" && pathname.endsWith('.askr')) {
             const newPath = pathname.slice(0, -5); // `.askr` を除去
             router.replace(newPath + search + hash);
         }

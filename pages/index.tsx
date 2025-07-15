@@ -123,7 +123,6 @@ export default function Home() {
                     </span>
                 </button>
             </main>
-
             <footer>
                 <nav id="menu">
                 <ul>
