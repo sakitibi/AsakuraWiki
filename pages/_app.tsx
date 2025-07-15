@@ -7,10 +7,24 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID!; // ← ここをあなたのGA4の測定IDに置き換えてください
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     const router = useRouter();
+
+    // ✅ ここに .askr リダイレクト処理を追加
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const currentPath = window.location.pathname;
+
+        if (currentPath.endsWith('.askr')) {
+            const newPath = currentPath.slice(0, -5); // '.askr' を取り除く
+            const search = window.location.search;
+            const hash = window.location.hash;
+            const fullNewUrl = newPath + search + hash;
+            router.replace(fullNewUrl);
+        }
+    }, [router]);
 
     useEffect(() => {
         const handleRouteChange = (url: string) => {
@@ -30,12 +44,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <>
             <LenisProvider />
             <SessionContextProvider supabaseClient={supabase}>
-                {/* gtag.jsの読み込み */}
+                {/* gtag.js の読み込み */}
                 <Script
                     strategy="afterInteractive"
                     src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
                 />
-                {/* gtag初期化 */}
+                {/* gtag 初期化 */}
                 <Script
                     id="gtag-init"
                     strategy="afterInteractive"
@@ -63,7 +77,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-                
+
                 <header>
                     <div id="sanninnsenn">
                         <h2><strong>夏の参院選について</strong></h2>
