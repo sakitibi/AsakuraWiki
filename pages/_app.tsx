@@ -15,14 +15,19 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     // ✅ ここに .askr リダイレクト処理を追加
     useEffect(() => {
         if (typeof window === 'undefined') return;
-        const currentPath = window.location.pathname;
 
-        if (currentPath.endsWith('.askr')) {
-            const newPath = currentPath.slice(0, -5); // '.askr' を取り除く
-            const search = window.location.search;
-            const hash = window.location.hash;
-            const fullNewUrl = newPath + search + hash;
-            router.replace(fullNewUrl);
+        const { pathname, search, hash } = window.location;
+
+        // `/index.askr` → `/`
+        if (pathname === '/index.askr') {
+            router.replace('/' + search + hash);
+            return;
+        }
+
+        // その他の `.askr` → `.なし` にリダイレクト（トップは除外）
+        if (pathname !== '/' && pathname.endsWith('.askr')) {
+            const newPath = pathname.slice(0, -5); // `.askr` を除去
+            router.replace(newPath + search + hash);
         }
     }, [router]);
 
