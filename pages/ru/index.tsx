@@ -97,85 +97,87 @@ export default function Home() {
                 `}
             </style>
         </Head>
-        <div id="contents" style={{display: 'flex'}}>
-            <div id="menu">
-                <nav className={styles.menu}>
-                    <ul>
-                        <li>
-                        <Link href="/ru">
-                            <button><span>Дом</span></button>
-                        </Link>
-                        </li>
-                        <li>
-                        <Link href="/ru/about">
-                            <button><span>Об этом вики-сайте по аренде</span></button>
-                        </Link>
-                        </li>
-                        <li>
-                        <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                            <button><span>Войти/Зарегистрироваться (японский)</span></button>
-                        </Link>
-                        </li>
-                        <li>
-                        <Link href="/">
-                            <button><span>日本語</span></button>
-                        </Link>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <main style={{ padding: '2rem', flex: 1 }}>
-                <h1>АсакураWiki</h1>
-                {loading ? (
-                <p>Loading...</p>
-                ) : pages.length === 0 ? (
-                <p>Страниц пока нет.</p>
-                ) : (
-                    <div id="wikis">
-                        <div id="update-wiki">
-                            <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно обновленнаяWiki</h2>
-                            <ul>
-                                {pages.map((wp) => (
-                                <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
-                                    <Link
-                                    href={`/wiki/${wp.wikiSlug}`}
-                                    >
-                                    <button>
-                                        <span>
-                                            <strong>{wp.name} Wiki*</strong>
-                                        </span>
-                                    </button>
-                                    </Link>{' '}
-                                    <small>
-                                    （{new Date(wp.updated_at).toLocaleString()}）
-                                    </small>
-                                </li>
-                                ))}
-                            </ul>
+        <div id="contents-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
+            <div id="contents" style={{display: 'flex'}}>
+                <div id="menu">
+                    <nav className={styles.menu}>
+                        <ul>
+                            <li>
+                            <Link href="/ru">
+                                <button><span>Дом</span></button>
+                            </Link>
+                            </li>
+                            <li>
+                            <Link href="/ru/about">
+                                <button><span>Об этом вики-сайте по аренде</span></button>
+                            </Link>
+                            </li>
+                            <li>
+                            <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
+                                <button><span>Войти/Зарегистрироваться (японский)</span></button>
+                            </Link>
+                            </li>
+                            <li>
+                            <Link href="/">
+                                <button><span>日本語</span></button>
+                            </Link>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <main style={{ padding: '2rem', flex: 1 }}>
+                    <h1>АсакураWiki</h1>
+                    {loading ? (
+                    <p>Loading...</p>
+                    ) : pages.length === 0 ? (
+                    <p>Страниц пока нет.</p>
+                    ) : (
+                        <div id="wikis">
+                            <div id="update-wiki">
+                                <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно обновленнаяWiki</h2>
+                                <ul>
+                                    {pages.map((wp) => (
+                                    <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
+                                        <Link
+                                        href={`/wiki/${wp.wikiSlug}`}
+                                        >
+                                        <button>
+                                            <span>
+                                                <strong>{wp.name} Wiki*</strong>
+                                            </span>
+                                        </button>
+                                        </Link>{' '}
+                                        <small>
+                                        （{new Date(wp.updated_at).toLocaleString()}）
+                                        </small>
+                                    </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
+                    )}
+                    <br />
+                    <button onClick={goCreateWiki}>
+                    <span>＋ Создать новую Вики (японский)</span>
+                    </button>
+                </main>
+                <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
+                    <div className={styles.pForBeginner}>
+                        <h2 className={styles.pForBeginner__title}>Для новичков</h2>
+                        <ul className={styles.pForBeginner__list}>
+                            <li className={styles.pForBeginner__item}>
+                                <a href="/wiki/sample">Образец Wiki</a>
+                            </li>
+                        </ul>
                     </div>
-                )}
-                <br />
-                <button onClick={goCreateWiki}>
-                <span>＋ Создать новую Вики (японский)</span>
-                </button>
-            </main>
-            <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                <div className={styles.pForBeginner}>
-                    <h2 className={styles.pForBeginner__title}>Для новичков</h2>
-                    <ul className={styles.pForBeginner__list}>
-                        <li className={styles.pForBeginner__item}>
-                            <a href="/wiki/sample">Образец Wiki</a>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
-            <footer className={styles.footer}>
-                <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>
-                </div>
-            </footer>
+                </aside>
+                <footer className={styles.footer}>
+                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                    <p>Copyright 2025 13ninstudio All rights Reserved</p>
+                    <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>
+                    </div>
+                </footer>
+            </div>
         </div>
         </>
     )
