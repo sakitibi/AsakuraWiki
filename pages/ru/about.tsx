@@ -54,13 +54,13 @@ export default function Home() {
                             </ul>
                         </div>
                     </aside>
-                    <footer className={styles.footer}>
-                        <div style={{textAlign: "center"}}>
-                            <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                            <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>
-                        </div>
-                    </footer>
                 </div>
+                <footer className={styles.footer}>
+                    <div style={{textAlign: "center"}}>
+                        <p>Copyright 2025 13ninstudio All rights Reserved</p>
+                        <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>
+                    </div>
+                </footer>
             </div>
         </>
     );
