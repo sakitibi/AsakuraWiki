@@ -50,6 +50,12 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
+    const PageLike = useState<number>(0);
+    const PageDisLike = useState<number>(0);
+    const PageHeikinLike = useState<number>(0);
+    const WikiLike = useState<number>(0);
+    const WikiDisLike = useState<number>(0);
+    const WikiHeikinLike = useState<number>(0);
 
     useEffect(() => {
         async function fetchColor() {
@@ -259,6 +265,7 @@ export default function WikiPage() {
     if (loading || !page) return <div>読み込み中…</div>
 
     const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
+    const isLike = urlObj?.searchParams.get('cmd') === 'like'
     const context = { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr }
     // プレビュー or 閲覧コンテンツ
     const parseTarget = isEdit ? content : page.content
@@ -283,6 +290,91 @@ export default function WikiPage() {
             }, 1000);
         }
     }, 1000);
+
+    const handlePageLike = async () => {
+        setLoading(true);
+
+        // 現在の値を取得
+        const { data, error: fetchError } = await supabase
+            .from('pages_liked')
+            .select('like, heikinlike')
+            .eq('wiki_slug', wikiSlugStr)
+            .eq('slug', pageSlugStr)
+            .single();
+
+        if (fetchError || !data) {
+            alert('現在の評価取得に失敗しました: ' + fetchError?.message);
+            setLoading(false);
+            return;
+        }
+
+        const updatedLike = (data.like ?? 0) + 1;
+        const updatedHeikinLike = (data.heikinlike ?? 0) + 1;
+
+        // 更新処理
+        const { error: updateError } = await supabase
+            .from('pages_liked')
+            .update({
+                like: updatedLike,
+                heikinlike: updatedHeikinLike,
+            })
+            .eq('wiki_slug', wikiSlugStr)
+            .eq('slug', pageSlugStr);
+
+        setLoading(false);
+
+        if (updateError) {
+            alert('更新に失敗しました: ' + updateError.message);
+        } else {
+            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+        }
+    };
+
+    const handlePageDisLike = async () => {
+        setLoading(true);
+
+        // 現在の値を取得
+        const { data, error: fetchError } = await supabase
+            .from('pages_liked')
+            .select('dislike, heikinlike')
+            .eq('wiki_slug', wikiSlugStr)
+            .eq('slug', pageSlugStr)
+            .single();
+        
+        if(!user){
+            return;
+        }
+
+        if (fetchError || !data) {
+            alert('現在の評価取得に失敗しました: ' + fetchError?.message);
+            setLoading(false);
+            return;
+        }
+
+        const updatedDislike = (data.dislike ?? 0) + 1;
+        let updatedHeikinLike = (data.heikinlike ?? 0) - 1;
+        if(updatedHeikinLike < 0){
+            updatedHeikinLike = 0;
+        }
+
+        // 更新処理
+        const { error: updateError } = await supabase
+            .from('pages_liked')
+            .update({
+                dislike: updatedDislike,
+                heikinlike: updatedHeikinLike,
+            })
+            .eq('wiki_slug', wikiSlugStr)
+            .eq('slug', pageSlugStr);
+
+        setLoading(false);
+
+        if (updateError) {
+            alert('更新に失敗しました: ' + updateError.message);
+        } else {
+            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+        }
+    };
 
     return (
         <>
@@ -365,6 +457,9 @@ export default function WikiPage() {
                             )}
                             <button onClick={handleEdit}><span>このページを編集</span></button>
                             <button onClick={handleDelete}><span>このページを削除</span></button>
+                            <br/>
+                            <button onClick={handlePageLike}>このページを高く評価</button>
+                            <button onClick={handlePageDisLike}>このページを低く評価</button>
                         </div>
                     </div>
                 )}
