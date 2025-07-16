@@ -45,6 +45,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         };
     }, [router.events]);
 
+    useEffect(() => {
+        document.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+        })
+    }, []);
+
     return (
         <>
             <LenisProvider />
