@@ -133,6 +133,18 @@ export default function Home() {
                     <p>Страниц пока нет.</p>
                     ) : (
                         <div id="wikis">
+                            <div id="hot-wiki">
+                                <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>ГОРЯЧАЯ Wiki</h2>
+                                <ul>
+                                    <li>
+                                        <Link href="/special_wiki/maitetsu_bkmt">
+                                            <button>
+                                                <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
+                                            </button>
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </div>
                             <div id="update-wiki">
                                 <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно обновленнаяWiki</h2>
                                 <ul>
