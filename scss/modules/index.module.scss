@@ -109,12 +109,14 @@
 
 /* メニュー関連 */
 
-.menu{
+.menu {
     display: flex;
+    flex-direction: column; // メニュー項目が縦に並ぶように
     justify-content: flex-start;
     width: 350px;
     flex-shrink: 0;
-    & li::marker{
+
+    li::marker {
         content: none;
     }
 }
