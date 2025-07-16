@@ -67,6 +67,23 @@ export default function WikiPage() {
         }
     }, 1000);
 
+    const H3Styles:React.CSSProperties = {
+        display: 'block',
+        fontSize: '1.17em',
+        marginBlock: '1em',
+        marginInline: '0px',
+        fontWeight: 'bold',
+        unicodeBidi: 'isolate',
+        borderWidth: '1px 1px 1px 15px',
+        borderStyle: 'solid',
+        borderColor: 'rgb(175, 217, 101)',
+        borderImage: 'initial',
+        backgroundColor: 'transparent',
+        color: 'rgb(0, 0, 0)',
+        margin: '0.2em 0px 0.5em',
+        padding: '0.3em 0.3em 0.15em 0.5em'
+    }
+
     // Appear系統
 
     const MaegakiAppear = () => {
@@ -88,28 +105,28 @@ export default function WikiPage() {
         const text:HTMLElement | null = document.getElementById("text");
         text!.innerHTML = (`
             <div id="member-kanyu">
-                <h3 style="display: block; font-size: 1.17em; margin-block: 1em; margin-inline: 0px; font-weight: bold; unicode-bidi: isolate; border-width: 1px 1px 1px 15px; border-style: solid; border-color: rgb(175, 217, 101); border-image: initial; background-color: transparent; color: rgb(0, 0, 0); margin: 0.2em 0px 0.5em; padding: 0.3em 0.3em 0.15em 0.5em;">メンバー加入申請について</h3>
+                <h3 style="${H3Styles}">メンバー加入申請について</h3>
                 <p><span style="color: red;">メンバー加入申請時に、ご自身の会社名やお名前を入力しないでください。</span>荒らし行為の標的にされてしまう恐れがあります。</p>
                 <p>(さきちびは自己責任です)</p>
                 <p>加入申請時には、『「マイ鉄ネット撲滅委員会」としての活動時に使用したい名前』を入力してください。</p>
             </div>
             <div id="comment-form-trolls">
-                <h3 style="display: block; font-size: 1.17em; margin-block: 1em; margin-inline: 0px; font-weight: bold; unicode-bidi: isolate; border-width: 1px 1px 1px 15px; border-style: solid; border-color: rgb(175, 217, 101); border-image: initial; background-color: transparent; color: rgb(0, 0, 0); margin: 0.2em 0px 0.5em; padding: 0.3em 0.3em 0.15em 0.5em;">コメントフォームの荒らし行為について</h3>
+                <h3 style="${H3Styles}">コメントフォームの荒らし行為について</h3>
                 <p>最近チャット改造等の荒らしが増えております。</p>
                 <p>改造荒らしについては「#rtcomment」だとチャット改造がてきないので荒らしの対応が追いついていない方等はご参考下さい。</p>
             </div>
             <div id="tomorrow-trolls-taiou">
-                <h3 style="display: block; font-size: 1.17em; margin-block: 1em; margin-inline: 0px; font-weight: bold; unicode-bidi: isolate; border-width: 1px 1px 1px 15px; border-style: solid; border-color: rgb(175, 217, 101); border-image: initial; background-color: transparent; color: rgb(0, 0, 0); margin: 0.2em 0px 0.5em; padding: 0.3em 0.3em 0.15em 0.5em;">今後の荒らし行為への対応について</h3>
+                <h3 style="${H3Styles}">今後の荒らし行為への対応について</h3>
                 <p>管理者のご意向に沿い、<a href="https://youtube.com/@NMNGyuri" target="_blank">名前は長い方が有利</a>、<a href="https://wikiwiki.jp/maitestu-net/-s/d65c537f" target="_blank">熟成牛タン</a>などの荒らしには、厳正に対処します、場合によっては発信者開示請求、法的措置などを取る場合がございます</p>
             </div>
             <div id="copyright-trolls">
-                <h3 style="display: block; font-size: 1.17em; margin-block: 1em; margin-inline: 0px; font-weight: bold; unicode-bidi: isolate; border-width: 1px 1px 1px 15px; border-style: solid; border-color: rgb(175, 217, 101); border-image: initial; background-color: transparent; color: rgb(0, 0, 0); margin: 0.2em 0px 0.5em; padding: 0.3em 0.3em 0.15em 0.5em;">著作権侵害について</h3>
+                <h3 style="${H3Styles}">著作権侵害について</h3>
                 <p>著作権法第十条で挙げられたものには、例外なく全てに著作権が発生します。著作権をはじめとする知的財産権の侵害は、時には裁判などに発展することもあります。</p>
                 <p>権利侵害を受けた方は、当委員会に直接お問い合わせください。解決が難しいと当委員会が判断した場合は、<a href="https://sakitibi-com9.webnode.jp/page/3" target="_blank">管理者への相談をお勧めします。</a></p>
                 <p>(※送信防止措置の請求には、問い合わせフォームにて13ninアカウントが必要です。)</p>
             </div>
             <div id="about-terms">
-                <h3 style="display: block; font-size: 1.17em; margin-block: 1em; margin-inline: 0px; font-weight: bold; unicode-bidi: isolate; border-width: 1px 1px 1px 15px; border-style: solid; border-color: rgb(175, 217, 101); border-image: initial; background-color: transparent; color: rgb(0, 0, 0); margin: 0.2em 0px 0.5em; padding: 0.3em 0.3em 0.15em 0.5em;">事情により当委員会の利用規約を設定することが可決されました、</h3>
+                <h3 style="${H3Styles}">事情により当委員会の利用規約を設定することが可決されました、</h3>
                 <p><a href="https://sakitibi.github.io/selects/e3839ee382a4e98984e3838de38383e38388e692b2e6bb85e5a794e593a1e4bc9a?pattern=vercel-asakura-wiki">ここから同意して下さい</a></p>
             </div>
         `);
