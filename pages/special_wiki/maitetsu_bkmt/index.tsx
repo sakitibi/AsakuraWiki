@@ -82,7 +82,7 @@ export default function WikiPage() {
         color: rgb(0, 0, 0);
         margin: 0.2em 0px 0.5em;
         padding: 0.3em 0.3em 0.15em 0.5em;
-    `);
+    `).replace(/^\n|\s+$|^ {4}/gm, '');
 
     // Appear系統
 
