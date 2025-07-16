@@ -98,7 +98,7 @@ export default function Home() {
             </style>
         </Head>
         <div id="contents-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
-            <div id="contents" style={{display: 'flex'}}>
+            <div id="contents" style={{display: 'flex', flex: 1}}>
                 <div id="menu">
                     <nav className={styles.menu}>
                         <ul>
