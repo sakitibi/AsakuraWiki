@@ -86,6 +86,16 @@ export default function Home() {
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
             </Head>
             <div id="contents">
+                <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
+                    <div className={styles.pForBeginner}>
+                        <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
+                        <ul className={styles.pForBeginner__list}>
+                            <li className={styles.pForBeginner__item}>
+                                <a href="/wiki/sample">サンプルWiki</a>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
                 <main style={{ padding: '2rem' }}>
                     <h1>あさクラWiki</h1>
                     {loading ? (
@@ -124,16 +134,6 @@ export default function Home() {
                         </span>
                     </button>
                 </main>
-                <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                    <div className={styles.pForBeginner}>
-                        <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
-                        <ul className={styles.pForBeginner__list}>
-                            <li className={styles.pForBeginner__item}>
-                                <a href="/wiki/sample">サンプルWiki</a>
-                            </li>
-                        </ul>
-                    </div>
-                </aside>
                 <footer>
                     <nav id="menu">
                     <ul>
