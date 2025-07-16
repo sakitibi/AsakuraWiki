@@ -119,6 +119,9 @@ export default function Home() {
                         <p>まだページがありません。</p>
                         ) : (
                         <div id="wikis">
+                            <div id="hot-wiki">
+                                <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>HOTなWiki</h2>
+                            </div>
                             <div id="update-wiki">
                                 <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>最近更新されたWiki</h2>
                                 <ul>

@@ -67,22 +67,22 @@ export default function WikiPage() {
         }
     }, 1000);
 
-    const H3Styles:React.CSSProperties = {
-        display: 'block',
-        fontSize: '1.17em',
-        marginBlock: '1em',
-        marginInline: '0px',
-        fontWeight: 'bold',
-        unicodeBidi: 'isolate',
-        borderWidth: '1px 1px 1px 15px',
-        borderStyle: 'solid',
-        borderColor: 'rgb(175, 217, 101)',
-        borderImage: 'initial',
-        backgroundColor: 'transparent',
-        color: 'rgb(0, 0, 0)',
-        margin: '0.2em 0px 0.5em',
-        padding: '0.3em 0.3em 0.15em 0.5em'
-    }
+    const H3Styles = (`
+        display: block;
+        font-size: 1.17em;
+        margin-block: 1em;
+        margin-inline: 0px;
+        font-weight: bold;
+        unicode-bidi: isolate;
+        border-width: 1px 1px 1px 15px;
+        border-style: solid;
+        border-color: rgb(175, 217, 101);
+        border-image: initial;
+        background-color: transparent;
+        color: rgb(0, 0, 0);
+        margin: 0.2em 0px 0.5em;
+        padding: 0.3em 0.3em 0.15em 0.5em;
+    `);
 
     // Appear系統
 
