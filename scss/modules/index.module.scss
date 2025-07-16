@@ -76,16 +76,30 @@
     padding: 0;
 }
 
-.pForBeginner__item>a:before {
-    background-image: url("https://wikiwiki.jp/pa/assets/bb11ec8bcbb1ecaa7a13.png");
-    background-repeat: no-repeat;
-    background-size: contain;
-    content: "";
-    display: inline-block;
-    height: 12px;
-    margin-left: -16px;
-    margin-right: 10px;
-    width: 6px;
+.pForBeginner__item>a {
+    align-items: center;
+    background-color: #fff;
+    border-radius: 5px;
+    color: #9f4548;
+    display: flex;
+    font-size: 13px;
+    font-weight: 700;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    &::before{
+        background-image: url("https://wikiwiki.jp/pa/assets/bb11ec8bcbb1ecaa7a13.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        content: "";
+        display: inline-block;
+        height: 12px;
+        margin-left: -16px;
+        margin-right: 10px;
+        width: 6px;
+    }
 }
 
 @media (max-width: 767px) {
