@@ -9,8 +9,8 @@ export default function Home() {
                 <meta charSet='UTF-8'/>
                 <title>Об этом вики-сайте по аренде</title>
             </Head>
-            <div id="contents-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}}>
-                <div id="contents" style={{display: 'flex', flex: 1}}>
+            <div className={styles.contentsWrapper}>
+                <div className={styles.contents}>
                     <div id="menu">
                         <nav className={styles.menu}>
                             <ul>
