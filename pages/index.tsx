@@ -134,7 +134,7 @@ export default function Home() {
                         </span>
                     </button>
                 </main>
-                <footer>
+                <footer className={styles.footer}>
                     <nav id="menu">
                     <ul>
                         <li>

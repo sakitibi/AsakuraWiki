@@ -27,7 +27,7 @@ export default function Home() {
                     <p>使いやすいレンタルWikiサービスを目指しています。</p>
                     <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
                 </main>
-                <footer>
+                <footer className={styles.footer}>
                     <div id="menu">
                         <ul>
                             <li>

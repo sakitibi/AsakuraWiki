@@ -144,7 +144,7 @@ export default function Home() {
                 <span>＋ Создать новую Вики (японский)</span>
                 </button>
             </main>
-            <footer>
+            <footer className={styles.footer}>
                 <nav id="menu">
                 <ul>
                     <li>
