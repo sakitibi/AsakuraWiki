@@ -9,7 +9,7 @@ export default function Home() {
                 <meta charSet='UTF-8'/>
                 <title>Об этом вики-сайте по аренде</title>
             </Head>
-            <div id="contents">
+            <div id="contents" style={{display: 'flex'}}>
                 <div id="menu">
                     <nav className={styles.menu}>
                         <ul>

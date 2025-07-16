@@ -97,7 +97,7 @@ export default function Home() {
                 `}
             </style>
         </Head>
-        <div id="contents">
+        <div id="contents" style={{display: 'flex'}}>
             <div id="menu">
                 <nav className={styles.menu}>
                     <ul>

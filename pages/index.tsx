@@ -85,7 +85,7 @@ export default function Home() {
                 </style>
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
             </Head>
-            <div id="contents">
+            <div id="contents" style={{display: 'flex'}}>
                 <nav className={styles.menu}>
                     <ul>
                         <li>
