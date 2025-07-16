@@ -110,7 +110,8 @@
 /* メニュー関連 */
 
 .menu{
-    float: left;
+    display: flex;
+    justify-content: flex-start;
     & li::marker{
         content: none;
     }
