@@ -121,6 +121,15 @@ export default function Home() {
                         <div id="wikis">
                             <div id="hot-wiki">
                                 <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>HOTなWiki</h2>
+                                <ul>
+                                    <li>
+                                        <Link href="/special_wiki/maitetsu-bkmt">
+                                            <button>
+                                                <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
+                                            </button>
+                                        </Link>
+                                    </li>
+                                </ul>
                             </div>
                             <div id="update-wiki">
                                 <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>最近更新されたWiki</h2>
@@ -131,9 +140,7 @@ export default function Home() {
                                         href={`/wiki/${wp.wikiSlug}`}
                                         >
                                         <button>
-                                            <span>
-                                                <strong>{wp.name} Wiki*</strong>
-                                            </span>
+                                            <strong>{wp.name} Wiki*</strong>
                                         </button>
                                         </Link>{' '}
                                         <small>
