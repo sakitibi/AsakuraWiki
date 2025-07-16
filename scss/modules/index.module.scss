@@ -112,6 +112,8 @@
 .menu{
     display: flex;
     justify-content: flex-start;
+    width: 350px;
+    flex-shrink: 0;
     & li::marker{
         content: none;
     }
