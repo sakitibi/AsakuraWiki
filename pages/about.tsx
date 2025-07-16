@@ -11,6 +11,7 @@ export default function Home() {
             </Head>
             <div id="contents">
                 <div id="menu">
+                    <nav className={styles.menu}>
                         <ul>
                             <li>
                                 <Link href="/">
@@ -35,7 +36,8 @@ export default function Home() {
                                 </Link>
                             </li>
                         </ul>
-                    </div>
+                    </nav>
+                </div>
                 <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
                     <div className={styles.pForBeginner}>
                         <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
