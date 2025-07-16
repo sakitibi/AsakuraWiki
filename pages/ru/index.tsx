@@ -98,6 +98,30 @@ export default function Home() {
             </style>
         </Head>
         <div id="contents">
+            <nav id="menu">
+                <ul>
+                    <li>
+                    <Link href="/ru">
+                        <button><span>Дом</span></button>
+                    </Link>
+                    </li>
+                    <li>
+                    <Link href="/ru/about">
+                        <button><span>Об этом вики-сайте по аренде</span></button>
+                    </Link>
+                    </li>
+                    <li>
+                    <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
+                        <button><span>Войти/Зарегистрироваться (японский)</span></button>
+                    </Link>
+                    </li>
+                    <li>
+                    <Link href="/">
+                        <button><span>日本語</span></button>
+                    </Link>
+                    </li>
+                </ul>
+            </nav>
             <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
                 <div className={styles.pForBeginner}>
                     <h2 className={styles.pForBeginner__title}>Для новичков</h2>
@@ -145,30 +169,6 @@ export default function Home() {
                 </button>
             </main>
             <footer className={styles.footer}>
-                <nav id="menu">
-                <ul>
-                    <li>
-                    <Link href="/ru">
-                        <button><span>Дом</span></button>
-                    </Link>
-                    </li>
-                    <li>
-                    <Link href="/ru/about">
-                        <button><span>Об этом вики-сайте по аренде</span></button>
-                    </Link>
-                    </li>
-                    <li>
-                    <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                        <button><span>Войти/Зарегистрироваться (японский)</span></button>
-                    </Link>
-                    </li>
-                    <li>
-                    <Link href="/">
-                        <button><span>日本語</span></button>
-                    </Link>
-                    </li>
-                </ul>
-                </nav>
                 <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                 <p>Copyright 2025 13ninstudio All rights Reserved</p>
                 <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>

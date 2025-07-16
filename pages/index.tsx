@@ -86,6 +86,30 @@ export default function Home() {
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
             </Head>
             <div id="contents">
+                <nav id="menu">
+                    <ul>
+                        <li>
+                            <Link href="/">
+                                <button><span>ホーム</span></button>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/about">
+                                <button><span>当レンタルWikiについて</span></button>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
+                                <button><span>ログイン/新規登録</span></button>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/ru">
+                                <button><span>ロシア語</span></button>
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
                 <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
                     <div className={styles.pForBeginner}>
                         <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
@@ -135,33 +159,9 @@ export default function Home() {
                     </button>
                 </main>
                 <footer className={styles.footer}>
-                    <nav id="menu">
-                    <ul>
-                        <li>
-                            <Link href="/">
-                                <button><span>ホーム</span></button>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/about">
-                                <button><span>当レンタルWikiについて</span></button>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                                <button><span>ログイン/新規登録</span></button>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/ru">
-                                <button><span>ロシア語</span></button>
-                            </Link>
-                        </li>
-                    </ul>
-                    </nav>
                     <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                    <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                    <p>当Wikiサービスはオープンソースプロジェクトです</p>
+                        <p>Copyright 2025 13ninstudio All rights Reserved</p>
+                        <p>当Wikiサービスはオープンソースプロジェクトです</p>
                     </div>
                 </footer>
             </div>
