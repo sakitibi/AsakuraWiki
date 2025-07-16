@@ -11,10 +11,10 @@ body{
             padding-inline-start: 40px;
             unicode-bidi: isolate;
         }
-        *, :after, :before {
+        & *, :after, :before {
             box-sizing: border-box;
         }
-        aside {
+        & aside {
             display: block;
             unicode-bidi: isolate;
         }
