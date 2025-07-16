@@ -21,7 +21,7 @@ export default function Home() {
         backgroundImage: 'url("https://wikiwiki.jp/pa/assets/84566d2e21c8bbef1c53.png")',
         color: '#566b1c',
         display: 'flex',
-        fontSize: '20px',
+        fontSize: '17px',
         fontWeight: '700',
         justifyContent: 'center',
         padding: '.5em 1em',
