@@ -38,6 +38,13 @@ export default function Home() {
                         </ul>
                     </nav>
                 </div>
+                <main style={{ padding: '2rem', flex: 1 }}>
+                    <h1>当レンタルWikiについて</h1>
+                    <p>当Wiki(以下あさクラWiki)は</p>
+                    <p>オープンソースで<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a>などより</p>
+                    <p>使いやすいレンタルWikiサービスを目指しています。</p>
+                    <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
+                </main>
                 <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
                     <div className={styles.pForBeginner}>
                         <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
@@ -48,13 +55,6 @@ export default function Home() {
                         </ul>
                     </div>
                 </aside>
-                <main style={{ padding: '2rem' }}>
-                    <h1>当レンタルWikiについて</h1>
-                    <p>当Wiki(以下あさクラWiki)は</p>
-                    <p>オープンソースで<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a>などより</p>
-                    <p>使いやすいレンタルWikiサービスを目指しています。</p>
-                    <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
-                </main>
                 <footer className={styles.footer}>
                     <div style={{textAlign: "center"}}>
                         <p>Copyright 2025 13ninstudio All rights Reserved</p>

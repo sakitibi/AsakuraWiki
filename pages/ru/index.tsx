@@ -124,17 +124,7 @@ export default function Home() {
                     </ul>
                 </nav>
             </div>
-            <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                <div className={styles.pForBeginner}>
-                    <h2 className={styles.pForBeginner__title}>Для новичков</h2>
-                    <ul className={styles.pForBeginner__list}>
-                        <li className={styles.pForBeginner__item}>
-                            <a href="/wiki/sample">Образец Wiki</a>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
-            <main style={{ padding: '2rem' }}>
+            <main style={{ padding: '2rem', flex: 1 }}>
                 <h1>АсакураWiki</h1>
                 {loading ? (
                 <p>Loading...</p>
@@ -170,6 +160,16 @@ export default function Home() {
                 <span>＋ Создать новую Вики (японский)</span>
                 </button>
             </main>
+            <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
+                <div className={styles.pForBeginner}>
+                    <h2 className={styles.pForBeginner__title}>Для новичков</h2>
+                    <ul className={styles.pForBeginner__list}>
+                        <li className={styles.pForBeginner__item}>
+                            <a href="/wiki/sample">Образец Wiki</a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
             <footer className={styles.footer}>
                 <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                 <p>Copyright 2025 13ninstudio All rights Reserved</p>

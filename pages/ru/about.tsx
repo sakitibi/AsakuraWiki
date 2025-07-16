@@ -36,6 +36,13 @@ export default function Home() {
                         </ul>
                     </nav>
                 </div>
+                <main style={{ padding: '2rem', flex: 1 }}>
+                    <h1>Об этом вики-сайте по аренде</h1>
+                    <p>Эта Wiki (далее именуемая Asakura Wiki)</p>
+                    <p>Открытый исходный код, например<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a></p>
+                    <p>Наша цель — предоставить простую в использовании услугу аренды Wiki.</p>
+                    <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>Источник здесь</a></p>
+                </main>
                 <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
                     <div className={styles.pForBeginner}>
                         <h2 className={styles.pForBeginner__title}>Для новичков</h2>
@@ -46,13 +53,6 @@ export default function Home() {
                         </ul>
                     </div>
                 </aside>
-                <main style={{ padding: '2rem' }}>
-                    <h1>Об этом вики-сайте по аренде</h1>
-                    <p>Эта Wiki (далее именуемая Asakura Wiki)</p>
-                    <p>Открытый исходный код, например<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a></p>
-                    <p>Наша цель — предоставить простую в использовании услугу аренды Wiki.</p>
-                    <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>Источник здесь</a></p>
-                </main>
                 <footer className={styles.footer}>
                     <div style={{textAlign: "center"}}>
                         <p>Copyright 2025 13ninstudio All rights Reserved</p>
