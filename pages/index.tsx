@@ -123,7 +123,7 @@ export default function Home() {
                                 <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>HOTなWiki</h2>
                                 <ul>
                                     <li>
-                                        <Link href="/special_wiki/maitetsu-bkmt">
+                                        <Link href="/special_wiki/maitetsu_bkmt">
                                             <button>
                                                 <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
                                             </button>
