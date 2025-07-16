@@ -107,6 +107,15 @@
     }
 }
 
+/* メニュー関連 */
+
+#menu{
+    float: left;
+    & li::marker{
+        content: none;
+    }
+}
+
 @media (max-width: 767px) {
     .fullWidthXs {
         margin-left: calc(50% - 50vw);

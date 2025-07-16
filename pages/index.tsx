@@ -86,7 +86,7 @@ export default function Home() {
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
             </Head>
             <div id="contents">
-                <nav id="menu">
+                <nav id={styles.menu}>
                     <ul>
                         <li>
                             <Link href="/">
