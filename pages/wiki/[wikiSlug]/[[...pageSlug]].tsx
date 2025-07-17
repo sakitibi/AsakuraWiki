@@ -316,7 +316,7 @@ export default function WikiPage() {
                 like: 1,
                 dislike: 0,
                 heikinlike: 1,
-                created_at: new Date()
+                created_at: new Date() // ←ここ重要
             });
         } else {
             const updatedLike = (data.like ?? 0) + 1;
