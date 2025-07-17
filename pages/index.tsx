@@ -72,26 +72,13 @@ export default function Home() {
         location.href = '/dashboard/create-wiki'
     }
 
-    useEffect(() => {
-        const handleClick = () => {
-            setMenuStatus((prevStatus) => {
+    const handleClick = () => {
+        setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
             document.body.style.overflow = newStatus ? 'hidden' : '';
             return newStatus;
-            });
-        };
-
-        const openBtn = document.querySelector(".menu-button");
-        const closeBtn = document.querySelector(".pSpNav__btnClose");
-
-        openBtn?.addEventListener("click", handleClick);
-        closeBtn?.addEventListener("click", handleClick);
-
-        return () => {
-            openBtn?.removeEventListener("click", handleClick);
-            closeBtn?.removeEventListener("click", handleClick);
-        };
-    }, []);
+        });
+    };
 
     const Page = () => {
         return (
@@ -119,7 +106,7 @@ export default function Home() {
                     </div>
                 </nav>
                 <div className={styles.contentsWrapper}>
-                    <HeaderJp/>
+                    <HeaderJp handleClick={handleClick} />
                     <div className={styles.contents}>
                         <nav className={styles.menu}>
                             <ul>

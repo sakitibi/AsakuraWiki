@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import styles from 'css/index.min.module.css';
 
-export default function HeaderJp() {
+export default function HeaderJp({ handleClick }: { handleClick: () => void }) {
     const HeaderJpPage = () => {
         return(
             <header className={styles.lHeader}>
@@ -13,7 +14,7 @@ export default function HeaderJp() {
                                         <div className={styles.row}>
                                             <div className={styles.col6}></div>
                                             <div className={`${styles.offset1} ${styles.col4}`}>
-                                                <button className='menu-button'>
+                                                <button onClick={handleClick}>
                                                     <span className={styles.cMobileControls__icon}>
                                                         <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
                                                     </span>
