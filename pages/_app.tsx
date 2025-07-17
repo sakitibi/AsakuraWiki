@@ -76,7 +76,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         `,
                     }}
                 />
-
                 <noscript>
                     <div style={{
                         backgroundColor: 'yellow',
@@ -88,8 +87,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-
-                <header>
+                <div>
                     <div id="sanninnsenn">
                         <h2><strong>夏の参院選について</strong></h2>
                         <p>あさクラWikiは<strong><a href="https://sanseito.jp" target="_blank">参政党</a>を支持します!!!</strong></p>
@@ -100,7 +98,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                             <p>Мы ценим ваше понимание и сотрудничество.</p>
                         </div>
                     </div>
-                </header>
+                </div>
                 <Component {...pageProps} />
             </SessionContextProvider>
         </>
