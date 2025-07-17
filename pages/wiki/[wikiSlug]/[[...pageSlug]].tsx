@@ -28,6 +28,7 @@ async function fetchDesignColor() {
 export default function WikiPage() {
     const router = useRouter()
     const user = useUser();
+    const userId = user?.id; // ← ここを insert 時に使う！
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const cmdStr = typeof cmd === 'string' ? cmd : '';
 
@@ -309,7 +310,7 @@ export default function WikiPage() {
 
         if (!data) {
             await supabase.from('pages_liked').insert({
-                user_id: user,
+                user_id: userId,
                 wiki_slug: wikiSlugStr,
                 page_slug: pageSlugStr,
                 like: 1,
