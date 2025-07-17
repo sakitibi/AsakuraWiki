@@ -18,6 +18,19 @@ body{
             display: block;
             unicode-bidi: isolate;
         }
+        & a, a:active, a:focus, a:hover {
+            color: #ef8688;
+            -webkit-text-decoration: underline;
+            text-decoration: underline;
+        }
+        & a {
+            color: #337ab7;
+        }
+        & a:-webkit-any-link {
+            color: -webkit-link;
+            cursor: pointer;
+            text-decoration: underline;
+        }
     }
     &:not(.wiki-font.pink,.wiki-font.blue,.wiki-font.yellow){
         background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
