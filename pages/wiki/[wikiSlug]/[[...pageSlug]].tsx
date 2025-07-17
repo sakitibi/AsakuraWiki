@@ -300,16 +300,26 @@ export default function WikiPage() {
             .select('like, heikinlike')
             .eq('wiki_slug', wikiSlugStr)
             .eq('slug', pageSlugStr)
-            .single();
+            .maybeSingle();
 
-        if (fetchError || !data) {
+        if (fetchError) {
             alert('現在の評価取得に失敗しました: ' + fetchError?.message);
             setLoading(false);
             return;
         }
 
-        const updatedLike = (data.like ?? 0) + 1;
-        const updatedHeikinLike = (data.heikinlike ?? 0) + 1;
+        if (!data) {
+            await supabase.from('pages_liked').insert({
+                user_id: user,
+                wiki_slug: wikiSlugStr,
+                page_slug: pageSlugStr,
+                like: 1,
+                dislike: 0,
+                created_at: new Date()
+            });
+        }
+        const updatedLike = (data!.like ?? 0) + 1;
+        const updatedHeikinLike = (data!.heikinlike ?? 0) + 1;
 
         // 更新処理
         const { error: updateError } = await supabase
