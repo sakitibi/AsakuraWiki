@@ -54,6 +54,8 @@ export default function WikiPage() {
             }
 
             setDesignColor(data.design_color as 'pink' | 'blue' | 'yellow' | 'default' | null);
+            console.log('wikiSlugStr:', wikiSlugStr); // ← これが undefined や空文字なら原因！
+            console.log('取得したdesign_color:', data?.design_color);
         }
 
         fetchColor();
