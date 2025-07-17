@@ -73,16 +73,23 @@ export default function Home() {
     }
 
     useEffect(() => {
-        const handleMenuOpenButtons = document.querySelectorAll(".menu-button");
-        handleMenuOpenButtons.forEach((button) => {
-            button!.addEventListener("click", function(){
-                setMenuStatus((prevStatus) => !prevStatus);
-                if(menuStatus === false){
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style = '';
-                }
-            })
+        const handleMenuOpenButtonOpen = document.querySelector(".menu-button");
+        handleMenuOpenButtonOpen!.addEventListener("click", function(){
+            setMenuStatus((prevStatus) => !prevStatus);
+            if(menuStatus === false){
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style = '';
+            }
+        });
+        const handleMenuOpenButtonClose = document.querySelector(".pSpNav__btnClose");
+        handleMenuOpenButtonClose!.addEventListener("click", function(){
+            setMenuStatus((prevStatus) => !prevStatus);
+            if(menuStatus === false){
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style = '';
+            }
         });
     }, []);
 
@@ -105,7 +112,7 @@ export default function Home() {
                 <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
                     <div className={styles.pSpNav__title}>
                         メニュー
-                        <div className={`${styles.pSpNav__btnClose} menu-button`}>×</div>
+                        <div className={`${styles.pSpNav__btnClose}`}>×</div>
                     </div>
                     <div className={styles.pSpNav__register}>
                         <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
