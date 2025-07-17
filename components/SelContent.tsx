@@ -1,27 +1,6 @@
 import React from 'react';
-import { supabase } from 'lib/supabaseClient';
-
-let designColor: 'pink' | 'blue' | 'yellow' | 'default' | null = null;
-
-/*async function fetchDesignColor() {
-    const { data, error } = await supabase
-        .from('wikis')
-        .select('design_color')
-        .limit(1)
-        .single();
-
-    if (error) {
-        console.error('データ取得エラー:', error);
-        return null;
-    }
-
-    return data.design_color;
-}
-
-(async function () {
-    designColor = await fetchDesignColor();
-    console.log('取得したデザインカラー:', designColor);
-})();*/
+import { useDesignColor } from '@/utils/parsePlugins';
+import { useRouter } from 'next/router'
 
 type SelContentProps = {
     type: string;
@@ -29,6 +8,10 @@ type SelContentProps = {
 };
 
 export default function SelContent({ type, children }: SelContentProps) {
+    const router = useRouter()
+    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
+    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const designColor = useDesignColor(wikiSlugStr);
     const commonsStyle: React.CSSProperties = {
         border: '1px solid #a9a9a9',
         color: 'inherit',
