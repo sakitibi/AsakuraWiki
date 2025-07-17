@@ -29,7 +29,7 @@ export default function NewsPage() {
                                 </Link>
                                 </li>
                                 <li>
-                                <Link href="/news">
+                                <Link href="/news/2025-07-16-1">
                                     <button><span>日本語</span></button>
                                 </Link>
                                 </li>
