@@ -26,6 +26,8 @@ async function fetchDesignColor() {
     return data.design_color;
 }
 
+fetchDesignColor();
+
 export default function WikiPage() {
     const router = useRouter()
     const user = useUser();
