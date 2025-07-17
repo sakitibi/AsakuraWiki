@@ -88,7 +88,10 @@ export default function WikiPage() {
                 return;
             }
 
-            // 3. ページ取得
+            // ✅ ここに追加！編集モードを state に反映
+            setEditMode(wikiData.edit_mode); // ← ココ！
+
+            // 2. ページ取得
             const { data: pageData, error: pageError } = await supabase
                 .from('wiki_pages')
                 .select('title, content')
@@ -105,6 +108,7 @@ export default function WikiPage() {
                 setContent(pageData.content);
                 setError(null);
             }
+
             setLoading(false);
         })();
     }, [wikiSlugStr, pageSlugStr, user]);
