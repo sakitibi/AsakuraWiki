@@ -80,6 +80,13 @@
 .cMobileControls {
     list-style: none;
     text-align: center;
+    & a, & button {
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
 }
 
 .col6 {
