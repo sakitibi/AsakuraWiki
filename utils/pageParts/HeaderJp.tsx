@@ -1,9 +1,7 @@
 import styles from 'css/index.min.module.css';
-import Main from '@/utils/pageParts/HeaderJpParts';
 
 export default function HeaderJp() {
     const HeaderJpPage = () => {
-        const { handleMenuOpen } = Main();
         return(
             <header className={styles.lHeader}>
                 <div className={styles.container}>
@@ -15,7 +13,7 @@ export default function HeaderJp() {
                                         <div className={styles.row}>
                                             <div className={styles.col6}></div>
                                             <div className={`${styles.offset1} ${styles.col4}`}>
-                                                <button id="menu-button" onClick={handleMenuOpen}>
+                                                <button className='menu-button'>
                                                     <span className={styles.cMobileControls__icon}>
                                                         <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
                                                     </span>

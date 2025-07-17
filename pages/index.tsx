@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { supabase } from 'lib/supabaseClient';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
-import Main from '@/utils/pageParts/HeaderJpParts';
 import styles from 'css/index.min.module.css';
 
 type WikiPage = {
@@ -73,8 +72,21 @@ export default function Home() {
         location.href = '/dashboard/create-wiki'
     }
 
+    useEffect(() => {
+        const handleMenuOpenButtons = document.querySelectorAll(".menu-button");
+        handleMenuOpenButtons.forEach((button) => {
+            button!.addEventListener("click", function(){
+                setMenuStatus((prevStatus) => !prevStatus);
+                if(menuStatus === false){
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style = '';
+                }
+            })
+        });
+    }, []);
+
     const Page = () => {
-        const { handleMenuOpen } = Main();
         return (
             <>
                 <Head>
@@ -93,7 +105,7 @@ export default function Home() {
                 <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
                     <div className={styles.pSpNav__title}>
                         メニュー
-                        <div className={styles.pSpNav__btnClose} onClick={handleMenuOpen}>×</div>
+                        <div className={`${styles.pSpNav__btnClose} menu-button`}>×</div>
                     </div>
                     <div className={styles.pSpNav__register}>
                         <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
