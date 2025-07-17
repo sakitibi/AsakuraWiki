@@ -97,6 +97,18 @@ button:not(#menu-button) {
     }
 }
 
+#menu-button{
+    text-rendering: auto;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: center;
+    padding-block: 1px;
+    padding-inline: 6px;
+}
+
 input:not([type=submit],[type=checkbox]) {
     width: 100%;
 }
