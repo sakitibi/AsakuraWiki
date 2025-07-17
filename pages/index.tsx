@@ -91,7 +91,7 @@ export default function Home() {
                     </style>
                     <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
                 </Head>
-                <nav className="p-sp-nav" id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none'}}></nav>
+                <nav className="p-sp-nav" id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: 9999}}></nav>
                 <div className={styles.contentsWrapper}>
                     <header className={styles.lHeader}>
                         <div className={styles.container}>
