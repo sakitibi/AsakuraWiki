@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { supabase } from 'lib/supabaseClient';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
+import Main from '@/utils/pageParts/HeaderJpParts';
 import styles from 'css/index.min.module.css';
 
 type WikiPage = {
@@ -72,16 +73,8 @@ export default function Home() {
         location.href = '/dashboard/create-wiki'
     }
 
-    const handleMenuOpen = () => {
-        setMenuStatus((prevStatus) => !prevStatus);
-        if(menuStatus === false){
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style = '';
-        }
-    };
-
     const Page = () => {
+        const { handleMenuOpen } = Main();
         return (
             <>
                 <Head>
