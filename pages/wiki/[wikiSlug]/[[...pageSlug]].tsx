@@ -294,12 +294,11 @@ export default function WikiPage() {
     const handlePageLike = async () => {
         setLoading(true);
 
-        // 現在の値を取得
         const { data, error: fetchError } = await supabase
             .from('pages_liked')
             .select('like, heikinlike')
             .eq('wiki_slug', wikiSlugStr)
-            .eq('slug', pageSlugStr)
+            .eq('page_slug', pageSlugStr)
             .maybeSingle();
 
         if (fetchError) {
@@ -315,29 +314,25 @@ export default function WikiPage() {
                 page_slug: pageSlugStr,
                 like: 1,
                 dislike: 0,
+                heikinlike: 1,
                 created_at: new Date()
             });
-        }
-        const updatedLike = (data!.like ?? 0) + 1;
-        const updatedHeikinLike = (data!.heikinlike ?? 0) + 1;
+        } else {
+            const updatedLike = (data.like ?? 0) + 1;
+            const updatedHeikinLike = (data.heikinlike ?? 0) + 1;
 
-        // 更新処理
-        const { error: updateError } = await supabase
-            .from('pages_liked')
-            .update({
-                like: updatedLike,
-                heikinlike: updatedHeikinLike,
-            })
-            .eq('wiki_slug', wikiSlugStr)
-            .eq('slug', pageSlugStr);
+            await supabase
+                .from('pages_liked')
+                .update({
+                    like: updatedLike,
+                    heikinlike: updatedHeikinLike,
+                })
+                .eq('wiki_slug', wikiSlugStr)
+                .eq('page_slug', pageSlugStr);
+        }
 
         setLoading(false);
-
-        if (updateError) {
-            alert('更新に失敗しました: ' + updateError.message);
-        } else {
-            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-        }
+        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
     };
 
     const handlePageDisLike = async () => {
