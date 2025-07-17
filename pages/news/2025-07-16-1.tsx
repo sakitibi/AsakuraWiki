@@ -42,7 +42,7 @@ export default function NewsPage() {
                         <p>Train Builder .. 和音GAMES .. おどみんクラフト .. あさクラ .. と通った後に最終的には右上に抜けて行きました</p>
                         <p>進路は以下の通り</p>
                         <div id="img">
-                            <img alt="進路" src="/images/2025-07-16 15.34.00.png"/>
+                            <img alt="進路" src="https://sakitibi.github.io/AsakuraWiki-Images/2025-07-16%2015.34.00.png"/>
                         </div>
                     </main>
                     <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
