@@ -16,7 +16,7 @@ export type Context = { wikiSlug: string; pageSlug: string }
 
 let designColor: 'pink' | 'blue' | 'yellow' | 'default' | null = null;
 
-async function fetchDesignColor() {
+/*async function fetchDesignColor() {
     const { data, error } = await supabase
         .from('wikis')
         .select('design_color')
@@ -34,7 +34,7 @@ async function fetchDesignColor() {
 (async function () {
     designColor = await fetchDesignColor();
     console.log('取得したデザインカラー:', designColor);
-})();
+})();*/
 
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します

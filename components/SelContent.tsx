@@ -3,7 +3,7 @@ import { supabase } from 'lib/supabaseClient';
 
 let designColor: 'pink' | 'blue' | 'yellow' | 'default' | null = null;
 
-async function fetchDesignColor() {
+/*async function fetchDesignColor() {
     const { data, error } = await supabase
         .from('wikis')
         .select('design_color')
@@ -21,7 +21,7 @@ async function fetchDesignColor() {
 (async function () {
     designColor = await fetchDesignColor();
     console.log('取得したデザインカラー:', designColor);
-})();
+})();*/
 
 type SelContentProps = {
     type: string;
