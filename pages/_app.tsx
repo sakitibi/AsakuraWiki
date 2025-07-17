@@ -87,7 +87,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-                <div>
+                <div style={{textAlign: 'center'}}>
                     <div id="sanninnsenn">
                         <h2><strong>夏の参院選について</strong></h2>
                         <p>あさクラWikiは<strong><a href="https://sanseito.jp" target="_blank">参政党</a>を支持します!!!</strong></p>
