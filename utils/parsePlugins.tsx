@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Calendar2 from '@/components/Calendar2'
 import CommentForm from '@/components/CommentForm'
 import RealTimeComments from '@/components/RealTimeComments'
@@ -11,30 +11,35 @@ import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
 import { DATEDIF, DATEVALUE } from './dateFunctions';
 import { supabase } from 'lib/supabaseClient';
+import { useRouter } from 'next/router';
 
 export type Context = { wikiSlug: string; pageSlug: string }
 
-let designColor: 'pink' | 'blue' | 'yellow' | 'default' | null = null;
+const [designColor, setDesignColor] = useState<'default' | 'pink' | 'blue' | 'yellow' | null>(null);
 
-/*async function fetchDesignColor() {
-    const { data, error } = await supabase
+const router = useRouter()
+const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
+const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+useEffect(() => {
+    async function fetchColor() {
+        const { data, error } = await supabase
         .from('wikis')
         .select('design_color')
-        .limit(1)
+        .eq('slug', wikiSlugStr) // ← sample など
         .single();
 
-    if (error) {
-        console.error('データ取得エラー:', error);
-        return null;
+        if (error || !data) {
+        console.error('カラー取得失敗:', error);
+        setDesignColor('default'); // fallback可能
+        return;
+        }
+
+        setDesignColor(data.design_color);
+        console.log('適用するカラー:', data.design_color);
     }
 
-    return data.design_color;
-}
-
-(async function () {
-    designColor = await fetchDesignColor();
-    console.log('取得したデザインカラー:', designColor);
-})();*/
+    if (wikiSlugStr) fetchColor();
+}, [wikiSlugStr]);
 
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
