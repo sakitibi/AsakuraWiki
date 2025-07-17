@@ -109,11 +109,11 @@ export default function Home() {
         </Head>
         <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
             <div className={styles.pSpNav__title}>
-                メニュー
+                меню
                 <div className={styles.pSpNav__btnClose} onClick={handleMenuOpen}>×</div>
             </div>
             <div className={styles.pSpNav__register}>
-                <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
+                <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">Войти/Зарегистрироваться (японский)</a>
             </div>
         </nav>
         <div className={styles.contentsWrapper}>
@@ -129,7 +129,7 @@ export default function Home() {
                                             <div className={`${styles.offset1} ${styles.col4}`}>
                                                 <button id="menu-button" onClick={handleMenuOpen}>
                                                     <span className={styles.cMobileControls__icon}>
-                                                        <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
+                                                        <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="меню" width="30" height="30"/>
                                                     </span>
                                                 </button>
                                             </div>
