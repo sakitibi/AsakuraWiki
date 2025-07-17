@@ -99,7 +99,7 @@ export default function Home() {
                 <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
                     <div className={styles.pSpNav__title}>
                         メニュー
-                        <div className={`${styles.pSpNav__btnClose}`}>×</div>
+                        <div className={`${styles.pSpNav__btnClose}`} onClick={handleClick}>×</div>
                     </div>
                     <div className={styles.pSpNav__register}>
                         <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
