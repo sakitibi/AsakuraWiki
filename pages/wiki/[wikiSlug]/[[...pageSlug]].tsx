@@ -108,6 +108,7 @@ export default function WikiPage() {
                 setContent(pageData.content);
                 setError(null);
             }
+            console.log(editMode);
 
             setLoading(false);
         })();
