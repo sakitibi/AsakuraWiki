@@ -117,7 +117,7 @@ export default function Home() {
                                                     <div className={styles.col6}></div>
                                                     <div className={`${styles.offset1} ${styles.col4}`}>
                                                         <button id="menu-button" onClick={handleMenuOpen}>
-                                                            <span className={`${styles.cMobileControls__icon} ${styles.cMobileControls__iconMenu}`}>
+                                                            <span className={styles.cMobileControls__icon}>
                                                                 <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
                                                             </span>
                                                         </button>
