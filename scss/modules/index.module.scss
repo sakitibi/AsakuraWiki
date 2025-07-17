@@ -144,7 +144,6 @@
     justify-content: flex-start;
     width: 350px;
     flex-shrink: 0;
-
     li::marker {
         content: none;
     }
@@ -157,7 +156,7 @@
     }
 }
 
-@media (min-width: 1000) {
+@media (min-width: 1000px) {
     .contentsWrapper{
         display: flex;
         flex-direction: column;
