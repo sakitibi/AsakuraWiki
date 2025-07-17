@@ -3,13 +3,6 @@ import styles from 'css/index.min.module.css';
 import Link from 'next/link';
 
 export default function NewsPage() {
-    const H2Styles:React.CSSProperties = {
-        marginBlockStart: '0.83em',
-        marginBlockEnd: '0.83em',
-        marginInlineStart: '0px',
-        marginInlineEnd: '0px',
-        unicodeBidi: 'isolate'
-    }
     return (
         <>
             <Head>
