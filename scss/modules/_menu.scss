@@ -16,3 +16,15 @@
     transition: opacity .2s;
     z-index: 100;
 }
+
+.pSpNav__title {
+    background-color: #acca64;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    overflow: hidden;
+    padding: 10px 15px;
+    & .pSpNav__btnClose{
+        float: right;
+    }
+}

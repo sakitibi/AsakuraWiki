@@ -91,7 +91,12 @@ export default function Home() {
                     </style>
                     <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
                 </Head>
-                <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}></nav>
+                <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
+                    <div className={styles.pSpNav__title}>
+                        メニュー
+                        <div className={styles.pSpNav__btnClose} onClick={handleMenuOpen}>×</div>
+                    </div>
+                </nav>
                 <div className={styles.contentsWrapper}>
                     <header className={styles.lHeader}>
                         <div className={styles.container}>
