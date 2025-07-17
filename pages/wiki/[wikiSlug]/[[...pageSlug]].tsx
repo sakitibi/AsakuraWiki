@@ -4,6 +4,8 @@ import Head from 'next/head'
 import { parseWikiContent } from '@/utils/parsePlugins'
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from 'lib/supabaseClient';
+import { handlePageLike } from '@/utils/Liked';
+import { handlePageDisLike } from '@/utils/Liked';
 
 type Page = {
     title: string
@@ -51,12 +53,6 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
-    const PageLike = useState<number>(0);
-    const PageDisLike = useState<number>(0);
-    const PageHeikinLike = useState<number>(0);
-    const WikiLike = useState<number>(0);
-    const WikiDisLike = useState<number>(0);
-    const WikiHeikinLike = useState<number>(0);
 
     useEffect(() => {
         async function fetchColor() {
@@ -291,96 +287,6 @@ export default function WikiPage() {
             }, 1000);
         }
     }, 1000);
-
-    const handlePageLike = async () => {
-        setLoading(true);
-
-        const { data, error: fetchError } = await supabase
-            .from('pages_liked')
-            .select('like, heikinlike')
-            .eq('wiki_slug', wikiSlugStr)
-            .eq('page_slug', pageSlugStr)
-            .maybeSingle();
-
-        if (fetchError) {
-            alert('現在の評価取得に失敗しました: ' + fetchError?.message);
-            setLoading(false);
-            return;
-        }
-
-        if (!data) {
-            await supabase.from('pages_liked').insert({
-                user_id: userId,
-                wiki_slug: wikiSlugStr,
-                page_slug: pageSlugStr,
-                like: 1,
-                dislike: 0,
-                heikinlike: 1,
-                created_at: new Date() // ←ここ重要
-            });
-        } else {
-            const updatedLike = (data.like ?? 0) + 1;
-            const updatedHeikinLike = (data.heikinlike ?? 0) + 1;
-
-            await supabase
-                .from('pages_liked')
-                .update({
-                    like: updatedLike,
-                    heikinlike: updatedHeikinLike,
-                })
-                .eq('wiki_slug', wikiSlugStr)
-                .eq('page_slug', pageSlugStr);
-        }
-
-        setLoading(false);
-        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-    };
-
-    const handlePageDisLike = async () => {
-        setLoading(true);
-
-        // 現在の値を取得
-        const { data, error: fetchError } = await supabase
-            .from('pages_liked')
-            .select('dislike, heikinlike')
-            .eq('wiki_slug', wikiSlugStr)
-            .eq('slug', pageSlugStr)
-            .single();
-        
-        if(!user){
-            return;
-        }
-
-        if (fetchError || !data) {
-            alert('現在の評価取得に失敗しました: ' + fetchError?.message);
-            setLoading(false);
-            return;
-        }
-
-        const updatedDislike = (data.dislike ?? 0) + 1;
-        let updatedHeikinLike = (data.heikinlike ?? 0) - 1;
-        if(updatedHeikinLike < 0){
-            updatedHeikinLike = 0;
-        }
-
-        // 更新処理
-        const { error: updateError } = await supabase
-            .from('pages_liked')
-            .update({
-                dislike: updatedDislike,
-                heikinlike: updatedHeikinLike,
-            })
-            .eq('wiki_slug', wikiSlugStr)
-            .eq('slug', pageSlugStr);
-
-        setLoading(false);
-
-        if (updateError) {
-            alert('更新に失敗しました: ' + updateError.message);
-        } else {
-            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-        }
-    };
 
     return (
         <>
