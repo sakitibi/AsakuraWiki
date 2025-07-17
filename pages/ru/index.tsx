@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
 import { supabase } from 'lib/supabaseClient';
+import HeaderRu from '@/utils/pageParts/HeaderRu';
 
 type WikiPage = {
     wikiSlug?: string
@@ -84,13 +85,12 @@ export default function Home() {
         location.href = '/dashboard/create-wiki'
     }
 
-    const handleMenuOpen = () => {
-        setMenuStatus((prevStatus) => !prevStatus);
-        if(menuStatus === false){
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style = '';
-        }
+    const handleClick = () => {
+        setMenuStatus((prevStatus) => {
+            const newStatus = !prevStatus;
+            document.body.style.overflow = newStatus ? 'hidden' : '';
+            return newStatus;
+        });
     };
 
     return (
@@ -110,37 +110,14 @@ export default function Home() {
         <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
             <div className={styles.pSpNav__title}>
                 меню
-                <div className={styles.pSpNav__btnClose} onClick={handleMenuOpen}>×</div>
+                <div className={styles.pSpNav__btnClose} onClick={handleClick}>×</div>
             </div>
             <div className={styles.pSpNav__register}>
                 <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">Войти/Зарегистрироваться (японский)</a>
             </div>
         </nav>
         <div className={styles.contentsWrapper}>
-            <header className={styles.lHeader}>
-                <div className={styles.container}>
-                    <div className={`${styles.row} ${styles.alignItemsCenter} ${styles.justifyContentBetween} ${styles.flexNowrap}`}>
-                        <div className={`${styles.col4} ${styles.offset3}`}>
-                            <div className={styles.lHeader__controls}>
-                                <div className={styles.dBlock}>
-                                    <div className={styles.cMobileControls}>
-                                        <div className={styles.row}>
-                                            <div className={styles.col6}></div>
-                                            <div className={`${styles.offset1} ${styles.col4}`}>
-                                                <button id="menu-button" onClick={handleMenuOpen}>
-                                                    <span className={styles.cMobileControls__icon}>
-                                                        <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="меню" width="30" height="30"/>
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <HeaderRu handleClick={handleClick}/>
             <div className={styles.contents}>
                 <div id="menu">
                     <nav className={styles.menu}>
