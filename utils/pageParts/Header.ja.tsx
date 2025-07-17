@@ -1,6 +1,14 @@
 import styles from 'css/index.min.module.css';
 
 export default function HeaderJa(){
+    let MenuStatus:boolean = false;
+    const MenuOpen = () => {
+        if(MenuStatus === false){
+            MenuStatus = true;
+        } else {
+            MenuStatus = false;
+        }
+    }
     return (
         <header className={styles.lHeader}>
             <div className={styles.container}>
@@ -12,7 +20,7 @@ export default function HeaderJa(){
                                     <div className={styles.row}>
                                         <div className={styles.col6}></div>
                                         <div className={`${styles.offset1}${styles.col4}`}>
-                                            <button id="menu-button" aria-expanded="false" aria-controls="sp-nav">
+                                            <button id="menu-button" aria-expanded={MenuStatus} aria-controls="sp-nav" onClick={MenuOpen}>
                                                 <span className={`${styles.cMobileControls__icon}${styles.cMobileControls__iconMenu}`}>
                                                     <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
                                                 </span>
