@@ -1,4 +1,4 @@
-'use client'; // ← App Routerの場合は必須！
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -25,41 +25,42 @@ const usePageLikeHandlers = () => {
         if (!userId) return;
         setLoading(true);
 
-        const { data, error: fetchError } = await supabase
+        const { data, error } = await supabase
         .from('pages_liked')
-        .select('like, heikinlike')
+        .select('like, dislike')
         .eq('wiki_slug', wikiSlugStr)
         .eq('page_slug', pageSlugStr)
         .maybeSingle();
 
-        if (fetchError) {
-        console.error('取得エラー:', fetchError.message);
-        setLoading(false);
-        return;
+        if (error) {
+            console.error('取得エラー:', error.message);
+            setLoading(false);
+            return;
         }
 
         if (!data) {
-        await supabase.from('pages_liked').insert({
-            user_id: userId,
-            wiki_slug: wikiSlugStr,
-            page_slug: pageSlugStr,
-            like: 1,
-            dislike: 0,
-            heikinlike: 1,
-            create_at: new Date()
-        });
+            await supabase.from('pages_liked').insert({
+                user_id: userId,
+                wiki_slug: wikiSlugStr,
+                page_slug: pageSlugStr,
+                like: 1,
+                dislike: 0,
+                heikinlike: 1,
+                created_at: new Date()
+            });
         } else {
-        const updatedLike = (data.like ?? 0) + 1;
-        const updatedHeikinLike = (data.heikinlike ?? 0) + 1;
+            const updatedLike = (data.like ?? 0) + 1;
+            const updatedDislike = data.dislike ?? 0;
+            const updatedHeikinLike = updatedLike - updatedDislike;
 
-        await supabase
-            .from('pages_liked')
-            .update({
-            like: updatedLike,
-            heikinlike: updatedHeikinLike
-            })
-            .eq('wiki_slug', wikiSlugStr)
-            .eq('page_slug', pageSlugStr);
+            await supabase
+                .from('pages_liked')
+                .update({
+                like: updatedLike,
+                heikinlike: updatedHeikinLike
+                })
+                .eq('wiki_slug', wikiSlugStr)
+                .eq('page_slug', pageSlugStr);
         }
 
         setLoading(false);
@@ -70,32 +71,33 @@ const usePageLikeHandlers = () => {
         if (!userId) return;
         setLoading(true);
 
-        const { data, error: fetchError } = await supabase
+        const { data, error } = await supabase
         .from('pages_liked')
-        .select('dislike, heikinlike')
+        .select('like, dislike')
         .eq('wiki_slug', wikiSlugStr)
         .eq('page_slug', pageSlugStr)
         .maybeSingle();
 
-        if (fetchError) {
-        console.error('取得エラー:', fetchError.message);
-        setLoading(false);
-        return;
+        if (error) {
+            console.error('取得エラー:', error.message);
+            setLoading(false);
+            return;
         }
 
         if (!data) {
-        await supabase.from('pages_liked').insert({
-            user_id: userId,
-            wiki_slug: wikiSlugStr,
-            page_slug: pageSlugStr,
-            like: 0,
-            dislike: 1,
-            heikinlike: -1,
-            create_at: new Date()
-        });
+            await supabase.from('pages_liked').insert({
+                user_id: userId,
+                wiki_slug: wikiSlugStr,
+                page_slug: pageSlugStr,
+                like: 0,
+                dislike: 1,
+                heikinlike: -1,
+                created_at: new Date()
+            });
         } else {
         const updatedDislike = (data.dislike ?? 0) + 1;
-        const updatedHeikinLike = Math.max((data.heikinlike ?? 0) - 1, 0);
+        const updatedLike = data.like ?? 0;
+        const updatedHeikinLike = updatedLike - updatedDislike;
 
         await supabase
             .from('pages_liked')
@@ -110,6 +112,7 @@ const usePageLikeHandlers = () => {
         setLoading(false);
         router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
     };
+
     return { handlePageLike, handlePageDisLike, loading };
 };
 
