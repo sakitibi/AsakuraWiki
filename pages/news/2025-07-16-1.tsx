@@ -39,7 +39,7 @@ export default function NewsPage() {
                         <p>2025/07/15 16:00ごろ Train Builderワールド近海で強風が発生いたしました</p>
                         <p>2025/07/16 14:50ごろにあさクラ本土に上陸したと見ています</p>
                         <p>この影響で一部の地域で遅れや運転見合わせなどが発生しています</p>
-                        <p>Train Builder .. 和音GAMES .. おどみんクラフト .. あさクラ .. と通った後に最終的には右上に抜けて行きました</p>
+                        <p>Train Builder .. 和音GAMES .. おどみんクラフト .. あさクラ<br/> .. と通った後に最終的には右上に抜けて行きました</p>
                         <p>進路は以下の通り</p>
                         <div id="img">
                             <img alt="進路" src="https://sakitibi.github.io/AsakuraWiki-Images/2025-07-16%2015.34.00.png" width="800" height="650"/>
