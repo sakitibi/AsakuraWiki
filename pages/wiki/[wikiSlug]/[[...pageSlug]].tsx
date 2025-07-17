@@ -35,7 +35,7 @@ export default function WikiPage() {
     const [content, setContent] = useState<string>('')  // ← textarea の中身
     const [urlObj, setUrlObj]   = useState<URL | null>(null)
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
-    const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
+    const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export default function WikiPage() {
                 return;
             }
 
-            setDesignColor(data.design_color as 'pink' | 'blue' | 'yellow' | 'default' | null);
+            setDesignColor(data.design_color as any);
             console.log('wikiSlugStr:', wikiSlugStr); // ← これが undefined や空文字なら原因！
             console.log('取得したdesign_color:', data?.design_color);
         }
@@ -110,16 +110,10 @@ export default function WikiPage() {
     }, [wikiSlugStr, pageSlugStr, user]);
 
     useEffect(() => {
-        console.log(editMode);
-        if (!designColor) return; // ← これが鍵！
+        if (!designColor) return; // ← nullの間はスキップ
+
         document.body.classList.add('wiki-font');
-        if (designColor === 'pink') {
-            document.body.classList.add('pink');
-        } else if(designColor === 'blue') {
-            document.body.classList.add('blue');
-        } else if(designColor === 'yellow') {
-            document.body.classList.add('yellow');
-        }
+        document.body.classList.add(designColor); // ← 'pink' や 'blue' など
 
         return () => {
             document.body.classList.remove('wiki-font');
