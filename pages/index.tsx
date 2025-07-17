@@ -73,24 +73,24 @@ export default function Home() {
     }
 
     useEffect(() => {
-        const handleMenuOpenButtonOpen = document.querySelector(".menu-button");
-        handleMenuOpenButtonOpen!.addEventListener("click", function(){
-            setMenuStatus((prevStatus) => !prevStatus);
-            if(menuStatus === false){
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style = '';
-            }
-        });
-        const handleMenuOpenButtonClose = document.querySelector(".pSpNav__btnClose");
-        handleMenuOpenButtonClose!.addEventListener("click", function(){
-            setMenuStatus((prevStatus) => !prevStatus);
-            if(menuStatus === false){
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style = '';
-            }
-        });
+        const handleClick = () => {
+            setMenuStatus((prevStatus) => {
+            const newStatus = !prevStatus;
+            document.body.style.overflow = newStatus ? 'hidden' : '';
+            return newStatus;
+            });
+        };
+
+        const openBtn = document.querySelector(".menu-button");
+        const closeBtn = document.querySelector(".pSpNav__btnClose");
+
+        openBtn?.addEventListener("click", handleClick);
+        closeBtn?.addEventListener("click", handleClick);
+
+        return () => {
+            openBtn?.removeEventListener("click", handleClick);
+            closeBtn?.removeEventListener("click", handleClick);
+        };
     }, []);
 
     const Page = () => {
