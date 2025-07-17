@@ -111,6 +111,7 @@ export default function WikiPage() {
 
     useEffect(() => {
         console.log(editMode);
+        if (!designColor) return; // ← これが鍵！
         document.body.classList.add('wiki-font');
         if (designColor === 'pink') {
             document.body.classList.add('pink');
