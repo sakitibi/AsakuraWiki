@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { supabase } from 'lib/supabaseClient';
+import HeaderJp from '@/utils/pageParts/HeaderJp';
 import styles from 'css/index.min.module.css';
 
 type WikiPage = {
@@ -106,30 +107,7 @@ export default function Home() {
                     </div>
                 </nav>
                 <div className={styles.contentsWrapper}>
-                    <header className={styles.lHeader}>
-                        <div className={styles.container}>
-                            <div className={`${styles.row} ${styles.alignItemsCenter} ${styles.justifyContentBetween} ${styles.flexNowrap}`}>
-                                <div className={`${styles.col4} ${styles.offset3}`}>
-                                    <div className={styles.lHeader__controls}>
-                                        <div className={styles.dBlock}>
-                                            <div className={styles.cMobileControls}>
-                                                <div className={styles.row}>
-                                                    <div className={styles.col6}></div>
-                                                    <div className={`${styles.offset1} ${styles.col4}`}>
-                                                        <button id="menu-button" onClick={handleMenuOpen}>
-                                                            <span className={styles.cMobileControls__icon}>
-                                                                <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
-                                                            </span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
+                    <HeaderJp/>
                     <div className={styles.contents}>
                         <nav className={styles.menu}>
                             <ul>
