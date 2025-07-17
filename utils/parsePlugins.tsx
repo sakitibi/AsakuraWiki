@@ -11,36 +11,37 @@ import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
 import { DATEDIF, DATEVALUE } from './dateFunctions';
 import { supabase } from 'lib/supabaseClient';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 
 export type Context = { wikiSlug: string; pageSlug: string }
 
-const [designColor, setDesignColor] = useState<'default' | 'pink' | 'blue' | 'yellow' | null>(null);
+export function useDesignColor(slug: string) {
+    const router = useRouter()
+    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
+    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
 
-const router = useRouter()
-const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
-const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-useEffect(() => {
-    async function fetchColor() {
-        const { data, error } = await supabase
-        .from('wikis')
-        .select('design_color')
-        .eq('slug', wikiSlugStr) // ← sample など
-        .single();
+    useEffect(() => {
+        async function fetchColor() {
+            const { data, error } = await supabase
+                .from('wikis')
+                .select('design_color')
+                .eq('slug', slug)
+                .single();
 
-        if (error || !data) {
-        console.error('カラー取得失敗:', error);
-        setDesignColor('default'); // fallback可能
-        return;
+            if (error || !data) {
+                setColor('default');
+                return;
+            }
+
+            setColor(data.design_color);
         }
 
-        setDesignColor(data.design_color);
-        console.log('適用するカラー:', data.design_color);
-    }
+        fetchColor();
+    }, [slug]);
 
-    if (wikiSlugStr) fetchColor();
-}, [wikiSlugStr]);
-
+    return color;
+}
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
  */
@@ -367,8 +368,12 @@ export function parseOtherInline(
 
 /** Accordion コンポーネント */
 function Accordion({ title, level, initiallyOpen, children, }: { title: string; level: '*' | '**' | '***'; initiallyOpen: boolean; children: React.ReactNode; }) {
+    const router = useRouter()
+    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
+    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const [open, setOpen] = useState(initiallyOpen)
     const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
+    const designColor = useDesignColor(wikiSlugStr);
     const iconPath = open
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7c24-24 c24s-24-10.7-24-24z'
@@ -493,7 +498,11 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
 
 /** Header コンポーネント */
 function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }) {
+    const router = useRouter()
+    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
+    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
+    const designColor = useDesignColor(wikiSlugStr);
     const commonsStyle: React.CSSProperties = level === '*'
     ? (
         {
