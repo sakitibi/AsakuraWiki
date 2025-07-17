@@ -11,21 +11,6 @@ type Page = {
     content: string
 }
 
-async function fetchDesignColor() {
-    const { data, error } = await supabase
-        .from('wikis')
-        .select('design_color')
-        .limit(1)
-        .single();
-
-    if (error) {
-        console.error('データ取得エラー:', error);
-        return null;
-    }
-
-    return data.design_color;
-}
-
 export default function WikiPage() {
     const router = useRouter()
     const user = useUser();
@@ -68,7 +53,7 @@ export default function WikiPage() {
                 return;
             }
 
-            setDesignColor(data.design_color as 'pink' | 'blue' | 'yellow' | 'default' | null); // ← 型がある場合は調整
+            setDesignColor(data.design_color as 'pink' | 'blue' | 'yellow' | 'default' | null);
         }
 
         fetchColor();
