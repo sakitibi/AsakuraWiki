@@ -73,6 +73,11 @@ export default function Home() {
 
     const handleMenuOpen = () => {
         setMenuStatus((prevStatus) => !prevStatus);
+        if(menuStatus === true){
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style = '';
+        }
     };
 
     const Page = () => {
