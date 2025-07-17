@@ -26,8 +26,6 @@ async function fetchDesignColor() {
     return data.design_color;
 }
 
-fetchDesignColor();
-
 export default function WikiPage() {
     const router = useRouter()
     const user = useUser();
@@ -56,23 +54,25 @@ export default function WikiPage() {
     const [showRedirectButton, setShowRedirectButton] = useState(false);
 
     useEffect(() => {
+        if (!wikiSlugStr) return;
+
         async function fetchColor() {
-        const { data, error } = await supabase
+            const { data, error } = await supabase
             .from('wikis')
             .select('design_color')
-            .limit(1)
+            .eq('slug', wikiSlugStr)
             .single();
 
-        if (error) {
-            console.error('デザインカラー取得エラー:', error);
-            return;
-        }
+            if (error) {
+                console.error('デザインカラー取得エラー:', error);
+                return;
+            }
 
-        setDesignColor(data.design_color);
+            setDesignColor(data.design_color as 'pink' | 'blue' | 'yellow' | 'default' | null); // ← 型がある場合は調整
         }
 
         fetchColor();
-    }, []);
+    }, [wikiSlugStr]);
 
     // URL取得（編集モード判定用）
     useEffect(() => {
