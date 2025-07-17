@@ -11,17 +11,13 @@ export default function HeaderJa(){
                                 <div className={styles.cMobileControls}>
                                     <div className={styles.row}>
                                         <div className={styles.col6}></div>
-                                            <div className={`${styles.offset1}${styles.col4}`}>
-                                                {window.innerWidth < 992 ? (
-                                                    <button id="menu-button" aria-expanded="false" aria-controls="sp-nav">
-                                                        <span className={`${styles.cMobileControls__icon}${styles.cMobileControls__iconMenu}`}>
-                                                            <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
-                                                        </span>
-                                                    </button>
-                                                ) : (
-                                                    null
-                                                )}
-                                            </div>
+                                        <div className={`${styles.offset1}${styles.col4}`}>
+                                            <button id="menu-button" aria-expanded="false" aria-controls="sp-nav">
+                                                <span className={`${styles.cMobileControls__icon}${styles.cMobileControls__iconMenu}`}>
+                                                    <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
+                                                </span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
