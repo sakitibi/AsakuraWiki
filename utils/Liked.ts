@@ -110,7 +110,6 @@ const usePageLikeHandlers = () => {
         setLoading(false);
         router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
     };
-
     return { handlePageLike, handlePageDisLike, loading };
 };
 
