@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styles from 'css/index.min.module.css';
 
 export default function HeaderJp({ handleClick }: { handleClick: () => void }) {
