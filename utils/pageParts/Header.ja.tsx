@@ -12,7 +12,7 @@ export default function HeaderJa(){
                                     <div className={styles.row}>
                                         <div className={`${styles.offset0}${styles.col6}${styles.colMd4}`}></div>
                                             <div className={`${styles.offset1}${styles.col4}`}>
-                                                <button aria-expanded="false" aria-controls="sp-nav">
+                                                <button id="menu-button" aria-expanded="false" aria-controls="sp-nav">
                                                     <span className={`${styles.cMobileControls__icon}${styles.cMobileControls__iconMenu}`}>
                                                         <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー"/>
                                                     </span>
