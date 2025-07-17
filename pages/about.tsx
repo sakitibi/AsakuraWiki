@@ -1,15 +1,35 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from 'css/index.min.module.css';
+import HeaderJp from '@/utils/pageParts/HeaderJp';
+import { useState } from 'react';
 
 export default function Home() {
+    const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const handleClick = () => {
+        setMenuStatus((prevStatus) => {
+            const newStatus = !prevStatus;
+            document.body.style.overflow = newStatus ? 'hidden' : '';
+            return newStatus;
+        });
+    };
     return (
         <>
             <Head>
                 <meta charSet='UTF-8'/>
                 <title>当レンタルWikiについて</title>
             </Head>
+            <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
+                <div className={styles.pSpNav__title}>
+                    メニュー
+                    <div className={`${styles.pSpNav__btnClose}`} onClick={handleClick}>×</div>
+                </div>
+                <div className={styles.pSpNav__register}>
+                    <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
+                </div>
+            </nav>
             <div className={styles.contentsWrapper}>
+                <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
                     <div id="menu">
                         <nav className={styles.menu}>
