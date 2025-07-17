@@ -14,6 +14,7 @@ type WikiPage = {
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
     const [loading, setLoading] = useState(true)
+    const [menuStatus, setMenuStatus] = useState<boolean>(false);
 
     const H2Styles:React.CSSProperties = {
         alignItems: 'center',
@@ -83,6 +84,15 @@ export default function Home() {
         location.href = '/dashboard/create-wiki'
     }
 
+    const handleMenuOpen = () => {
+        setMenuStatus((prevStatus) => !prevStatus);
+        if(menuStatus === false){
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style = '';
+        }
+    };
+
     return (
         <>
         <Head>
@@ -97,7 +107,40 @@ export default function Home() {
                 `}
             </style>
         </Head>
+        <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
+            <div className={styles.pSpNav__title}>
+                メニュー
+                <div className={styles.pSpNav__btnClose} onClick={handleMenuOpen}>×</div>
+            </div>
+            <div className={styles.pSpNav__register}>
+                <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
+            </div>
+        </nav>
         <div className={styles.contentsWrapper}>
+            <header className={styles.lHeader}>
+                <div className={styles.container}>
+                    <div className={`${styles.row} ${styles.alignItemsCenter} ${styles.justifyContentBetween} ${styles.flexNowrap}`}>
+                        <div className={`${styles.col4} ${styles.offset3}`}>
+                            <div className={styles.lHeader__controls}>
+                                <div className={styles.dBlock}>
+                                    <div className={styles.cMobileControls}>
+                                        <div className={styles.row}>
+                                            <div className={styles.col6}></div>
+                                            <div className={`${styles.offset1} ${styles.col4}`}>
+                                                <button id="menu-button" onClick={handleMenuOpen}>
+                                                    <span className={styles.cMobileControls__icon}>
+                                                        <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
             <div className={styles.contents}>
                 <div id="menu">
                     <nav className={styles.menu}>
