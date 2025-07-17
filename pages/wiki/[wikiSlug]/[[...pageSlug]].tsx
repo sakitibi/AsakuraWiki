@@ -4,8 +4,7 @@ import Head from 'next/head'
 import { parseWikiContent } from '@/utils/parsePlugins'
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from 'lib/supabaseClient';
-import { handlePageLike } from '@/utils/Liked';
-import { handlePageDisLike } from '@/utils/Liked';
+import usePageLikeHandlers from 'utils/Liked';
 
 type Page = {
     title: string
@@ -287,6 +286,8 @@ export default function WikiPage() {
             }, 1000);
         }
     }, 1000);
+
+    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
 
     return (
         <>
