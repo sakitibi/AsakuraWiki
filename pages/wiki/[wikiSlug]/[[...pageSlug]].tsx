@@ -458,8 +458,8 @@ export default function WikiPage() {
                             <button onClick={handleEdit}><span>このページを編集</span></button>
                             <button onClick={handleDelete}><span>このページを削除</span></button>
                             <br/>
-                            <button onClick={handlePageLike}>このページを高く評価</button>
-                            <button onClick={handlePageDisLike}>このページを低く評価</button>
+                            <button onClick={handlePageLike}><span>このページを高く評価</span></button>
+                            <button onClick={handlePageDisLike}><span>このページを低く評価</span></button>
                         </div>
                     </div>
                 )}
