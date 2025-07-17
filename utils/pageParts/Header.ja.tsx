@@ -18,7 +18,7 @@ export default function HeaderJa(){
                                         <div className={styles.row}>
                                             <div className={styles.col6}></div>
                                             <div className={`${styles.offset1} ${styles.col4}`}>
-                                                <button id="menu-button" onClick={handleMenuOpen}>
+                                                <button aria-expanded={menuStatus} aria-controls='p-sp-nav' id="menu-button" onClick={handleMenuOpen}>
                                                     <span className={`${styles.cMobileControls__icon} ${styles.cMobileControls__iconMenu}`}>
                                                         <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="メニュー" width="30" height="30"/>
                                                     </span>

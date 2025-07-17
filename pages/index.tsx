@@ -87,6 +87,7 @@ export default function Home() {
                     </style>
                     <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
                 </Head>
+                <nav className="p-sp-nav" id="p-sp-nav" aria-hidden="true"></nav>
                 <div className={styles.contentsWrapper}>
                     <HeaderJa/>
                     <div className={styles.contents}>
