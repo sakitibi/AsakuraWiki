@@ -93,8 +93,8 @@
 }
 
 .pForBeginner__title {
-    border-bottom: 1px solid #9f4548;
-    color: #9f4548;
+    border-bottom: 1px solid #9f4548 !important;
+    color: #9f4548 !important;
     font-size: 20px;
     font-weight: 700;
     margin: 0 0 14px;
@@ -117,7 +117,7 @@
     align-items: center;
     background-color: #fff;
     border-radius: 5px;
-    color: #9f4548;
+    color: #9f4548 !important;
     display: flex;
     font-size: 13px;
     font-weight: 700;
