@@ -1,0 +1,45 @@
+@use 'mixin';
+
+button:not(#menu-button) {
+    position: relative;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    background: none;
+    overflow: hidden;
+    &::before {
+        @include mixin.position;
+        background-image: linear-gradient(to left, #1ce369, #076727);
+    }
+    &:active::before {
+        filter: brightness(0.85);
+        transform: scale(0.98);
+    }
+    &:hover::before {
+        filter: brightness(1.1);
+    }
+    &>*{
+        position: relative;
+        z-index: 1;
+    }
+    &:disabled{
+        cursor:not-allowed;
+    }
+}
+
+#menu-button{
+    text-rendering: auto;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: center;
+    padding-block: 1px;
+    padding-inline: 6px;
+    cursor: pointer;
+}
