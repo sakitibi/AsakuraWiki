@@ -290,7 +290,7 @@ export default function WikiPage() {
         <Head>
             <title>
             {page.title}
-            {isEdit && ' を編集'}
+            {isEdit ? ' を編集' : null}
             </title>
         </Head>
         {isEdit ? (
