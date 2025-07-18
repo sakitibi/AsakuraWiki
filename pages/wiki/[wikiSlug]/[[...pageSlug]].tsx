@@ -246,12 +246,7 @@ export default function WikiPage() {
             }
         }
     }
-    // エラー or 読み込み中
-    if (error)   return <div style={{ color: 'red' }}>{error}</div>
-    if (loading || !page) return <div>読み込み中…</div>
-
     const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
-    const context = { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr }
     // プレビュー or 閲覧コンテンツ
 
     let commentSubmit:any = null;
@@ -275,35 +270,30 @@ export default function WikiPage() {
         }
     }, 1000);
 
-
-    const parseTarget = isEdit ? content : page?.content ?? ''
+    const previewText = isEdit ? content : page?.content ?? ''
     const parsedPreview = useMemo(
         () =>
-        parseWikiContent(parseTarget, {
+        parseWikiContent(previewText, {
             wikiSlug: wikiSlugStr,
             pageSlug: pageSlugStr,
         }),
-        [parseTarget, wikiSlugStr, pageSlugStr]
+        [previewText, wikiSlugStr, pageSlugStr]
     )
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers()
 
-    if (error)
-        return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>
-    if (loading || !page)
-        return <div style={{ padding: '2rem' }}>読み込み中…</div>
+    if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>
+    if (loading || !page) return <div style={{ padding: '2rem' }}>読み込み中…</div>
 
     return (
         <>
         <Head>
             <title>
             {page.title}
-            {isEdit ? ' を編集' : ''}
+            {isEdit && ' を編集'}
             </title>
         </Head>
-
-        {isEdit && (location.pathname === `/wiki/${wikiSlugStr}` ||
-            pageSlugStr === 'FrontPage') ? (
+        {isEdit ? (
             <main style={{ padding: '2rem', maxWidth: 600 }}>
             <h1>📝 ページ編集</h1>
             <form onSubmit={handleUpdate}>
@@ -313,11 +303,9 @@ export default function WikiPage() {
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                     required
-                    style={{ width: '100%', marginTop: 4, padding: 6 }}
+                    style={{ width: '100%', margin: '8px 0', padding: 6 }}
                 />
                 </label>
-                <br />
-                <br />
                 <label>
                 内容:
                 <textarea
@@ -327,8 +315,6 @@ export default function WikiPage() {
                     autoFocus
                 />
                 </label>
-                <br />
-                <br />
                 <h2>プレビュー：</h2>
                 <div
                 style={{
@@ -342,11 +328,13 @@ export default function WikiPage() {
                     <React.Fragment key={i}>{node}</React.Fragment>
                 ))}
                 </div>
-                <br />
                 <button
                 type="submit"
-                disabled={loading || (wikiSlugStr === 'maitetsu_bkmt' && pageSlugStr !== 'sinsei')}
-                style={{ padding: '0.6rem 1.2rem' }}
+                disabled={
+                    loading ||
+                    (wikiSlugStr === 'maitetsu_bkmt' && pageSlugStr !== 'sinsei')
+                }
+                style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
                 >
                 {loading ? '保存中…' : '保存'}
                 </button>
@@ -364,20 +352,30 @@ export default function WikiPage() {
                 pageSlugStr !== 'sinsei' && (
                     <button
                     onClick={() =>
-                        (location.href = `/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
+                        router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
                     }
                     >
                     リダイレクトされない場合はこちら
                     </button>
                 )}
-                <button onClick={handleEdit} style={{ marginLeft: 8 }}>
+                <button onClick={() =>
+                router.push({
+                    pathname: `/wiki/${wikiSlugStr}`,
+                    query: { cmd: 'edit', page: pageSlugStr }
+                })
+                } style={{ marginLeft: 8 }}>
                 このページを編集
                 </button>
-                <button onClick={handleDelete} style={{ marginLeft: 8 }}>
+                <button onClick={() =>
+                router.push({
+                    pathname: `/wiki/${wikiSlugStr}/${pageSlugStr}`,
+                    query: { cmd: 'delete' }
+                })
+                } style={{ marginLeft: 8 }}>
                 このページを削除
                 </button>
                 <br />
-                <button onClick={handlePageLike} style={{ marginTop: 8 }}>
+                <button onClick={handlePageLike} style={{ marginTop: 12 }}>
                 このページを高く評価
                 </button>
                 <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
