@@ -250,7 +250,6 @@ export default function WikiPage() {
     if (loading || !page) return <div>読み込み中…</div>
 
     const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
-    const isLike = urlObj?.searchParams.get('cmd') === 'like'
     const context = { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr }
     // プレビュー or 閲覧コンテンツ
     const parseTarget = isEdit ? content : page.content
