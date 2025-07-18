@@ -36,7 +36,6 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
-    const [systemMentenans, setsystemMentenans] = useState<boolean>(true); // メンテナンスフラグ
 
     useEffect(() => {
         if (!wikiSlugStr) return;
@@ -284,19 +283,6 @@ export default function WikiPage() {
 
     const Page = () => {
         const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
-        if(systemMentenans){
-            return(
-                <>
-                    <Head>
-                        <title>只今システムメンテナンス中です..</title>
-                    </Head>
-                    <div id="systemMentenans">
-                        <p>只今システムメンテナンス中です..</p>
-                        <img src="https://yt3.googleusercontent.com/MUE4-7_ByFpq_d_9FmD6j0c39USgvt9xKQxClkBIg0U2RkI4jHUbIvyh8CTOAEDcBre1QbMDeQ=s160-c-k-c0x00ffffff-no-rj" alt="メンテナンス中画像"/>
-                    </div>
-                </>
-            )
-        } else {
             return (
                 <>
                     <Head>
@@ -387,7 +373,6 @@ export default function WikiPage() {
                     </div>
                 </>
             )
-        }
     }
     return <Page/>
 }
