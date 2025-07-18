@@ -246,16 +246,6 @@ export default function WikiPage() {
             }
         }
     }
-
-    const parsedPreview = useMemo(
-        () =>
-        parseWikiContent(content, {
-            wikiSlug: wikiSlugStr,
-            pageSlug: pageSlugStr,
-        }),
-        [content, wikiSlugStr, pageSlugStr]
-    )
-
     // エラー or 読み込み中
     if (error)   return <div style={{ color: 'red' }}>{error}</div>
     if (loading || !page) return <div>読み込み中…</div>
@@ -263,7 +253,6 @@ export default function WikiPage() {
     const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
     const context = { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr }
     // プレビュー or 閲覧コンテンツ
-    const parseTarget = isEdit ? content : page.content
 
     let commentSubmit:any = null;
 
@@ -286,95 +275,117 @@ export default function WikiPage() {
         }
     }, 1000);
 
-    const Page = () => {
-        const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
-            return (
-                <>
-                    <Head>
-                        <title>
-                            {page.title}
-                            {isEdit ? ' を編集' : ''}
-                        </title>
-                    </Head>
-                    <div>
-                        {(isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage") ? (
-                            <main style={{ padding: '2rem', maxWidth: 600 }}>
-                            <h1>📝 ページ編集</h1>
-                                <form onSubmit={handleUpdate}>
-                                        <label>
-                                        タイトル:
-                                        <input
-                                            value={title}
-                                            onChange={e => setTitle(e.target.value)}
-                                            required
-                                            style={{ width: '100%', marginTop: 4 }}
-                                        />
-                                        </label>
-                                        <br /><br />
-                                        <label>
-                                        内容:
-                                        <textarea
-                                            value={content}
-                                            onChange={e => setContent(e.target.value)}
-                                            style={{ width: '200%', height: 500 }}
-                                        />
-                                        </label>
-                                        <br /><br />
-                                        <h2>プレビュー：</h2>
-                                        <div style={{
-                                            border: '1px solid #ccc',
-                                            padding: '1rem',
-                                            background: '#f9f9f9',
-                                        }}>
-                                            {parsedPreview.map((node, i) => (
-                                            <React.Fragment key={i}>{node}</React.Fragment>
-                                            ))}
-                                        </div>
-                                        <br /><br />
-                                        { wikiSlugStr === "maitetsu_bkmt" && pageSlugStr !== "sinsei" ? (
-                                            <button type="submit" disabled>
-                                                <span>
-                                                    {loading ? '保存中…' : '保存'}
-                                                </span>
-                                            </button>
-                                        ) : (
-                                            <button type="submit" disabled={loading}>
-                                                <span>
-                                                    {loading ? '保存中…' : '保存'}
-                                                </span>
-                                            </button>
-                                        )}
-                                    </form>
-                                    </main>
-                                ) : (
-                                    <div style={{ padding: '2rem', maxWidth: 800 }}>
-                                    <div>
-                                        {parseWikiContent(parseTarget, context).map((node, i) => (
-                                        <React.Fragment key={i}>{node}</React.Fragment>
-                                        ))}
-                                    </div>
-                                    <br />
-                                        <div id="button-container">
-                                            {showRedirectButton && wikiSlugStr === "maitetsu_bkmt" && pageSlugStr !== "sinsei" ? (
-                                                <button onClick={() => location.href = `/special_wiki/maitetsu_bkmt/${pageSlugStr}`}>
-                                                    <span>
-                                                        リダイレクトされない場合はこちら
-                                                    </span>
-                                                </button>
-                                            ) : (
-                                                null
-                                            )}
-                                            <button onClick={handleEdit}><span>このページを編集</span></button>
-                                            <button onClick={handleDelete}><span>このページを削除</span></button>
-                                            <br/>
-                                            <button onClick={handlePageLike}><span>このページを高く評価</span></button>
-                                            <button onClick={handlePageDisLike}><span>このページを低く評価</span></button>
-                                        </div>
-                                    </div>
-                        )}
-                    </div>
-                </>
-            )
-    }
-    return <Page/>
+
+    const parseTarget = isEdit ? content : page?.content ?? ''
+    const parsedPreview = useMemo(
+        () =>
+        parseWikiContent(parseTarget, {
+            wikiSlug: wikiSlugStr,
+            pageSlug: pageSlugStr,
+        }),
+        [parseTarget, wikiSlugStr, pageSlugStr]
+    )
+
+    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers()
+
+    if (error)
+        return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>
+    if (loading || !page)
+        return <div style={{ padding: '2rem' }}>読み込み中…</div>
+
+    return (
+        <>
+        <Head>
+            <title>
+            {page.title}
+            {isEdit ? ' を編集' : ''}
+            </title>
+        </Head>
+
+        {isEdit && (location.pathname === `/wiki/${wikiSlugStr}` ||
+            pageSlugStr === 'FrontPage') ? (
+            <main style={{ padding: '2rem', maxWidth: 600 }}>
+            <h1>📝 ページ編集</h1>
+            <form onSubmit={handleUpdate}>
+                <label>
+                タイトル:
+                <input
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    required
+                    style={{ width: '100%', marginTop: 4, padding: 6 }}
+                />
+                </label>
+                <br />
+                <br />
+                <label>
+                内容:
+                <textarea
+                    value={content}
+                    onChange={e => setContent(e.target.value)}
+                    style={{ width: '100%', height: 300, padding: 6 }}
+                    autoFocus
+                />
+                </label>
+                <br />
+                <br />
+                <h2>プレビュー：</h2>
+                <div
+                style={{
+                    border: '1px solid #ccc',
+                    padding: '1rem',
+                    background: '#f9f9f9',
+                    minHeight: 100,
+                }}
+                >
+                {parsedPreview.map((node, i) => (
+                    <React.Fragment key={i}>{node}</React.Fragment>
+                ))}
+                </div>
+                <br />
+                <button
+                type="submit"
+                disabled={loading || (wikiSlugStr === 'maitetsu_bkmt' && pageSlugStr !== 'sinsei')}
+                style={{ padding: '0.6rem 1.2rem' }}
+                >
+                {loading ? '保存中…' : '保存'}
+                </button>
+            </form>
+            </main>
+        ) : (
+            <article style={{ padding: '2rem', maxWidth: 800 }}>
+            {parsedPreview.map((node, i) => (
+                <React.Fragment key={i}>{node}</React.Fragment>
+            ))}
+
+            <div style={{ marginTop: '2rem' }}>
+                {showRedirectButton &&
+                wikiSlugStr === 'maitetsu_bkmt' &&
+                pageSlugStr !== 'sinsei' && (
+                    <button
+                    onClick={() =>
+                        (location.href = `/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
+                    }
+                    >
+                    リダイレクトされない場合はこちら
+                    </button>
+                )}
+                <button onClick={handleEdit} style={{ marginLeft: 8 }}>
+                このページを編集
+                </button>
+                <button onClick={handleDelete} style={{ marginLeft: 8 }}>
+                このページを削除
+                </button>
+                <br />
+                <button onClick={handlePageLike} style={{ marginTop: 8 }}>
+                このページを高く評価
+                </button>
+                <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
+                このページを低く評価
+                </button>
+            </div>
+            </article>
+        )}
+        </>
+    )
 }
