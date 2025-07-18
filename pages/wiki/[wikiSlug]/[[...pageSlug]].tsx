@@ -14,7 +14,6 @@ type Page = {
 export default function WikiPage() {
     const router = useRouter()
     const user = useUser();
-    const userId = user?.id; // ← ここを insert 時に使う！
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const cmdStr = typeof cmd === 'string' ? cmd : '';
 
@@ -75,7 +74,8 @@ export default function WikiPage() {
         setLoading(true);
 
         (async () => {
-            // 1. 対象のWikiの編集モード取得
+            console.log('wikiSlugStr:', wikiSlugStr); // ← ここで確認
+
             const { data: wikiData, error: wikiError } = await supabase
                 .from('wikis')
                 .select('edit_mode')
@@ -88,10 +88,9 @@ export default function WikiPage() {
                 return;
             }
 
-            // ✅ ここに追加！編集モードを state に反映
-            setEditMode(wikiData.edit_mode); // ← ココ！
+            console.log('取得した edit_mode:', wikiData.edit_mode); // ← ここで確認
+            setEditMode(wikiData.edit_mode);
 
-            // 2. ページ取得
             const { data: pageData, error: pageError } = await supabase
                 .from('wiki_pages')
                 .select('title, content')
@@ -108,11 +107,14 @@ export default function WikiPage() {
                 setContent(pageData.content);
                 setError(null);
             }
-            console.log(editMode);
 
             setLoading(false);
         })();
     }, [wikiSlugStr, pageSlugStr, user]);
+
+    useEffect(() => {
+        console.log('更新された editMode:', editMode);
+    }, [editMode]);
 
     useEffect(() => {
         if (!designColor) return; // ← nullの間はスキップ
