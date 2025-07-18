@@ -4,6 +4,7 @@ import Head from 'next/head';
 import styles from 'css/index.min.module.css';
 import { supabase } from 'lib/supabaseClient';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
+import MenuRu from '@/utils/pageParts/MenuRu';
 
 type WikiPage = {
     wikiSlug?: string
@@ -107,15 +108,7 @@ export default function Home() {
                 `}
             </style>
         </Head>
-        <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
-            <div className={styles.pSpNav__title}>
-                меню
-                <div className={styles.pSpNav__btnClose} onClick={handleClick}>×</div>
-            </div>
-            <div className={styles.pSpNav__register}>
-                <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">Войти/Зарегистрироваться (японский)</a>
-            </div>
-        </nav>
+        <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
         <div className={styles.contentsWrapper}>
             <HeaderRu handleClick={handleClick}/>
             <div className={styles.contents}>
