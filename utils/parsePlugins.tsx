@@ -243,7 +243,9 @@ export function parseOtherInline(
 
     // 最後に残ったテキスト
     if (last < line.length) {
-        nodes.push(line.slice(last))
+        nodes.push(
+            <p>{line.slice(last)}</p>
+        )
     }
     return nodes
 }
