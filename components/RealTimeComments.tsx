@@ -60,32 +60,29 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         }
     }, [wikiSlug, pageSlug])
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault(); // ← これを追加！
         if (!name.trim() || !body.trim()) {
-            alert('名前とコメントを入力してください')
-            return
+            alert('名前とコメントを入力してください');
+            return;
         }
 
-        console.log('送信前データ:', { name, body, wikiSlug, pageSlug });
-
-        setIsSending(true)
+        setIsSending(true);
         const res = await supabase.from('comments').insert({
             name,
             body,
             wiki_slug: wikiSlug,
             page_slug: pageSlug,
-        })
+        });
 
         if (res.error) {
-            alert('送信に失敗しました')
-            console.error('送信エラー:', res.error)
-            console.log('ステータス:', res.status, res.statusText)
-            console.log('レスポンスデータ:', res.data)
+            alert('送信に失敗しました');
+            console.error('送信エラー:', res.error);
         } else {
-            setBody('')
+            setBody('');
         }
-        setIsSending(false)
-    }
+        setIsSending(false);
+    };
 
     return (
         <div style={{ marginTop: '1em' }}>
