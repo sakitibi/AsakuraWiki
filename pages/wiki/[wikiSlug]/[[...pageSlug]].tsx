@@ -336,7 +336,7 @@ export default function WikiPage() {
                 }
                 style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
                 >
-                {loading ? '保存中…' : '保存'}
+                    <span>{loading ? '保存中…' : '保存'}</span>
                 </button>
             </form>
             </main>
@@ -355,7 +355,7 @@ export default function WikiPage() {
                         router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
                     }
                     >
-                    リダイレクトされない場合はこちら
+                    <span>リダイレクトされない場合はこちら</span>
                     </button>
                 )}
                 <button onClick={() =>
@@ -364,7 +364,7 @@ export default function WikiPage() {
                     query: { cmd: 'edit', page: pageSlugStr }
                 })
                 } style={{ marginLeft: 8 }}>
-                このページを編集
+                <span>このページを編集</span>
                 </button>
                 <button onClick={() =>
                 router.push({
@@ -372,14 +372,14 @@ export default function WikiPage() {
                     query: { cmd: 'delete' }
                 })
                 } style={{ marginLeft: 8 }}>
-                このページを削除
+                <span>このページを削除</span>
                 </button>
                 <br />
                 <button onClick={handlePageLike} style={{ marginTop: 12 }}>
-                このページを高く評価
+                <span>このページを高く評価</span>
                 </button>
                 <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
-                このページを低く評価
+                <span>このページを低く評価</span>
                 </button>
             </div>
             </article>
