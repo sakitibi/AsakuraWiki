@@ -6,7 +6,7 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/07/16 あさクラ南東部で強風被害が出ています、ご注意下さい</title>
+                <title>2025/07/16 Сильный ветер нанес ущерб юго-востоку Асакуры , будьте осторожны.</title>
             </Head>
             <div className={styles.contentsWrapper}>
                 <div className={styles.contents}>

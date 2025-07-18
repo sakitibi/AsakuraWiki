@@ -6,7 +6,7 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>『Официальные』новости Асакуры!</title>
+                <title>2025/07/18 Конференция Асакура отложена из-за системных неполадок...</title>
             </Head>
             <div className={styles.contentsWrapper}>
                 <div className={styles.contents}>
@@ -29,7 +29,7 @@ export default function NewsPage() {
                                 </Link>
                                 </li>
                                 <li>
-                                <Link href="/news">
+                                <Link href="/news/2025-07-16-1">
                                     <button><span>日本語</span></button>
                                 </Link>
                                 </li>
@@ -37,14 +37,10 @@ export default function NewsPage() {
                         </nav>
                     </div>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>『Официальные』новости Асакуры!</h1>
-                        <ul>
-                            <li>2025/07/18 <a href="/ru/news/2025-07-18-1">Собрание Асакура отложено из-за системных неполадок...</a></li>
-                            <li>2025/07/16 <a href="/ru/news/2025-07-16-1">Сильный ветер нанес ущерб юго-востоку Асакуры, будьте осторожны</a></li>
-                        </ul>
-                        <small>
-                            Обратите внимание, что сказанное здесь исходит из уст Асакуры и<br/>может не иметь отношения к реальным новостям.
-                        </small>
+                        <h1>2025/07/18 Конференция Асакура<br/>отложена из-за системных неполадок...</h1>
+                        <p>Причиной этого<br/>стали неверные настройки таблицы комментариев супербазы.</p>
+                        <p>Встреча в Асакуре была отложена, и нам пришлось<br/>немедленно провести системное обслуживание вики-сайта Асакура.</p>
+                        <p>Теперь это исправлено.</p>
                     </main>
                     <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
                         <div className={styles.pForBeginner}>
