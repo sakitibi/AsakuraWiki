@@ -277,9 +277,14 @@ export default function WikiPage() {
         }
     }, 1000);
 
-    const parsedPreview = useMemo(() => {
-        return parseWikiContent(content, context);
-    }, [content, context]);
+    const parsedPreview = useMemo(
+        () =>
+        parseWikiContent(content, {
+            wikiSlug: wikiSlugStr,
+            pageSlug: pageSlugStr,
+        }),
+        [content, wikiSlugStr, pageSlugStr]
+    )
 
     const Page = () => {
         const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
@@ -311,21 +316,18 @@ export default function WikiPage() {
                                         <textarea
                                             value={content}
                                             onChange={e => setContent(e.target.value)}
-                                            style={{ width: '200%', height: 500, marginTop: 4 }}
-                                        ></textarea>
+                                            style={{ width: '200%', height: 500 }}
+                                        />
                                         </label>
                                         <br /><br />
                                         <h2>プレビュー：</h2>
-                                        <div
-                                            style={{
-                                                border: '1px solid #ccc',
-                                                padding: '1rem',
-                                                background: '#f9f9f9',
-                                                minHeight: 100
-                                            }}
-                                        >
+                                        <div style={{
+                                            border: '1px solid #ccc',
+                                            padding: '1rem',
+                                            background: '#f9f9f9',
+                                        }}>
                                             {parsedPreview.map((node, i) => (
-                                                <React.Fragment key={i}>{node}</React.Fragment>
+                                            <React.Fragment key={i}>{node}</React.Fragment>
                                             ))}
                                         </div>
                                         <br /><br />
