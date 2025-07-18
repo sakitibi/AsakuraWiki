@@ -66,6 +66,8 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
             return
         }
 
+        console.log('送信前データ:', { name, body, wikiSlug, pageSlug });
+
         setIsSending(true)
         const res = await supabase.from('comments').insert({
             name,
@@ -76,8 +78,9 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
 
         if (res.error) {
             alert('送信に失敗しました')
-            console.error(res.error)
-            document.body.innerText = `${res.error} ${res.statusText} ${res.data}`;
+            console.error('送信エラー:', res.error)
+            console.log('ステータス:', res.status, res.statusText)
+            console.log('レスポンスデータ:', res.data)
         } else {
             setBody('')
         }
