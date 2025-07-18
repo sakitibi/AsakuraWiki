@@ -247,6 +247,15 @@ export default function WikiPage() {
         }
     }
 
+    const parsedPreview = useMemo(
+        () =>
+        parseWikiContent(content, {
+            wikiSlug: wikiSlugStr,
+            pageSlug: pageSlugStr,
+        }),
+        [content, wikiSlugStr, pageSlugStr]
+    )
+
     // エラー or 読み込み中
     if (error)   return <div style={{ color: 'red' }}>{error}</div>
     if (loading || !page) return <div>読み込み中…</div>
@@ -276,15 +285,6 @@ export default function WikiPage() {
             }, 1000);
         }
     }, 1000);
-
-    const parsedPreview = useMemo(
-        () =>
-        parseWikiContent(content, {
-            wikiSlug: wikiSlugStr,
-            pageSlug: pageSlugStr,
-        }),
-        [content, wikiSlugStr, pageSlugStr]
-    )
 
     const Page = () => {
         const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
