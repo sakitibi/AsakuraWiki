@@ -77,7 +77,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         if (res.error) {
             alert('送信に失敗しました')
             console.error(res.error)
-            return;
+            document.body.innerText = `${res.error} ${res.statusText} ${res.data}`;
         } else {
             setBody('')
         }
