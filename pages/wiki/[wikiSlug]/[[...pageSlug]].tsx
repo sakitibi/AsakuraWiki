@@ -358,20 +358,10 @@ export default function WikiPage() {
                     <span>リダイレクトされない場合はこちら</span>
                     </button>
                 )}
-                <button onClick={() =>
-                router.push({
-                    pathname: `/wiki/${wikiSlugStr}`,
-                    query: { cmd: 'edit', page: pageSlugStr }
-                })
-                } style={{ marginLeft: 8 }}>
+                <button onClick={handleEdit} style={{ marginLeft: 8 }}>
                 <span>このページを編集</span>
                 </button>
-                <button onClick={() =>
-                router.push({
-                    pathname: `/wiki/${wikiSlugStr}/${pageSlugStr}`,
-                    query: { cmd: 'delete' }
-                })
-                } style={{ marginLeft: 8 }}>
+                <button onClick={handleDelete}>
                 <span>このページを削除</span>
                 </button>
                 <br />
