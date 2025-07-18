@@ -39,7 +39,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         })()
 
         // ── リアルタイム購読 ──
-        const channel: RealtimeChannel = supabase
+        const channel = supabase
             .channel(`comments-${wikiSlug}-${pageSlug}`)
             .on(
                 'postgres_changes',
@@ -57,6 +57,9 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
             )
             .subscribe((status) => {
                 console.log('リアルタイムチャンネルの接続状態:', status);
+                if (status !== 'SUBSCRIBED') {
+                    console.warn('チャンネルがまだ準備できていません');
+                }
             });
 
         return () => {

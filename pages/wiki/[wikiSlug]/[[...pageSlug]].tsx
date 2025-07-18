@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
-import { parseWikiContent } from '@/utils/parsePlugins'
+import React, { useEffect, useState, useMemo } from 'react';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import { parseWikiContent } from '@/utils/parsePlugins';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from 'lib/supabaseClient';
 import usePageLikeHandlers from 'utils/Liked';
@@ -277,6 +277,10 @@ export default function WikiPage() {
         }
     }, 1000);
 
+    const parsedPreview = useMemo(() => {
+        return parseWikiContent(content, context);
+    }, [content, context]);
+
     const Page = () => {
         const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
         return (
@@ -313,16 +317,16 @@ export default function WikiPage() {
                             <br /><br />
                             <h2>プレビュー：</h2>
                             <div
-                            style={{
-                                border: '1px solid #ccc',
-                                padding: '1rem',
-                                background: '#f9f9f9',
-                                minHeight: 100
-                            }}
+                                style={{
+                                    border: '1px solid #ccc',
+                                    padding: '1rem',
+                                    background: '#f9f9f9',
+                                    minHeight: 100
+                                }}
                             >
-                            {parseWikiContent(parseTarget, context).map((node, i) => (
-                                <React.Fragment key={i}>{node}</React.Fragment>
-                            ))}
+                                {parsedPreview.map((node, i) => (
+                                    <React.Fragment key={i}>{node}</React.Fragment>
+                                ))}
                             </div>
                             <br /><br />
                             { wikiSlugStr === "maitetsu_bkmt" && pageSlugStr !== "sinsei" ? (
