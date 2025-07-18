@@ -6,7 +6,7 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>『公式』あさクラニュース!</title>
+                <title>2025/07/18 あさクラ会議がシステムトラブルで延期に..</title>
             </Head>
             <div className={styles.contentsWrapper}>
                 <div className={styles.contents}>
@@ -28,21 +28,17 @@ export default function NewsPage() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/ru/news">
+                                <Link href="/ru/news/2025-07-16-1">
                                     <button><span>ロシア語</span></button>
                                 </Link>
                             </li>
                         </ul>
                     </nav>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>『公式』あさクラニュース!</h1>
-                        <ul>
-                            <li>2025/07/18 <a href="/news/2025-07-18-1">あさクラ会議がシステムトラブルで延期に..</a></li>
-                            <li>2025/07/16 <a href="/news/2025-07-16-1">あさクラ南東部で強風被害が出ています、ご注意下さい</a></li>
-                        </ul>
-                        <small>
-                            注意 ここに出て来るものはあさクラ内の話です、<br/>実際のニュースとは関係無いものもあります、
-                        </small>
+                        <h1>2025/07/18 あさクラ会議がシステム<br/>システムトラブルで延期に..</h1>
+                        <p>その原因は「supabaseのcommentsテーブル<br/>の設定がおかしかったからです」</p>
+                        <p>あさクラ会議は延期となり、<br/>すぐにあさクラWikiのシステム<br/>メンテナンスをすることになった</p>
+                        <p>現在は修正されています</p>
                     </main>
                     <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
                         <div className={styles.pForBeginner}>
