@@ -36,7 +36,7 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
-    const systemMentenans:boolean = true; // メンテナンスフラグ
+    const [systemMentenans, setsystemMentenans] = useState<boolean>(true); // メンテナンスフラグ
 
     useEffect(() => {
         if (!wikiSlugStr) return;
