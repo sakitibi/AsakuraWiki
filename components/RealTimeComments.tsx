@@ -55,7 +55,9 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
                     }
                 }
             )
-            .subscribe();
+            .subscribe((status) => {
+                console.log('リアルタイムチャンネルの接続状態:', status);
+            });
 
         return () => {
             supabase.removeChannel(channel)
