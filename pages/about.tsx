@@ -4,6 +4,7 @@ import HeaderJp from '@/utils/pageParts/HeaderJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
 import { useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
+import RightMenuJp from '@/utils/pageParts/RightMenu';
 
 export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -32,16 +33,7 @@ export default function Home() {
                         <p>使いやすいレンタルWikiサービスを目指しています。</p>
                         <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
                     </main>
-                    <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                        <div className={styles.pForBeginner}>
-                            <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
-                            <ul className={styles.pForBeginner__list}>
-                                <li className={styles.pForBeginner__item}>
-                                    <a href="/wiki/sample">サンプルWiki</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </aside>
+                    <RightMenuJp/>
                 </div>
                 <footer className={styles.footer}>
                     <div style={{textAlign: "center"}}>

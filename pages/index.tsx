@@ -5,6 +5,7 @@ import { supabase } from 'lib/supabaseClient';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
+import RightMenuJp from '@/utils/pageParts/RightMenu';
 import styles from 'css/index.min.module.css';
 
 type WikiPage = {
@@ -200,16 +201,7 @@ export default function Home() {
                                 </span>
                             </button>
                         </main>
-                        <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                            <div className={styles.pForBeginner}>
-                                <h2 className={styles.pForBeginner__title}>初めての方へ</h2>
-                                <ul className={styles.pForBeginner__list}>
-                                    <li className={styles.pForBeginner__item}>
-                                        <a href="/wiki/sample">サンプルWiki</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </aside>
+                        <RightMenuJp/>
                     </div>
                     <footer className={styles.footer}>
                         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
