@@ -33,7 +33,8 @@ export default function Home() {
         marginBlockEnd: '0.83em',
         marginInlineStart: '0px',
         marginInlineEnd: '0px',
-        unicodeBidi: 'isolate'
+        unicodeBidi: 'isolate',
+        textAlign: 'center'
     }
 
     useEffect(() => {
