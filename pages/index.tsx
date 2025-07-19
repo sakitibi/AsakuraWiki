@@ -199,7 +199,7 @@ export default function Home() {
                             ) : (
                             <div id="wikis">
                                 <div id="update-wiki">
-                                <h2>最近更新されたWiki</h2>
+                                <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>最近更新されたWiki</h2>
                                 {loadingRecent ? <p>Loading...</p> : (
                                     <ul>
                                         {recentPages.map((wp) => (
