@@ -6,7 +6,7 @@ import { supabase } from 'lib/supabaseClient';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import MenuRu from '@/utils/pageParts/MenuRu';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
-import LeftMenuRu from '@/utils/pageParts/LeftMenuRU';
+import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
 
 type WikiPage = {
     wikiSlug?: string
