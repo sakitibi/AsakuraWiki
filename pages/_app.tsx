@@ -33,8 +33,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
     useEffect(() => {
         const handleRouteChange = (url: string) => {
-            if (typeof (window as any).gtag === 'function') {
-                (window as any).gtag('config', GA_ID, {
+            if (typeof window.gtag === 'function') {
+                window.gtag('config', GA_ID, {
                     page_path: url,
                 });
             }
