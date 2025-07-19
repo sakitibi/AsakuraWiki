@@ -49,12 +49,6 @@ export default function LoginPage() {
                     required
                     style={{ width: '100%', padding: '0.5rem' }}
                 />
-                <input
-                    type='text'
-                    placeholder='ユーザー名'
-                    required
-                    style={{ width: '100%', padding: '0.5rem' }}
-                />
                 <br /><br />
                 {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
                 <button type="submit" disabled={loading}>
