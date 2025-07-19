@@ -87,14 +87,11 @@ export default function Home() {
             }))
             setLikedWikis(topLikedWikis)
             console.log('RPC result:', data);
-            useEffect(() => {
-            console.log('likedWikis updated:', likedWikis);
-            }, [likedWikis]);
             setLoadingLiked(false);
         }
         fetchLikedWikis();
     }, []);
-
+    
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
     }
