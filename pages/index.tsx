@@ -92,6 +92,10 @@ export default function Home() {
         fetchLikedWikis();
     }, []);
 
+    useEffect(() => {
+        console.log('likedWikis updated:', likedWikis);
+    }, [likedWikis]);
+
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
     }
