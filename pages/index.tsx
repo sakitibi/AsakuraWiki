@@ -7,10 +7,11 @@ import MenuJp from '@/utils/pageParts/MenuJp';
 import styles from 'css/index.min.module.css';
 
 type WikiPage = {
-    wikiSlug: string
-    pageSlug: string
-    name: string
-    updated_at: string
+    wikiSlug: string;
+    pageSlug: string;
+    name: string;
+    updated_at: string;
+    heikinlike?: number;
 }
 
 export default function Home() {
@@ -68,6 +69,34 @@ export default function Home() {
         }
         fetchPages()
     }, [])
+
+    useEffect(() => {
+        async function fetchLikedPages() {
+            const { data, error } = await supabase
+            .rpc('get_top_wikis_by_heikinlike') // ← ① Supabase関数を利用する例
+
+            if (error) {
+                console.error('fetchLikedPages error:', error)
+                setLoading(false)
+                return
+            }
+
+            if (!data) {
+                setLoading(false)
+                return
+            }
+
+            const topLikedWikis = data.map((row: any) => ({
+                wikiSlug: row.wiki_slug,
+                name: row.name,
+                heikinlike: row.heikinlike
+            }))
+            setPages(topLikedWikis)
+            setLoading(false)
+        }
+
+        fetchLikedPages();
+    }, []);
 
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
@@ -133,16 +162,21 @@ export default function Home() {
                             <p>まだページがありません。</p>
                             ) : (
                             <div id="wikis">
-                                <div id="hot-wiki">
-                                    <h2 style={H2Styles} className={`${styles.pLikedWiki__title} ${styles.fullWidthXs}`}>みんなが評価しているWiki</h2>
+                                <div id="liked-wiki">
+                                    <h2 style={H2Styles} className={`${styles.pLikedWiki__title} ${styles.fullWidthXs}`}>
+                                        みんなが評価しているWiki
+                                    </h2>
                                     <ul>
-                                        <li>
-                                            <Link href="/special_wiki/maitetsu_bkmt">
-                                                <button>
-                                                    <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
-                                                </button>
-                                            </Link>
-                                        </li>
+                                        {pages.map((wp) => (
+                                            <li key={wp.wikiSlug}>
+                                                <Link href={`/wiki/${wp.wikiSlug}`}>
+                                                    <button>
+                                                        <strong>{wp.name} Wiki*</strong>
+                                                    </button>
+                                                </Link>{' '}
+                                                <small>（平均いいね数: {wp.heikinlike.toFixed(2)}）</small>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                                 <div id="hot-wiki">
