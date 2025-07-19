@@ -11,6 +11,11 @@ type WikiPage = {
     pageSlug: string;
     name: string;
     updated_at: string;
+}
+
+type LikedWiki = {
+    wikiSlug: string;
+    name: string;
     heikinlike?: number;
 }
 
@@ -18,7 +23,7 @@ export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
     const [loading, setLoading] = useState(true)
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [likedPages, setLikedPages] = useState<WikiPage[]>([])
+    const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
     const [recentPages, setRecentPages] = useState<WikiPage[]>([])
     const [loadingLiked, setLoadingLiked] = useState(true)
     const [loadingRecent, setLoadingRecent] = useState(true)
@@ -66,7 +71,7 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        async function fetchLikedPages() {
+        async function fetchLikedWikis() {
             const { data, error } = await supabase.rpc('get_top_wikis_by_heikinlike')
 
             if (error || !data) {
@@ -80,12 +85,12 @@ export default function Home() {
                 name: row.name,
                 heikinlike: row.heikinlike
             }))
-            setLikedPages(topLikedWikis)
+            setLikedWikis(topLikedWikis)
             console.log('RPC result:', data);
-            console.log('likedPages:', likedPages);
+            console.log('likedWikis:', likedWikis);
             setLoadingLiked(false)
         }
-        fetchLikedPages()
+        fetchLikedWikis();
     }, []);
 
     const goCreateWiki = () => {
@@ -156,20 +161,18 @@ export default function Home() {
                                     <h2>みんなが評価しているWiki</h2>
                                     {loadingLiked ? <p>Loading...</p> : (
                                     <ul>
-                                    {likedPages
-                                        .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
+                                    {likedWikis
+                                        .filter((wp) => typeof wp.heikinlike === 'number' && wp.heikinlike >= 0)
                                         .map((wp) => (
                                         <li key={wp.wikiSlug}>
                                             <Link href={`/wiki/${wp.wikiSlug}`}>
                                             <button><strong>{wp.name} Wiki*</strong></button>
                                             </Link>
                                             <small>
-                                            平均いいね数: {wp.heikinlike != null && wp.heikinlike >= 0
-                                                ? Number(wp.heikinlike).toFixed(2)
-                                                : '表示なし'}
+                                            平均いいね数: {Number(wp.heikinlike).toFixed(2)}
                                             </small>
                                         </li>
-                                        ))}
+                                    ))}
                                     </ul>
                                     )}
                                 </div>
