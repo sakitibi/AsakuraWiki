@@ -97,7 +97,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
                 {comments.map(c => (
                     <li key={c.id} style={{ marginBottom: '0.5em' }}>
                         <strong>{c.name}</strong> ({new Date(c.created_at).toLocaleString()}):<br />
-                        {c.body}
+                        <p>{c.body}</p>
                     </li>
                 ))}
             </ul>
