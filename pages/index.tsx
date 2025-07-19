@@ -154,18 +154,18 @@ export default function Home() {
                                 <div id="liked-wiki">
                                     <h2>みんなが評価しているWiki</h2>
                                     {loadingLiked ? <p>Loading...</p> : (
-                                        <ul>
-                                            {likedPages.map((wp) => (
-                                                <li key={wp.wikiSlug}>
-                                                    <Link href={`/wiki/${wp.wikiSlug}`}>
-                                                        <button><strong>{wp.name} Wiki*</strong></button>
-                                                    </Link>
-                                                    <small>
-                                                    （平均いいね数: {wp.heikinlike !== null ? wp.heikinlike!.toFixed(2) : '表示なし'}）
-                                                    </small>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    <ul>
+                                    {likedPages
+                                        .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
+                                        .map((wp) => (
+                                        <li key={wp.wikiSlug}>
+                                            <Link href={`/wiki/${wp.wikiSlug}`}>
+                                            <button><strong>{wp.name} Wiki*</strong></button>
+                                            </Link>
+                                            <small>（平均いいね数: {wp.heikinlike!.toFixed(2)}）</small>
+                                        </li>
+                                        ))}
+                                    </ul>
                                     )}
                                 </div>
                                 <div id="hot-wiki">
