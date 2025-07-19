@@ -196,7 +196,7 @@ export default function Home() {
                     ) : (
                         <div id="wikis">
                             <div id="update-wiki">
-                                <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно обновленнаяWiki</h2>
+                                <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно <br/>обновленнаяWiki</h2>
                                 <ul>
                                     {pages.map((wp) => (
                                     <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
