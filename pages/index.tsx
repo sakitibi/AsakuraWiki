@@ -201,7 +201,7 @@ export default function Home() {
                                 </span>
                             </button>
                         </main>
-                        <RightMenuJp URL=""/>
+                        <RightMenuJp/>
                     </div>
                     <footer className={styles.footer}>
                         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
