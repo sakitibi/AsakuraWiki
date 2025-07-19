@@ -3,6 +3,8 @@
 @use 'pForBeginner';
 @use 'media';
 $yt3: "https://yt3.googleusercontent.com/" !default;
+$hotImg: $yt3 + "zGfLgzUwOf0wmsIi3yULulr3V3JonJxxP__Clwieqo1Dgdk2A9xgiWSIOCKMBcSvn1Qh5ku5BCU=s160-c-k-c0x00ffffff-no-rj";
+$recentImg: $yt3 + "G9RoM7rcvv3yJm-EwgG_Pq5FoXx0ljCPF0jr-BbViEt1oKsTJ04SQ5FSlvZKPDKF_JPSdNH6=s160-c-k-c0x00ffffff-no-rj";
 
 .pHotWiki__title{
     align-items: center;
@@ -19,7 +21,7 @@ $yt3: "https://yt3.googleusercontent.com/" !default;
     margin-bottom: .5rem;
     margin-top: 0;
     &::before{
-        background-image: url("#{yt3}zGfLgzUwOf0wmsIi3yULulr3V3JonJxxP__Clwieqo1Dgdk2A9xgiWSIOCKMBcSvn1Qh5ku5BCU=s160-c-k-c0x00ffffff-no-rj");
+        background-image: url(#{$hotImg});
         background-repeat: no-repeat;
         background-size: contain;
         content: "";
@@ -46,7 +48,7 @@ $yt3: "https://yt3.googleusercontent.com/" !default;
     margin-bottom: .5rem;
     margin-top: 0;
     &::before{
-        background-image: url("#{yt3}G9RoM7rcvv3yJm-EwgG_Pq5FoXx0ljCPF0jr-BbViEt1oKsTJ04SQ5FSlvZKPDKF_JPSdNH6=s160-c-k-c0x00ffffff-no-rj");
+        background-image: url(#{$recentImg});
         background-repeat: no-repeat;
         background-size: contain;
         content: "";
