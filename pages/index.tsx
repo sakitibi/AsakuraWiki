@@ -65,6 +65,7 @@ export default function Home() {
                 arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
             )
             setRecentPages(unique)
+            setPages(unique) // ← これを追加！
             setLoading(false);
             setLoadingRecent(false);
         }
