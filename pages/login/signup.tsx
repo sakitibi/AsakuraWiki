@@ -72,14 +72,6 @@ export default function SignUpPage() {
                     />
                 </label>
                 <br/><br/>
-                <label>
-                    <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>批判に同意
-                    <input
-                        type="checkbox"
-                        required
-                    />
-                </label>
-                <br/><br/>
                 {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
                 <button type="submit" disabled={loading}>
                     <span>
