@@ -154,12 +154,6 @@ export default function Home() {
                         </nav>
                         <main style={{ padding: '2rem', flex: 1 }}>
                             <h1>あさクラWiki</h1>
-                            {loading ? (
-                            <p>Loading...</p>
-                            ) : pages.length === 0 ? (
-                            <p>まだページがありません。</p>
-                            ) : (
-                            <div id="wikis">
                                 <div id="liked-wiki">
                                     <h2>みんなが評価しているWiki</h2>
                                     {loadingLiked ? <p>Loading...</p> : (
@@ -196,6 +190,12 @@ export default function Home() {
                                         </li>
                                     </ul>
                                 </div>
+                            {loading ? (
+                            <p>Loading...</p>
+                            ) : pages.length === 0 ? (
+                            <p>まだページがありません。</p>
+                            ) : (
+                            <div id="wikis">
                                 <div id="update-wiki">
                                 <h2>最近更新されたWiki</h2>
                                 {loadingRecent ? <p>Loading...</p> : (
