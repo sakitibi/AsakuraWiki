@@ -75,7 +75,7 @@ export default function Home() {
             const { data, error } = await supabase.rpc('get_top_wikis_by_heikinlike')
 
             if (error || !data) {
-                console.error('fetchLikedPages error:', error)
+                console.error('fetchLikedWikis error:', error)
                 setLoadingLiked(false)
                 return
             }
@@ -87,8 +87,10 @@ export default function Home() {
             }))
             setLikedWikis(topLikedWikis)
             console.log('RPC result:', data);
-            console.log('likedWikis:', likedWikis);
-            setLoadingLiked(false)
+            useEffect(() => {
+            console.log('likedWikis updated:', likedWikis);
+            }, [likedWikis]);
+            setLoadingLiked(false);
         }
         fetchLikedWikis();
     }, []);
