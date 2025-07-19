@@ -180,7 +180,10 @@ export function parseOtherInline(
         else if (token === '#hr') {
             nodes.push(<hr key={key} />)
         }
-        else if (token === '#br' || token === '&br;') {
+        else if (token === '#br') {
+            nodes.push(<br key={key} />)
+        }
+        else if (token === '&br;') {
             nodes.push(<br key={key} />)
         }
         // #ls([title])
