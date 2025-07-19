@@ -82,6 +82,7 @@ export default function Home() {
             }))
             setLikedPages(topLikedWikis)
             console.log('RPC result:', data);
+            console.log('likedPages:', likedPages);
             setLoadingLiked(false)
         }
         fetchLikedPages()
