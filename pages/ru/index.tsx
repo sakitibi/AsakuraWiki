@@ -5,8 +5,6 @@ import styles from 'css/index.min.module.css';
 import { supabase } from 'lib/supabaseClient';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import MenuRu from '@/utils/pageParts/MenuRu';
-import { usePageLikeHandlers } from '@/utils/Liked';
-import { useWikiLikeHandlers } from '@/utils/Liked';
 
 type WikiPage = {
     wikiSlug?: string
