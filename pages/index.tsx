@@ -18,6 +18,10 @@ export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
     const [loading, setLoading] = useState(true)
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const [likedPages, setLikedPages] = useState<WikiPage[]>([])
+    const [recentPages, setRecentPages] = useState<WikiPage[]>([])
+    const [loadingLiked, setLoadingLiked] = useState(true)
+    const [loadingRecent, setLoadingRecent] = useState(true)
 
     const H2Styles:React.CSSProperties = {
         marginBlockStart: '0.83em',
@@ -28,61 +32,46 @@ export default function Home() {
     }
 
     useEffect(() => {
-        async function fetchPages() {
+        async function fetchRecentPages() {
             const { data, error } = await supabase
-            .from('wiki_pages')
-            .select(`
-                wiki_slug,
-                slug,
-                updated_at,
-                wikis!fk_wiki_slug (name, slug)
-            `)
-            .order('updated_at', { ascending: false })
+                .from('wiki_pages')
+                .select(`
+                    wiki_slug,
+                    slug,
+                    updated_at,
+                    wikis!fk_wiki_slug (name, slug)
+                `)
+                .order('updated_at', { ascending: false })
 
-            if (error) {
-                console.error('fetchPages error:', error)
-                setLoading(false)
-                return
-            }
-            if (!data) {
-                setLoading(false)
+            if (error || !data) {
+                console.error('fetchRecentPages error:', error)
+                setLoadingRecent(false)
                 return
             }
 
-            // 1) ページごとに flatten
             const flattened = data.map((d: any) => ({
                 wikiSlug:   d.wiki_slug,
                 pageSlug:   d.slug,
                 name:       d.wikis?.name ?? '(無名Wiki)',
                 updated_at: d.updated_at,
             }))
-
-            // 2) wikiSlug ごとに最新１件だけ残す
             const unique = flattened.filter(
                 (item, idx, arr) =>
-                // arr の中で最初に現れる同じ wikiSlug の index と一致するものだけ残す
                 arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
             )
-
-            setPages(unique)
-            setLoading(false);
+            setRecentPages(unique)
+            setLoadingRecent(false)
         }
-        fetchPages()
-    }, [])
+        fetchRecentPages()
+    }, []);
 
     useEffect(() => {
         async function fetchLikedPages() {
-            const { data, error } = await supabase
-            .rpc('get_top_wikis_by_heikinlike') // ← ① Supabase関数を利用する例
+            const { data, error } = await supabase.rpc('get_top_wikis_by_heikinlike')
 
-            if (error) {
+            if (error || !data) {
                 console.error('fetchLikedPages error:', error)
-                setLoading(false)
-                return
-            }
-
-            if (!data) {
-                setLoading(false)
+                setLoadingLiked(false)
                 return
             }
 
@@ -91,11 +80,10 @@ export default function Home() {
                 name: row.name,
                 heikinlike: row.heikinlike
             }))
-            setPages(topLikedWikis)
-            setLoading(false)
+            setLikedPages(topLikedWikis)
+            setLoadingLiked(false)
         }
-
-        fetchLikedPages();
+        fetchLikedPages()
     }, []);
 
     const goCreateWiki = () => {
@@ -163,21 +151,19 @@ export default function Home() {
                             ) : (
                             <div id="wikis">
                                 <div id="liked-wiki">
-                                    <h2 style={H2Styles} className={`${styles.pLikedWiki__title} ${styles.fullWidthXs}`}>
-                                        みんなが評価しているWiki
-                                    </h2>
-                                    <ul>
-                                        {pages.map((wp) => (
-                                            <li key={wp.wikiSlug}>
-                                                <Link href={`/wiki/${wp.wikiSlug}`}>
-                                                    <button>
-                                                        <strong>{wp.name} Wiki*</strong>
-                                                    </button>
-                                                </Link>{' '}
-                                                <small>（平均いいね数: {wp.heikinlike?.toFixed(2)}）</small>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <h2>みんなが評価しているWiki</h2>
+                                    {loadingLiked ? <p>Loading...</p> : (
+                                        <ul>
+                                            {likedPages.map((wp) => (
+                                                <li key={wp.wikiSlug}>
+                                                    <Link href={`/wiki/${wp.wikiSlug}`}>
+                                                        <button><strong>{wp.name} Wiki*</strong></button>
+                                                    </Link>
+                                                    <small>（平均いいね数: {wp.heikinlike !== undefined ? wp.heikinlike.toFixed(2) : '表示なし'}）</small>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                                 <div id="hot-wiki">
                                     <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>HOTなWiki</h2>
@@ -192,23 +178,19 @@ export default function Home() {
                                     </ul>
                                 </div>
                                 <div id="update-wiki">
-                                    <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>最近更新されたWiki</h2>
+                                <h2>最近更新されたWiki</h2>
+                                {loadingRecent ? <p>Loading...</p> : (
                                     <ul>
-                                        {pages.map((wp) => (
-                                        <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
-                                            <Link
-                                            href={`/wiki/${wp.wikiSlug}`}
-                                            >
-                                            <button>
-                                                <strong>{wp.name} Wiki*</strong>
-                                            </button>
-                                            </Link>{' '}
-                                            <small>
-                                            （{new Date(wp.updated_at).toLocaleString()}）
-                                            </small>
-                                        </li>
+                                        {recentPages.map((wp) => (
+                                            <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
+                                                <Link href={`/wiki/${wp.wikiSlug}`}>
+                                                    <button><strong>{wp.name} Wiki*</strong></button>
+                                                </Link>
+                                                <small>（{new Date(wp.updated_at).toLocaleString()}）</small>
+                                            </li>
                                         ))}
                                     </ul>
+                                )}
                                 </div>
                             </div>
                             )}
