@@ -174,9 +174,9 @@ export default function Home() {
                                                 <button><strong>{wp.name} Wiki*</strong></button>
                                                 </Link>
                                                 <small>
-                                                平均いいね数: {typeof wp.heikinlike === 'bigint'
-                                                    ? Number(wp.heikinlike).toFixed(2)
-                                                    : wp.heikinlike?.toFixed(2)}
+                                                平均いいね数: {wp.heikinlike != null
+                                                    ? String(wp.heikinlike)  // 数値が見えるようにする
+                                                    : '表示なし'}
                                                 </small>
                                             </li>
                                             ))
