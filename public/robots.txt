@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /login/
+Disallow: /dashboard/
+
+# Host
+Host: https://asakura-wiki.vercel.app
+
+# Sitemaps
+Sitemap: https://asakura-wiki.vercel.app/sitemap.xml
