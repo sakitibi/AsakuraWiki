@@ -4,7 +4,8 @@ import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from 'lib/supabaseClient';
-import usePageLikeHandlers from 'utils/Liked';
+import { usePageLikeHandlers } from 'utils/Liked';
+import { useWikiLikeHandlers } from 'utils/Liked';
 
 type Page = {
     title: string
@@ -280,7 +281,8 @@ export default function WikiPage() {
         [previewText, wikiSlugStr, pageSlugStr]
     )
 
-    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers()
+    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
+    const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
     if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>
     if (loading || !page) return <div style={{ padding: '2rem' }}>読み込み中…</div>
@@ -370,6 +372,13 @@ export default function WikiPage() {
                 </button>
                 <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
                 <span>このページを低く評価</span>
+                </button>
+                <br/>
+                <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
+                    <span>このWikiを高く評価</span>
+                </button>
+                <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
+                    <span>このWikiを低く評価</span>
                 </button>
             </div>
             </article>
