@@ -3,6 +3,7 @@ import Link from 'next/link';
 import styles from 'css/index.min.module.css';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import { useState } from 'react';
+import RightMenuRu from '@/utils/pageParts/RightMenuRu';
 
 export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -64,16 +65,7 @@ export default function Home() {
                         <p>Наша цель — предоставить простую в использовании услугу аренды Wiki.</p>
                         <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>Источник здесь</a></p>
                     </main>
-                    <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                        <div className={styles.pForBeginner}>
-                            <h2 className={styles.pForBeginner__title}>Для новичков</h2>
-                            <ul className={styles.pForBeginner__list}>
-                                <li className={styles.pForBeginner__item}>
-                                    <a href="/wiki/sample">Образец Wiki</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </aside>
+                    <RightMenuRu/>
                 </div>
                 <footer className={styles.footer}>
                     <div style={{textAlign: "center"}}>

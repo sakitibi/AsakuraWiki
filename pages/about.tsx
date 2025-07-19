@@ -4,7 +4,7 @@ import HeaderJp from '@/utils/pageParts/HeaderJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
 import { useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
-import RightMenuJp from '@/utils/pageParts/RightMenu';
+import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 
 export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);

@@ -5,7 +5,7 @@ import { supabase } from 'lib/supabaseClient';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
-import RightMenuJp from '@/utils/pageParts/RightMenu';
+import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import styles from 'css/index.min.module.css';
 
 type WikiPage = {

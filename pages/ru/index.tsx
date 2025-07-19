@@ -5,6 +5,7 @@ import styles from 'css/index.min.module.css';
 import { supabase } from 'lib/supabaseClient';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import MenuRu from '@/utils/pageParts/MenuRu';
+import RightMenuRu from '@/utils/pageParts/RightMenuRu';
 
 type WikiPage = {
     wikiSlug?: string
@@ -223,16 +224,7 @@ export default function Home() {
                     <span>＋ Создать новую Вики (японский)</span>
                     </button>
                 </main>
-                <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                    <div className={styles.pForBeginner}>
-                        <h2 className={styles.pForBeginner__title}>Для новичков</h2>
-                        <ul className={styles.pForBeginner__list}>
-                            <li className={styles.pForBeginner__item}>
-                                <a href="/wiki/sample">Образец Wiki</a>
-                            </li>
-                        </ul>
-                    </div>
-                </aside>
+                <RightMenuRu/>
             </div>
             <footer className={styles.footer}>
                 <div style={{ textAlign: 'center', marginTop: '1rem' }}>
