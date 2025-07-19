@@ -22,7 +22,7 @@ export default function LeftMenuJp(){
                         </Link>
                     </li>
                     <li>
-                        <Link href="/ru/about">
+                        <Link href={`/ru/${location.pathname}`}>
                             <button>
                                 <span>ロシア語</span>
                             </button>
