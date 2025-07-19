@@ -81,6 +81,7 @@ export default function Home() {
                 heikinlike: row.heikinlike
             }))
             setLikedPages(topLikedWikis)
+            console.log('RPC result:', data);
             setLoadingLiked(false)
         }
         fetchLikedPages()
