@@ -132,7 +132,7 @@ export default function Home() {
                 <div className={styles.contentsWrapper}>
                     <HeaderJp handleClick={handleClick} />
                     <div className={styles.contents}>
-                        <LeftMenuJp/>
+                        <LeftMenuJp URL='/ru'/>
                         <main style={{ padding: '2rem', flex: 1 }}>
                             <h1>あさクラWiki</h1>
                                 <div id="liked-wiki">
@@ -201,7 +201,7 @@ export default function Home() {
                                 </span>
                             </button>
                         </main>
-                        <RightMenuJp/>
+                        <RightMenuJp URL=""/>
                     </div>
                     <footer className={styles.footer}>
                         <div style={{ textAlign: 'center', marginTop: '1rem' }}>

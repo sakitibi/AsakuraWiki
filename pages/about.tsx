@@ -25,7 +25,7 @@ export default function Home() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp/>
+                    <LeftMenuJp URL="/ru/about"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>当レンタルWikiについて</h1>
                         <p>当Wiki(以下あさクラWiki)は</p>

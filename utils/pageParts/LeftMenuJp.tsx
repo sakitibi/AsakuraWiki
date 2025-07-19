@@ -1,7 +1,11 @@
 import styles from 'css/index.min.module.css';
 import Link from 'next/link';
 
-export default function LeftMenuJp(){
+interface Props {
+    URL: string;
+}
+
+export default function LeftMenuJp({ URL }: Props){
     return(
         <div id="menu">
             <nav className={styles.menu}>
@@ -22,7 +26,7 @@ export default function LeftMenuJp(){
                         </Link>
                     </li>
                     <li>
-                        <Link href={`/ru/${location.pathname}`}>
+                        <Link href={`/ru/${URL}`}>
                             <button>
                                 <span>ロシア語</span>
                             </button>
