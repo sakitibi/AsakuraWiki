@@ -160,18 +160,21 @@ export default function Home() {
                                     <h2>みんなが評価しているWiki</h2>
                                     {loadingLiked ? <p>Loading...</p> : (
                                     <ul>
-                                    {likedWikis
-                                        .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
-                                        .map((wp) => (
-                                        <li key={wp.wikiSlug}>
-                                            <Link href={`/wiki/${wp.wikiSlug}`}>
-                                            <button><strong>{wp.name} Wiki*</strong></button>
-                                            </Link>
-                                            <small>
-                                            平均いいね数: {Number(wp.heikinlike).toFixed(2)}
-                                            </small>
-                                        </li>
-                                    ))}
+                                    {likedWikis.length === 0
+                                        ? <li>評価されたWikiがありません</li>
+                                        : likedWikis
+                                            .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
+                                            .map((wp) => (
+                                            <li key={`liked-${wp.wikiSlug}`}>
+                                                <Link href={`/wiki/${wp.wikiSlug}`}>
+                                                <button><strong>{wp.name} Wiki*</strong></button>
+                                                </Link>
+                                                <small>
+                                                平均いいね数: {Number(wp.heikinlike).toFixed(2)}
+                                                </small>
+                                            </li>
+                                            ))
+                                    }
                                     </ul>
                                     )}
                                 </div>
