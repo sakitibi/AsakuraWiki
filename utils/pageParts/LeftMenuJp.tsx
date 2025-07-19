@@ -26,7 +26,7 @@ export default function LeftMenuJp({ URL }: Props){
                         </Link>
                     </li>
                     <li>
-                        <Link href={`/ru/${URL}`}>
+                        <Link href={`/ru${URL}`}>
                             <button>
                                 <span>ロシア語</span>
                             </button>
