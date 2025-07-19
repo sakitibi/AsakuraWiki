@@ -153,7 +153,7 @@ export default function Home() {
                 <main style={{ padding: '2rem', flex: 1 }}>
                     <h1>АсакураWiki</h1>
                         <div id="liked-wiki">
-                            <h2>оценено всеми Wiki</h2>
+                            <h2 className={styles.pLikedWiki__title}>оценено всеми Wiki</h2>
                                 {loadingLiked ? <p>Loading...</p> : (
                                     <ul>
                                     {likedWikis.length === 0
@@ -194,7 +194,6 @@ export default function Home() {
                     <p>Страниц пока нет.</p>
                     ) : (
                         <div id="wikis">
-
                             <div id="update-wiki">
                                 <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно обновленнаяWiki</h2>
                                 <ul>

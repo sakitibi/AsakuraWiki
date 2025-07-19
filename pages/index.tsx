@@ -157,7 +157,7 @@ export default function Home() {
                         <main style={{ padding: '2rem', flex: 1 }}>
                             <h1>あさクラWiki</h1>
                                 <div id="liked-wiki">
-                                    <h2>みんなが評価しているWiki</h2>
+                                    <h2 className={styles.pLikedWiki__title}>みんなが評価しているWiki</h2>
                                     {loadingLiked ? <p>Loading...</p> : (
                                     <ul>
                                     {likedWikis.length === 0
