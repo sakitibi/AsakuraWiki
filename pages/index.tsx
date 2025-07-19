@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { supabase } from 'lib/supabaseClient';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
+import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import styles from 'css/index.min.module.css';
 
 type WikiPage = {
@@ -130,30 +131,7 @@ export default function Home() {
                 <div className={styles.contentsWrapper}>
                     <HeaderJp handleClick={handleClick} />
                     <div className={styles.contents}>
-                        <nav className={styles.menu}>
-                            <ul>
-                                <li>
-                                    <Link href="/">
-                                        <button><span>ホーム</span></button>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/about">
-                                        <button><span>当レンタルWikiについて</span></button>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                                        <button><span>ログイン/新規登録</span></button>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="/ru">
-                                        <button><span>ロシア語</span></button>
-                                    </Link>
-                                </li>
-                            </ul>
-                        </nav>
+                        <LeftMenuJp/>
                         <main style={{ padding: '2rem', flex: 1 }}>
                             <h1>あさクラWiki</h1>
                                 <div id="liked-wiki">
