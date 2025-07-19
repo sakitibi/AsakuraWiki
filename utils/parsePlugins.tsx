@@ -180,6 +180,9 @@ export function parseOtherInline(
         else if (token === '#hr') {
             nodes.push(<hr key={key} />)
         }
+        else if (token === '#br' || token === '&br;') {
+            nodes.push(<br key={key} />)
+        }
         // #ls([title])
         else if (token.startsWith('#ls')) {
             const prefix = m[8]?.trim() || undefined
