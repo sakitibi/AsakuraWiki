@@ -91,7 +91,7 @@ export default function Home() {
         }
         fetchLikedWikis();
     }, []);
-    
+
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
     }
@@ -161,7 +161,7 @@ export default function Home() {
                                     {loadingLiked ? <p>Loading...</p> : (
                                     <ul>
                                     {likedWikis
-                                        .filter((wp) => typeof wp.heikinlike === 'number' && wp.heikinlike >= 0)
+                                        .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
                                         .map((wp) => (
                                         <li key={wp.wikiSlug}>
                                             <Link href={`/wiki/${wp.wikiSlug}`}>
