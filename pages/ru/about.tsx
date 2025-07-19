@@ -1,10 +1,9 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import styles from 'css/index.min.module.css';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import { useState } from 'react';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
-import LeftMenuRu from '@/utils/pageParts/LeftMenuRU';
+import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
 
 export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
