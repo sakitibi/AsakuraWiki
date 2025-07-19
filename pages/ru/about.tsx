@@ -4,6 +4,7 @@ import styles from 'css/index.min.module.css';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import { useState } from 'react';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
+import LeftMenuRu from '@/utils/pageParts/LeftMenuRU';
 
 export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -32,32 +33,7 @@ export default function Home() {
             <div className={styles.contentsWrapper}>
                 <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <div id="menu">
-                        <nav className={styles.menu}>
-                            <ul>
-                                <li>
-                                <Link href="/ru">
-                                    <button><span>Дом</span></button>
-                                </Link>
-                                </li>
-                                <li>
-                                <Link href="/ru/about">
-                                    <button><span>Об этом вики-сайте по аренде</span></button>
-                                </Link>
-                                </li>
-                                <li>
-                                <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                                    <button><span>Войти/Зарегистрироваться (японский)</span></button>
-                                </Link>
-                                </li>
-                                <li>
-                                <Link href="/">
-                                    <button><span>日本語</span></button>
-                                </Link>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    <LeftMenuRu URL="/about"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>Об этом вики-сайте по аренде</h1>
                         <p>Эта Wiki (далее именуемая Asakura Wiki)</p>

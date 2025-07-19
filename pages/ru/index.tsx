@@ -6,6 +6,7 @@ import { supabase } from 'lib/supabaseClient';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import MenuRu from '@/utils/pageParts/MenuRu';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
+import LeftMenuRu from '@/utils/pageParts/LeftMenuRU';
 
 type WikiPage = {
     wikiSlug?: string
@@ -126,32 +127,7 @@ export default function Home() {
         <div className={styles.contentsWrapper}>
             <HeaderRu handleClick={handleClick}/>
             <div className={styles.contents}>
-                <div id="menu">
-                    <nav className={styles.menu}>
-                        <ul>
-                            <li>
-                            <Link href="/ru">
-                                <button><span>Дом</span></button>
-                            </Link>
-                            </li>
-                            <li>
-                            <Link href="/ru/about">
-                                <button><span>Об этом вики-сайте по аренде</span></button>
-                            </Link>
-                            </li>
-                            <li>
-                            <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                                <button><span>Войти/Зарегистрироваться (японский)</span></button>
-                            </Link>
-                            </li>
-                            <li>
-                            <Link href="/">
-                                <button><span>日本語</span></button>
-                            </Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                <LeftMenuRu URL="/"/>
                 <main style={{ padding: '2rem', flex: 1 }}>
                     <h1>АсакураWiki</h1>
                         <div id="liked-wiki">
