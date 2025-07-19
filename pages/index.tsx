@@ -163,7 +163,11 @@ export default function Home() {
                                             <Link href={`/wiki/${wp.wikiSlug}`}>
                                             <button><strong>{wp.name} Wiki*</strong></button>
                                             </Link>
-                                            <small>（平均いいね数: {Number(wp.heikinlike).toFixed(2)}）</small>
+                                            <small>
+                                            平均いいね数: {wp.heikinlike != null && wp.heikinlike >= 0
+                                                ? Number(wp.heikinlike).toFixed(2)
+                                                : '表示なし'}
+                                            </small>
                                         </li>
                                         ))}
                                     </ul>
