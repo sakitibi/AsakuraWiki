@@ -5,6 +5,8 @@ import styles from 'css/index.min.module.css';
 import { supabase } from 'lib/supabaseClient';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import MenuRu from '@/utils/pageParts/MenuRu';
+import { usePageLikeHandlers } from '@/utils/Liked';
+import { useWikiLikeHandlers } from '@/utils/Liked';
 
 type WikiPage = {
     wikiSlug?: string
@@ -13,25 +15,22 @@ type WikiPage = {
     updated_at: string
 }
 
+type LikedWiki = {
+    wikiSlug: string;
+    name: string;
+    heikinlike?: number;
+}
+
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
     const [loading, setLoading] = useState(true)
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
+    const [recentPages, setRecentPages] = useState<WikiPage[]>([])
+    const [loadingLiked, setLoadingLiked] = useState(true)
+    const [loadingRecent, setLoadingRecent] = useState(true)
 
     const H2Styles:React.CSSProperties = {
-        alignItems: 'center',
-        backgroundColor: '#cce19b',
-        backgroundImage: 'url("https://wikiwiki.jp/pa/assets/84566d2e21c8bbef1c53.png")',
-        color: '#566b1c',
-        display: 'flex',
-        fontSize: '17px',
-        fontWeight: '700',
-        justifyContent: 'center',
-        padding: '.5em 1em',
-        textAlign: 'center',
-        lineHeight: '1.2',
-        marginBottom: '.5rem',
-        marginTop: '0',
         marginBlockStart: '0.83em',
         marginBlockEnd: '0.83em',
         marginInlineStart: '0px',
@@ -40,47 +39,62 @@ export default function Home() {
     }
 
     useEffect(() => {
-        async function fetchPages() {
+        async function fetchRecentPages() {
             const { data, error } = await supabase
-            .from('wiki_pages')
-            .select(`
-                wiki_slug,
-                slug,
-                updated_at,
-                wikis!fk_wiki_slug (name, slug)
-            `)
-            .order('updated_at', { ascending: false })
+                .from('wiki_pages')
+                .select(`
+                    wiki_slug,
+                    slug,
+                    updated_at,
+                    wikis!fk_wiki_slug (name, slug)
+                `)
+                .order('updated_at', { ascending: false })
 
-            if (error) {
-                console.error('fetchPages error:', error)
-                setLoading(false)
-                return
-            }
-            if (!data) {
-                setLoading(false)
+            if (error || !data) {
+                console.error('fetchRecentPages error:', error)
+                setLoadingRecent(false)
                 return
             }
 
-            // 1) ページごとに flatten
             const flattened = data.map((d: any) => ({
                 wikiSlug:   d.wiki_slug,
                 pageSlug:   d.slug,
                 name:       d.wikis?.name ?? '(無名Wiki)',
                 updated_at: d.updated_at,
             }))
-
-            // 2) wikiSlug ごとに最新１件だけ残す
             const unique = flattened.filter(
                 (item, idx, arr) =>
-                // arr の中で最初に現れる同じ wikiSlug の index と一致するものだけ残す
                 arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
             )
-
-            setPages(unique)
+            setRecentPages(unique)
+            setPages(unique) // ← これを追加！
             setLoading(false);
+            setLoadingRecent(false);
         }
-        fetchPages()
-    }, [])
+        fetchRecentPages()
+    }, []);
+
+    useEffect(() => {
+        async function fetchLikedWikis() {
+            const { data, error } = await supabase.rpc('get_top_wikis_by_heikinlike')
+
+            if (error || !data) {
+                console.error('fetchLikedWikis error:', error)
+                setLoadingLiked(false)
+                return
+            }
+
+            const topLikedWikis = data.map((row: any) => ({
+                wikiSlug: row.wiki_slug,
+                name: row.name,
+                heikinlike: row.heikinlike
+            }))
+            setLikedWikis(topLikedWikis)
+            console.log('RPC result:', data);
+            setLoadingLiked(false);
+        }
+        fetchLikedWikis();
+    }, []);
 
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
@@ -140,24 +154,49 @@ export default function Home() {
                 </div>
                 <main style={{ padding: '2rem', flex: 1 }}>
                     <h1>АсакураWiki</h1>
+                        <div id="liked-wiki">
+                            <h2>оценено всеми Wiki</h2>
+                                {loadingLiked ? <p>Loading...</p> : (
+                                    <ul>
+                                    {likedWikis.length === 0
+                                        ? <li>Нет рейтинга Wiki</li>
+                                        : likedWikis
+                                            .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
+                                            .map((wp) => (
+                                            <li key={`liked-${wp.wikiSlug}`}>
+                                                <Link href={`/wiki/${wp.wikiSlug}`}>
+                                                <button><strong>{wp.name} Wiki*</strong></button>
+                                                </Link>
+                                                <small>
+                                                Среднее количество лайков: {wp.heikinlike != null
+                                                    ? String(wp.heikinlike)  // 数値が見えるようにする
+                                                    : '表示なし'}
+                                                </small>
+                                            </li>
+                                            ))
+                                    }
+                                    </ul>
+                                )}
+                            </div>
+                        <div id="hot-wiki">
+                            <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>ГОРЯЧАЯ Wiki</h2>
+                            <ul>
+                                <li>
+                                    <Link href="/special_wiki/maitetsu_bkmt">
+                                        <button>
+                                            <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
+                                        </button>
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
                     {loading ? (
                     <p>Loading...</p>
                     ) : pages.length === 0 ? (
                     <p>Страниц пока нет.</p>
                     ) : (
                         <div id="wikis">
-                            <div id="hot-wiki">
-                                <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>ГОРЯЧАЯ Wiki</h2>
-                                <ul>
-                                    <li>
-                                        <Link href="/special_wiki/maitetsu_bkmt">
-                                            <button>
-                                                <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
-                                            </button>
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
+
                             <div id="update-wiki">
                                 <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно обновленнаяWiki</h2>
                                 <ul>
