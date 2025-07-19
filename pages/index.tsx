@@ -134,6 +134,18 @@ export default function Home() {
                             ) : (
                             <div id="wikis">
                                 <div id="hot-wiki">
+                                    <h2 style={H2Styles} className={`${styles.pLikedWiki__title} ${styles.fullWidthXs}`}>みんなが評価しているWiki</h2>
+                                    <ul>
+                                        <li>
+                                            <Link href="/special_wiki/maitetsu_bkmt">
+                                                <button>
+                                                    <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
+                                                </button>
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div id="hot-wiki">
                                     <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>HOTなWiki</h2>
                                     <ul>
                                         <li>

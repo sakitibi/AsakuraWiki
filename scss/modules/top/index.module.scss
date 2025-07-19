@@ -3,7 +3,7 @@
 @use 'pForBeginner';
 @use 'media';
 
-.pHotWiki__title{
+@mixin pLikedWiki{
     align-items: center;
     background-color: #cce19b;
     background-image: url("https://wikiwiki.jp/pa/assets/84566d2e21c8bbef1c53.png");
@@ -17,43 +17,40 @@
     line-height: 1.2;
     margin-bottom: .5rem;
     margin-top: 0;
+}
+
+@mixin pLikedMixinBefore{
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: "";
+    display: inline-block;
+    height: 34px;
+    margin-left: -70px;
+    margin-right: 10px;
+    width: 33px;
+}
+
+.pHotWiki__title{
+    @include pLikedWiki;
     &::before{
         background-image: url("https://yt3.googleusercontent.com/zGfLgzUwOf0wmsIi3yULulr3V3JonJxxP__Clwieqo1Dgdk2A9xgiWSIOCKMBcSvn1Qh5ku5BCU=s160-c-k-c0x00ffffff-no-rj");
-        background-repeat: no-repeat;
-        background-size: contain;
-        content: "";
-        display: inline-block;
-        height: 34px;
-        margin-left: -70px;
-        margin-right: 10px;
-        width: 33px;
+        @include pLikedMixinBefore;
     }
 }
 
 .pRecentWiki__title{
-    align-items: center;
-    background-color: #cce19b;
-    background-image: url("https://wikiwiki.jp/pa/assets/84566d2e21c8bbef1c53.png");
-    color: #566b1c;
-    display: flex;
-    font-size: 20px;
-    font-weight: 700;
-    justify-content: center;
-    padding: .5em 1em;
-    text-align: center;
-    line-height: 1.2;
-    margin-bottom: .5rem;
-    margin-top: 0;
+    @include pLikedWiki;
     &::before{
         background-image: url("https://yt3.googleusercontent.com/G9RoM7rcvv3yJm-EwgG_Pq5FoXx0ljCPF0jr-BbViEt1oKsTJ04SQ5FSlvZKPDKF_JPSdNH6=s160-c-k-c0x00ffffff-no-rj");
-        background-repeat: no-repeat;
-        background-size: contain;
-        content: "";
-        display: inline-block;
-        height: 34px;
-        margin-left: -70px;
-        margin-right: 10px;
-        width: 33px;
+        @include pLikedMixinBefore;
+    }
+}
+
+.pLikedWiki__title{
+    @include pLikedWiki;
+    &::before{
+        background-image: url("https://yt3.googleusercontent.com/psWk0LSFeKsc2iPtKkcs8_j_vvwUblAoxTZ-TbBJPwkzleNgZEBdAI3EhxAY-STeKYLU7ZJK-w=s160-c-k-c0x00ffffff-no-rj");
+        @include pLikedMixinBefore;
     }
 }
 
