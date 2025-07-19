@@ -13,17 +13,19 @@ export default function LoginPage() {
         setLoading(true);
         setErrorMsg('');
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
+
+        console.log('Login Data:', data);
+        console.log('Login Error:', error);
 
         setLoading(false);
 
         if (error) {
             setErrorMsg(error.message);
         } else {
-            // ログイン成功時にダッシュボードなどへ遷移
             window.location.href = '/dashboard';
         }
     };
