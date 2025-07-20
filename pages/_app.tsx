@@ -53,7 +53,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     }, []);
 
     const Deeeen = () => {
-        const Deeen = document.querySelector('audio');
+        const Deeen:HTMLAudioElement | null = document.querySelector('audio');
         Deeen!.play();
     }
 
