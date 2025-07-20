@@ -96,7 +96,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <div style={{textAlign: 'center'}}>
                     <div id="sanninnsenn">
                         <h2><strong>夏の参院選の結果について</strong></h2>
-                        <p>超朗報!参政党が議席数+14!!!!</p>
+                        <p>超朗報!参政党が議席数+13!!!!</p>
                         <p>
                             <Link href="https://sanseito.jp" target='_blank'>
                                 <button onClick={Deeeen}>
