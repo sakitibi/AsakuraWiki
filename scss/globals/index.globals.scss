@@ -4,10 +4,10 @@
 body{
     ul{
         &.list1{
-            list-style-type: disc;
+            list-style-type: disc !important;
         }
         &.list2{
-            list-style-type: circle;
+            list-style-type: circle !important;
         }
     }
     &:not(.wiki-font){
