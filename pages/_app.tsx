@@ -106,7 +106,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                                 </button>
                             </Link>
                         </p>
-                        <audio src="https://upload.wikimedia.org/wikipedia/commons/5/55/Soviet_Anthem_Instrumental_1955.ogg" controls controlsList='nodownload' loop></audio>
+                        <audio src="https://upload.wikimedia.org/wikipedia/commons/5/55/Soviet_Anthem_Instrumental_1955.ogg" controls controlsList='nodownload' loop hidden></audio>
                         <div id="russia">
                             <h3><strong>О летних выборах в Палату советников</strong></h3>
                             <p></p>
