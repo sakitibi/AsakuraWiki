@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
 import { useState } from 'react';
+import HeaderRu from '@/utils/pageParts/HeaderRu';
 import MenuRu from '@/utils/pageParts/MenuRu';
 import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
@@ -21,6 +22,7 @@ export default function NewsPage() {
             </Head>
             <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
                     <LeftMenuRu URL="/news/2025-07-18-1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
