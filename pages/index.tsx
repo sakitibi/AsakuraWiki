@@ -18,7 +18,7 @@ type WikiPage = {
 type LikedWiki = {
     wikiSlug: string;
     name: string;
-    average_heikinlike: number;
+    like_count: number;
 }
 
 export default function Home() {
@@ -76,7 +76,7 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchLikedWikis() {
-            const { data, error } = await supabase.rpc('get_top_wikis_by_heikinlike')
+            const { data, error } = await supabase.rpc('get_top_wikis_by_like_count')
 
             if (error || !data) {
                 console.error('fetchLikedWikis error:', error)
@@ -87,7 +87,7 @@ export default function Home() {
             const topLikedWikis = data.map((row: any) => ({
                 wikiSlug: row.wiki_slug,
                 name: row.name,
-                average_heikinlike: row.average_heikinlike
+                like_count: row.like_count
             }))
             setLikedWikis(topLikedWikis)
             setLoadingLiked(false);
@@ -142,14 +142,14 @@ export default function Home() {
                                     {likedWikis.length === 0
                                         ? <li>評価されたWikiがありません</li>
                                         : likedWikis
-                                        .filter((wp) => wp.average_heikinlike >= 0)
+                                        .filter((wp) => wp.like_count >= 0)
                                         .map((wp) => (
                                             <li key={`liked-${wp.wikiSlug}`}>
                                             <Link href={`/wiki/${wp.wikiSlug}`}>
                                                 <button><strong>{wp.name} Wiki*</strong></button>
                                             </Link>
                                             <small>
-                                                平均いいね数: {wp.average_heikinlike.toFixed(2)}
+                                                平均いいね数: {wp.like_count.toFixed(2)}
                                             </small>
                                             </li>
                                         ))
