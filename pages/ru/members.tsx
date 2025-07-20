@@ -43,27 +43,27 @@ export default function Members() {
                                     <li><a href='https://youtube.com/@SHIMAJIROCH'>Амири</a></li>
                                 </ul>
                             </li>
-                            <li><a href="https://youtube.com/@HikakinGames">ヒカキン</a></li>
-                            <li><a href="https://youtube.com/@28Games28">28(ふたば)</a></li>
-                            <li><a href='https://youtube.com/@72なつちゃんねる'>72(なつ)</a></li>
-                            <li><a href='https://youtube.com/@tiropino'>ちろぴの</a></li>
-                            <li><a href='https://youtube.com/@mkgamech'>MK</a></li>
-                            <li><a href='https://youtube.com/@Memento-mori'>めめんともり</a></li>
-                            <li><a href="https://youtube.com/@Latte1729">Latte</a></li>
-                            <li><a href="https://youtube.com/@upapalon25">ウパパロン</a></li>
-                            <li><a href="https://youtube.com/@saegusarin_0930">三枝りん</a></li>
-                            <li><a href='https://youtube.com/@Mizore471'>みぞれ</a></li>
-                            <li><a href="https://youtube.com/@HinaRuka21">ひなにい</a></li>
-                            <li><a href="https://youtube.com/@S_Reimari">Sレイマリ</a></li>
-                            <li><a href="https://youtube.com/@zennkopasu">ぜんこぱす</a></li>
-                            <li><a href='https://youtube.com/@meteor_s7'>メテヲ</a></li>
-                            <li><a href="https://youtube.com/@HachimanD">八幡宮</a></li>
-                            <li><a href="https://youtube.com/@GGunmas">ガンマス</a></li>
-                            <li><a href="https://youtube.com/@iemon2353">iemon</a></li>
-                            <li><a href="https://youtube.com/@laloryukkuri">レイラー</a></li>
-                            <li><a href="https://youtube.com/@anakena.M">アナケナ・ファミリー</a></li>
-                            <li><a href="https://youtube.com/@chaaaco">茶子</a></li>
-                            <li><a href="https://discord.gg/zbvXxCWcg6">匿名</a></li>
+                            <li><a href="https://youtube.com/@HikakinGames">Хикакин</a></li>
+                            <li><a href="https://youtube.com/@28Games28">28(Футаба)</a></li>
+                            <li><a href='https://youtube.com/@72なつちゃんねる'>72(Лето)</a></li>
+                            <li><a href='https://youtube.com/@tiropino'>Чиропино</a></li>
+                            <li><a href='https://youtube.com/@mkgamech'>МК</a></li>
+                            <li><a href='https://youtube.com/@Memento-mori'>Мементомори</a></li>
+                            <li><a href="https://youtube.com/@Latte1729">Латте</a></li>
+                            <li><a href="https://youtube.com/@upapalon25">Упапалон</a></li>
+                            <li><a href="https://youtube.com/@saegusarin_0930">Рин Саэгуса</a></li>
+                            <li><a href='https://youtube.com/@Mizore471'>Мокрый снег</a></li>
+                            <li><a href="https://youtube.com/@HinaRuka21">Хинани</a></li>
+                            <li><a href="https://youtube.com/@S_Reimari">С. Реймари</a></li>
+                            <li><a href="https://youtube.com/@zennkopasu">Зенкопасс</a></li>
+                            <li><a href='https://youtube.com/@meteor_s7'>Метеор</a></li>
+                            <li><a href="https://youtube.com/@HachimanD">Святилище Хатимана</a></li>
+                            <li><a href="https://youtube.com/@GGunmas">Гамма</a></li>
+                            <li><a href="https://youtube.com/@iemon2353">кто-то</a></li>
+                            <li><a href="https://youtube.com/@laloryukkuri">Рейлор</a></li>
+                            <li><a href="https://youtube.com/@anakena.M">Семья Анакена</a></li>
+                            <li><a href="https://youtube.com/@chaaaco">Чако</a></li>
+                            <li><a href="https://discord.gg/zbvXxCWcg6">Токумеи</a></li>
                         </ul>
                     </main>
                     <RightMenuJp/>
