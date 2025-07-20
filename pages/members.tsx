@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
-import MenuJp from '@/utils/pageParts/MenuJp';
-import RightMenuJp from '@/utils/pageParts/RightMenuJp';
-import { useState } from 'react';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
+import MenuJp from '@/utils/pageParts/MenuJp';
+import { useState } from 'react';
+import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
+import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import FooterJp from '@/utils/pageParts/FooterJp';
 
-export default function NewsPage() {
+export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -19,23 +19,21 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/07/18 あさクラ会議がシステムトラブルで延期に..</title>
+                <meta charSet='UTF-8'/>
+                <title>あさクラメンバー一覧</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-07-18-1'/>
+                    <LeftMenuJp URL="/members"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/07/18 あさクラ会議がシステム<br/>システムトラブルで延期に..</h1>
-                        <p>その原因は「supabaseのcommentsテーブル<br/>の設定がおかしかったからです」</p>
-                        <p>あさクラ会議は延期となり、<br/>すぐにあさクラWikiのシステム<br/>メンテナンスをすることになった</p>
-                        <p>現在は修正されています</p>
+                        <h1>あさクラメンバー一覧</h1>
                     </main>
                     <RightMenuJp/>
                 </div>
                 <FooterJp/>
             </div>
         </>
-    )
+    );
 }

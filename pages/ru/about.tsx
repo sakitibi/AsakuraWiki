@@ -4,6 +4,7 @@ import HeaderRu from '@/utils/pageParts/HeaderRu';
 import { useState } from 'react';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
 import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
+import FooterRu from '@/utils/pageParts/FooterRu';
 
 export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -42,12 +43,7 @@ export default function Home() {
                     </main>
                     <RightMenuRu/>
                 </div>
-                <footer className={styles.footer}>
-                    <div style={{textAlign: "center"}}>
-                        <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                        <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>
-                    </div>
-                </footer>
+                <FooterRu/>
             </div>
         </>
     );

@@ -5,6 +5,7 @@ import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
+import FooterJp from '@/utils/pageParts/FooterJp';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -37,12 +38,7 @@ export default function NewsPage() {
                     </main>
                     <RightMenuJp/>
                 </div>
-                <footer className={styles.footer}>
-                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                        <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                        <p>当Wikiサービスはオープンソースプロジェクトです</p>
-                    </div>
-                </footer>
+                <FooterJp/>
             </div>
         </>
     )

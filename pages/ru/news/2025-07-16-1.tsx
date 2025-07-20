@@ -5,6 +5,7 @@ import MenuRu from '@/utils/pageParts/MenuRu';
 import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
+import FooterRu from '@/utils/pageParts/FooterRu';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -38,12 +39,7 @@ export default function NewsPage() {
                     </main>
                     <RightMenuRu/>
                 </div>
-                <footer className={styles.footer}>
-                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                        <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                        <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>
-                    </div>
-                </footer>
+                <FooterRu/>
             </div>
         </>
     )

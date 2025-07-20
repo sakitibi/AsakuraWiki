@@ -7,6 +7,7 @@ import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import styles from 'css/index.min.module.css';
+import FooterJp from '@/utils/pageParts/FooterJp';
 
 type WikiPage = {
     wikiSlug: string;
@@ -199,12 +200,7 @@ export default function Home() {
                         </main>
                         <RightMenuJp/>
                     </div>
-                    <footer className={styles.footer}>
-                        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                            <p>Copyright 2025 13ninstudio All rights Reserved</p>
-                            <p>当Wikiサービスはオープンソースプロジェクトです</p>
-                        </div>
-                    </footer>
+                    <FooterJp/>
                 </div>
             </>
         )
