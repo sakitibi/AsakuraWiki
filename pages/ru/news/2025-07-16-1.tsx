@@ -4,6 +4,7 @@ import { useState } from 'react';
 import MenuRu from '@/utils/pageParts/MenuRu';
 import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
+import HeaderRu from '@/utils/pageParts/HeaderRu';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -21,6 +22,7 @@ export default function NewsPage() {
             </Head>
             <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
                     <LeftMenuRu URL='/news/2025-07-16-1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
