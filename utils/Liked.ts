@@ -5,6 +5,17 @@ import { useRouter } from 'next/router';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from 'lib/supabaseClient';
 
+type PageLikeRecord = {
+    id: string;
+    like: number;
+    dislike: number;
+    heikinlike: number;
+    wiki_slug: string;
+    page_slug: string;
+    created_at: string;
+    user_id: string;
+};
+
 export const usePageLikeHandlers = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
