@@ -48,7 +48,7 @@ export const usePageLikeHandlers = () => {
                 like: 1,
                 dislike: 0,
                 heikinlike: 1,
-                created_at: new Date()
+                created_at: new Date().toISOString()
             });
         } else if (data.like === 1) {
             // 👍を再度押した → 取り消し
@@ -101,7 +101,7 @@ export const usePageLikeHandlers = () => {
                 like: 0,
                 dislike: 1,
                 heikinlike: -1,
-                created_at: new Date()
+                created_at: new Date().toISOString()
             });
         } else if (data.dislike === 1) {
             // 👍を再度押した → 取り消し
@@ -166,7 +166,7 @@ export const useWikiLikeHandlers = () => {
                 like: 1,
                 dislike: 0,
                 heikinlike: 1,
-                created_at: new Date()
+                created_at: new Date().toISOString()
             });
         } else if (data.like === 1) {
             // 👍を再度押した → 取り消し
@@ -216,7 +216,7 @@ export const useWikiLikeHandlers = () => {
                 like: 0,
                 dislike: 1,
                 heikinlike: -1,
-                created_at: new Date()
+                created_at: new Date().toISOString()
             });
         } else if (data.dislike === 1) {
             // 👍を再度押した → 取り消し
