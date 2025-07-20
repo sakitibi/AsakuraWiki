@@ -32,6 +32,7 @@ export const usePageLikeHandlers = () => {
         .eq('wiki_slug', wikiSlugStr)
         .eq('page_slug', pageSlugStr)
         .maybeSingle();
+        console.log('一致したレコード:', data);
 
         if (error) {
             console.error('取得エラー:', error.message);
