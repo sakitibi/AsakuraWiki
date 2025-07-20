@@ -66,13 +66,13 @@ export const usePageLikeHandlers = () => {
     await supabase
         .from('pages_liked')
         .update({ like: 0, dislike: 0, heikinlike: 0 })
-        .eq('id', data.user_id);
+        .eq('user_id', data.user_id);
     } else {
         // 👎から👍へ変更
         await supabase
             .from('pages_liked')
             .update({ like: 1, dislike: 0, heikinlike: 1 })
-            .eq('id', data.user_id);
+            .eq('user_id', data.user_id);
     }
 
         setLoading(false);
