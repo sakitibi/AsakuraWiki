@@ -1,41 +1,28 @@
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import Link from 'next/link';
+import { useState } from 'react';
+import MenuRu from '@/utils/pageParts/MenuRu';
+import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
+import RightMenuRu from '@/utils/pageParts/RightMenuRu';
 
 export default function NewsPage() {
+    const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const handleClick = () => {
+        setMenuStatus((prevStatus) => {
+            const newStatus = !prevStatus;
+            document.body.style.overflow = newStatus ? 'hidden' : '';
+            return newStatus;
+        });
+    };
     return (
         <>
             <Head>
                 <title>『Официальные』новости Асакуры!</title>
             </Head>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
                 <div className={styles.contents}>
-                    <div id="menu">
-                        <nav className={styles.menu}>
-                            <ul>
-                                <li>
-                                <Link href="/ru">
-                                    <button><span>Дом</span></button>
-                                </Link>
-                                </li>
-                                <li>
-                                <Link href="/ru/about">
-                                    <button><span>Об этом вики-сайте по аренде</span></button>
-                                </Link>
-                                </li>
-                                <li>
-                                <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
-                                    <button><span>Войти/Зарегистрироваться (японский)</span></button>
-                                </Link>
-                                </li>
-                                <li>
-                                <Link href="/news">
-                                    <button><span>日本語</span></button>
-                                </Link>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    <LeftMenuRu URL='/news'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『Официальные』новости Асакуры!</h1>
                         <ul>
@@ -46,16 +33,7 @@ export default function NewsPage() {
                             Обратите внимание, что сказанное здесь исходит из уст Асакуры и<br/>может не иметь отношения к реальным новостям.
                         </small>
                     </main>
-                    <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
-                        <div className={styles.pForBeginner}>
-                            <h2 className={styles.pForBeginner__title}>Для новичков</h2>
-                            <ul className={styles.pForBeginner__list}>
-                                <li className={styles.pForBeginner__item}>
-                                    <a href="/wiki/sample">Образец Wiki</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </aside>
+                    <RightMenuRu/>
                 </div>
                 <footer className={styles.footer}>
                     <div style={{ textAlign: 'center', marginTop: '1rem' }}>
