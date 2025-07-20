@@ -6,7 +6,7 @@ import RightMenuRu from '@/utils/pageParts/RightMenuRu';
 import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
 import FooterRu from '@/utils/pageParts/FooterRu';
 
-export default function Home() {
+export default function About() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
