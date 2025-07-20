@@ -19,10 +19,10 @@ export default function NewsPage() {
             <Head>
                 <title>2025/07/16 Сильный ветер нанес ущерб юго-востоку Асакуры , будьте осторожны.</title>
             </Head>
-            <LeftMenuRu URL='/news/2025-07-16-1'/>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
                 <div className={styles.contents}>
-                    <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
+                    <LeftMenuRu URL='/news/2025-07-16-1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/16 Сильный ветер нанес ущерб юго-востоку<br/>Асакуры , будьте осторожны.</h1>
                         <p>Около 16:00 15 июля 2025 года в районе Train<br/>Builder World поднялся сильный ветер .</p>
