@@ -153,6 +153,7 @@ export const useWikiLikeHandlers = () => {
 
         if (error) {
             console.error('取得エラー:', error.message);
+            console.error('Supabaseエラー:', error); // message以外も見る
             setLoading(false);
             return;
         }
@@ -202,6 +203,7 @@ export const useWikiLikeHandlers = () => {
 
         if (error) {
             console.error('取得エラー:', error.message);
+            console.error('Supabaseエラー:', error); // message以外も見る
             setLoading(false);
             return;
         }
