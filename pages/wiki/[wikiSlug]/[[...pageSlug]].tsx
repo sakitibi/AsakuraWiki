@@ -287,12 +287,6 @@ export default function WikiPage() {
     if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>
     if (loading || !page) return <div style={{ padding: '2rem' }}>読み込み中…</div>
 
-    useEffect(() => {
-        console.log('userId:', user);
-        console.log('wikiSlugStr:', wikiSlugStr);
-        console.log('pageSlugStr:', pageSlugStr);
-    }, []);
-
     return (
         <>
         <Head>
