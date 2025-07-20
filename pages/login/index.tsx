@@ -7,11 +7,14 @@ export default function LoginPage() {
             <p>ログイン方法を選択してください：</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
+                <Link href="/login/email">
+                    <button style={buttonStyle}><span>13ninアカウントでログイン</span></button>
+                </Link>
                 <Link href="/login/github">
                     <button style={buttonStyle}><span>GitHubでログイン</span></button>
                 </Link>
-                <Link href="/login/email">
-                    <button style={buttonStyle}><span>13ninアカウントでログイン</span></button>
+                <Link href="/login/gitlab">
+                    <button style={buttonStyle}><span>GitLabでログイン</span></button>
                 </Link>
             </div>
         </main>
