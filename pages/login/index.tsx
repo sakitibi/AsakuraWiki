@@ -5,7 +5,6 @@ export default function LoginPage() {
         <main style={{ padding: '2rem', maxWidth: '500px', margin: 'auto' }}>
             <h1>🔐 ログイン</h1>
             <p>ログイン方法を選択してください：</p>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
                 <Link href="/login/email">
                     <button style={buttonStyle}><span>13ninアカウントでログイン</span></button>
