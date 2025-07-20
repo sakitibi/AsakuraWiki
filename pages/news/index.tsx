@@ -4,6 +4,7 @@ import styles from 'css/index.min.module.css';
 import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
+import HeaderJp from '@/utils/pageParts/HeaderJp';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -21,6 +22,7 @@ export default function NewsPage() {
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
+                <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/news"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
