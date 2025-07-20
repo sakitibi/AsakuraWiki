@@ -8,6 +8,8 @@ export default function RightMenuRu(){
                 <ul className={styles.pForBeginner__list}>
                     <li className={styles.pForBeginner__item}>
                         <a href="/ru/members">Список участников Асакуры</a>
+                    </li>
+                    <li className={styles.pForBeginner__item}>
                         <a href="/wiki/sample">Образец Wiki</a>
                     </li>
                 </ul>

@@ -8,6 +8,8 @@ export default function RightMenuJp(){
                 <ul className={styles.pForBeginner__list}>
                     <li className={styles.pForBeginner__item}>
                         <a href="/members">あさクラメンバー一覧</a>
+                    </li>
+                    <li className={styles.pForBeginner__item}>
                         <a href="/wiki/sample">サンプルWiki</a>
                     </li>
                 </ul>
