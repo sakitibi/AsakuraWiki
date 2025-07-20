@@ -16,6 +16,16 @@ export default function MenuJp({ handleClick, menuStatus }: MenuJpProps){
                 <div className={styles.pSpNav__register}>
                     <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
                 </div>
+                <ul className={styles.pSpNav__list}>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/members">あさクラメンバー一覧</a>
+                    </li>
+                </ul>
+                <ul className={styles.pSpNav__list}>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/wiki/sample">サンプルWiki</a>
+                    </li>
+                </ul>
             </nav>
         )
     }
