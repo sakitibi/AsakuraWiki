@@ -39,9 +39,9 @@ export const usePageLikeHandlers = () => {
         const { data, error } = await supabase
         .from('pages_liked')
         .select('user_id, like, dislike')
-        .eq('user_id', userId)
+        .eq('user_id', userId) // ✅ 正しく使えてる
         .eq('wiki_slug', wikiSlugStr)
-        .eq('page_slug', pageSlugStr)
+        .eq('page_slug', pageSlugStr) // for pages_liked
         .maybeSingle();
         console.log('一致したレコード:', data);
         if (error) {
