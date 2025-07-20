@@ -18,7 +18,7 @@ type WikiPage = {
 type LikedWiki = {
     wikiSlug: string;
     name: string;
-    heikinlike?: number;
+    average_heikinlike: number;
 }
 
 export default function Home() {
@@ -87,12 +87,12 @@ export default function Home() {
             const topLikedWikis = data.map((row: any) => ({
                 wikiSlug: row.wiki_slug,
                 name: row.name,
-                heikinlike: row.heikinlike
+                average_heikinlike: row.average_heikinlike
             }))
             setLikedWikis(topLikedWikis)
-            console.log('RPC result:', data);
             setLoadingLiked(false);
         }
+
         fetchLikedWikis();
     }, []);
 
@@ -142,19 +142,17 @@ export default function Home() {
                                     {likedWikis.length === 0
                                         ? <li>評価されたWikiがありません</li>
                                         : likedWikis
-                                            .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
-                                            .map((wp) => (
+                                        .filter((wp) => wp.average_heikinlike >= 0)
+                                        .map((wp) => (
                                             <li key={`liked-${wp.wikiSlug}`}>
-                                                <Link href={`/wiki/${wp.wikiSlug}`}>
+                                            <Link href={`/wiki/${wp.wikiSlug}`}>
                                                 <button><strong>{wp.name} Wiki*</strong></button>
-                                                </Link>
-                                                <small>
-                                                平均いいね数: {wp.heikinlike != null
-                                                    ? String(wp.heikinlike)  // 数値が見えるようにする
-                                                    : '表示なし'}
-                                                </small>
+                                            </Link>
+                                            <small>
+                                                平均いいね数: {wp.average_heikinlike.toFixed(2)}
+                                            </small>
                                             </li>
-                                            ))
+                                        ))
                                     }
                                     </ul>
                                     )}
