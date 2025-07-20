@@ -18,6 +18,11 @@ export default function MenuJp({ handleClick, menuStatus }: MenuJpProps){
                 </div>
                 <ul className={styles.pSpNav__list}>
                     <li className={styles.pSpNav__item}>
+                        <a href="/">ホーム</a>
+                    </li>
+                </ul>
+                <ul className={styles.pSpNav__list}>
+                    <li className={styles.pSpNav__item}>
                         <a href="/members">あさクラメンバー一覧</a>
                     </li>
                 </ul>
