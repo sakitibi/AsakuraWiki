@@ -65,7 +65,7 @@ export default function NewPage() {
             return;
         }
 
-        if(wikiSlugStr === "maitetsu-bkmt" && user?.id === ownerId){
+        if(wikiSlugStr === "maitetsu-bkmt" && ownerId === user!.id){
             alert('このWikiはログインしないとページ作成できません');
             router.push('/login');
             return;
