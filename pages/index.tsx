@@ -148,7 +148,7 @@ export default function Home() {
                                             <Link href={`/wiki/${wp.wikiSlug}`}>
                                                 <button><strong>{wp.name} Wiki*</strong></button>
                                             </Link>
-                                            <small>高評価人数: {wp.like_count}人</small>
+                                            <small>平均いいね数: {wp.like_count}人</small>
                                             </li>
                                         ))
                                     }
