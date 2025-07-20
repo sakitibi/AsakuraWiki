@@ -2,6 +2,14 @@
 @use 'button';
 
 body{
+    ul{
+        &.list1{
+            list-style-type: disc;
+        }
+        &.list2{
+            list-style-type: circle;
+        }
+    }
     &:not(.wiki-font){
         font-family: Noto Sans Japanese, sans-serif !important;
         & ul {
