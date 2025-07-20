@@ -92,7 +92,7 @@ export const usePageLikeHandlers = () => {
 
         const { data, error } = await supabase
         .from('pages_liked')
-        .select('like, dislike')
+        .select('id, like, dislike')
         .eq('user_id', userId)
         .eq('wiki_slug', wikiSlugStr)
         .eq('page_slug', pageSlugStr)
@@ -158,7 +158,7 @@ export const useWikiLikeHandlers = () => {
 
         const { data, error } = await supabase
         .from('wikis_liked')
-        .select('like, dislike')
+        .select('id, like, dislike')
         .eq('user_id', userId)
         .eq('wiki_slug', wikiSlugStr)
         .maybeSingle();
@@ -208,7 +208,7 @@ export const useWikiLikeHandlers = () => {
 
         const { data, error } = await supabase
         .from('wikis_liked')
-        .select('like, dislike')
+        .select('id, like, dislike')
         .eq('user_id', userId)
         .eq('wiki_slug', wikiSlugStr)
         .maybeSingle();
