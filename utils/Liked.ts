@@ -27,7 +27,7 @@ export const usePageLikeHandlers = () => {
 
         const { data, error } = await supabase
         .from('pages_liked')
-        .select('id')
+        .select('id, like, dislike')
         .eq('user_id', userId)
         .eq('wiki_slug', wikiSlugStr)
         .eq('page_slug', pageSlugStr)
@@ -41,41 +41,37 @@ export const usePageLikeHandlers = () => {
         }
 
         if (error) {
-            console.error('取得エラー:', error.message);
-            setLoading(false);
-            return;
+        console.error('取得エラー:', error.message);
+        setLoading(false);
+        return;
         }
 
-        if (!data) {
-            // 初評価
-            await supabase.from('pages_liked').insert({
-                user_id: userId,
-                wiki_slug: wikiSlugStr,
-                page_slug: pageSlugStr,
-                like: 1,
-                dislike: 0,
-                heikinlike: 1,
-                created_at: new Date().toISOString()
-            });
-        } else if (data.like === 1) {
+    if (!data) {
+        // 初評価
+        await supabase.from('pages_liked').insert({
+            user_id: userId,
+            wiki_slug: wikiSlugStr,
+            page_slug: pageSlugStr,
+            like: 1,
+            dislike: 0,
+            heikinlike: 1,
+            created_at: new Date().toISOString()
+        });
+        } else {
+        if (data.like === 1) {
             // 👍を再度押した → 取り消し
-            await supabase.from('pages_liked').update({
-                like: 0,
-                dislike: 0,
-                heikinlike: 0
-            }).eq('user_id', userId)
-                .eq('wiki_slug', wikiSlugStr)
-                .eq('page_slug', pageSlugStr);
+            await supabase
+            .from('pages_liked')
+            .update({ like: 0, dislike: 0, heikinlike: 0 })
+            .eq('id', data.id);
         } else {
             // 👎から👍へ変更
-            await supabase.from('pages_liked').update({
-                like: 1,
-                dislike: 0,
-                heikinlike: 1
-            }).eq('user_id', userId)
-                .eq('wiki_slug', wikiSlugStr)
-                .eq('page_slug', pageSlugStr);
+            await supabase
+            .from('pages_liked')
+            .update({ like: 1, dislike: 0, heikinlike: 1 })
+            .eq('id', data.id);
         }
+    }
 
         setLoading(false);
         router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
