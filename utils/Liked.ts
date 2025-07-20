@@ -44,17 +44,10 @@ export const usePageLikeHandlers = () => {
         .eq('page_slug', pageSlugStr)
         .maybeSingle();
         console.log('一致したレコード:', data);
-        if (data?.id) {
-        await supabase
-            .from('pages_liked')
-            .update({ like: 0, dislike: 0, heikinlike: 0 })
-            .eq('id', data.id); // ← ← ← これで1件だけ更新
-        }
-
         if (error) {
-        console.error('取得エラー:', error.message);
-        setLoading(false);
-        return;
+            console.error('取得エラー:', error.message);
+            setLoading(false);
+            return;
         }
 
     if (!data) {
