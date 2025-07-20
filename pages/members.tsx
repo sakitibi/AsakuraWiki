@@ -31,13 +31,17 @@ export default function Members() {
                         <h1>あさクラメンバー一覧</h1>
                         <ul>
                             <li><a href="https://youtube.com/channel/UCJcP2mfDCtKnADrbDDjT_8g/?sub_confirmation=1">さきちび(管理者)</a>
-                                <li><a href="https://youtube.com/@otibinominecraft">つばきちゃん</a></li>
-                                <li><a href="https://youtube.com/@otibinominecraft">つばきくん</a></li>
-                                <li><a href="https://youtube.com/@otibinominecraft">ちびちゃん</a></li>
+                                <ul>
+                                    <li><a href="https://youtube.com/@otibinominecraft">つばきちゃん</a></li>
+                                    <li><a href="https://youtube.com/@otibinominecraft">つばきくん</a></li>
+                                    <li><a href="https://youtube.com/@otibinominecraft">ちびちゃん</a></li>
+                                </ul>
                             </li>
                             <li><a href="https://youtube.com/@SHIMAJIROCH">あげるくん(副管理者)</a>
-                                <li><a href='https://youtube.com/@SHIMAJIROCH'>あげるちゃん</a></li>
-                                <li><a href='https://youtube.com/@SHIMAJIROCH'>あみりい</a></li>
+                                <ul>
+                                    <li><a href='https://youtube.com/@SHIMAJIROCH'>あげるちゃん</a></li>
+                                    <li><a href='https://youtube.com/@SHIMAJIROCH'>あみりい</a></li>
+                                </ul>
                             </li>
                             <li><a href="https://youtube.com/@HikakinGames">ヒカキン</a></li>
                             <li><a href="https://youtube.com/@28Games28">28(ふたば)</a></li>
