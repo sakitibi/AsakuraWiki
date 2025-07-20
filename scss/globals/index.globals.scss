@@ -40,6 +40,11 @@ body{
             cursor: pointer;
             text-decoration: underline;
         }
+        li {
+            display: list-item;
+            text-align: -webkit-match-parent;
+            unicode-bidi: isolate;
+        }
     }
     &:not(.wiki-font.pink,.wiki-font.blue,.wiki-font.yellow){
         background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
