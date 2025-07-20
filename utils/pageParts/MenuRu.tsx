@@ -20,11 +20,11 @@ export default function MenuRu({ handleClick, menuStatus }: MenuRuProps){
                     <li className={styles.pSpNav__item}>
                         <a href="/ru">Дом</a>
                     </li>
-                </ul>
-                <ul className={styles.pSpNav__list}>
                     <li className={styles.pSpNav__item}>
                         <a href="/ru/members">Список участников Асакуры</a>
                     </li>
+                </ul>
+                <ul className={styles.pSpNav__list}>
                     <li className={styles.pSpNav__item}>
                         <a href="/wiki/sample">Образец Wiki</a>
                     </li>
