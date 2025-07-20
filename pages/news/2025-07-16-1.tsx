@@ -4,6 +4,7 @@ import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import { useState } from 'react';
+import HeaderJp from '@/utils/pageParts/HeaderJp';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -21,6 +22,7 @@ export default function NewsPage() {
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
+                <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
                     <LeftMenuJp URL='/news/2025-07-16-1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
