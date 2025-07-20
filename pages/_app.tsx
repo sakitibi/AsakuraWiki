@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabaseClient';
 import '../css/index.min.globals.css';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import Script from 'next/script';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
@@ -51,6 +52,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         })
     }, []);
 
+    const Deeeen = () => {
+        const Deeen = document.querySelector('audio');
+        Deeen!.play();
+    }
+
     return (
         <>
             <LenisProvider />
@@ -89,13 +95,22 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 </noscript>
                 <div style={{textAlign: 'center'}}>
                     <div id="sanninnsenn">
-                        <h2><strong>夏の参院選について</strong></h2>
-                        <p>あさクラWikiは<strong><a href="https://sanseito.jp" target="_blank">参政党</a>を支持します!!!</strong></p>
-                        <p>ご理解とご協力をお願いいたします</p>
+                        <h2><strong>夏の参院選の結果について</strong></h2>
+                        <p>超朗報!参政党が議席数+14!!!!</p>
+                        <p>
+                            <Link href="https://sanseito.jp">
+                                <button onClick={Deeeen}>
+                                    <span>
+                                        詳しくはこちらで
+                                    </span>
+                                </button>
+                            </Link>
+                        </p>
+                        <audio src="https://upload.wikimedia.org/wikipedia/commons/5/55/Soviet_Anthem_Instrumental_1955.ogg" controls controlsList='nodownload' loop></audio>
                         <div id="russia">
                             <h3><strong>О летних выборах в Палату советников</strong></h3>
-                            <p>АсакураWiki <strong>поддерживает Партию избирательного права!!!</strong></p>
-                            <p>Мы ценим ваше понимание и сотрудничество.</p>
+                            <p></p>
+                            <p></p>
                         </div>
                     </div>
                 </div>
