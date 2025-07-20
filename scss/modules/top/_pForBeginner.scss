@@ -49,6 +49,10 @@
     padding: 0;
 }
 
+.p-for-beginner__item:not(:first-child) {
+    margin-top: 10px;
+}
+
 .pForBeginner__item>a {
     align-items: center;
     background-color: #fff;
