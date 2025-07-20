@@ -27,12 +27,18 @@ export const usePageLikeHandlers = () => {
 
         const { data, error } = await supabase
         .from('pages_liked')
-        .select('like, dislike')
+        .select('id')
         .eq('user_id', userId)
         .eq('wiki_slug', wikiSlugStr)
         .eq('page_slug', pageSlugStr)
         .maybeSingle();
         console.log('一致したレコード:', data);
+        if (data?.id) {
+        await supabase
+            .from('pages_liked')
+            .update({ like: 0, dislike: 0, heikinlike: 0 })
+            .eq('id', data.id); // ← ← ← これで1件だけ更新
+        }
 
         if (error) {
             console.error('取得エラー:', error.message);
