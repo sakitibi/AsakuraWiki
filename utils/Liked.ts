@@ -68,20 +68,18 @@ export const usePageLikeHandlers = () => {
             heikinlike: 1,
             created_at: new Date().toISOString()
         });
-        } else {
-        if (data.like === 1) {
-            // 👍を再度押した → 取り消し
-            await supabase
-            .from('pages_liked')
-            .update({ like: 0, dislike: 0, heikinlike: 0 })
-            .eq('id', data.id);
-        } else {
-            // 👎から👍へ変更
-            await supabase
+    } else if (data.like === 1) {
+    // 👍を再度押した → 取り消し
+    await supabase
+        .from('pages_liked')
+        .update({ like: 0, dislike: 0, heikinlike: 0 })
+        .eq('id', data.id);
+    } else {
+        // 👎から👍へ変更
+        await supabase
             .from('pages_liked')
             .update({ like: 1, dislike: 0, heikinlike: 1 })
             .eq('id', data.id);
-        }
     }
 
         setLoading(false);
