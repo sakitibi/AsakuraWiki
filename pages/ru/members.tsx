@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import HeaderJp from '@/utils/pageParts/HeaderJp';
-import MenuJp from '@/utils/pageParts/MenuJp';
 import { useState } from 'react';
-import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
-import RightMenuJp from '@/utils/pageParts/RightMenuJp';
-import FooterJp from '@/utils/pageParts/FooterJp';
+import MenuRu from '@/utils/pageParts/MenuRu';
+import HeaderRu from '@/utils/pageParts/HeaderRu';
+import LeftMenuRu from '@/utils/pageParts/LeftMenuRu';
+import RightMenuRu from '@/utils/pageParts/RightMenuRu';
+import FooterRu from '@/utils/pageParts/FooterRu';
 
 export default function Members() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -22,11 +22,11 @@ export default function Members() {
                 <meta charSet='UTF-8'/>
                 <title>Список участников Асакуры</title>
             </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick}/>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/members"/>
+                    <LeftMenuRu URL="/members"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>Список участников Асакуры</h1>
                         <ul className='list1'>
@@ -66,9 +66,9 @@ export default function Members() {
                             <li><a href="https://discord.gg/zbvXxCWcg6">Токумеи</a></li>
                         </ul>
                     </main>
-                    <RightMenuJp/>
+                    <RightMenuRu/>
                 </div>
-                <FooterJp/>
+                <FooterRu/>
             </div>
         </>
     );
