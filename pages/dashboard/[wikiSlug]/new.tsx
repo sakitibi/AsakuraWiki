@@ -63,6 +63,12 @@ export default function NewPage() {
             return;
         }
 
+        if(wikiSlugStr === "maitetsu-bkmt" && user?.id !== "9d2347a2-6322-4d55-93f1-71d8440e5f32"){
+            alert('このWikiはログインしないとページ作成できません');
+            router.push('/login');
+            return;
+        }
+
         if (!wikiSlugStr) {
             alert('Wikiの識別子が無効です');
             return;
