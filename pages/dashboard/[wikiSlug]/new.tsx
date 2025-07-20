@@ -15,6 +15,7 @@ export default function NewPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [ownerId, setownerId] = useState<string>('');
 
     // ✅ wikiSlug が確定してから実行
     useEffect(() => {
@@ -32,6 +33,7 @@ export default function NewPage() {
                 setLoading(false);
                 return;
             }
+            setownerId(data?.owner_id);
         }
 
         const fetchEditMode = async () => {
@@ -63,7 +65,7 @@ export default function NewPage() {
             return;
         }
 
-        if(wikiSlugStr === "maitetsu-bkmt" && user?.id !== "9d2347a2-6322-4d55-93f1-71d8440e5f32"){
+        if(wikiSlugStr === "maitetsu-bkmt" && user?.id === ownerId){
             alert('このWikiはログインしないとページ作成できません');
             router.push('/login');
             return;
