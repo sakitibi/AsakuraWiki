@@ -18,7 +18,7 @@ type WikiPage = {
 type LikedWiki = {
     wikiSlug: string;
     name: string;
-    heikinlike?: number;
+    like_count: number;
 }
 
 export default function Home() {
@@ -77,7 +77,7 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchLikedWikis() {
-            const { data, error } = await supabase.rpc('get_top_wikis_by_heikinlike')
+            const { data, error } = await supabase.rpc('get_top_wikis_by_like_count')
 
             if (error || !data) {
                 console.error('fetchLikedWikis error:', error)
@@ -88,12 +88,12 @@ export default function Home() {
             const topLikedWikis = data.map((row: any) => ({
                 wikiSlug: row.wiki_slug,
                 name: row.name,
-                heikinlike: row.heikinlike
+                like_count: row.like_count
             }))
             setLikedWikis(topLikedWikis)
-            console.log('RPC result:', data);
             setLoadingLiked(false);
         }
+
         fetchLikedWikis();
     }, []);
 
@@ -134,22 +134,18 @@ export default function Home() {
                             <h2 className={styles.pLikedWiki__title}>оценено всеми Wiki</h2>
                                 {loadingLiked ? <p>Loading...</p> : (
                                     <ul>
-                                    {likedWikis.length === 0
-                                        ? <li>Нет рейтинга Wiki</li>
-                                        : likedWikis
-                                            .filter((wp) => wp.heikinlike != null && wp.heikinlike >= 0)
-                                            .map((wp) => (
+                                    {likedWikis.filter((wp) => wp.like_count > 0).length === 0
+                                    ? <li>Нет рейтинга Wiki</li>
+                                    : likedWikis
+                                        .filter((wp) => wp.like_count > 0)
+                                        .map((wp) => (
                                             <li key={`liked-${wp.wikiSlug}`}>
-                                                <Link href={`/wiki/${wp.wikiSlug}`}>
+                                            <Link href={`/wiki/${wp.wikiSlug}`}>
                                                 <button><strong>{wp.name} Wiki*</strong></button>
-                                                </Link>
-                                                <small>
-                                                Среднее количество лайков: {wp.heikinlike != null
-                                                    ? String(wp.heikinlike)  // 数値が見えるようにする
-                                                    : '表示なし'}
-                                                </small>
+                                            </Link>
+                                            <small>Среднее количество лайков: {wp.like_count}</small>
                                             </li>
-                                            ))
+                                        ))
                                     }
                                     </ul>
                                 )}
