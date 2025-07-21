@@ -127,7 +127,6 @@ export default function Home() {
                             /* css end */
                         `}
                     </style>
-                    <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
                 </Head>
                 <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
                 <div className={styles.contentsWrapper}>
