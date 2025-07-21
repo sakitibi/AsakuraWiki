@@ -25,7 +25,7 @@ export default function CountRies() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick} />
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="countries"/>
+                    <LeftMenuJp URL="/countries"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>あさクラ共和国</h1>
                         <div id="descriptions">
