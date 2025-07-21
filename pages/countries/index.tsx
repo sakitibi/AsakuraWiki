@@ -30,7 +30,7 @@ export default function CountRies() {
                         <h1>あさクラ共和国</h1>
                         <div id="descriptions">
                             <p>あさクラ共和国とは2021年1月1日に設立された国です、<br/>(当初はさきクラ共和国)</p>
-                            <p>国旗<img src="https://sakitibi.github.io/AsakuraWiki-Images/Countries/Asakura-CountrieFlug.png" alt="あさクラ共和国国旗" width="500" height="350"/></p>
+                            <p>国旗<img src="https://sakitibi.github.io/AsakuraWiki-Images/Countries/CountrieFlug.png" alt="あさクラ共和国国旗" width="500" height="350"/></p>
                             <p>過去にジュベめめ戦争に勝利したことがある</p>
                         </div>
                         <img src="https://sakitibi.github.io/AsakuraWiki-Images/Countries/CountrieMap.png" alt="あさクラ共和国地図" width="500" height="350"/>
