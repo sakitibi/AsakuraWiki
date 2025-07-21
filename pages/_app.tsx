@@ -109,7 +109,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         <audio src="https://upload.wikimedia.org/wikipedia/commons/5/55/Soviet_Anthem_Instrumental_1955.ogg" controls controlsList='nodownload' loop hidden></audio>
                         <div id="russia">
                             <h3>О результатах летних выборов в Палату советников</h3>
-                            <p>Отличные новости! Демократическая партия Японии получила 14 мест!!!!</p>
+                            <p>Отличные новости! Демократическая партия Японии получила 13 мест!!!!</p>
                         </div>
                     </div>
                 </div>
