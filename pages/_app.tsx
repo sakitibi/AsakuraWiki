@@ -98,13 +98,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         <h2><strong>夏の参院選の結果について</strong></h2>
                         <p>超朗報!参政党が議席数+13!!!!</p>
                         <p>
-                            <Link href="https://sanseito.jp" target='_blank'>
+                            <a href="https://sanseito.jp" target='_blank'>
                                 <button onClick={Deeeen}>
                                     <span>
                                         詳しくはこちらで
                                     </span>
                                 </button>
-                            </Link>
+                            </a>
                         </p>
                         <audio src="https://upload.wikimedia.org/wikipedia/commons/5/55/Soviet_Anthem_Instrumental_1955.ogg" controls controlsList='nodownload' loop hidden></audio>
                         <div id="russia">
