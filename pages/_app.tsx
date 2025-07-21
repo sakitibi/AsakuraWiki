@@ -5,8 +5,8 @@ import { supabase } from '../lib/supabaseClient';
 import '../css/index.min.globals.css';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import Script from 'next/script';
+import Head from 'next/head';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
@@ -59,6 +59,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
     return (
         <>
+            <Head>
+                <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
+            </Head>
             <LenisProvider />
             <SessionContextProvider supabaseClient={supabase}>
                 {/* gtag.js の読み込み */}
