@@ -20,7 +20,7 @@
 }
 
 @mixin pLikedMixinBefore($BeforeImageURL){
-    background-image: url(#{BeforeImageURL});
+    background-image: url("#{BeforeImageURL}");
     background-repeat: no-repeat;
     background-size: contain;
     content: "";
