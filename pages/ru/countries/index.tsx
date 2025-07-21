@@ -25,7 +25,7 @@ export default function CountRies() {
             <div className={styles.contentsWrapper}>
                 <HeaderRu handleClick={handleClick} />
                 <div className={styles.contents}>
-                    <LeftMenuRu URL="countries"/>
+                    <LeftMenuRu URL="/countries"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>Республика Асакура</h1>
                         <div id="descriptions">
