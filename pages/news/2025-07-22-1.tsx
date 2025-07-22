@@ -28,9 +28,9 @@ export default function NewsPage() {
                     <LeftMenuJp URL='/news/2025-07-22-1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/22 第二都市ニュータウン<br/>南西側に城建設中..</h1>
-                        <p>只今、第二都市ニュータウン<br/>南西側に城建設中です</p>
+                        <p>只今、第二都市ニュータウン南西側に城建設中です</p>
                         <p>中身が何になるかは不明です</p>
-                        <p>現在の建物<img src="https://sakitibi.github.io/AsakuraWiki-Images/CastleTochu.png" alt="城建設中画像"/></p>
+                        <p>現在の建物<br/><img src="https://sakitibi.github.io/AsakuraWiki-Images/CastleTochu.png" alt="城建設中画像"/></p>
                         <p>ですが、SKNewRolesがこの建物に本社を置くと言っています</p>
                         <p>がかなり人気なようなので大きく作られるみたいです</p>
                     </main>
