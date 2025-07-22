@@ -26,13 +26,13 @@
 }
 
 @media (min-width: 768px) {
-    .container, .container-md, .container-sm {
+    .container, .containerMd, .containerSm {
         max-width: 720px;
     }
 }
 
 @media (min-width: 576px) {
-    .container, .container-sm {
+    .container, .containerSm {
         max-width: 540px;
     }
 }
@@ -44,7 +44,7 @@
 }
 
 @media (min-width: 768px) {
-    .col-md-4 {
+    .colMd4 {
         flex: 0 0 auto;
         width: 33.33333333%;
     }
