@@ -43,7 +43,6 @@ body{
         }
         li {
             display: list-item;
-            text-align: -webkit-match-parent;
             unicode-bidi: isolate;
         }
     }
@@ -59,7 +58,7 @@ body{
         &.pink {
             background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
             & button::before {
-                @include mixin.position(rgb(244, 164, 229 ) rgb(199, 17, 157));
+                @include mixin.position(rgb(244, 164, 229 ), rgb(199, 17, 157));
             }
         }
         &.blue {
