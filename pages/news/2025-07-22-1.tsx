@@ -1,9 +1,9 @@
 import Head from 'next/head';
-import { useState } from 'react';
 import styles from 'css/index.min.module.css';
-import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
+import MenuJp from '@/utils/pageParts/MenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
+import { useState } from 'react';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
 import FooterJp from '@/utils/pageParts/FooterJp';
 
@@ -19,23 +19,20 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>『公式』あさクラニュース!</title>
+                <title>2025/07/22 第二都市ニュータウン南西側に城建設中..</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news"/>
+                    <LeftMenuJp URL='/news/2025-07-22-1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>『公式』あさクラニュース!</h1>
-                        <ul>
-                            <li>2025/07/22 <a href="/news/2025-07-22-1">第二都市ニュータウン南西側に城建設中..</a></li>
-                            <li>2025/07/18 <a href="/news/2025-07-18-1">あさクラ会議がシステムトラブルで延期に..</a></li>
-                            <li>2025/07/16 <a href="/news/2025-07-16-1">あさクラ南東部で強風被害が出ています、ご注意下さい</a></li>
-                        </ul>
-                        <small>
-                            注意 ここに出て来るものはあさクラ内の話です、<br/>実際のニュースとは関係無いものもあります、
-                        </small>
+                        <h1>2025/07/22 第二都市ニュータウン<br/>南西側に城建設中..</h1>
+                        <p>只今、第二都市ニュータウン<br/>南西側に城建設中です</p>
+                        <p>中身が何になるかは不明です</p>
+                        <p>現在の建物<img src="https://sakitibi.github.io/AsakuraWiki-Images/CastleTochu.png" alt="城建設中画像"/></p>
+                        <p>ですが、SKNewRolesがこの建物に本社を置くと言っています</p>
+                        <p>がかなり人気なようなので大きく作られるみたいです</p>
                     </main>
                     <RightMenuJp/>
                 </div>
