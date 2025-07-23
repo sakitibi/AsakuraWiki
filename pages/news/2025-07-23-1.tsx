@@ -29,7 +29,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/22 第二都市ニュータウン南西<br/>側の城の外観完成!</h1>
                         <p>中身が何になるかは不明です</p>
-                        <p>現在の建物<br/><img src="https://sakitibi.github.io/AsakuraWiki-Images/CastleFull.png" alt="城画像"/></p>
+                        <p>現在の建物<br/><img src="https://sakitibi.github.io/AsakuraWiki-Images/CastleFull.png" alt="城画像" width="500" height="350"/></p>
                         <p>ですが、SKNewRolesがこの建物に本社を置くと言っています</p>
                         <p>がかなり人気なようなので大きく作られたみたいです</p>
                     </main>
