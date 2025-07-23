@@ -111,8 +111,14 @@ export default function WikiPage() {
                 <p>(※送信防止措置の請求には、問い合わせフォームにて13ninアカウントが必要です。)</p>
             </div>
             <div id="about-terms">
-                <h3 style="${H3Styles}">事情により当委員会の利用規約を設定することが可決されました、</h3>
+                <h3 style="${H3Styles}">利用規約について</h3>
+                <p>事情により当委員会の利用規約を設定することが可決されました、</p>
                 <p><a href="https://sakitibi.github.io/selects/e3839ee382a4e98984e3838de38383e38388e692b2e6bb85e5a794e593a1e4bc9a?pattern=vercel-asakura-wiki">ここから同意して下さい</a></p>
+            </div>
+            <div id="other-wikis-warnings-executed">
+                <h3 style="${H3Styles}">注意喚起活動について</h3>
+                <p>明日、他Wikiで注意喚起活動することになりました、</p>
+                <p>応援よろしくおねがいいいたします、</p>
             </div>
         `);
     }
