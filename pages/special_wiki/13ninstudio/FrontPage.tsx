@@ -3,6 +3,6 @@ export default function Redirecting(){
         location.href = "/wiki/13ninstudio";
     }
     return(
-        <button onClick={Redirect}>リダイレクト</button>
+        <button onClick={Redirect}><span>リダイレクト</span></button>
     )
 }
