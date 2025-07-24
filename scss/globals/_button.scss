@@ -1,6 +1,6 @@
 @use 'mixin';
 
-body:not(.wiki-font){
+:not(.wiki-font){
     & button:not(#menu-button) {
         position: relative;
         padding: 10px 20px;
