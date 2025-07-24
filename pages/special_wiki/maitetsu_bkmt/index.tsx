@@ -117,7 +117,7 @@ export default function WikiPage() {
             </div>
             <div id="other-wikis-warnings-executed">
                 <h3 style="${H3Styles}">注意喚起活動について</h3>
-                <p>明日、他Wikiで注意喚起活動することになりました、</p>
+                <p>今日、他ikiで注意喚起活動することになりました、</p>
                 <p>応援よろしくおねがいいいたします、</p>
             </div>
         `);
