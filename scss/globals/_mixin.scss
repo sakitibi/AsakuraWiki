@@ -8,7 +8,7 @@
 }
 
 @mixin position($bgcolor1, $bgcolor2){
-    background-image: linear-gradient(to left, $bgcolor1, $bgcolor2) !important;
+    background-image: linear-gradient(to left, $bgcolor1, $bgcolor2);
     content: '';
     position: absolute;
     inset: 0;
