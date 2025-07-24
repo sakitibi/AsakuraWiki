@@ -4,8 +4,8 @@ import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from 'lib/supabaseClient';
-import { usePageLikeHandlers } from 'utils/Liked';
-import { useWikiLikeHandlers } from 'utils/Liked';
+import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
+import Script from 'next/script';
 
 type Page = {
     title: string
@@ -247,6 +247,10 @@ export default function WikiPage() {
             }
         }
     }
+    const AdHidden = () => {
+        document.getElementById('pc-overlay-ad-parent-container')!.style.visibility = 'hidden';
+        document.getElementById('pc-overlay-ad-close-button')!.style.visibility = 'hidden'
+    }
     const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
     // プレビュー or 閲覧コンテンツ
 
@@ -343,45 +347,49 @@ export default function WikiPage() {
             </form>
             </main>
         ) : (
-            <article style={{ padding: '2rem', maxWidth: 800 }}>
-            {parsedPreview.map((node, i) => (
-                <React.Fragment key={i}>{node}</React.Fragment>
-            ))}
-
-            <div style={{ marginTop: '2rem' }}>
-                {showRedirectButton &&
-                wikiSlugStr === 'maitetsu_bkmt' &&
-                pageSlugStr !== 'sinsei' && (
-                    <button
-                    onClick={() =>
-                        router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
-                    }
-                    >
-                    <span>リダイレクトされない場合はこちら</span>
+            <div id="container">
+                <article style={{ padding: '2rem', maxWidth: 800 }}>
+                {parsedPreview.map((node, i) => (
+                    <React.Fragment key={i}>{node}</React.Fragment>
+                ))}
+                    {showRedirectButton &&
+                    wikiSlugStr === 'maitetsu_bkmt' &&
+                    pageSlugStr !== 'sinsei' && (
+                        <button
+                        onClick={() =>
+                            router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
+                        }
+                        >
+                        <span>リダイレクトされない場合はこちら</span>
+                        </button>
+                    )}
+                    <button onClick={handleEdit} style={{ marginLeft: 8 }}>
+                    <span>このページを編集</span>
                     </button>
-                )}
-                <button onClick={handleEdit} style={{ marginLeft: 8 }}>
-                <span>このページを編集</span>
-                </button>
-                <button onClick={handleDelete}>
-                <span>このページを削除</span>
-                </button>
-                <br />
-                <button onClick={handlePageLike} style={{ marginTop: 12 }}>
-                <span>このページを高く評価</span>
-                </button>
-                <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
-                <span>このページを低く評価</span>
-                </button>
-                <br/>
-                <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
-                    <span>このWikiを高く評価</span>
-                </button>
-                <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
-                    <span>このWikiを低く評価</span>
-                </button>
+                    <button onClick={handleDelete}>
+                    <span>このページを削除</span>
+                    </button>
+                    <br />
+                    <button onClick={handlePageLike} style={{ marginTop: 12 }}>
+                    <span>このページを高く評価</span>
+                    </button>
+                    <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
+                    <span>このページを低く評価</span>
+                    </button>
+                    <br/>
+                    <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
+                        <span>このWikiを高く評価</span>
+                    </button>
+                    <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
+                        <span>このWikiを低く評価</span>
+                    </button>
+                    <br/>
+                    <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom"></iframe>
+                </article>
+                <Script
+                    src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
+                />
             </div>
-            </article>
         )}
         </>
     )
