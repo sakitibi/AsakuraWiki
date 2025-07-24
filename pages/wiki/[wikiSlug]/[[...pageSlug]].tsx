@@ -384,7 +384,7 @@ export default function WikiPage() {
                         <span>このWikiを低く評価</span>
                     </button>
                     <br/>
-                    <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom"></iframe>
+                    <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="600"></iframe>
                 </article>
                 <Script
                     src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
