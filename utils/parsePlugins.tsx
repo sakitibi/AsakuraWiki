@@ -129,7 +129,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};/giu
+const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -275,6 +275,20 @@ export function parseOtherInline(
             } else {
                 // セミコロンがないのでそのまま文字列として扱う
                 nodes.push(token)
+            }
+        }
+        else if (token.startsWith('[[')) {
+            const match = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
+            if (match) {
+                const label = match[1].trim()
+                const url = match[2].trim()
+                nodes.push(
+                    <a key={key} href={url}>
+                        {label}
+                    </a>
+                )
+            } else {
+                nodes.push(token) // マッチ失敗時はそのまま表示
             }
         }
 
