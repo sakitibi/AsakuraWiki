@@ -83,10 +83,12 @@ body {
         &.blue button::before {
             @include mixin.position(rgb(164, 212, 244), rgb(17, 102, 199));
         }
-
         // 💛 イエローテーマのグラデーション
         &.yellow button::before {
             @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
+        }
+        &.default button::before {
+            @include mixin.position(#1ce369, #076727);
         }
     }
 
