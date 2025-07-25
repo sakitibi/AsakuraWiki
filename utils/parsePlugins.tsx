@@ -286,6 +286,15 @@ export function parseOtherInline(
     if (last < line.length) {
         nodes.push(line.slice(last))
     }
+    const lines = line.split(/\r?\n/)
+    for (const [i, l] of lines.entries()) {
+        const inline = parseOtherInline(l, wikiSlug, pageSlug, baseKey + i * 100)
+        nodes.push(...inline)
+        // 改行を表示に反映させたいなら <br /> を挿入
+        if (i < lines.length - 1) {
+            nodes.push(<br key={`br-${baseKey}-${i}`} />)
+        }
+    }
     return nodes
 }
 
