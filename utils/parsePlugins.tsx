@@ -5,7 +5,6 @@ import RealTimeComments from '@/components/RealTimeComments'
 import PageList from '@/components/PageList'
 import PageList2 from '@/components/PageList2'
 import IncludePage from '@/components/IncludePage'
-import IncludePage2 from '@/components/Include2Page'
 import TableOfContents from '@/components/TableOfContents'
 import SelContainer from '@/components/SelContainer';
 import SelRow from '@/components/SelRow';
@@ -303,24 +302,27 @@ export function parseOtherInline(
         }
         // #include2(pageName, titleFlag?, cssURL?)
         else if (token.startsWith('#include2')) {
-            const pageName = safeTrim(m[19] ?? '')
-            const titleFlag = safeTrim(m[20] ?? '')
-            const stylesheetURL = safeTrim(m[21] ?? '')
-
+            const arg = safeTrim(m[13]!)
+            const [first, flag] = arg.split(',').map(s => safeTrim(s))
             let showTitle: boolean | undefined
-            if (!pageName) {
-                nodes.push(<div key={key}>ページ名が未定義です</div>)
-                continue
+            if (flag === 'none') showTitle = false
+            else if (flag === 'title') showTitle = true
+
+            let pageName = first
+            let stylesheetURL: string | undefined
+            if (first.includes('|')) {
+                const [name, css] = first.split('|', 2).map(s => safeTrim(s))
+                pageName = name
+                stylesheetURL = css
             }
-            if (titleFlag === 'title') showTitle = true
-            else if (titleFlag === 'none') showTitle = false
+
             nodes.push(
-                <IncludePage2
+                <IncludePage
                     key={key}
                     wikiSlug={wikiSlug}
                     page={pageName}
-                    titleOption={showTitle === false ? 'none' : undefined}
-                    stylesheetURL={stylesheetURL || undefined}
+                    showTitle={showTitle}
+                    stylesheetURL={stylesheetURL}
                 />
             )
             // 存在しないなら何も追加しない（無表示）
