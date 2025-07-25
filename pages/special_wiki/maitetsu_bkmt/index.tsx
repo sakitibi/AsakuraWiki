@@ -30,8 +30,10 @@ export default function WikiPage() {
 
     useEffect(() => {
         document.body.classList.add('wiki-font');
+        document.body.classList.add('default');
         return () => {
             document.body.classList.remove('wiki-font');
+            document.body.classList.remove('default');
         };
     }, [designColor]);
 
