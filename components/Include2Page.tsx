@@ -58,6 +58,8 @@ export default function IncludePage2({
     const title = titleOption === 'none' ? null : titleOption || page
 
     const parsedNodes = parseWikiContent(rawContent, context)
+    console.log('rawContent:', rawContent)
+    console.log('parsedNodes:', parsedNodes)
 
     // ノードが空 or 全て falsy（null, undefined, false） → 描画しない
     if (
