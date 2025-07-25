@@ -284,7 +284,15 @@ export function parseOtherInline(
 
     // 最後に残ったテキスト
     if (last < line.length) {
-        nodes.push(line.slice(last))
+        const rest = line.slice(last)
+        const splitByEscapedNewline = rest.split(/\\n/)  // ←ここが肝心
+
+        for (let i = 0; i < splitByEscapedNewline.length; i++) {
+            nodes.push(splitByEscapedNewline[i])
+            if (i < splitByEscapedNewline.length - 1) {
+                nodes.push(<br key={`${baseKey}-br-${last}-${i}`} />)
+            }
+        }
     }
     return nodes
 }
