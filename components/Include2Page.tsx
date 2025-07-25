@@ -57,16 +57,18 @@ export default function IncludePage2({
     const context = { wikiSlug, pageSlug: page }
     const title = titleOption === 'none' ? null : titleOption || page
 
+    if (!rawContent.trim()) return null
+
     return (
-        <div className="include-page">
+    <div className="include-page">
         {title && <h2 className="include-page__title">{title}</h2>}
         {error ? (
-            <p style={{ color: 'red' }}>読み込み失敗: {error}</p>
+        <p style={{ color: 'red' }}>読み込み失敗: {error}</p>
         ) : (
-            parseWikiContent(rawContent, context).map((node, i) => (
+        parseWikiContent(rawContent, context).map((node, i) => (
             <React.Fragment key={i}>{node}</React.Fragment>
-            ))
+        ))
         )}
-        </div>
+    </div>
     )
 }

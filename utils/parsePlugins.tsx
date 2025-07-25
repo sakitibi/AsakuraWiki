@@ -311,18 +311,15 @@ export function parseOtherInline(
             if (titleFlag === 'title') showTitle = true
             else if (titleFlag === 'notitle') showTitle = false
 
-            // 埋め込み対象ページが存在するかどうかをチェック（非同期不可なら事前で判断済みとして）
-            if (pageExists(pageName)) {
+                // 埋め込み対象ページが存在するかどうかをチェック（非同期不可なら事前で判断済みとして）
                 nodes.push(
                     <IncludePage2
                         key={key}
                         wikiSlug={wikiSlug}
                         page={pageName}
-                        showTitle={showTitle}
                         stylesheetURL={stylesheetURL || undefined}
                     />
                 )
-            }
             // 存在しないなら何も追加しない（無表示）
         }
 
