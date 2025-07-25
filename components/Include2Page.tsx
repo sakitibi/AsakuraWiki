@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
 
 interface IncludePageProps {
@@ -18,19 +18,21 @@ export default function IncludePage2({
 }: IncludePageProps) {
     const [rawContent, setRawContent] = useState('')
     const [error, setError] = useState<string | null>(null)
-
     const hasLoadedStylesheet = useRef(false)
+    const normalizedLineRange = useMemo(() => {
+        return lineRange?.trim() ?? ''
+    }, [lineRange])
 
     useEffect(() => {
-    if (stylesheetURL && !hasLoadedStylesheet.current) {
-        if (!document.querySelector(`link[href="${stylesheetURL}"]`)) {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = stylesheetURL
-        document.head.appendChild(link)
+        if (stylesheetURL && !hasLoadedStylesheet.current) {
+            if (!document.querySelector(`link[href="${stylesheetURL}"]`)) {
+            const link = document.createElement('link')
+            link.rel = 'stylesheet'
+            link.href = stylesheetURL
+            document.head.appendChild(link)
+            }
+            hasLoadedStylesheet.current = true
         }
-        hasLoadedStylesheet.current = true
-    }
     }, [stylesheetURL])
 
     useEffect(() => {
@@ -64,7 +66,7 @@ export default function IncludePage2({
             console.error(err)
             setError(err.message)
         })
-    }, [wikiSlug, page, lineRange])
+    }, [wikiSlug, page, normalizedLineRange])
 
     const context = { wikiSlug, pageSlug: page }
     const title = titleOption === 'none' ? null : titleOption || page
@@ -72,14 +74,20 @@ export default function IncludePage2({
     const parsedNodes = parseWikiContent(rawContent, context)
     console.log('rawContent:', rawContent)
     console.log('parsedNodes:', parsedNodes)
+    console.count('IncludePage2: render')
 
     // ノードが空 or 全て falsy（null, undefined, false） → 描画しない
     if (error) {
         return <div className="include-page__error">エラー: {error}</div>
     }
-    
+
     if (!rawContent.trim()) {
         return <div className="include-page__empty">対象ページが空です</div>
+    }
+
+    if (wikiSlug === page) {
+        setError('自己参照は禁止されています')
+        return
     }
 
     return (
