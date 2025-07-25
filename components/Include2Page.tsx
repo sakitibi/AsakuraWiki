@@ -1,13 +1,24 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
 
+const pageCache = new Map<string, string>()
+
+const normalizeLineRange = (range?: string) => {
+    const trimmed = range?.trim() ?? ''
+    const [startRaw = '', endRaw = ''] = trimmed.split('-')
+    const start = startRaw ? parseInt(startRaw) : 1
+    const end = endRaw ? parseInt(endRaw) : Infinity
+    return { start, end, key: `${startRaw}-${endRaw}` }
+}
+
 interface IncludePageProps {
     wikiSlug: string
     page: string
-    lineRange?: string // 例: "2-6", "3-", "-3"
-    titleOption?: string // "none" または 任意のタイトル名
+    lineRange?: string
+    titleOption?: string
     stylesheetURL?: string
 }
+
 export default function IncludePage2({
     wikiSlug,
     page,
@@ -17,24 +28,31 @@ export default function IncludePage2({
 }: IncludePageProps) {
     const [rawContent, setRawContent] = useState('')
     const [error, setError] = useState<string | null>(null)
-
     const hasLoadedStylesheet = useRef(false)
 
-    // 🔁 lineRange の安定化
-    const normalizedLineRange = useMemo(() => lineRange?.trim() ?? '', [lineRange])
-
-    // 🧠 自己参照防止
+    const { start, end, key } = useMemo(() => normalizeLineRange(lineRange), [lineRange])
     const isSelfInclude = wikiSlug === page
 
-    const pageCache = useRef<Map<string, string>>(new Map())
+    useEffect(() => {
+        if (stylesheetURL && !hasLoadedStylesheet.current) {
+            const link = document.createElement('link')
+            link.rel = 'stylesheet'
+            link.href = stylesheetURL
+            link.onload = () => {
+                hasLoadedStylesheet.current = true
+            }
+            document.head.appendChild(link)
+        }
+    }, [stylesheetURL])
+
     useEffect(() => {
         if (isSelfInclude) {
             setError('自己参照は禁止されています')
             return
         }
 
-        const cacheKey = `${wikiSlug}::${page}::${normalizedLineRange}`
-        const cached = pageCache.current.get(cacheKey)
+        const cacheKey = `${wikiSlug}::${page}::${key}`
+        const cached = pageCache.get(cacheKey)
 
         if (cached) {
             setRawContent(cached)
@@ -43,65 +61,49 @@ export default function IncludePage2({
 
         const controller = new AbortController()
 
-        fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`, {
-            signal: controller.signal,
-        })
-            .then(res => {
-            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-                return res.json()
-            })
-            .then(data => {
-            const content = data.content || ''
-            const lines = content.split('\n')
-            let sliced = lines
+        const fetchPage = async () => {
+            try {
+                const res = await fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`, {
+                signal: controller.signal,
+                })
 
-            if (normalizedLineRange) {
-                const [startRaw = '', endRaw = ''] = normalizedLineRange.split('-')
-                const start = startRaw ? parseInt(startRaw) : 1
-                const end = endRaw ? parseInt(endRaw) : lines.length
+                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+
+                const { content = '' } = await res.json()
+                const lines = content.split('\n')
 
                 if (
                 isNaN(start) || isNaN(end) ||
-                start < 1 || end > lines.length || start > end
+                start < 1 || start > lines.length
                 ) {
                     setError('無効な行範囲です')
                     return
                 }
 
-                sliced = lines.slice(start - 1, end)
-            }
+                const actualEnd = Math.min(end, lines.length)
+                const finalContent = lines.slice(start - 1, actualEnd).join('\n')
 
-            const finalContent = sliced.join('\n')
-            pageCache.current.set(cacheKey, finalContent)
-            setRawContent(finalContent)
-            })
-            .catch(err => {
+                pageCache.set(cacheKey, finalContent)
+                setRawContent(finalContent)
+            } catch (err: any) {
                 if (err.name !== 'AbortError') {
                     console.error(err)
                     setError(err.message)
                 }
-            })
+            }
+        }
 
+        fetchPage()
         return () => controller.abort()
-    }, [wikiSlug, page, normalizedLineRange, isSelfInclude])
+    }, [wikiSlug, page, key, isSelfInclude, start, end])
 
     const context = { wikiSlug, pageSlug: page }
     const title = titleOption === 'none' ? null : titleOption || page
-
     const parsedNodes = parseWikiContent(rawContent, context)
 
-    // 🛡️ 描画制御
-    if (error) {
-        return <div className="include-page__error">エラー: {error}</div>
-    }
-
-    if (!rawContent.trim()) {
-        return null
-    }
-
-    if (!parsedNodes.some(node => !!node)) {
-        return null
-    }
+    if (error) return <div className="include-page__error">エラー: {error}</div>
+    if (!rawContent.trim()) return null
+    if (!parsedNodes.some(node => !!node)) return null
 
     return (
         <div className="include-page">
