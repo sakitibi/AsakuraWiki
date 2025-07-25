@@ -118,9 +118,9 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
 }
 
 function isValidLineRange(range: string): boolean {
-  const trimmed = range.trim()
-  // 対応: "1", "1-", "-5", "3-8"
-  return /^(\d+)?-(\d+)?$/.test(trimmed) || /^\d+$/.test(trimmed)
+    const trimmed = range.trim()
+    // 対応: "1", "1-", "-5", "3-8"
+    return /^(\d+)?-(\d+)?$/.test(trimmed) || /^\d+$/.test(trimmed)
 }
 
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
