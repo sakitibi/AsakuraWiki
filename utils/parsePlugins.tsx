@@ -308,9 +308,12 @@ export function parseOtherInline(
             const stylesheetURL = safeTrim(m[21] ?? '')
 
             let showTitle: boolean | undefined
+            if (!pageName) {
+                nodes.push(<div key={key}>ページ名が未定義です</div>)
+                continue
+            }
             if (titleFlag === 'title') showTitle = true
             else if (titleFlag === 'none') showTitle = false
-                // 埋め込み対象ページが存在するかどうかをチェック（非同期不可なら事前で判断済みとして）
             nodes.push(
                 <IncludePage2
                     key={key}
