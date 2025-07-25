@@ -59,8 +59,12 @@ export default function IncludePage2({
 
     const parsedNodes = parseWikiContent(rawContent, context)
 
-    // 📛 ノードがない場合（＝表示すべき内容ゼロ）→ null
-    if (error || !rawContent.trim() || parsedNodes.length === 0) return null
+    // ノードが空 or 全て falsy（null, undefined, false） → 描画しない
+    if (
+        error ||
+        !rawContent.trim() ||
+        !parsedNodes.some(node => !!node)
+    ) return null
 
     return (
     <div className="include-page">
