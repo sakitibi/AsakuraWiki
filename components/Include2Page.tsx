@@ -26,21 +26,18 @@ export default function IncludePage2({
     // 🧠 自己参照防止
     const isSelfInclude = wikiSlug === page
 
-    useEffect(() => {
-        if (stylesheetURL && !hasLoadedStylesheet.current) {
-            if (!document.querySelector(`link[href="${stylesheetURL}"]`)) {
-                const link = document.createElement('link')
-                link.rel = 'stylesheet'
-                link.href = stylesheetURL
-                document.head.appendChild(link)
-            }
-            hasLoadedStylesheet.current = true
-        }
-    }, [stylesheetURL])
-
+    const pageCache = useRef<Map<string, string>>(new Map())
     useEffect(() => {
         if (isSelfInclude) {
             setError('自己参照は禁止されています')
+            return
+        }
+
+        const cacheKey = `${wikiSlug}::${page}::${normalizedLineRange}`
+        const cached = pageCache.current.get(cacheKey)
+
+        if (cached) {
+            setRawContent(cached)
             return
         }
 
@@ -49,40 +46,41 @@ export default function IncludePage2({
         fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`, {
             signal: controller.signal,
         })
-        .then(res => {
+            .then(res => {
             if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-            return res.json()
-        })
-        .then(data => {
+                return res.json()
+            })
+            .then(data => {
             const content = data.content || ''
             const lines = content.split('\n')
             let sliced = lines
 
-            // 📏 範囲スライス
             if (normalizedLineRange) {
-            const [startRaw = '', endRaw = ''] = normalizedLineRange.split('-')
-            const start = startRaw ? parseInt(startRaw) : 1
-            const end = endRaw ? parseInt(endRaw) : lines.length
+                const [startRaw = '', endRaw = ''] = normalizedLineRange.split('-')
+                const start = startRaw ? parseInt(startRaw) : 1
+                const end = endRaw ? parseInt(endRaw) : lines.length
 
-            if (
+                if (
                 isNaN(start) || isNaN(end) ||
                 start < 1 || end > lines.length || start > end
-            ) {
-                setError('無効な行範囲です')
-                return
+                ) {
+                    setError('無効な行範囲です')
+                    return
+                }
+
+                sliced = lines.slice(start - 1, end)
             }
 
-            sliced = lines.slice(start - 1, end)
-            }
-
-            setRawContent(sliced.join('\n'))
-        })
-        .catch(err => {
-            if (err.name !== 'AbortError') {
-            console.error(err)
-            setError(err.message)
-            }
-        })
+            const finalContent = sliced.join('\n')
+            pageCache.current.set(cacheKey, finalContent)
+            setRawContent(finalContent)
+            })
+            .catch(err => {
+                if (err.name !== 'AbortError') {
+                    console.error(err)
+                    setError(err.message)
+                }
+            })
 
         return () => controller.abort()
     }, [wikiSlug, page, normalizedLineRange, isSelfInclude])
