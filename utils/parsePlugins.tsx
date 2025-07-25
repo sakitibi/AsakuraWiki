@@ -303,7 +303,7 @@ export function parseOtherInline(
         }
         // #include2(pageName, titleFlag?, cssURL?)
         else if (token.startsWith('#include2')) {
-            const pageName = safeTrim(m[19] ?? 'FrontPage')
+            const pageName = safeTrim(m[19] ?? '')
             const titleFlag = safeTrim(m[20] ?? '')
             const stylesheetURL = safeTrim(m[21] ?? '')
 
