@@ -36,21 +36,23 @@ export default function IncludePage({
             let content: string = data.content || ''
             const lines = content.split('\n')
 
-            if (lineRange) {
+        if (lineRange) {
             const [startRaw = '', endRaw = ''] = lineRange.split('-')
             const start = startRaw ? parseInt(startRaw) : 1
             const end = endRaw ? parseInt(endRaw) : lines.length
 
-            if (
-                isNaN(start) || isNaN(end) ||
-                start < 1 || end > lines.length || start > end
-            ) {
-                setError('無効な行範囲です')
-                return
+            // ここで明示的に範囲をチェック（空欄ならスキップ）
+            if (startRaw || endRaw) {
+                if (
+                    isNaN(start) || isNaN(end) ||
+                    start < 1 || end > lines.length || start > end
+                ) {
+                    setError('無効な行範囲です')
+                    return
+                }
+                content = lines.slice(start - 1, end).join('\n')
             }
-
-            content = lines.slice(start - 1, end).join('\n')
-            }
+        }
 
             setRawContent(content)
         })
