@@ -354,7 +354,7 @@ export default function WikiPage() {
                 ))}
                     {showRedirectButton &&
                     wikiSlugStr === 'maitetsu_bkmt' &&
-                    pageSlugStr !== 'sinsei' || pageSlugStr !== 'comment' && (
+                    (pageSlugStr === 'FrontPage') && (
                         <button
                         onClick={() =>
                             router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
