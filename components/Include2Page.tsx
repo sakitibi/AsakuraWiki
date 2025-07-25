@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
 
 interface IncludePageProps {
@@ -19,13 +19,18 @@ export default function IncludePage2({
     const [rawContent, setRawContent] = useState('')
     const [error, setError] = useState<string | null>(null)
 
+    const hasLoadedStylesheet = useRef(false)
+
     useEffect(() => {
-        if (stylesheetURL && !document.querySelector(`link[href="${stylesheetURL}"]`)) {
+    if (stylesheetURL && !hasLoadedStylesheet.current) {
+        if (!document.querySelector(`link[href="${stylesheetURL}"]`)) {
         const link = document.createElement('link')
         link.rel = 'stylesheet'
         link.href = stylesheetURL
         document.head.appendChild(link)
         }
+        hasLoadedStylesheet.current = true
+    }
     }, [stylesheetURL])
 
     useEffect(() => {
@@ -43,6 +48,13 @@ export default function IncludePage2({
                 const [startRaw = '', endRaw = ''] = lineRange.split('-')
                 const start = startRaw ? parseInt(startRaw) : 1
                 const end = endRaw ? parseInt(endRaw) : lines.length
+
+                // 境界チェック
+                if (isNaN(start) || isNaN(end) || start < 1 || end > lines.length || start > end) {
+                    setError('無効な行範囲です')
+                    return
+                }
+
                 sliced = lines.slice(start - 1, end)
             }
 
@@ -62,11 +74,13 @@ export default function IncludePage2({
     console.log('parsedNodes:', parsedNodes)
 
     // ノードが空 or 全て falsy（null, undefined, false） → 描画しない
-    if (
-        error ||
-        !rawContent.trim() ||
-        !parsedNodes.some(node => !!node)
-    ) return null
+    if (error) {
+        return <div className="include-page__error">エラー: {error}</div>
+    }
+    
+    if (!rawContent.trim()) {
+        return <div className="include-page__empty">対象ページが空です</div>
+    }
 
     return (
     <div className="include-page">
