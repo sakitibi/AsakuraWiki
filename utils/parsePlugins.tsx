@@ -118,7 +118,9 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
 }
 
 function isValidLineRange(range: string): boolean {
-    return /^\d+(-\d+)?$/.test(range.trim())
+  const trimmed = range.trim()
+  // 対応: "1", "1-", "-5", "3-8"
+  return /^(\d+)?-(\d+)?$/.test(trimmed) || /^\d+$/.test(trimmed)
 }
 
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
@@ -239,7 +241,7 @@ export function parseOtherInline(
             if (lineRange && !isValidLineRange(lineRange)) {
                 nodes.push(
                     <div key={key} style={{ color: 'red' }}>
-                        読み込み失敗: 無効な行範囲です（format: N-M）
+                    読み込み失敗: 無効な行範囲です（format: 1-5, 3-, -4 など）
                     </div>
                 )
                 continue
