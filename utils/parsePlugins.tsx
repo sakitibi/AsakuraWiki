@@ -221,7 +221,7 @@ export function parseOtherInline(
         else if (token.startsWith('#include')) {
             const arg = safeTrim(m[13]!)
             const parts = arg.split(',').map(s => safeTrim(s))
-            const [first, flag, lineRange] = parts
+            const [first, lineRange, flag] = parts
 
             let showTitle: boolean | undefined
             if (flag === 'notitle') showTitle = false
