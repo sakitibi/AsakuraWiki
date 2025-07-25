@@ -258,17 +258,17 @@ export function parseOtherInline(
             nodes.push(<div key={key} style={{ textAlign: 'right' }}>{inner}</div>)
         }
         else if (token.startsWith('&size(')) {
-            const withSemicolon = token.match(/&size\((\d+)\)\{([^}]+)\};/)
-            if (withSemicolon) {
-                const fontSize = parseInt(withSemicolon[1], 10)
-                const content = parseOtherInline(withSemicolon[2], wikiSlug, pageSlug, baseKey + 1)
+            const match = token.match(/&size\((\d+)\)\{([^}]+)\};/)
+            if (match) {
+                const fontSize = parseInt(match[1], 10)
+                const content = parseOtherInline(match[2], wikiSlug, pageSlug, baseKey + 1)
                 nodes.push(
                     <span key={key} style={{ fontSize: `${fontSize}px` }}>
                         {content}
                     </span>
                 )
             } else {
-                // セミコロンがない場合は、装飾せずそのまま表示
+                // セミコロンがないのでそのまま文字列として扱う
                 nodes.push(token)
             }
         }
