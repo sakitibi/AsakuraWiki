@@ -131,7 +131,7 @@ export default function BKMT_Front(){
                     <li>依存関係が複雑すぎるのでクラウドファンディングは没<br/>広告とYoutubeで稼ぎましょう -- さきちび 2025-07-11 (金) 13:45:59</li>
                     <li>明日の作戦の成功基準は警告文ページに<br/>訪問人数25以上です -- みぞれ 2025-07-23 (水) 22:12:05</li>
                 </ul>
-                <p><a href="https://wikiwiki.jp/12ninstudio/-s/ea9a77b0" target="_blank">こちらでコメントする</a></p>
+                <p><a href="/wiki/maitetsu_bkmt/comment" target="_blank">こちらでコメントする</a></p>
             </div>
         `);
     }
