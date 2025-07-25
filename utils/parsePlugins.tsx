@@ -244,15 +244,18 @@ export function parseOtherInline(
         }
         // CENTER:
         else if (m[14]) {
-            nodes.push(<div key={key} style={{ textAlign: 'center' }}>{m[14]}</div>)
+            const inner = parseOtherInline(m[14], wikiSlug, pageSlug, baseKey + 1)
+            nodes.push(<div key={key} style={{ textAlign: 'center' }}>{inner}</div>)
         }
         // LEFT:
         else if (m[15]) {
-            nodes.push(<div key={key} style={{ textAlign: 'left' }}>{m[15]}</div>)
+            const inner = parseOtherInline(m[15], wikiSlug, pageSlug, baseKey + 1)
+            nodes.push(<div key={key} style={{ textAlign: 'left' }}>{inner}</div>)
         }
         // RIGHT:
         else if (m[16]) {
-            nodes.push(<div key={key} style={{ textAlign: 'right' }}>{m[16]}</div>)
+            const inner = parseOtherInline(m[16], wikiSlug, pageSlug, baseKey + 1)
+            nodes.push(<div key={key} style={{ textAlign: 'right' }}>{inner}</div>)
         }
         else if (token.startsWith('&size(')) {
             const match = token.match(/&size\((\d+)\)\{([^}]+)\}/)
