@@ -6,6 +6,7 @@ interface IncludePageProps {
     page: string
     showTitle?: boolean
     stylesheetURL?: string
+    lineRange?: string // ←追加！
 }
 
 export default function IncludePage({
@@ -13,12 +14,12 @@ export default function IncludePage({
     page,
     showTitle = true,
     stylesheetURL,
+    lineRange,
 }: IncludePageProps) {
     const [rawContent, setRawContent] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        // 外部 CSS
         if (stylesheetURL) {
             const link = document.createElement('link')
             link.rel = 'stylesheet'
@@ -26,37 +27,47 @@ export default function IncludePage({
             document.head.appendChild(link)
         }
 
-        // コンテンツ取得
         fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`)
         .then(res => {
-            if (!res.ok) {
-                // 404,500 などはここでキャッチして state に落とす
-                throw new Error(`${res.status} ${res.statusText}`)
-            }
+            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
             return res.json()
         })
         .then(data => {
-            setRawContent(data.content || '')
+            let content: string = data.content || ''
+            const lines = content.split('\n')
+
+            if (lineRange) {
+            const [startRaw = '', endRaw = ''] = lineRange.split('-')
+            const start = startRaw ? parseInt(startRaw) : 1
+            const end = endRaw ? parseInt(endRaw) : lines.length
+
+            if (
+                isNaN(start) || isNaN(end) ||
+                start < 1 || end > lines.length || start > end
+            ) {
+                setError('無効な行範囲です')
+                return
+            }
+
+            content = lines.slice(start - 1, end).join('\n')
+            }
+
+            setRawContent(content)
         })
         .catch(err => {
             console.error(err)
-            setError(err.message)   // 生 HTML ではなくエラーメッセージだけ保持
+            setError(err.message)
         })
-    }, [wikiSlug, page, stylesheetURL])
+    }, [wikiSlug, page, stylesheetURL, lineRange])
 
     const context = { wikiSlug, pageSlug: page }
 
     return (
         <div className="include-page">
         {showTitle && <h2 className="include-page__title">{page}</h2>}
-
         {error ? (
-            // React の JSX としてエラーを表示
-            <p style={{ color: 'red' }}>
-            読み込み失敗: {error}
-            </p>
+            <p style={{ color: 'red' }}>読み込み失敗: {error}</p>
         ) : (
-            // 正常時はプラグインを再パースして描画
             parseWikiContent(rawContent, context).map((node, i) => (
             <React.Fragment key={i}>{node}</React.Fragment>
             ))

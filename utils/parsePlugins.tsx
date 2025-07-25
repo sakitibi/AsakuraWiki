@@ -130,7 +130,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|#include2\(\s*([^\),]+)(?:,\s*([^\),]+))?(?:,\s*([^\)]+))?\)/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -216,9 +216,12 @@ export function parseOtherInline(
         // #include(pageName|css,flag)
         else if (token.startsWith('#include')) {
             const arg = safeTrim(m[13]!)
-            const [first, flag] = arg.split(',').map(s => safeTrim(s))
+            const parts = arg.split(',').map(s => safeTrim(s))
+            const [first, flag, lineRange] = parts
+
             let showTitle: boolean | undefined
             if (flag === 'notitle') showTitle = false
+            else if (flag === 'none') showTitle = false
             else if (flag === 'title') showTitle = true
 
             let pageName = first
@@ -236,6 +239,7 @@ export function parseOtherInline(
                     page={pageName}
                     showTitle={showTitle}
                     stylesheetURL={stylesheetURL}
+                    lineRange={lineRange}
                 />
             )
         }
@@ -300,34 +304,6 @@ export function parseOtherInline(
                 nodes.push(token) // 解析できなかった場合はそのまま表示
             }
         }
-        // #include2(pageName, titleFlag?, cssURL?)
-        else if (token.startsWith('#include2')) {
-            const arg = safeTrim(m[13]!)
-            const [first, flag] = arg.split(',').map(s => safeTrim(s))
-            let showTitle: boolean | undefined
-            if (flag === 'none') showTitle = false
-            else if (flag === 'title') showTitle = true
-
-            let pageName = first
-            let stylesheetURL: string | undefined
-            if (first.includes('|')) {
-                const [name, css] = first.split('|', 2).map(s => safeTrim(s))
-                pageName = name
-                stylesheetURL = css
-            }
-
-            nodes.push(
-                <IncludePage
-                    key={key}
-                    wikiSlug={wikiSlug}
-                    page={pageName}
-                    showTitle={showTitle}
-                    stylesheetURL={stylesheetURL}
-                />
-            )
-            // 存在しないなら何も追加しない（無表示）
-        }
-
         // 次マッチ開始位置を更新
         last = re.lastIndex
     }
