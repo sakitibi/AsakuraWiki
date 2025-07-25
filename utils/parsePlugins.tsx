@@ -255,13 +255,16 @@ export function parseOtherInline(
             nodes.push(<div key={key} style={{ textAlign: 'right' }}>{m[16]}</div>)
         }
         else if (token.startsWith('&size(')) {
-            const fontSize = parseInt(m[14], 10)
-            const content = m[15]
-            nodes.push(
-                <span key={key} style={{ fontSize: `${fontSize}px` }}>
-                    {content}
-                </span>
-            )
+            const match = token.match(/&size\((\d+)\)\{([^}]+)\}/)
+            if (match) {
+                const fontSize = parseInt(match[1], 10)
+                const content = match[2]
+                nodes.push(
+                    <span key={key} style={{ fontSize: `${fontSize}px` }}>
+                        {content}
+                    </span>
+                )
+            }
         }
 
         // 次マッチ開始位置を更新
