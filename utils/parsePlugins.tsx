@@ -126,11 +126,12 @@ export function parseOtherInline(
     baseKey: number,
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = []
+    const safeTrim = (v: unknown) => typeof v === 'string' ? v.trim() : ''
     let last = 0
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|#include2\(\s*([^\),]+)(?:,\s*([^\),]+))?(?:,\s*([^\)]+))?\)/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|#include2\(\s*([^\),]+)(?:,\s*([^\),]+))?(?:,\s*([^\)]+))?\)/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -189,7 +190,7 @@ const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s
         }
         // #ls([title])
         else if (token.startsWith('#ls')) {
-            const prefix = m[8]?.trim() || undefined
+            const prefix = safeTrim(m[8]) || undefined
             nodes.push(<PageList key={key} prefix={prefix} />)
         }
         // #ls2(pattern[,…][,…][,…])
@@ -198,10 +199,10 @@ const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s
             // m[10] = [オプションリスト]
             // m[11] = {include,...} ブロック型オプション
             // m[12] = 表示用ラベル
-            const pattern = m[9].trim()
-            const opts = m[10]?.split(',').map(s => s.trim()) ?? []
-            const blockOpts = m[11]?.split(',').map(s => s.trim()) ?? []
-            const label = m[12]?.trim()
+            const pattern = safeTrim(m[9])
+            const opts = m[10]?.split(',').map(s => safeTrim(s)) ?? []
+            const blockOpts = m[11]?.split(',').map(s => safeTrim(s)) ?? []
+            const label = safeTrim(m[12])
 
             nodes.push(
                 <PageList2
@@ -215,8 +216,8 @@ const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s
         }
         // #include(pageName|css,flag)
         else if (token.startsWith('#include')) {
-            const arg = m[13]!.trim()
-            const [first, flag] = arg.split(',').map(s => s.trim())
+            const arg = safeTrim(m[13]!)
+            const [first, flag] = arg.split(',').map(s => safeTrim(s))
             let showTitle: boolean | undefined
             if (flag === 'notitle') showTitle = false
             else if (flag === 'title') showTitle = true
@@ -224,7 +225,7 @@ const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s
             let pageName = first
             let stylesheetURL: string | undefined
             if (first.includes('|')) {
-                const [name, css] = first.split('|', 2).map(s => s.trim())
+                const [name, css] = first.split('|', 2).map(s => safeTrim(s))
                 pageName = name
                 stylesheetURL = css
             }
@@ -245,7 +246,7 @@ const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s
         }
         // CENTER:
         else if (m[14]) {
-            const centered = m[14].trim()
+            const centered = safeTrim(m[14]);
             const contents = parseOtherInline(centered, wikiSlug, pageSlug, baseKey + 1)
             nodes.push(
                 <div key={key} style={{ textAlign: 'center' }}>
@@ -299,6 +300,26 @@ const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s
             } else {
                 nodes.push(token) // 解析できなかった場合はそのまま表示
             }
+        }
+        // #include2(pageName, titleFlag?, cssURL?)
+        else if (token.startsWith('#include2')) {
+            const pageName = safeTrim(m[19])
+            const titleFlag = safeTrim(m[20])
+            const stylesheetURL = safeTrim(m[21])
+
+            let showTitle: boolean | undefined
+            if (titleFlag === 'title') showTitle = true
+            else if (titleFlag === 'notitle') showTitle = false
+
+            nodes.push(
+                <IncludePage
+                    key={key}
+                    wikiSlug={wikiSlug}
+                    page={pageName}
+                    showTitle={showTitle}
+                    stylesheetURL={stylesheetURL || undefined}
+                />
+            )
         }
 
         // 次マッチ開始位置を更新

@@ -40,10 +40,10 @@ export default function IncludePage2({
 
             let sliced = lines
             if (lineRange) {
-            const [startRaw = '', endRaw = ''] = lineRange.split('-')
-            const start = startRaw ? parseInt(startRaw) : 1
-            const end = endRaw ? parseInt(endRaw) : lines.length
-            sliced = lines.slice(start - 1, end)
+                const [startRaw = '', endRaw = ''] = lineRange.split('-')
+                const start = startRaw ? parseInt(startRaw) : 1
+                const end = endRaw ? parseInt(endRaw) : lines.length
+                sliced = lines.slice(start - 1, end)
             }
 
             setRawContent(sliced.join('\n'))
