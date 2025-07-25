@@ -278,17 +278,25 @@ const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s
             }
         }
         else if (token.startsWith('[[')) {
-            const match = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
-            if (match) {
-                const label = match[1].trim()
-                const url = match[2].trim()
+            const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
+            const plainLink = token.match(/\[\[([^\]]+)\]\]/)
+            if (labeledLink) {
+                const label = labeledLink[1].trim()
+                const url = labeledLink[2].trim()
                 nodes.push(
                     <a key={key} href={url}>
                         {label}
                     </a>
                 )
+            } else if (plainLink) {
+                const url = plainLink[1].trim()
+                nodes.push(
+                    <a key={key} href={url}>
+                        {url}
+                    </a>
+                )
             } else {
-                nodes.push(token) // マッチ失敗時はそのまま表示
+                nodes.push(token) // 解析できなかった場合はそのまま表示
             }
         }
 
