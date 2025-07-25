@@ -245,10 +245,10 @@ export function parseOtherInline(
         // CENTER:
         else if (m[14]) {
             const centered = m[14].trim()
-            const inner = parseOtherInline(centered, wikiSlug, pageSlug, baseKey + 1)
+            const contents = parseOtherInline(centered, wikiSlug, pageSlug, baseKey + 1)
             nodes.push(
                 <div key={key} style={{ textAlign: 'center' }}>
-                    {inner}
+                    {contents}
                 </div>
             )
         }
