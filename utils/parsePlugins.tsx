@@ -309,7 +309,7 @@ export function parseOtherInline(
 
             let showTitle: boolean | undefined
             if (titleFlag === 'title') showTitle = true
-            else if (titleFlag === 'notitle') showTitle = false
+            else if (titleFlag === 'none') showTitle = false
                 // 埋め込み対象ページが存在するかどうかをチェック（非同期不可なら事前で判断済みとして）
             nodes.push(
                 <IncludePage2
