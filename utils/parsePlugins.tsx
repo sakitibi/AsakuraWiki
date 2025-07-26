@@ -320,7 +320,7 @@ export function parseOtherInline(
             }
         }
         else if (token.startsWith('&color(')) {
-            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{(.*?)\};/)
+            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([\s\S]+?)\};/)
             if (match) {
                 const color = match[1].trim()
                 const background = match[2]?.trim()
@@ -336,7 +336,7 @@ export function parseOtherInline(
             }
         }
         else if (token.startsWith('&attachref(')) {
-            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([\s\S]+?)\};/)
+            const match = token.match(/&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?/)
             if (match) {
                 const url = match[1].trim()
                 const width = parseInt(match[2], 10)
@@ -346,7 +346,7 @@ export function parseOtherInline(
                     <img key={key} src={url} width={width} height={height} alt={url} />
                 )
             } else {
-                nodes.push(token) // パース失敗は生のまま
+                nodes.push(token)
             }
         }
         // 次マッチ開始位置を更新
