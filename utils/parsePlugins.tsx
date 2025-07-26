@@ -344,7 +344,7 @@ export function parseOtherInline(
                         ...(background ? { backgroundColor: background } : {}),
                     }}
                 >
-                    {content}
+                    {Array.isArray(content) ? content : [content]}
                 </span>
             )
 
