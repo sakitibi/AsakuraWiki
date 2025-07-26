@@ -181,57 +181,47 @@ export function parseOtherInline(
                 ? Number(loop)
                 : 'infinite';
 
-            // アニメーション設定
+            // JSXで直接アニメーション設定（完全JSX制御！）
             const animationStyle = {
                 animationName:
-                    slide === 'slide'
-                        ? 'scroll-slide-once'
-                        : slide === 'alternate'
-                        ? 'scroll-alternate'
-                        : 'scroll-default',
+                slide === 'slide'
+                    ? 'scroll-slide-once'
+                    : slide === 'alternate'
+                    ? 'scroll-alternate'
+                    : 'scroll-default',
                 animationDuration:
-                    slide === 'slide'
-                        ? '5s'
-                        : slide === 'alternate'
-                        ? '7s'
-                        : '10s',
+                slide === 'slide'
+                    ? '5s'
+                    : slide === 'alternate'
+                    ? '7s'
+                    : '10s',
                 animationTimingFunction:
-                    slide === 'slide' || slide === 'alternate'
-                        ? 'ease-in-out'
-                        : 'linear',
+                slide === 'slide' || slide === 'alternate'
+                    ? 'ease-in-out'
+                    : 'linear',
                 animationIterationCount: iterationCount,
                 animationDirection: slide === 'alternate' ? 'alternate' : 'normal',
                 animationFillMode: slide === 'slide' ? 'forwards' : 'none',
                 display: 'inline-block',
             };
+
             nodes.push(
-            <div
-                key={key}
-                className={styles.marqueeBase}
-                style={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                backgroundColor: bgColor ?? 'transparent',
-                color: color ?? 'inherit',
-                fontSize,
-                }}
-            >
                 <div
-                className={
-                    slide === 'slide'
-                    ? styles.marqueeSlide
-                    : slide === 'alternate'
-                    ? styles.marqueeAlternate
-                    : styles.marqueeDefault
-                }
+                key={key}
                 style={{
-                    ...animationStyle,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    backgroundColor: bgColor ?? 'transparent',
+                    color: color ?? 'inherit',
+                    fontSize,
                 }}
                 >
-                {text}
+                    <div style={animationStyle}>
+                        {text}
+                    </div>
                 </div>
-            </div>
             );
+
             last = m.index + token.length;
         }
         else if (token.startsWith('&escape(')) {
