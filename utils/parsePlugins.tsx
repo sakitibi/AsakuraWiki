@@ -398,11 +398,16 @@ export function parseOtherInline(
 
     // 最後に残ったテキスト
     if (last < line.length) {
-        const rest = line.slice(last)
-        const splitByEscapedNewline = rest.split(/\\n/)  // ←ここが肝心
+        const rest = line.slice(last).trim()
 
+        // 不要な }; が出るならここで除去
+        const cleaned = rest.replace(/^};+$/, '')
+
+        const splitByEscapedNewline = cleaned.split(/\\n/)
         for (let i = 0; i < splitByEscapedNewline.length; i++) {
-            nodes.push(splitByEscapedNewline[i])
+            if (splitByEscapedNewline[i]) {
+                nodes.push(splitByEscapedNewline[i])
+            }
             if (i < splitByEscapedNewline.length - 1) {
                 nodes.push(<br key={`${baseKey}-br-${last}-${i}`} />)
             }
