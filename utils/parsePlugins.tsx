@@ -273,7 +273,6 @@ export function parseOtherInline(
                 )
                 continue
             }
-
             nodes.push(
                 <IncludePage
                     key={key}
@@ -333,8 +332,8 @@ export function parseOtherInline(
 
             // extractBracedBlock に .end (終端相対位置) を返させておく
             const args = token.slice(6, braceStart).split(',').map(s => s.trim())  // 'color('部分を除去
-            const color = args[0]
-            const background = args[1]
+            const color = safeTrim(args[0])
+            const background = safeTrim(args[1])
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
