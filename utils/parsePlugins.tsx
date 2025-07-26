@@ -171,7 +171,7 @@ export function parseOtherInline(
             const parsed = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
-                <span key={key}>
+                <span key={key} dangerouslySetInnerHTML={{ __html: braceBlock.body }}>
                     {parsed}
                 </span>
             )
