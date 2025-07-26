@@ -204,38 +204,32 @@ export function parseOtherInline(
                 animationFillMode: slide === 'slide' ? 'forwards' : 'none',
                 display: 'inline-block',
             };
-
             nodes.push(
+            <div
+                key={key}
+                className={styles.marqueeBase}
+                style={{
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                backgroundColor: bgColor ?? 'transparent',
+                color: color ?? 'inherit',
+                fontSize,
+                }}
+            >
                 <div
-                    key={key}
-                    className={styles.marqueeBase}
-                    style={{
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        backgroundColor: bgColor ?? 'transparent',
-                        color: color ?? 'inherit',
-                        fontSize,
-                    }}
+                className={
+                    slide === 'slide'
+                    ? styles.marqueeSlide
+                    : slide === 'alternate'
+                    ? styles.marqueeAlternate
+                    : styles.marqueeDefault
+                }
+                style={animationStyle} // ← ここ！
                 >
-                    <div
-                        className={
-                        slide === 'slide'
-                            ? styles.marqueeSlide
-                            : slide === 'alternate'
-                            ? styles.marqueeAlternate
-                            : styles.marqueeDefault
-                        }
-                        style={{
-                        animationIterationCount: loop && /^\d+$/.test(loop)
-                            ? loop
-                            : 'infinite',
-                        }}
-                    >
-                        {text}
-                    </div>
+                {text}
                 </div>
+            </div>
             );
-
             last = m.index + token.length;
         }
         else if (token.startsWith('&escape(')) {
