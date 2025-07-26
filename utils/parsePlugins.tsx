@@ -337,13 +337,13 @@ export function parseOtherInline(
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
             nodes.push(
                 <span
-                key={key}
-                style={{
+                    key={key}
+                    style={{
                     ...(color ? { color } : {}),
                     ...(background ? { backgroundColor: background } : {}),
-                }}
+                    }}
                 >
-                <>{Array.isArray(content) ? content : [content]}</>
+                    <>{Array.isArray(content) ? content : [content]}</>
                 </span>
             )
             last = m.index + braceStart + braceBlock.end
