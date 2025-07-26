@@ -136,7 +136,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{(.*?)\};/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{(.*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -333,6 +333,20 @@ export function parseOtherInline(
             } else {
                 // セミコロンがない等で無効な構文
                 nodes.push(token)
+            }
+        }
+        else if (token.startsWith('&attachref(')) {
+            const match = token.match(/&attachref\(\s*(.+?),\s*(\d+)x(\d+)\s*\);?/)
+            if (match) {
+                const url = match[1].trim()
+                const width = parseInt(match[2], 10)
+                const height = parseInt(match[3], 10)
+
+                nodes.push(
+                    <img key={key} src={url} width={width} height={height} alt={url} />
+                )
+            } else {
+                nodes.push(token) // パース失敗は生のまま
             }
         }
         // 次マッチ開始位置を更新
