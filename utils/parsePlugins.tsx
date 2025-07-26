@@ -165,7 +165,18 @@ export function parseOtherInline(
 
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
-        if (token.startsWith('#calendar2')) {
+        if (line.includes('&escape(){')) {
+            const escapeMatch = line.match(/&escape\(\)\{([\s\S]*?)\};/)
+            if (escapeMatch) {
+                nodes.push(
+                    <span style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+                        {escapeMatch[1]}
+                    </span>
+                )
+                return nodes // ← ここで早期 return！
+            }
+        }
+        else if (token.startsWith('#calendar2')) {
             const [, y, mo, off] = m
             nodes.push(
                 <Calendar2
@@ -392,19 +403,6 @@ export function parseOtherInline(
             } else {
                 nodes.push(token)
             }
-            last = m.index + token.length
-        }
-        else if (token.startsWith('&escape(')) {
-            const escapeStart = token.indexOf('{')
-            const braceBlock = extractBracedBlock(token, escapeStart)
-
-            // 生の構文を span として表示（エスケープ済み）
-            nodes.push(
-                <span key={key} style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-                    {braceBlock.body}
-                </span>
-            )
-
             last = m.index + token.length
         }
     }
