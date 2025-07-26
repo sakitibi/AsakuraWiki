@@ -224,7 +224,9 @@ export function parseOtherInline(
                     ? styles.marqueeAlternate
                     : styles.marqueeDefault
                 }
-                style={animationStyle} // ← ここ！
+                style={{
+                    ...animationStyle,
+                }}
                 >
                 {text}
                 </div>
