@@ -278,11 +278,11 @@ export default function WikiPage() {
     const previewText = isEdit ? content : page?.content ?? ''
     const parsedPreview = useMemo(
         () =>
-        parseWikiContent(previewText, {
-            wikiSlug: wikiSlugStr,
-            pageSlug: pageSlugStr,
-        }),
-        [previewText, wikiSlugStr, pageSlugStr]
+            parseWikiContent(previewText, {
+                wikiSlug: wikiSlugStr,
+                pageSlug: pageSlugStr,
+            }),
+        [previewText, wikiSlugStr, pageSlugStr]  // ← useMemo の第2引数
     )
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
