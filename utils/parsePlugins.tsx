@@ -327,32 +327,38 @@ export function parseOtherInline(
             last = m.index + braceStart + braceBlock.end
         }
         else if (token.startsWith('&color(')) {
-            const braceStart = token.indexOf('{')
+            const parenStart = token.indexOf('(')
+            const parenEnd = token.indexOf(')', parenStart)
+            const braceStart = token.indexOf('{', parenEnd)
             const braceBlock = extractBracedBlock(token, braceStart)
 
-            const args = token.slice(7, braceStart).split(',').map(s => safeTrim(s))
+            // 正確に () 内を切り取って色・背景色を抽出
+            const args = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s))
             const color = args[0] || undefined
             const background = args[1] || undefined
 
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
-                console.log("color node", {
+
+            console.log("color node", {
                 token,
                 style: { color, background },
                 content,
                 isString: typeof content === 'string',
             })
+
             nodes.push(
                 <span
                     key={key}
                     style={{
-                    ...(color ? { color } : {}),
-                    ...(background ? { backgroundColor: background } : {}),
+                        ...(color ? { color } : {}),
+                        ...(background ? { backgroundColor: background } : {}),
                     }}
                 >
                     <>{Array.isArray(content) ? content : [content]}</>
                 </span>
             )
-            last = m.index + braceStart + braceBlock.end
+
+            last = m.index + token.length // ← トークン全体の長さで進める！
             continue
         }
         else if (token.startsWith('[[')) {
