@@ -330,22 +330,24 @@ export function parseOtherInline(
             const braceStart = token.indexOf('{')
             const braceBlock = extractBracedBlock(token, braceStart)
 
-            // extractBracedBlock に .end (終端相対位置) を返させておく
-            const args = token.slice(6, braceStart).split(',').map(s => s.trim())  // 'color('部分を除去
-            const color = safeTrim(args[0])
-            const background = safeTrim(args[1])
+            const args = token.slice(6, braceStart).split(',').map(s => safeTrim(s))
+            const color = args[0] || undefined
+            const background = args[1] || undefined
+
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
-                <span key={key} style={{
-                    ...(color ? { color } : {}),
-                    ...(background ? { backgroundColor: background } : {})
-                }}>
+                <span
+                    key={key}
+                    style={{
+                        ...(color ? { color } : {}),
+                        ...(background ? { backgroundColor: background } : {}),
+                    }}
+                >
                     {content}
                 </span>
             )
 
-            // ✅ token の終端位置を braceBlock.end によって動的決定
             last = m.index + braceStart + braceBlock.end
             continue
         }
