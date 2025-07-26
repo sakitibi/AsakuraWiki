@@ -153,7 +153,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(\s*([^,]+?)\s*(?:,\s*(slide))?\s*(?:,\s*([#\w]+))?\s*(?:,\s*([#\w]+))?\s*\)/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -402,6 +402,38 @@ export function parseOtherInline(
             } else {
                 nodes.push(token)
             }
+            last = m.index + token.length
+        }
+        else if (token.startsWith('#marquee')) {
+            const arg = safeTrim(token.slice('#marquee('.length, -1)) // 最後の ')' を除去
+            const parts = arg.split(',').map(s => safeTrim(s))
+
+            const content = parts[0] ?? ''
+            const direction = parts[1] === 'slide' ? 'left' : 'scroll' // slideならleft、未指定ならscroll
+            const background = parts[2] ?? 'transparent'
+            const color = parts[3] ?? 'inherit'
+
+            nodes.push(
+                <div
+                    key={key}
+                    style={{
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        background,
+                        color,
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'inline-block',
+                            animation: `${direction}-scroll 10s linear infinite`,
+                        }}
+                    >
+                        {content}
+                    </div>
+                </div>
+            )
+
             last = m.index + token.length
         }
     }
