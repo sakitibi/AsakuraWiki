@@ -153,7 +153,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -392,6 +392,19 @@ export function parseOtherInline(
             } else {
                 nodes.push(token)
             }
+            last = m.index + token.length
+        }
+        else if (token.startsWith('&escape(')) {
+            const escapeStart = token.indexOf('{')
+            const braceBlock = extractBracedBlock(token, escapeStart)
+
+            // 生の構文を span として表示（エスケープ済み）
+            nodes.push(
+                <span key={key} style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+                    {braceBlock.body}
+                </span>
+            )
+
             last = m.index + token.length
         }
     }
