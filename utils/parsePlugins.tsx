@@ -311,12 +311,13 @@ export function parseOtherInline(
                 </span>
             )
         }
-        else if (token.startsWith('&color(')) {
-            const colorStart = token.indexOf('(')
-            const braceStart = token.indexOf('{', colorStart)
-            const braceBlock = extractBracedBlock(token, braceStart)
+        else if (line.slice(m.index).startsWith('&color(')) {
+            const tokenSlice = line.slice(m.index)
+            const colorStart = tokenSlice.indexOf('(')
+            const braceStart = tokenSlice.indexOf('{', colorStart)
+            const braceBlock = extractBracedBlock(tokenSlice, braceStart)
 
-            const args = token.slice(colorStart + 1, braceStart).split(',').map(s => s.trim())
+            const args = tokenSlice.slice(colorStart + 1, braceStart).split(',').map(s => s.trim())
             const color = args[0]
             const background = args[1]
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
@@ -326,6 +327,9 @@ export function parseOtherInline(
                     {content}
                 </span>
             )
+
+            last = m.index + braceBlock.end
+            continue
         }
         else if (token.startsWith('[[')) {
             const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
