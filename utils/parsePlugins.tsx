@@ -336,7 +336,7 @@ export function parseOtherInline(
             }
         }
         else if (token.startsWith('&attachref(')) {
-            const match = token.match(/&attachref\(\s*(.+?),\s*(\d+)x(\d+)\s*\);?/)
+            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([\s\S]+?)\};/)
             if (match) {
                 const url = match[1].trim()
                 const width = parseInt(match[2], 10)
