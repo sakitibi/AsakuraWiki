@@ -283,7 +283,7 @@ export function parseOtherInline(
             nodes.push(<div key={key} style={{ textAlign: 'right' }}>{inner}</div>)
         }
         else if (token.startsWith('&size(')) {
-            const match = token.match(/&size\((\d+)\)\{([^}]+)\};/)
+            const match = token.match(/&size\((\d+)\)\{([\s\S]*?)\};/)
             if (match) {
                 const fontSize = parseInt(match[1], 10)
                 const content = parseOtherInline(match[2], wikiSlug, pageSlug, baseKey + 1)
