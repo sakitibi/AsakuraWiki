@@ -168,14 +168,15 @@ export function parseOtherInline(
         if (token.startsWith('&escape(')) {
             const braceStart = token.indexOf('{')
             const braceBlock = extractBracedBlock(token, braceStart)
+            const parsed = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
                 <span key={key}>
-                    {braceBlock.body}
+                    {parsed}
                 </span>
             )
 
-            last = m.index + token.length // ✅これで末尾 `};` を完全消化
+            last = m.index + token.length
             continue
         }
         else if (token.startsWith('#calendar2')) {
