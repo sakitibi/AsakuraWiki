@@ -328,8 +328,8 @@ export function parseOtherInline(
                 </span>
             )
 
-            last = m.index + braceBlock.end
-            continue
+            last = m.index + braceBlock.end  // ←ここを忘れずに！
+            continue  // ループ継続、次のマッチへ
         }
         else if (token.startsWith('[[')) {
             const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
