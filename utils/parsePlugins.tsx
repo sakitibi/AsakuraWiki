@@ -305,7 +305,7 @@ export function parseOtherInline(
                 const url = labeledLink[2].trim()
                 nodes.push(
                     <a key={key} href={url}>
-                        {label}
+                        {parseOtherInline(label, wikiSlug, pageSlug, baseKey + 1)}
                     </a>
                 )
             } else if (plainLink) {
