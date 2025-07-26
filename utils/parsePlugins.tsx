@@ -167,7 +167,7 @@ export function parseOtherInline(
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
         if (token.startsWith('#marquee')) {
-            const [, text, slide, bgColor, color, size] = m
+            const [token, text, slide, bgColor, color, size] = m;
             const fontSize = size ? `${size}px` : 'inherit'
             nodes.push(
                 <div
