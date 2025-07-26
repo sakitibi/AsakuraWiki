@@ -6,6 +6,7 @@ import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from 'lib/supabaseClient';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
+import 'css/wikis.min.module.css';
 
 type Page = {
     title: string
