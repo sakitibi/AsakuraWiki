@@ -335,13 +335,17 @@ export function parseOtherInline(
             const color = args[0]
             const background = args[1]
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
-
             nodes.push(
-                <span key={key} style={{ color, backgroundColor: background }}>
-                    {content}
+                <span
+                key={key}
+                style={{
+                    ...(color ? { color } : {}),
+                    ...(background ? { backgroundColor: background } : {}),
+                }}
+                >
+                {content}
                 </span>
             )
-
             last = m.index + token.length  // ← これが超大事！
             continue
         }
