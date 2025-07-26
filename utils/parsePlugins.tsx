@@ -188,7 +188,7 @@ export function parseOtherInline(
                     )}
                 </div>
             );
-
+            console.log('RegExp result:', m);
             last = m.index + token.length; // ← これでループ位置も更新！
         }
         else if (token.startsWith('&escape(')) {
