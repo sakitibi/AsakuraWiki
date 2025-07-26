@@ -320,7 +320,7 @@ export function parseOtherInline(
             }
         }
         else if (token.startsWith('&color(')) {
-            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([^}]+)\};/)
+            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{(.*?)\};/)
             if (match) {
                 const color = match[1].trim()
                 const background = match[2]?.trim()
