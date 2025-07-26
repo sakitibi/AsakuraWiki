@@ -167,6 +167,7 @@ export function parseOtherInline(
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
         
+
         if (token.startsWith('#marquee')) {
             const text = m[28];
             const loop = m[29];
@@ -180,8 +181,7 @@ export function parseOtherInline(
                 ? Number(loop)
                 : 'infinite';
 
-            // 画面幅に応じて suffix を決定（※windowが存在する環境のみ）
-            let sizeSuffix = 'xl'; // デフォルト
+            let sizeSuffix = 'xl';
             if (typeof window !== 'undefined') {
                 const screenWidth = window.innerWidth;
                 if (screenWidth < 700) {
@@ -191,24 +191,24 @@ export function parseOtherInline(
                 }
             }
 
-            // アニメーション名を動的に生成
+            // CSS Modulesからanimation名を安全に取得
             const animationBase =
                 slide === 'slide'
-                ? 'scroll-slide-once'
+                ? 'scrollSlideOnce'
                 : slide === 'alternate'
-                ? 'scroll-alternate'
-                : 'scroll-default';
-
-            const animationName = `${animationBase}-${sizeSuffix}`;
+                ? 'scrollAlternate'
+                : 'scrollDefault';
+            const animationKey = `${animationBase}${sizeSuffix.toUpperCase()}`;
+            const animationName = styles?.[animationKey] ?? 'none'; // fallback付き
 
             const animationStyle = {
                 animationName,
                 animationDuration:
-                slide === 'slide' ? '5s'
-                : slide === 'alternate' ? '7s'
-                : '10s',
+                    slide === 'slide' ? '5s'
+                    : slide === 'alternate' ? '7s'
+                    : '10s',
                 animationTimingFunction:
-                slide === 'slide' || slide === 'alternate' ? 'ease-in-out' : 'linear',
+                    slide === 'slide' || slide === 'alternate' ? 'ease-in-out' : 'linear',
                 animationIterationCount: iterationCount,
                 animationDirection: slide === 'alternate' ? 'alternate' : 'normal',
                 animationFillMode: slide === 'slide' ? 'forwards' : 'none',
@@ -217,18 +217,16 @@ export function parseOtherInline(
 
             nodes.push(
                 <div
-                key={key}
-                style={{
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    backgroundColor: bgColor ?? 'transparent',
-                    color: color ?? 'inherit',
-                    fontSize,
-                }}
+                    key={key}
+                    style={{
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        backgroundColor: bgColor ?? 'transparent',
+                        color: color ?? 'inherit',
+                        fontSize,
+                    }}
                 >
-                <div style={animationStyle}>
-                    {text}
-                </div>
+                    <div style={animationStyle}>{text}</div>
                 </div>
             );
 
