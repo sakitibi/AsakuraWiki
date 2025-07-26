@@ -216,7 +216,22 @@ export function parseOtherInline(
                         fontSize,
                     }}
                 >
-                    <div style={animationStyle}>{text}</div>
+                    <div
+                        className={
+                        slide === 'slide'
+                            ? styles.marqueeSlide
+                            : slide === 'alternate'
+                            ? styles.marqueeAlternate
+                            : styles.marqueeDefault
+                        }
+                        style={{
+                        animationIterationCount: loop && /^\d+$/.test(loop)
+                            ? loop
+                            : 'infinite',
+                        }}
+                    >
+                        {text}
+                    </div>
                 </div>
             );
 
