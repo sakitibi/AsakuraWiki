@@ -171,9 +171,7 @@ export function parseOtherInline(
             const parsed = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
-                <span key={key} dangerouslySetInnerHTML={{ __html: braceBlock.body }}>
-                    {parsed}
-                </span>
+                <span key={key} dangerouslySetInnerHTML={{ __html: braceBlock.body }} />
             )
 
             last = m.index + token.length
