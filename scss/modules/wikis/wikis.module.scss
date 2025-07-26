@@ -9,3 +9,34 @@
         list-style-type: circle;
     }
 }
+
+.marqueeSlide{
+    display: inline-block;
+    animation: scroll-slide-once 5s ease-in-out 1;
+    animation-fill-mode: forwards;
+}
+
+.marqueeDefault{
+    display: inline-block;
+    animation: scroll-default 10s linear infinite;
+}
+
+// #marquee のslide用
+@keyframes scroll-slide-once {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+// #marquee のデフォルトスクロール用
+@keyframes scroll-default {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}

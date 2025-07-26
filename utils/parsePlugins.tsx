@@ -12,6 +12,7 @@ import SelContent from '@/components/SelContent';
 import { DATEDIF, DATEVALUE } from './dateFunctions';
 import { supabase } from 'lib/supabaseClient';
 import { useRouter } from 'next/router'
+import styles from 'css/wikis.min.module.css';
 
 export type Context = { wikiSlug: string; pageSlug: string }
 
@@ -405,36 +406,30 @@ export function parseOtherInline(
             last = m.index + token.length
         }
         else if (token.startsWith('#marquee')) {
-            const arg = safeTrim(token.slice('#marquee('.length, -1)) // 最後の ')' を除去
-            const parts = arg.split(',').map(s => safeTrim(s))
-
-            const content = parts[0] ?? ''
-            const direction = parts[1] === 'slide' ? 'left' : 'scroll' // slideならleft、未指定ならscroll
-            const background = parts[2] ?? 'transparent'
-            const color = parts[3] ?? 'inherit'
-
+            const [, text, slide, bgColor, color, size] = m
+            const fontSize = size ? `${size}px` : 'inherit'
             nodes.push(
                 <div
                     key={key}
                     style={{
                         overflow: 'hidden',
                         whiteSpace: 'nowrap',
-                        background,
-                        color,
+                        backgroundColor: bgColor ?? 'transparent',
+                        color: color ?? 'inherit',
+                        fontSize,
                     }}
                 >
-                    <div
-                        style={{
-                            display: 'inline-block',
-                            animation: `${direction}-scroll 10s linear infinite`,
-                        }}
-                    >
-                        {content}
-                    </div>
+                    {slide === 'slide' ? (
+                        <div className={styles.marqueeSlide}>
+                            {text}
+                        </div>
+                    ) : (
+                        <div className={styles.marqueeDefault}>
+                            {text}
+                        </div>
+                    )}
                 </div>
             )
-
-            last = m.index + token.length
         }
     }
 
