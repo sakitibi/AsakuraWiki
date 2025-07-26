@@ -4,86 +4,44 @@
     animation-fill-mode: forwards;
 }
 
-/* スライド（1回動作想定） */
-@keyframes scroll-slide-once {
-    0% {
-        transform: translateX(1400%);
-    }
-    100% {
-        transform: translateX(0%);
-    }
+/* スライド */
+@keyframes scroll-slide-once-xl {
+    0% { transform: translateX(1400%); }
+    100% { transform: translateX(0%); }
+}
+@keyframes scroll-slide-once-md {
+    0% { transform: translateX(1000%); }
+    100% { transform: translateX(0%); }
+}
+@keyframes scroll-slide-once-sm {
+    0% { transform: translateX(700%); }
+    100% { transform: translateX(0%); }
 }
 
-/* 通常スクロール（左に流れる） */
-@keyframes scroll-default {
-    0% {
-        transform: translateX(1400%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
+/* 通常スクロール */
+@keyframes scroll-default-xl {
+    0% { transform: translateX(1400%); }
+    100% { transform: translateX(-100%); }
+}
+@keyframes scroll-default-md {
+    0% { transform: translateX(1000%); }
+    100% { transform: translateX(-100%); }
+}
+@keyframes scroll-default-sm {
+    0% { transform: translateX(700%); }
+    100% { transform: translateX(-100%); }
 }
 
 /* 往復スクロール */
-@keyframes scroll-alternate {
-    0% {
-        transform: translateX(1400%);
+@keyframes scroll-alternate-xl {
+    0% { transform: translateX(1400%); }
+    100% { transform: translateX(-100%); }
     }
-    100% {
-        transform: translateX(-100%);
+    @keyframes scroll-alternate-md {
+    0% { transform: translateX(1000%); }
+    100% { transform: translateX(-100%); }
     }
-}
-
-@media (max-width: 999px) and (min-width: 700px) {
-    @keyframes scroll-slide-once {
-        0% {
-        transform: translateX(1000%);
-        }
-        100% {
-        transform: translateX(0%);
-        }
-    }
-    @keyframes scroll-default{
-        0% {
-        transform: translateX(1000%);
-        }
-        100% {
-        transform: translateX(-100%);
-        }
-    }
-    @keyframes scroll-alternate {
-        0% {
-        transform: translateX(1000%);
-        }
-        100% {
-        transform: translateX(-100%);
-        }
-    }
-}
-
-@media (max-width: 699px) {
-    @keyframes scroll-slide-once {
-        0% {
-        transform: translateX(700%);
-        }
-        100% {
-        transform: translateX(0%);
-        }
-    }
-    @keyframes scroll-default{
-        0% {
-            transform: translateX(700%);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
-    }
-    @keyframes scroll-alternate {
-        0% {
-            transform: translateX(700%);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
-    }
+    @keyframes scroll-alternate-sm {
+    0% { transform: translateX(700%); }
+    100% { transform: translateX(-100%); }
 }

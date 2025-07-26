@@ -169,36 +169,46 @@ export function parseOtherInline(
         
         if (token.startsWith('#marquee')) {
             const text = m[28];
-            const loop = m[29]; // '3', 'infinite', '1' など
-            const slide = m[30]; // 'slide', 'alternate', 'default'
+            const loop = m[29];
+            const slide = m[30];
             const bgColor = m[31];
             const color = m[32];
             const size = m[33];
             const fontSize = size ? `${size}px` : 'inherit';
 
-            // loop数を柔軟に処理
             const iterationCount = loop && /^\d+$/.test(loop)
                 ? Number(loop)
                 : 'infinite';
 
-            // JSXで直接アニメーション設定（完全JSX制御！）
+            // 画面幅に応じて suffix を決定（※windowが存在する環境のみ）
+            let sizeSuffix = 'xl'; // デフォルト
+            if (typeof window !== 'undefined') {
+                const screenWidth = window.innerWidth;
+                if (screenWidth < 700) {
+                    sizeSuffix = 'sm';
+                } else if (screenWidth < 1000) {
+                    sizeSuffix = 'md';
+                }
+            }
+
+            // アニメーション名を動的に生成
+            const animationBase =
+                slide === 'slide'
+                ? 'scroll-slide-once'
+                : slide === 'alternate'
+                ? 'scroll-alternate'
+                : 'scroll-default';
+
+            const animationName = `${animationBase}-${sizeSuffix}`;
+
             const animationStyle = {
-                animationName:
-                slide === 'slide'
-                    ? 'scroll-slide-once'
-                    : slide === 'alternate'
-                    ? 'scroll-alternate'
-                    : 'scroll-default',
+                animationName,
                 animationDuration:
-                slide === 'slide'
-                    ? '5s'
-                    : slide === 'alternate'
-                    ? '7s'
-                    : '10s',
+                slide === 'slide' ? '5s'
+                : slide === 'alternate' ? '7s'
+                : '10s',
                 animationTimingFunction:
-                slide === 'slide' || slide === 'alternate'
-                    ? 'ease-in-out'
-                    : 'linear',
+                slide === 'slide' || slide === 'alternate' ? 'ease-in-out' : 'linear',
                 animationIterationCount: iterationCount,
                 animationDirection: slide === 'alternate' ? 'alternate' : 'normal',
                 animationFillMode: slide === 'slide' ? 'forwards' : 'none',
@@ -216,9 +226,9 @@ export function parseOtherInline(
                     fontSize,
                 }}
                 >
-                    <div style={animationStyle}>
-                        {text}
-                    </div>
+                <div style={animationStyle}>
+                    {text}
+                </div>
                 </div>
             );
 
