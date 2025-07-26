@@ -335,6 +335,12 @@ export function parseOtherInline(
             const background = args[1] || undefined
 
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
+                console.log("color node", {
+                token,
+                style: { color, background },
+                content,
+                isString: typeof content === 'string',
+            })
             nodes.push(
                 <span
                     key={key}
