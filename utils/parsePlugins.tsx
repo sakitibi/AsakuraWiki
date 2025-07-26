@@ -323,13 +323,17 @@ export function parseOtherInline(
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
-                <span key={key} style={{ color, backgroundColor: background ?? 'transparent' }}>
+                <span key={key} style={{
+                    ...(color ? { color } : {}),
+                    ...(background ? { backgroundColor: background } : {}),
+                }}>
                     {content}
                 </span>
             )
 
-            last = m.index + braceBlock.end  // ←ここを忘れずに！
-            continue  // ループ継続、次のマッチへ
+            // ✅ tokenSlice の長さで更新（これが正確）
+            last = m.index + tokenSlice.length
+            continue
         }
         else if (token.startsWith('[[')) {
             const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
@@ -367,8 +371,6 @@ export function parseOtherInline(
                 nodes.push(token)
             }
         }
-        // 次マッチ開始位置を更新
-        last = re.lastIndex
     }
 
     // 最後に残ったテキスト
