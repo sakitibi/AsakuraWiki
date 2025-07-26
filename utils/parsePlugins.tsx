@@ -297,6 +297,22 @@ export function parseOtherInline(
                 nodes.push(token)
             }
         }
+        else if (token.startsWith('&color(')) {
+            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([\s\S]+?)\};/)
+            if (match) {
+                const color = match[1].trim()
+                const background = match[2]?.trim()
+                const content = parseOtherInline(match[3], wikiSlug, pageSlug, baseKey + 1)
+                nodes.push(
+                    <span key={key} style={{ color, backgroundColor: background ?? 'transparent' }}>
+                        {content}
+                    </span>
+                )
+            } else {
+                // セミコロンがない等で無効な構文
+                nodes.push(token)
+            }
+        }
         else if (token.startsWith('[[')) {
             const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
             const plainLink = token.match(/\[\[([^\]]+)\]\]/)
@@ -317,22 +333,6 @@ export function parseOtherInline(
                 )
             } else {
                 nodes.push(token) // 解析できなかった場合はそのまま表示
-            }
-        }
-        else if (token.startsWith('&color(')) {
-            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([\s\S]+?)\};/)
-            if (match) {
-                const color = match[1].trim()
-                const background = match[2]?.trim()
-                const content = parseOtherInline(match[3], wikiSlug, pageSlug, baseKey + 1)
-                nodes.push(
-                    <span key={key} style={{ color, backgroundColor: background ?? 'transparent' }}>
-                        {content}
-                    </span>
-                )
-            } else {
-                // セミコロンがない等で無効な構文
-                nodes.push(token)
             }
         }
         else if (token.startsWith('&attachref(')) {
