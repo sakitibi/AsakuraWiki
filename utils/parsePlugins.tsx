@@ -175,20 +175,24 @@ export function parseOtherInline(
                     hideHolidays={off === 'off'}
                 />
             )
+            last = m.index + token.length
         }
         // #DATEDIF(d1,d2,unit)
         else if (token.startsWith('#DATEDIF')) {
             const val = DATEDIF(m[4], m[5], m[6] as any)
             nodes.push(<span key={key}>{isNaN(val) ? 'ERR' : val}</span>)
+            last = m.index + token.length
         }
         // #DATEVALUE(str)
         else if (token.startsWith('#DATEVALUE')) {
             const val = DATEVALUE(m[7])
             nodes.push(<span key={key}>{isNaN(val) ? 'ERR' : val}</span>)
+            last = m.index + token.length
         }
         // #comment
         else if (token === '#comment') {
             nodes.push(<CommentForm key={key} />)
+            last = m.index + token.length
         }
         // #rtcomment
         else if (token.startsWith('#rtcomment')) {
@@ -199,21 +203,26 @@ export function parseOtherInline(
                     pageSlug={pageSlug}
                 />
             )
+            last = m.index + token.length
         }
         // #hr
         else if (token === '#hr') {
             nodes.push(<hr key={key} />)
+            last = m.index + token.length
         }
         else if (token.startsWith('#br')) {
             nodes.push(<br key={key} />)
+            last = m.index + token.length
         }
         else if (token.startsWith('&br;')) {
             nodes.push(<br key={key} />)
+            last = m.index + token.length
         }
         // #ls([title])
         else if (token.startsWith('#ls')) {
             const prefix = safeTrim(m[8]) || undefined
             nodes.push(<PageList key={key} prefix={prefix} />)
+            last = m.index + token.length
         }
         // #ls2(pattern[,…][,…][,…])
         else if (token.startsWith('#ls2')) {
@@ -235,6 +244,7 @@ export function parseOtherInline(
                     label={label}
                 />
             )
+            last = m.index + token.length
         }
         // #include(pageName|css,flag)
         else if (token.startsWith('#include')) {
@@ -274,10 +284,12 @@ export function parseOtherInline(
                     lineRange={lineRange}
                 />
             )
+            last = m.index + token.length
         }
         // #contents
         else if (token === '#contents') {
             nodes.push(<TableOfContents key={key} />)
+            last = m.index + token.length
         }
         // CENTER:
         else if (m[14]) {
@@ -288,16 +300,19 @@ export function parseOtherInline(
                     {contents}
                 </div>
             )
+            last = m.index + token.length
         }
         // LEFT:
         else if (m[15]) {
             const inner = parseOtherInline(m[15], wikiSlug, pageSlug, baseKey + 1)
             nodes.push(<div key={key} style={{ textAlign: 'left' }}>{inner}</div>)
+            last = m.index + token.length
         }
         // RIGHT:
         else if (m[16]) {
             const inner = parseOtherInline(m[16], wikiSlug, pageSlug, baseKey + 1)
             nodes.push(<div key={key} style={{ textAlign: 'right' }}>{inner}</div>)
+            last = m.index + token.length
         }
         else if (token.startsWith('&size(')) {
             const sizeStart = token.indexOf('(')
@@ -310,29 +325,24 @@ export function parseOtherInline(
                     {content}
                 </span>
             )
+            last = m.index + token.length
         }
-        else if (line.slice(m.index).startsWith('&color(')) {
-            const tokenSlice = line.slice(m.index)
-            const colorStart = tokenSlice.indexOf('(')
-            const braceStart = tokenSlice.indexOf('{', colorStart)
-            const braceBlock = extractBracedBlock(tokenSlice, braceStart)
-
-            const args = tokenSlice.slice(colorStart + 1, braceStart).split(',').map(s => s.trim())
+        else if (token.startsWith('&color(')) {
+            const colorStart = token.indexOf('(')
+            const braceStart = token.indexOf('{', colorStart)
+            const braceBlock = extractBracedBlock(token, braceStart)
+            const args = token.slice(colorStart + 1, braceStart).split(',').map(s => s.trim())
             const color = args[0]
             const background = args[1]
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
-                <span key={key} style={{
-                    ...(color ? { color } : {}),
-                    ...(background ? { backgroundColor: background } : {}),
-                }}>
+                <span key={key} style={{ color, backgroundColor: background }}>
                     {content}
                 </span>
             )
 
-            // ✅ tokenSlice の長さで更新（これが正確）
-            last = m.index + tokenSlice.length
+            last = m.index + token.length  // ← これが超大事！
             continue
         }
         else if (token.startsWith('[[')) {
@@ -356,6 +366,7 @@ export function parseOtherInline(
             } else {
                 nodes.push(token) // 解析できなかった場合はそのまま表示
             }
+            last = m.index + token.length
         }
         else if (token.startsWith('&attachref(')) {
             const match = token.match(/&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?/)
@@ -363,13 +374,13 @@ export function parseOtherInline(
                 const url = match[1].trim()
                 const width = parseInt(match[2], 10)
                 const height = parseInt(match[3], 10)
-
                 nodes.push(
                     <img key={key} src={url} width={width} height={height} alt={url} />
                 )
             } else {
                 nodes.push(token)
             }
+            last = m.index + token.length
         }
     }
 
