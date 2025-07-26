@@ -136,7 +136,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]||&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([^}]+)\};/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -317,6 +317,22 @@ export function parseOtherInline(
                 )
             } else {
                 nodes.push(token) // 解析できなかった場合はそのまま表示
+            }
+        }
+        else if (token.startsWith('&color(')) {
+            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([^}]+)\};/)
+            if (match) {
+                const color = match[1].trim()
+                const background = match[2]?.trim()
+                const content = parseOtherInline(match[3], wikiSlug, pageSlug, baseKey + 1)
+                nodes.push(
+                    <span key={key} style={{ color, backgroundColor: background ?? 'transparent' }}>
+                        {content}
+                    </span>
+                )
+            } else {
+                // セミコロンがない等で無効な構文
+                nodes.push(token)
             }
         }
         // 次マッチ開始位置を更新
