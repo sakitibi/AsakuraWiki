@@ -1,4 +1,4 @@
-.list {
+ul {
     &.list1 {
         list-style-type: disc !important;
     }
@@ -20,7 +20,7 @@
 
 @keyframes scroll-slide-once {
     0% {
-        transform: translateX(1500%);
+        transform: translateX(1400%);
     }
     100% {
         transform: translateX(0%);
@@ -29,7 +29,7 @@
 
 @keyframes scroll-default {
     0% {
-        transform: translateX(1500%);
+        transform: translateX(1400%);
     }
     100% {
         transform: translateX(-100%);
@@ -47,7 +47,6 @@
                 transform: translateX(0%);
             }
         }
-
         @keyframes scroll-default {
             0% {
                 transform: translateX(1000%);
@@ -70,7 +69,6 @@
                 transform: translateX(0%);
             }
         }
-
         @keyframes scroll-default {
             0% {
                 transform: translateX(700%);
