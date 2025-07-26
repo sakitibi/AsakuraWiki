@@ -29,7 +29,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
-                            <li>2025/07/25 <a href='/news/2025-07-25-1'>超朗報! Minecraft総合交通(mgtn)<br/>がBANされたあああぁ!</a></li>
+                            <li>2025/07/26 <a href='/news/2025-07-26-1'>超朗報! Minecraft総合交通(mgtn)<br/>がBANされたあああぁ!</a></li>
                             <li>2025/07/23 <a href="/news/2025-07-23-1">第二都市ニュータウン南西側の城の外観完成!</a></li>
                             <li>2025/07/22 <a href="/news/2025-07-22-1">第二都市ニュータウン南西側に城建設中..</a></li>
                             <li>2025/07/18 <a href="/news/2025-07-18-1">あさクラ会議がシステムトラブルで延期に..</a></li>

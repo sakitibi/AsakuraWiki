@@ -19,15 +19,15 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/07/25 超朗報! Minecraft総合交通(mgtn)がBANされたあああぁ!</title>
+                <title>2025/07/26 超朗報! Minecraft総合交通(mgtn)がBANされたあああぁ!</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-07-23-1'/>
+                    <LeftMenuJp URL='/news/2025-07-26-1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/07/25 超朗報! Minecraft総合交通(mgtn)<br/>がBANされたあああぁ!</h1>
+                        <h1>2025/07/26 超朗報! Minecraft総合交通(mgtn)<br/>がBANされたあああぁ!</h1>
                         <p>多分理由は荒らし行為だと思います</p>
                         <p>このサービスの管理者<small>(とメンバー)</small>めっちゃ大喜び!!!!</p>
                         <p>これは運営神!!!ナイス!!!!</p>
