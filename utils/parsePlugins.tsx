@@ -298,7 +298,7 @@ export function parseOtherInline(
             }
         }
         else if (token.startsWith('&color(')) {
-            const match = token.match(/&color\(\s*([^\),]+)\s*(?:,\s*([^\),]+))?\)\{([\s\S]+?)\};/)
+            const match = token.match(/&color\(\s*(#[0-9a-fA-F]{6}|[a-z]+)\s*(?:,\s*(#[0-9a-fA-F]{6}|[a-z]+))?\)\{([\s\S]+?)\};/)
             if (match) {
                 const color = match[1].trim()
                 const background = match[2]?.trim()
