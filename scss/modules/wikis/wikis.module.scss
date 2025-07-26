@@ -1,0 +1,11 @@
+.list{
+    &.list1::marker{
+        list-style-type: disc !important;
+    }
+    &.list3::marker{
+        list-style-type: square !important;
+    }
+    &::marker{
+        list-style-type: circle;
+    }
+}
