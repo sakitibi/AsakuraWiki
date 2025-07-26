@@ -208,6 +208,7 @@ export function parseOtherInline(
             nodes.push(
                 <div
                     key={key}
+                    className={styles.marqueeBase}
                     style={{
                         overflow: 'hidden',
                         whiteSpace: 'nowrap',
