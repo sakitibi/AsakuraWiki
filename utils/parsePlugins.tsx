@@ -181,6 +181,7 @@ export function parseOtherInline(
                 ? Number(loop)
                 : 'infinite';
 
+            // 画面サイズから suffix を決定
             let sizeSuffix = 'xl';
             if (typeof window !== 'undefined') {
                 const screenWidth = window.innerWidth;
@@ -191,15 +192,14 @@ export function parseOtherInline(
                 }
             }
 
-            // CSS Modulesからanimation名を安全に取得
+            // animation名を単純な文字列として構築（CSS Modules不要！）
             const animationBase =
                 slide === 'slide'
-                ? 'scrollSlideOnce'
+                ? 'scroll-slide-once'
                 : slide === 'alternate'
-                ? 'scrollAlternate'
-                : 'scrollDefault';
-            const animationKey = `${animationBase}${sizeSuffix.toUpperCase()}`;
-            const animationName = styles?.[animationKey] ?? 'none'; // fallback付き
+                ? 'scroll-alternate'
+                : 'scroll-default';
+            const animationName = `${animationBase}-${sizeSuffix}`;
 
             const animationStyle = {
                 animationName,
