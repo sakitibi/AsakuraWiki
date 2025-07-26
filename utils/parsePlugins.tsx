@@ -330,7 +330,7 @@ export function parseOtherInline(
             const braceStart = token.indexOf('{')
             const braceBlock = extractBracedBlock(token, braceStart)
 
-            const args = token.slice(6, braceStart).split(',').map(s => safeTrim(s))
+            const args = token.slice(7, braceStart).split(',').map(s => safeTrim(s))
             const color = args[0] || undefined
             const background = args[1] || undefined
 
