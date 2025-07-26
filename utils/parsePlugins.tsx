@@ -191,6 +191,7 @@ export function parseOtherInline(
                     )}
                 </div>
             )
+            last = m.index + token.length;
         }
         else if (token.startsWith('&escape(')) {
             const braceStart = token.indexOf('{')
