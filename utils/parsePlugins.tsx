@@ -166,7 +166,33 @@ export function parseOtherInline(
 
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
-        if (token.startsWith('&escape(')) {
+        if (token.startsWith('#marquee')) {
+            const [, text, slide, bgColor, color, size] = m
+            const fontSize = size ? `${size}px` : 'inherit'
+            nodes.push(
+                <div
+                    key={key}
+                    style={{
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        backgroundColor: bgColor ?? 'transparent',
+                        color: color ?? 'inherit',
+                        fontSize,
+                    }}
+                >
+                    {slide === 'slide' ? (
+                        <div className={styles.marqueeSlide}>
+                            {text}
+                        </div>
+                    ) : (
+                        <div className={styles.marqueeDefault}>
+                            {text}
+                        </div>
+                    )}
+                </div>
+            )
+        }
+        else if (token.startsWith('&escape(')) {
             const braceStart = token.indexOf('{')
             const braceBlock = extractBracedBlock(token, braceStart)
             nodes.push(
@@ -404,32 +430,6 @@ export function parseOtherInline(
                 nodes.push(token)
             }
             last = m.index + token.length
-        }
-        else if (token.startsWith('#marquee')) {
-            const [, text, slide, bgColor, color, size] = m
-            const fontSize = size ? `${size}px` : 'inherit'
-            nodes.push(
-                <div
-                    key={key}
-                    style={{
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        backgroundColor: bgColor ?? 'transparent',
-                        color: color ?? 'inherit',
-                        fontSize,
-                    }}
-                >
-                    {slide === 'slide' ? (
-                        <div className={styles.marqueeSlide}>
-                            {text}
-                        </div>
-                    ) : (
-                        <div className={styles.marqueeDefault}>
-                            {text}
-                        </div>
-                    )}
-                </div>
-            )
         }
     }
 
