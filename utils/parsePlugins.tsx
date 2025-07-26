@@ -324,7 +324,7 @@ export function parseOtherInline(
                     {content}
                 </span>
             )
-            last = m.index + braceStart + braceBlock.end
+            last = m.index + token.length // ✅これに変更！
         }
         else if (token.startsWith('&color(')) {
             const parenStart = token.indexOf('(')
