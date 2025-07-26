@@ -315,22 +315,14 @@ export function parseOtherInline(
             const colorStart = token.indexOf('(')
             const braceStart = token.indexOf('{', colorStart)
             const braceBlock = extractBracedBlock(token, braceStart)
-            
-            // 色と背景色の抽出
+
             const args = token.slice(colorStart + 1, braceStart).split(',').map(s => s.trim())
             const color = args[0]
             const background = args[1]
-
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
 
             nodes.push(
-                <span
-                    key={key}
-                    style={{
-                        color,
-                        backgroundColor: background ?? 'transparent',
-                    }}
-                >
+                <span key={key} style={{ color, backgroundColor: background ?? 'transparent' }}>
                     {content}
                 </span>
             )
