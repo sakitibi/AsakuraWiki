@@ -1,3 +1,17 @@
+@mixin marquee-ifelse{
+    @media (min-width: 1000px){
+        transform: translateX(1500%);
+    }
+    @media (max-width: 999px){
+        @media (min-width: 700px){
+            transform: translateX(1000%);
+        }
+        @media (max-width: 699px){
+            transform: translateX(700%);
+        }
+    }
+}
+
 .list{
     &.list1::marker{
         list-style-type: disc !important;
@@ -24,7 +38,7 @@
 // #marquee のslide用
 @keyframes scroll-slide-once {
     0% {
-        transform: translateX(300%);
+        @include marquee-ifelse;
     }
     100% {
         transform: translateX(0%);
@@ -34,7 +48,7 @@
 // #marquee のデフォルトスクロール用
 @keyframes scroll-default {
     0% {
-        transform: translateX(300%);
+        @include marquee-ifelse;
     }
     100% {
         transform: translateX(-100%);
