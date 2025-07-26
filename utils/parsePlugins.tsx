@@ -187,6 +187,8 @@ export function parseOtherInline(
                 >
                     {slide === 'slide' ? (
                         <div className={styles.marqueeSlide}>{text}</div>
+                    ) : slide === 'alternate' ? (
+                        <div className={styles.marqueeAlternate}>{text}</div>
                     ) : (
                         <div className={styles.marqueeDefault}>{text}</div>
                     )}
