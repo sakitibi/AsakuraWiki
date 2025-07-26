@@ -165,16 +165,18 @@ export function parseOtherInline(
 
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
-        if (line.includes('&escape(){')) {
-            const escapeMatch = line.match(/&escape\(\)\{([\s\S]*?)\};/)
-            if (escapeMatch) {
-                nodes.push(
-                    <span style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-                        {escapeMatch[1]}
-                    </span>
-                )
-                return nodes // ← ここで早期 return！
-            }
+        if (token.startsWith('&escape(')) {
+            const braceStart = token.indexOf('{')
+            const braceBlock = extractBracedBlock(token, braceStart)
+
+            nodes.push(
+                <span key={key}>
+                    {braceBlock.body}
+                </span>
+            )
+
+            last = m.index + token.length // ✅これで末尾 `};` を完全消化
+            continue
         }
         else if (token.startsWith('#calendar2')) {
             const [, y, mo, off] = m
