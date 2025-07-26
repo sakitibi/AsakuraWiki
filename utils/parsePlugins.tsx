@@ -166,9 +166,10 @@ export function parseOtherInline(
 
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
+        
         if (token.startsWith('#marquee')) {
             const [token, text, slide, bgColor, color, size] = m;
-            const fontSize = size ? `${size}px` : 'inherit'
+            const fontSize = size ? `${size}px` : 'inherit';
             nodes.push(
                 <div
                     key={key}
@@ -181,17 +182,14 @@ export function parseOtherInline(
                     }}
                 >
                     {slide === 'slide' ? (
-                        <div className={styles.marqueeSlide}>
-                            {text}
-                        </div>
+                        <div className={styles.marqueeSlide}>{text}</div>
                     ) : (
-                        <div className={styles.marqueeDefault}>
-                            {text}
-                        </div>
+                        <div className={styles.marqueeDefault}>{text}</div>
                     )}
                 </div>
-            )
-            last = m.index + token.length;
+            );
+
+            last = m.index + token.length; // ← これでループ位置も更新！
         }
         else if (token.startsWith('&escape(')) {
             const braceStart = token.indexOf('{')
