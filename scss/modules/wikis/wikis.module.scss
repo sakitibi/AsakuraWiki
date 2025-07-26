@@ -1,56 +1,83 @@
-@mixin marquee-ifelse{
-    @media (min-width: 1000px){
-        transform: translateX(1500%);
-    }
-    @media (max-width: 999px){
-        @media (min-width: 700px){
-            transform: translateX(1000%);
-        }
-        @media (max-width: 699px){
-            transform: translateX(700%);
-        }
-    }
-}
-
-.list{
-    &.list1::marker{
+.list {
+    &.list1 {
         list-style-type: disc !important;
     }
-    &.list3::marker{
+    &.list3 {
         list-style-type: square !important;
     }
-    &::marker{
-        list-style-type: circle;
-    }
+    list-style-type: circle;
 }
 
-.marqueeSlide{
+.marqueeSlide {
     display: inline-block;
-    animation: scroll-slide-once 5s ease-in-out 1;
-    animation-fill-mode: forwards;
+    animation: scroll-slide-once 5s ease-in-out 1 forwards;
 }
 
-.marqueeDefault{
+.marqueeDefault {
     display: inline-block;
     animation: scroll-default 10s linear infinite;
 }
 
-// #marquee のslide用
 @keyframes scroll-slide-once {
     0% {
-        @include marquee-ifelse;
+        transform: translateX(1500%);
     }
     100% {
         transform: translateX(0%);
     }
 }
 
-// #marquee のデフォルトスクロール用
 @keyframes scroll-default {
     0% {
-        @include marquee-ifelse;
+        transform: translateX(1500%);
     }
     100% {
         transform: translateX(-100%);
+    }
+}
+
+@media (max-width: 999px) and (min-width: 700px) {
+    .marqueeSlide,
+    .marqueeDefault {
+        @keyframes scroll-slide-once {
+            0% {
+                transform: translateX(1000%);
+            }
+            100% {
+                transform: translateX(0%);
+            }
+        }
+
+        @keyframes scroll-default {
+            0% {
+                transform: translateX(1000%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    }
+}
+
+@media (max-width: 699px) {
+    .marqueeSlide,
+    .marqueeDefault {
+        @keyframes scroll-slide-once {
+            0% {
+                transform: translateX(700%);
+            }
+            100% {
+                transform: translateX(0%);
+            }
+        }
+
+        @keyframes scroll-default {
+            0% {
+                transform: translateX(700%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
     }
 }
