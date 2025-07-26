@@ -123,6 +123,23 @@ function isValidLineRange(range: string): boolean {
     return /^(\d+)?-(\d+)?$/.test(trimmed) || /^\d+$/.test(trimmed)
 }
 
+function extractBracedBlock(source: string, startIdx: number): { body: string, end: number } {
+    let depth = 0
+    let i = startIdx
+    while (i < source.length) {
+        if (source[i] === '{') depth++
+        else if (source[i] === '}') {
+            depth--
+            if (depth === 0) break
+        }
+        i++
+    }
+    return {
+        body: source.slice(startIdx + 1, i),
+        end: i + 1,
+    }
+}
+
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
 export function parseOtherInline(
     line: string,
@@ -283,19 +300,16 @@ export function parseOtherInline(
             nodes.push(<div key={key} style={{ textAlign: 'right' }}>{inner}</div>)
         }
         else if (token.startsWith('&size(')) {
-            const match = token.match(/&size\((\d+)\)\{([\s\S]*?)\};/)
-            if (match) {
-                const fontSize = parseInt(match[1], 10)
-                const content = parseOtherInline(match[2], wikiSlug, pageSlug, baseKey + 1)
-                nodes.push(
-                    <span key={key} style={{ fontSize: `${fontSize}px` }}>
-                        {content}
-                    </span>
-                )
-            } else {
-                // セミコロンがないのでそのまま文字列として扱う
-                nodes.push(token)
-            }
+            const sizeStart = token.indexOf('(')
+            const braceStart = token.indexOf('{', sizeStart)
+            const braceBlock = extractBracedBlock(token, braceStart)
+            const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10)
+            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
+            nodes.push(
+                <span key={key} style={{ fontSize: `${fontSize}px` }}>
+                    {content}
+                </span>
+            )
         }
         else if (token.startsWith('&color(')) {
             const match = token.match(/&color\(\s*(#[0-9a-fA-F]{6}|[a-z]+)\s*(?:,\s*(#[0-9a-fA-F]{6}|[a-z]+))?\)\{([\s\S]+?)\};/)
