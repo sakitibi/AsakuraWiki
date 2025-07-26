@@ -154,7 +154,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -169,11 +169,42 @@ export function parseOtherInline(
         
         if (token.startsWith('#marquee')) {
             const text = m[28];
-            const slide = m[29];
-            const bgColor = m[30];
-            const color = m[31];
-            const size = m[32];
+            const loop = m[29]; // '3', 'infinite', '1' など
+            const slide = m[30]; // 'slide', 'alternate', 'default'
+            const bgColor = m[31];
+            const color = m[32];
+            const size = m[33];
             const fontSize = size ? `${size}px` : 'inherit';
+
+            // loop数を柔軟に処理
+            const iterationCount = loop && /^\d+$/.test(loop)
+                ? Number(loop)
+                : 'infinite';
+
+            // アニメーション設定
+            const animationStyle = {
+                animationName:
+                    slide === 'slide'
+                        ? 'scroll-slide-once'
+                        : slide === 'alternate'
+                        ? 'scroll-alternate'
+                        : 'scroll-default',
+                animationDuration:
+                    slide === 'slide'
+                        ? '5s'
+                        : slide === 'alternate'
+                        ? '7s'
+                        : '10s',
+                animationTimingFunction:
+                    slide === 'slide' || slide === 'alternate'
+                        ? 'ease-in-out'
+                        : 'linear',
+                animationIterationCount: iterationCount,
+                animationDirection: slide === 'alternate' ? 'alternate' : 'normal',
+                animationFillMode: slide === 'slide' ? 'forwards' : 'none',
+                display: 'inline-block',
+            };
+
             nodes.push(
                 <div
                     key={key}
@@ -185,16 +216,11 @@ export function parseOtherInline(
                         fontSize,
                     }}
                 >
-                    {slide === 'slide' ? (
-                        <div className={styles.marqueeSlide}>{text}</div>
-                    ) : slide === 'alternate' ? (
-                        <div className={styles.marqueeAlternate}>{text}</div>
-                    ) : (
-                        <div className={styles.marqueeDefault}>{text}</div>
-                    )}
+                    <div style={animationStyle}>{text}</div>
                 </div>
             );
-            last = m.index + token.length; // ← これでループ位置も更新！
+
+            last = m.index + token.length;
         }
         else if (token.startsWith('&escape(')) {
             const braceStart = token.indexOf('{')

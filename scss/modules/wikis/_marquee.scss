@@ -1,18 +1,12 @@
-.marqueeSlide {
+@use 'marquee-media';
+
+.marqueeBase {
     display: inline-block;
-    animation: scroll-slide-once 5s ease-in-out 1 forwards;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
 }
 
-.marqueeDefault {
-    display: inline-block;
-    animation: scroll-default 10s linear infinite;
-}
-
-.marqueeAlternate {
-    display: inline-block;
-    animation: scroll-alternate 7s ease-in-out infinite alternate;
-}
-
+/* スライド（1回動作想定） */
 @keyframes scroll-slide-once {
     0% {
         transform: translateX(1400%);
@@ -22,6 +16,7 @@
     }
 }
 
+/* 通常スクロール（左に流れる） */
 @keyframes scroll-default {
     0% {
         transform: translateX(1400%);
@@ -31,71 +26,12 @@
     }
 }
 
+/* 往復スクロール */
 @keyframes scroll-alternate {
     0% {
         transform: translateX(1400%);
     }
     100% {
         transform: translateX(-100%);
-    }
-}
-
-@media (max-width: 999px) and (min-width: 700px) {
-    .marqueeSlide,
-    .marqueeDefault {
-        @keyframes scroll-slide-once {
-            0% {
-                transform: translateX(1000%);
-            }
-            100% {
-                transform: translateX(0%);
-            }
-        }
-        @keyframes scroll-alternate {
-            0% {
-                transform: translateX(1000%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-        @keyframes scroll-default {
-            0% {
-                transform: translateX(1000%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-    }
-}
-
-@media (max-width: 699px) {
-    .marqueeSlide,
-    .marqueeDefault {
-        @keyframes scroll-slide-once {
-            0% {
-                transform: translateX(700%);
-            }
-            100% {
-                transform: translateX(0%);
-            }
-        }
-        @keyframes scroll-alternate {
-            0% {
-                transform: translateX(700%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-        @keyframes scroll-default {
-            0% {
-                transform: translateX(700%);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
-        }
     }
 }

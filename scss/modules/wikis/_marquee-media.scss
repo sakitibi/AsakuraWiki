@@ -1,0 +1,53 @@
+@media (max-width: 999px) and (min-width: 700px) {
+    @keyframes scroll-slide-once {
+        0% {
+        transform: translateX(1000%);
+        }
+        100% {
+        transform: translateX(0%);
+        }
+    }
+    @keyframes scroll-default{
+        0% {
+        transform: translateX(1000%);
+        }
+        100% {
+        transform: translateX(-100%);
+        }
+    }
+    @keyframes scroll-alternate {
+        0% {
+        transform: translateX(1000%);
+        }
+        100% {
+        transform: translateX(-100%);
+        }
+    }
+}
+
+@media (max-width: 699px) {
+    @keyframes scroll-slide-once {
+        0% {
+        transform: translateX(700%);
+        }
+        100% {
+        transform: translateX(0%);
+        }
+    }
+    @keyframes scroll-default{
+        0% {
+            transform: translateX(700%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+    @keyframes scroll-alternate {
+        0% {
+            transform: translateX(700%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+}
