@@ -328,25 +328,26 @@ export function parseOtherInline(
             last = m.index + token.length
         }
         else if (token.startsWith('&color(')) {
-            const colorStart = token.indexOf('(')
-            const braceStart = token.indexOf('{', colorStart)
+            const braceStart = token.indexOf('{')
             const braceBlock = extractBracedBlock(token, braceStart)
-            const args = token.slice(colorStart + 1, braceStart).split(',').map(s => s.trim())
+
+            // extractBracedBlock に .end (終端相対位置) を返させておく
+            const args = token.slice(6, braceStart).split(',').map(s => s.trim())  // 'color('部分を除去
             const color = args[0]
             const background = args[1]
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
+
             nodes.push(
-                <span
-                key={key}
-                style={{
+                <span key={key} style={{
                     ...(color ? { color } : {}),
-                    ...(background ? { backgroundColor: background } : {}),
-                }}
-                >
-                {content}
+                    ...(background ? { backgroundColor: background } : {})
+                }}>
+                    {content}
                 </span>
             )
-            last = m.index + token.length  // ← これが超大事！
+
+            // ✅ token の終端位置を braceBlock.end によって動的決定
+            last = m.index + braceStart + braceBlock.end
             continue
         }
         else if (token.startsWith('[[')) {
