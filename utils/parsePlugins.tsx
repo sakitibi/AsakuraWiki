@@ -154,7 +154,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),?([^)]*)?\)/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -168,7 +168,11 @@ export function parseOtherInline(
         // #calendar2(Y,M,off?)
         
         if (token.startsWith('#marquee')) {
-            const [token, text, slide, bgColor, color, size] = m;
+            const text = m[28];
+            const slide = m[29];
+            const bgColor = m[30];
+            const color = m[31];
+            const size = m[32];
             const fontSize = size ? `${size}px` : 'inherit';
             nodes.push(
                 <div
@@ -188,7 +192,6 @@ export function parseOtherInline(
                     )}
                 </div>
             );
-            console.log('RegExp result:', m);
             last = m.index + token.length; // ← これでループ位置も更新！
         }
         else if (token.startsWith('&escape(')) {
