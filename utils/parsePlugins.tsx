@@ -312,20 +312,28 @@ export function parseOtherInline(
             )
         }
         else if (token.startsWith('&color(')) {
-            const match = token.match(/&color\(\s*(#[0-9a-fA-F]{6}|[a-z]+)\s*(?:,\s*(#[0-9a-fA-F]{6}|[a-z]+))?\)\{([\s\S]+?)\};/)
-            if (match) {
-                const color = match[1].trim()
-                const background = match[2]?.trim()
-                const content = parseOtherInline(match[3], wikiSlug, pageSlug, baseKey + 1)
-                nodes.push(
-                    <span key={key} style={{ color, backgroundColor: background ?? 'transparent' }}>
-                        {content}
-                    </span>
-                )
-            } else {
-                // セミコロンがない等で無効な構文
-                nodes.push(token)
-            }
+            const colorStart = token.indexOf('(')
+            const braceStart = token.indexOf('{', colorStart)
+            const braceBlock = extractBracedBlock(token, braceStart)
+            
+            // 色と背景色の抽出
+            const args = token.slice(colorStart + 1, braceStart).split(',').map(s => s.trim())
+            const color = args[0]
+            const background = args[1]
+
+            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
+
+            nodes.push(
+                <span
+                    key={key}
+                    style={{
+                        color,
+                        backgroundColor: background ?? 'transparent',
+                    }}
+                >
+                    {content}
+                </span>
+            )
         }
         else if (token.startsWith('[[')) {
             const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
