@@ -346,16 +346,15 @@ export function parseOtherInline(
             continue
         }
         else if (token.startsWith('[[')) {
-            const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
             const plainLink = token.match(/\[\[([^\]]+)\]\]/)
+            const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
             if (labeledLink) {
                 const label = labeledLink[1].trim()
                 const url = labeledLink[2].trim()
-                nodes.push(
-                    <a key={key} href={url}>
-                        {parseOtherInline(label, wikiSlug, pageSlug, baseKey + 1)}
-                    </a>
-                )
+                const inner = parseOtherInline(label, wikiSlug, pageSlug, baseKey + 1)
+                nodes.push(<a key={key} href={url}>{inner}</a>)
+                last = m.index + token.length // ✅ここを追加
+                continue
             } else if (plainLink) {
                 const url = plainLink[1].trim()
                 nodes.push(
