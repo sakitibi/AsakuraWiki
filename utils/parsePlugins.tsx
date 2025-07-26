@@ -325,7 +325,7 @@ export function parseOtherInline(
                     {content}
                 </span>
             )
-            last = m.index + token.length
+            last = m.index + braceStart + braceBlock.end
         }
         else if (token.startsWith('&color(')) {
             const braceStart = token.indexOf('{')
