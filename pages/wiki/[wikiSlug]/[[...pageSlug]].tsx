@@ -304,7 +304,7 @@ export default function WikiPage() {
                 wikiSlug: wikiSlugStr,
                 pageSlug: 'MenuBar',
             }),
-        [previewText, wikiSlugStr]  // ← useMemo の第2引数
+        [previewText, wikiSlugStr, 'MenuBar']  // ← useMemo の第2引数
     )
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
