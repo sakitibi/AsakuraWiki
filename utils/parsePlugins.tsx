@@ -9,6 +9,7 @@ import TableOfContents from '@/components/TableOfContents'
 import SelContainer from '@/components/SelContainer';
 import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
+import calcPlugin from '@/components/calcPlugin'
 import { DATEDIF, DATEVALUE } from './dateFunctions';
 import { supabase } from 'lib/supabaseClient';
 import { useRouter } from 'next/router'
@@ -163,7 +164,7 @@ export function parseOtherInline(
     let last = 0
     let m: RegExpExecArray | null
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(([^)]+)\)\{([^\}]+)\};|#let\(([^)]+)\)\{([^\}]+)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#const\(([^)]+)\)\{([^\}]+)\};|#let\(([^)]+)\)\{([^\}]+)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -381,31 +382,29 @@ export function parseOtherInline(
             const inner = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1);
             nodes.push(
                 <div key={key} style={{ textAlign: 'center' }}>
-                <>{Array.isArray(inner) ? inner : [inner]}</>
+                    <>{Array.isArray(inner) ? inner : [inner]}</>
                 </div>
             );
             last = m.index + token.length;
         }
 
-        // LEFT:
         else if (m[15]) {
             const aligned = safeTrim(m[15]);
             const inner = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
             nodes.push(
                 <div key={key} style={{ textAlign: 'left' }}>
-                <>{Array.isArray(inner) ? inner : [inner]}</>
+                    <>{Array.isArray(inner) ? inner : [inner]}</>
                 </div>
             );
             last = m.index + token.length;
         }
 
-        // RIGHT:
         else if (m[16]) {
             const aligned = safeTrim(m[16]);
             const inner = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
             nodes.push(
                 <div key={key} style={{ textAlign: 'right' }}>
-                <>{Array.isArray(inner) ? inner : [inner]}</>
+                    <>{Array.isArray(inner) ? inner : [inner]}</>
                 </div>
             );
             last = m.index + token.length;
@@ -491,73 +490,78 @@ export function parseOtherInline(
             }
             last = m.index + token.length
         }
-        else if (token.startsWith('#const(')) {
-            const varName = m[35].trim();
+        // 型付き #const(name:type){value};
+        else if (m[34] && m[35] && m[36]) {
+            const varName = m[34].trim();
+            const varType = m[35].trim();
             const varValue = m[36].trim();
             context.constContext = context.constContext ?? {};
 
             if (varName in context.constContext) {
-                nodes.push(
-                <span key={key} style={{ color: 'red' }}>
-                    定数 {varName} は再定義できません！
-                </span>
-                );
+                nodes.push(<span key={key} style={{ color: 'red' }}>定数 {varName} は再定義不可！</span>);
             } else {
                 context.constContext[varName] = varValue;
                 nodes.push(
-                <span key={key} style={{ fontWeight: 'bold', color: '#333', display: 'none' }}>
-                    定数 {varName} = {varValue}
+                <span key={key} style={{ display: 'none', fontWeight: 'bold' }}>
+                    定数 {varName}（{varType}） = {varValue}
                 </span>
                 );
             }
             last = m.index + token.length;
         }
-        else if (token.startsWith('#let(')) {
+
+        // 型付き #let(name:type){value};
+        else if (m[37] && m[38] && m[39]) {
             const varName = m[37].trim();
-            const varValue = m[38].trim();
+            const varType = m[38].trim();
+            const varValue = m[39].trim();
             context.letContext = context.letContext ?? {};
             context.letContext[varName] = varValue;
-
             nodes.push(
-                <span key={key} style={{ fontStyle: 'italic', color: '#444', display: 'none' }}>
-                変数 {varName} ← {varValue}
+                <span key={key} style={{ display: 'none', fontStyle: 'italic' }}>
+                変数 {varName}（{varType}） ← {varValue}
                 </span>
             );
             last = m.index + token.length;
         }
-        else if (token.startsWith('&const-use(')) {
-            const varName = m[39]?.trim();
+
+        else if (m[40]) {
+            // &const-use(name);
+            const varName = m[40].trim();
             const value = context.constContext?.[varName];
             nodes.push(
                 <span key={key}>
-                    {value ?? `[定数未定義:${varName}]`}
+                {value ?? `[定数未定義:${varName}]`}
                 </span>
             );
             last = m.index + token.length;
         }
-        else if (token.startsWith('&let-use(')) {
-            const varName = m[40]?.trim();
-            const value = context.letContext?.[varName];
 
+        else if (m[41]) {
+        // &let-use(name);
+            const varName = m[41].trim();
+            const value = context.letContext?.[varName];
             nodes.push(
                 <span key={key}>
-                    {value ?? `[変数未定義:${varName}]`}
+                {value ?? `[変数未定義:${varName}]`}
                 </span>
             );
             last = m.index + token.length;
         }
-        else if (token.startsWith('&relet(')) {
-            const varName = m[41]?.trim();
+
+        else if (m[42]) {
+            // &relet(name);
+            const varName = m[42].trim();
             if (context.letContext?.[varName]) {
                 nodes.push(
-                <span key={key} style={{ color: '#007acc', fontStyle: 'italic', display: 'none' }}>
-                    変数 {varName} は再代入可能です
+                <span key={key} style={{ display: 'none' }}>
+                    再代入OK: {varName}
                 </span>
                 );
             } else {
                 nodes.push(
                 <span key={key} style={{ color: 'red' }}>
-                    再代入対象の変数 `{varName}` は未定義です！
+                    再代入対象 `{varName}` が未定義です
                 </span>
                 );
             }
