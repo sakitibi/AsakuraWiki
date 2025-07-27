@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import FooterJp from '@/utils/pageParts/FooterJp';
 
 export default function Custom404() {
     return (
@@ -12,6 +13,7 @@ export default function Custom404() {
                     <p>お探しのページは存在しません。</p>
                 </div>
             </main>
+            <FooterJp/>
         </>
     );
 }
