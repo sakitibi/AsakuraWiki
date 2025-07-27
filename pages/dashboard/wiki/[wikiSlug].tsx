@@ -101,12 +101,14 @@ export default function WikiSettingsPage() {
 
         const { error: deletionError } = await supabase
             .from('deleted_wikis')
-            .insert([{
+            .delete()
+            .eq('slug', slugStr)
+            /*.insert([{
                 slug: slugStr,
                 deleted: true
             }])
             .eq('slug', slugStr)
-            .single()
+            .single()*/
 
         setLoading(false);
 
