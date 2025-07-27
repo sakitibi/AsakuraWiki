@@ -842,13 +842,13 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
 
     return (
         <div style={{ margin: '1em 0' }}>
-        <Tag onClick={() => setOpen(!open)} style={{...commonsStyle,...headingStyle}}>
-            <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
-            <path fill="currentColor" d={iconPath} />
-            </svg>
-            {title}
-        </Tag>
-        <div style={{ paddingLeft: '1em', display: open ? 'block' : 'none'}}>{children}</div>
+            <Tag onClick={() => setOpen(!open)} style={{...commonsStyle,...headingStyle}}>
+                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
+                <path fill="currentColor" d={iconPath} />
+                </svg>
+                {title}
+            </Tag>
+            <div style={{ paddingLeft: '1em', display: open ? 'block' : 'none'}}>{children}</div>
         </div>
     )
 }
@@ -856,7 +856,7 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
 /** Header コンポーネント */
 function Header({ title, level, anchor }: { title: string; level: '*' | '**' | '***'; anchor: string}) {
     const router = useRouter()
-    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
+    const { wikiSlug } = router.query;
     const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
     const designColor = useDesignColor(wikiSlugStr);
