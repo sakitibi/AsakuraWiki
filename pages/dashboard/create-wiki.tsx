@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from 'lib/supabaseClient';
+import { ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 
 export default function CreateWikiPage() {
     const [wikiId, setWikiId] = useState('');
@@ -11,15 +12,29 @@ export default function CreateWikiPage() {
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!agree) { alert('利用規約に同意してください。'); return; }
-    setLoading(true);
+        e.preventDefault();
+        if (!agree) {
+            alert('利用規約に同意してください。');
+            return;
+        }
+        setLoading(true);
 
-    // ログインユーザー取得
-    const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { alert('ログインしてください'); setLoading(false); return; }
-
+        // ログインユーザー取得
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            alert('ログインしてください');
+            setLoading(false);
+            return;
+        }
         const slug = wikiId.trim().toLowerCase();
+        const deleted_wiki_list_found = deleted_wiki_list.find(value => value === slug);
+        const ban_wiki_list_found = ban_wiki_list.find(value => value === slug);
+
+        if(deleted_wiki_list_found || ban_wiki_list_found){
+            alert("このWikiは過去に一度作成されていました、");
+            setLoading(false);
+            return;
+        }
 
         // 1) wikis テーブルに挿入
         const {error: wikiError} = await supabase
@@ -63,8 +78,6 @@ export default function CreateWikiPage() {
 
         setLoading(false);
         router.push(`/wiki/${slug}`);
-
-
     };
 
     return (
