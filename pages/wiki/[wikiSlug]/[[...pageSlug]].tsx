@@ -7,6 +7,7 @@ import { supabase } from 'lib/supabaseClient';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
 import 'css/wikis.min.module.css';
+import { special_wiki_list } from '@/utils/special_wiki_list';
 
 type Page = {
     title: string
@@ -38,6 +39,8 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
+
+    const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
 
     useEffect(() => {
         if (!wikiSlugStr) return;
@@ -141,7 +144,7 @@ export default function WikiPage() {
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
         } else {
-            if(wikiSlugStr !== "maitetsu_bkmt"){
+            if(!special_wiki_list_found){
                 setLoading(true);
                 const { error } = await supabase
                 .from('wiki_pages')
@@ -156,7 +159,7 @@ export default function WikiPage() {
                     router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
                     location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
                 }
-            } else if(pageSlugStr === "sinsei"){
+            } else if(special_wiki_list[0] && pageSlugStr === "sinsei"){
                 setLoading(true);
                 const { error } = await supabase
                 .from('wiki_pages')
@@ -171,7 +174,7 @@ export default function WikiPage() {
                     router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
                     location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
                 }
-            } else if(pageSlugStr === "comment"){
+            } else if(special_wiki_list[0] && pageSlugStr === "comment"){
                 setLoading(true);
                 const { error } = await supabase
                 .from('wiki_pages')
@@ -191,7 +194,7 @@ export default function WikiPage() {
     }
 
     useEffect(() => {
-        if (wikiSlugStr === "maitetsu_bkmt" && pageSlugStr !== "sinsei") {
+        if (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== "sinsei") {
             location.href = `/special_wiki/maitetsu_bkmt/${pageSlugStr}`;
         } else {
             // 少し遅れてボタン表示を開始
@@ -214,9 +217,9 @@ export default function WikiPage() {
         }
 
         const confirmAndDelete = async () => {
-            if(wikiSlug !== "maitetsu_bkmt"){
+            if(!special_wiki_list_found){
                 const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
-                if (!ok || wikiSlugStr === "maitetsu_bkmt") {
+                if (!ok || special_wiki_list_found) {
                     router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
                     return;
                 }
@@ -256,7 +259,7 @@ export default function WikiPage() {
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
         } else {
-            if(wikiSlug !== "maitetsu_bkmt"){
+            if(!special_wiki_list_found){
                 router.push({
                     pathname: `/wiki/${wikiSlugStr}`,
                     query: { cmd: 'delete', page: pageSlugStr },
@@ -352,7 +355,7 @@ export default function WikiPage() {
                 type="submit"
                 disabled={
                     loading ||
-                    (wikiSlugStr === 'maitetsu_bkmt' && pageSlugStr !== 'sinsei')
+                    (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei')
                 }
                 style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
                 >
@@ -369,11 +372,11 @@ export default function WikiPage() {
                                 <React.Fragment key={i}>{node}</React.Fragment>
                             ))}
                             {showRedirectButton &&
-                            wikiSlugStr === 'maitetsu_bkmt' &&
+                            special_wiki_list[0] &&
                             (pageSlugStr === 'FrontPage') && (
                                 <button
                                 onClick={() =>
-                                    router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
+                                    router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)
                                 }
                                 >
                                 <span>リダイレクトされない場合はこちら</span>
