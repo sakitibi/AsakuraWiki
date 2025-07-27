@@ -502,8 +502,8 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('#let(')) {
-            const varName = m[3].trim();
-            const varValue = m[4].trim();
+            const varName = m[37].trim();
+            const varValue = m[38].trim();
             context.letContext = context.letContext ?? {};
             context.letContext[varName] = varValue;
 
@@ -515,7 +515,7 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&const-use(')) {
-            const varName = m[34]?.trim();
+            const varName = m[39]?.trim();
             const value = context.constContext?.[varName];
 
             nodes.push(
@@ -526,7 +526,7 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&let-use(')) {
-            const varName = m[35]?.trim();
+            const varName = m[40]?.trim();
             const value = context.letContext?.[varName];
 
             nodes.push(
@@ -537,7 +537,7 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&relet(')) {
-            const varName = m[36]?.trim();
+            const varName = m[41]?.trim();
             if (context.letContext?.[varName]) {
                 nodes.push(
                 <span key={key} style={{ color: '#007acc', fontStyle: 'italic', display: 'none' }}>
