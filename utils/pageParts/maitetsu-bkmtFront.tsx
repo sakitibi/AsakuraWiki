@@ -54,7 +54,7 @@ export default function BKMT_Front(){
         const text:HTMLElement | null = document.getElementById("text");
         text!.innerHTML = (`
             <ul>
-                <li><a href="https://wikiwiki.jp/12ninstudio/-s/c5ba3267" target="_blank">さきちび</a></li>
+                <li><a href="/wiki/13ninstudio/SakitibiRailway.com" target="_blank">さきちび</a></li>
                 <li><a href="https://discord.gg/zbvXxCWcg6" target="_blank">匿名</a></li>
                 <li><a href="https://youtube.com/@mizore471" target="_blank">みぞれ</a></li>
             </ul>
