@@ -73,7 +73,7 @@ export default function BKMT_Front(){
         const text:HTMLElement | null = document.getElementById("text");
         text!.innerHTML = (`
             <ul>
-                <li><a href="https://wikiwiki.jp/12ninstudio/-s/c5ba3267" target="_blank">さきちび</a></li>
+                <li><a href="/wiki/13ninstudio/SakitibiRailway.com" target="_blank">さきちび</a></li>
             </ul>
         `);
     }
