@@ -491,10 +491,10 @@ export function parseOtherInline(
             last = m.index + token.length
         }
         // 型付き #const(name:type){value};
-        else if (m[34] && m[35] && m[36]) {
-            const varName = m[34].trim();
-            const varType = m[35].trim();
-            const varValue = m[36].trim();
+        else if (m[35] && m[36] && m[37]) {
+            const varName = m[35].trim();
+            const varType = m[36].trim();
+            const varValue = m[37].trim();
             context.constContext = context.constContext ?? {};
 
             if (varName in context.constContext) {
@@ -511,10 +511,10 @@ export function parseOtherInline(
         }
 
         // 型付き #let(name:type){value};
-        else if (m[37] && m[38] && m[39]) {
-            const varName = m[37].trim();
-            const varType = m[38].trim();
-            const varValue = m[39].trim();
+        else if (m[38] && m[39] && m[40]) {
+            const varName = m[38].trim();
+            const varType = m[39].trim();
+            const varValue = m[40].trim();
             context.letContext = context.letContext ?? {};
             context.letContext[varName] = varValue;
             nodes.push(
@@ -525,9 +525,9 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
 
-        else if (m[40]) {
+        else if (m[41]) {
             // &const-use(name);
-            const varName = m[40].trim();
+            const varName = m[41].trim();
             const value = context.constContext?.[varName];
             nodes.push(
                 <span key={key}>
@@ -537,9 +537,9 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
 
-        else if (m[41]) {
+        else if (m[42]) {
         // &let-use(name);
-            const varName = m[41].trim();
+            const varName = m[42].trim();
             const value = context.letContext?.[varName];
             nodes.push(
                 <span key={key}>
@@ -549,9 +549,9 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
 
-        else if (m[42]) {
+        else if (m[43]) {
             // &relet(name);
-            const varName = m[42].trim();
+            const varName = m[43].trim();
             if (context.letContext?.[varName]) {
                 nodes.push(
                 <span key={key} style={{ display: 'none' }}>
