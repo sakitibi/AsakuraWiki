@@ -13,7 +13,11 @@ import { DATEDIF, DATEVALUE } from './dateFunctions';
 import { supabase } from 'lib/supabaseClient';
 import { useRouter } from 'next/router'
 
-export type Context = { wikiSlug: string; pageSlug: string }
+export type Context = {
+    wikiSlug: string;
+    pageSlug: string;
+    letContext?: Record<string, string>;
+}
 
 export function useDesignColor(slug: string) {
     const router = useRouter()
@@ -112,7 +116,7 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
         }
 
         // 2) その他の行のインライン解析
-        const parsedLine = parseOtherInline(line, wikiSlug, pageSlug, nodeKey);
+        const parsedLine = parseOtherInline(line, wikiSlug, pageSlug, context, nodeKey);
         nodes.push(...parsedLine);
         nodeKey += parsedLine.length || 1;
     });
@@ -148,6 +152,10 @@ export function parseOtherInline(
     line: string,
     wikiSlug: string,
     pageSlug: string,
+    context: Context & {
+        letContext?: Record<string, string>;
+        constContext?: Record<string, string>;
+    },
     baseKey: number,
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = []
@@ -156,7 +164,7 @@ export function parseOtherInline(
     let m: RegExpExecArray | null
 
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)/giu
+    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(([^)]+)\)\{([^\}]+)\};|#let\(([^)]+)\)\{([^\}]+)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);/giu
 
     while ((m = re.exec(line))) {
         // トークンの手前テキストをそのまま文字ノードに
@@ -372,7 +380,7 @@ export function parseOtherInline(
         // CENTER:
         else if (m[14]) {
             const centered = safeTrim(m[14]);
-            const contents = parseOtherInline(centered, wikiSlug, pageSlug, baseKey + 1)
+            const contents = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1)
             nodes.push(
                 <div key={key} style={{ textAlign: 'center' }}>
                     {contents}
@@ -382,13 +390,13 @@ export function parseOtherInline(
         }
         // LEFT:
         else if (m[15]) {
-            const inner = parseOtherInline(m[15], wikiSlug, pageSlug, baseKey + 1)
+            const inner = parseOtherInline(m[15], wikiSlug, pageSlug, context, baseKey + 1)
             nodes.push(<div key={key} style={{ textAlign: 'left' }}>{inner}</div>)
             last = m.index + token.length
         }
         // RIGHT:
         else if (m[16]) {
-            const inner = parseOtherInline(m[16], wikiSlug, pageSlug, baseKey + 1)
+            const inner = parseOtherInline(m[16], wikiSlug, pageSlug, context, baseKey + 1)
             nodes.push(<div key={key} style={{ textAlign: 'right' }}>{inner}</div>)
             last = m.index + token.length
         }
@@ -397,7 +405,7 @@ export function parseOtherInline(
             const braceStart = token.indexOf('{', sizeStart)
             const braceBlock = extractBracedBlock(token, braceStart)
             const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10)
-            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
+            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
             nodes.push(
                 <span key={key} style={{ fontSize: `${fontSize}px` }}>
                     {content}
@@ -420,7 +428,7 @@ export function parseOtherInline(
             const color = args[0]
             const background = args[1]
 
-            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, baseKey + 1)
+            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
 
             nodes.push(
                 <span
@@ -443,7 +451,7 @@ export function parseOtherInline(
             if (labeledLink) {
                 const label = labeledLink[1].trim()
                 const url = labeledLink[2].trim()
-                const inner = parseOtherInline(label, wikiSlug, pageSlug, baseKey + 1)
+                const inner = parseOtherInline(label, wikiSlug, pageSlug, context, baseKey + 1)
                 nodes.push(<a key={key} href={url}>{inner}</a>)
                 last = m.index + token.length // ✅ここを追加
                 continue
@@ -473,8 +481,80 @@ export function parseOtherInline(
             }
             last = m.index + token.length
         }
-    }
+        else if (token.startsWith('#const(')) {
+            const varName = m[1].trim();
+            const varValue = m[2].trim();
+            context.constContext = context.constContext ?? {};
 
+            if (varName in context.constContext) {
+                nodes.push(
+                <span key={key} style={{ color: 'red' }}>
+                    定数 {varName} は再定義できません！
+                </span>
+                );
+            } else {
+                context.constContext[varName] = varValue;
+                nodes.push(
+                <span key={key} style={{ fontWeight: 'bold', color: '#333', display: 'none' }}>
+                    定数 {varName} = {varValue}
+                </span>
+                );
+            }
+            last = m.index + token.length;
+        }
+        else if (token.startsWith('#let(')) {
+            const varName = m[3].trim();
+            const varValue = m[4].trim();
+            context.letContext = context.letContext ?? {};
+            context.letContext[varName] = varValue;
+
+            nodes.push(
+                <span key={key} style={{ fontStyle: 'italic', color: '#444', display: 'none' }}>
+                変数 {varName} ← {varValue}
+                </span>
+            );
+            last = m.index + token.length;
+        }
+        else if (token.startsWith('&const-use(')) {
+            const varName = m[34]?.trim();
+            const value = context.constContext?.[varName];
+
+            nodes.push(
+                <span key={key} style={{ color: '#555', display: 'none' }}>
+                {value ?? `[定数未定義:${varName}]`}
+                </span>
+            );
+            last = m.index + token.length;
+        }
+        else if (token.startsWith('&let-use(')) {
+            const varName = m[35]?.trim();
+            const value = context.letContext?.[varName];
+
+            nodes.push(
+                <span key={key} style={{ color: '#444', fontStyle: 'italic', display: 'none' }}>
+                {value ?? `[変数未定義:${varName}]`}
+                </span>
+            );
+            last = m.index + token.length;
+        }
+        else if (token.startsWith('&relet(')) {
+            const varName = m[36]?.trim();
+            if (context.letContext?.[varName]) {
+                nodes.push(
+                <span key={key} style={{ color: '#007acc', fontStyle: 'italic', display: 'none' }}>
+                    変数 {varName} は再代入可能です
+                </span>
+                );
+            } else {
+                nodes.push(
+                <span key={key} style={{ color: 'red' }}>
+                    再代入対象の変数 `{varName}` は未定義です！
+                </span>
+                );
+            }
+            last = m.index + token.length;
+        }
+    }
     // 最後に残ったテキスト
     if (last < line.length) {
         const rest = line.slice(last).trim()
