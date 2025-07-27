@@ -6,6 +6,7 @@ export default function Custom404() {
         <>
             <Head>
                 <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.min.css"/>
+                <title>404 Not Found</title>
             </Head>
             <main style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
                 <div className="article text-center">

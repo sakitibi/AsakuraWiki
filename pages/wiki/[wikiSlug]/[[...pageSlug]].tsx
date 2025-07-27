@@ -7,7 +7,7 @@ import { supabase } from 'lib/supabaseClient';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
 import 'css/wikis.min.module.css';
-import { special_wiki_list } from '@/utils/special_wiki_list';
+import { special_wiki_list, ban_wiki_list } from '@/utils/wiki_list';
 
 type Page = {
     title: string
@@ -41,6 +41,7 @@ export default function WikiPage() {
     const [showRedirectButton, setShowRedirectButton] = useState(false);
 
     const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
+    const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
 
     useEffect(() => {
         if (!wikiSlugStr) return;
@@ -310,110 +311,127 @@ export default function WikiPage() {
 
     return (
         <>
-        <Head>
-            <title>
-            {page.title}
-            {isEdit ? ' を編集' : null}
-            </title>
-        </Head>
-        {isEdit ? (
-            <main style={{ padding: '2rem', maxWidth: 600 }}>
-            <h1>📝 ページ編集</h1>
-            <form onSubmit={handleUpdate}>
-                <label>
-                タイトル:
-                <input
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    required
-                    style={{ width: '100%', margin: '8px 0', padding: 6 }}
-                />
-                </label>
-                <label>
-                内容:
-                <textarea
-                    value={content}
-                    onChange={e => setContent(e.target.value)}
-                    style={{ width: '100%', height: 300, padding: 6 }}
-                    autoFocus
-                />
-                </label>
-                <h2>プレビュー：</h2>
-                <div
-                style={{
-                    border: '1px solid #ccc',
-                    padding: '1rem',
-                    background: '#f9f9f9',
-                    minHeight: 100,
-                }}
-                >
-                {parsedPreview.map((node, i) => (
-                    <React.Fragment key={i}>{node}</React.Fragment>
-                ))}
-                </div>
-                <button
-                type="submit"
-                disabled={
-                    loading ||
-                    (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei')
-                }
-                style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
-                >
-                    <span>{loading ? '保存中…' : '保存'}</span>
-                </button>
-            </form>
-            </main>
-        ) : (
-            <>
-                <div id="contents-wrapper" style={{display: 'flex'}}>
-                    <div id="container" style={{display: 'flex'}}>
-                        <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
+            {ban_wiki_list_found ? (
+                <>
+                    <Head>
+                        <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.min.css"/>
+                        <title>404 Not Found</title>
+                    </Head>
+                    <main style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
+                        <div className="article text-center">
+                            <h1>404 Not Found</h1>
+                            <p>お探しのコンテンツは当サービスの<a href="https://sakitibi-com9.webnode.jp/page/10">利用規約</a>に違反したため削除されました。</p>
+                        </div>
+                    </main>
+                </>
+            ) : (
+                <>
+                    <Head>
+                        <title>
+                        {page.title}
+                        {isEdit ? ' を編集' : null}
+                        </title>
+                    </Head>
+                    {isEdit ? (
+                        <main style={{ padding: '2rem', maxWidth: 600 }}>
+                        <h1>📝 ページ編集</h1>
+                        <form onSubmit={handleUpdate}>
+                            <label>
+                            タイトル:
+                            <input
+                                value={title}
+                                onChange={e => setTitle(e.target.value)}
+                                required
+                                style={{ width: '100%', margin: '8px 0', padding: 6 }}
+                            />
+                            </label>
+                            <label>
+                            内容:
+                            <textarea
+                                value={content}
+                                onChange={e => setContent(e.target.value)}
+                                style={{ width: '100%', height: 300, padding: 6 }}
+                                autoFocus
+                            />
+                            </label>
+                            <h2>プレビュー：</h2>
+                            <div
+                            style={{
+                                border: '1px solid #ccc',
+                                padding: '1rem',
+                                background: '#f9f9f9',
+                                minHeight: 100,
+                            }}
+                            >
                             {parsedPreview.map((node, i) => (
                                 <React.Fragment key={i}>{node}</React.Fragment>
                             ))}
-                            {showRedirectButton &&
-                            special_wiki_list[0] &&
-                            (pageSlugStr === 'FrontPage') && (
-                                <button
-                                onClick={() =>
-                                    router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)
-                                }
-                                >
-                                <span>リダイレクトされない場合はこちら</span>
-                                </button>
-                            )}
-                            <button onClick={handleEdit} style={{ marginLeft: 8 }}>
-                            <span>このページを編集</span>
-                            </button>
-                            <button onClick={handleDelete}>
-                            <span>このページを削除</span>
-                            </button>
-                            <br />
-                            <button onClick={handlePageLike} style={{ marginTop: 12 }}>
-                            <span>このページを高く評価</span>
-                            </button>
-                            <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
-                            <span>このページを低く評価</span>
-                            </button>
-                            <br/>
-                            <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
-                                <span>このWikiを高く評価</span>
-                            </button>
-                            <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
-                                <span>このWikiを低く評価</span>
-                            </button>
-                            <br/>
-                            <div id="ad-container" style={{ textAlign: 'center' }}>
-                                <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="600"></iframe>
                             </div>
-                        </article>
-                        <Script
-                            src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
-                        />
-                    </div>
-                </div>
-            </>
-        )}
+                            <button
+                            type="submit"
+                            disabled={
+                                loading ||
+                                (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei')
+                            }
+                            style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
+                            >
+                                <span>{loading ? '保存中…' : '保存'}</span>
+                            </button>
+                        </form>
+                        </main>
+                    ) : (
+                        <>
+                            <div id="contents-wrapper" style={{display: 'flex'}}>
+                                <div id="container" style={{display: 'flex'}}>
+                                    <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
+                                        {parsedPreview.map((node, i) => (
+                                            <React.Fragment key={i}>{node}</React.Fragment>
+                                        ))}
+                                        {showRedirectButton &&
+                                        special_wiki_list[0] &&
+                                        (pageSlugStr === 'FrontPage') && (
+                                            <button
+                                            onClick={() =>
+                                                router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)
+                                            }
+                                            >
+                                            <span>リダイレクトされない場合はこちら</span>
+                                            </button>
+                                        )}
+                                        <button onClick={handleEdit} style={{ marginLeft: 8 }}>
+                                        <span>このページを編集</span>
+                                        </button>
+                                        <button onClick={handleDelete}>
+                                        <span>このページを削除</span>
+                                        </button>
+                                        <br />
+                                        <button onClick={handlePageLike} style={{ marginTop: 12 }}>
+                                        <span>このページを高く評価</span>
+                                        </button>
+                                        <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
+                                        <span>このページを低く評価</span>
+                                        </button>
+                                        <br/>
+                                        <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
+                                            <span>このWikiを高く評価</span>
+                                        </button>
+                                        <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
+                                            <span>このWikiを低く評価</span>
+                                        </button>
+                                        <br/>
+                                        <div id="ad-container" style={{ textAlign: 'center' }}>
+                                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="600"></iframe>
+                                        </div>
+                                    </article>
+                                    <Script
+                                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </>
+            )}
         </>
     )
 }
