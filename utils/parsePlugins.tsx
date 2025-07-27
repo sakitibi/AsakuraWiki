@@ -173,11 +173,10 @@ export function parseOtherInline(
         }
         const token = m[0]
         const key = `inl-${baseKey}-${m.index}`
+        console.table(m);
 
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
-        
-
         if (token.startsWith('#marquee')) {
             const text = m[28];
             const loop = m[29];
@@ -554,7 +553,6 @@ export function parseOtherInline(
             }
             last = m.index + token.length;
         }
-        console.table(m);
     }
     // 最後に残ったテキスト
     if (last < line.length) {
