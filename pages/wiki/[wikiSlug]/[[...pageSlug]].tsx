@@ -7,7 +7,7 @@ import { supabase } from 'lib/supabaseClient';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
 import 'css/wikis.min.module.css';
-import { special_wiki_list, ban_wiki_list } from '@/utils/wiki_list';
+import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 
 type Page = {
     title: string
@@ -42,6 +42,7 @@ export default function WikiPage() {
 
     const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
+    const deleted_wiki_list_found = deleted_wiki_list.find(value => value === wikiSlugStr);
 
     useEffect(() => {
         if (!wikiSlugStr) return;
@@ -321,6 +322,19 @@ export default function WikiPage() {
                         <div className="article text-center">
                             <h1>404 Not Found</h1>
                             <p>お探しのコンテンツは当サービスの<a href="https://sakitibi-com9.webnode.jp/page/10">利用規約</a>に違反したため削除されました。</p>
+                        </div>
+                    </main>
+                </>
+            ) : deleted_wiki_list_found ? (
+                <>
+                    <Head>
+                        <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.min.css"/>
+                        <title>404 Not Found</title>
+                    </Head>
+                    <main style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
+                        <div className="article text-center">
+                            <h1>404 Not Found</h1>
+                            <p>お探しのコンテンツはユーザー退会のため削除されました。</p>
                         </div>
                     </main>
                 </>

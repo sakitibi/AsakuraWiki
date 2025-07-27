@@ -99,10 +99,19 @@ export default function WikiSettingsPage() {
             .delete()
             .eq('slug', slugStr);
 
+        const { error: deletionError } = await supabase
+            .from('deleted_wikis')
+            .insert([{
+                slug: slugStr,
+                deleted: true
+            }])
+            .eq('slug', slugStr)
+            .single()
+
         setLoading(false);
 
-        if (pageError || wikiError) {
-            alert('削除に失敗しました: ' + (pageError?.message || wikiError?.message));
+        if (pageError || wikiError || deletionError) {
+            alert('削除に失敗しました: ' + (pageError?.message || wikiError?.message || deletionError?.message));
             return;
         }
 
