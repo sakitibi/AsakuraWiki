@@ -398,7 +398,7 @@ export default function WikiPage() {
                         <span>このWikiを低く評価</span>
                     </button>
                     <br/>
-                    <div id="ad-container" style={{ textAlign: 'center', display: 'flex'}}>
+                    <div id="ad-container" style={{ textAlign: 'center' }}>
                         <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="600"></iframe>
                     </div>
                 </article>
