@@ -402,7 +402,7 @@ export default function WikiPage() {
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
                                         {showRedirectButton &&
-                                        special_wiki_list[0] &&
+                                        wikiSlugStr === special_wiki_list[0] &&
                                         (pageSlugStr === 'FrontPage') && (
                                             <button
                                             onClick={() =>
