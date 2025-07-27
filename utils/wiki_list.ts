@@ -7,6 +7,4 @@ export const special_wiki_list:string[] = [
 export const ban_wiki_list:string[] = [];
 
 // 退会されたWikiリスト(手動で更新する)
-export const deleted_wiki_list:string[] = [
-    "test"
-];
+export const deleted_wiki_list:string[] = [];
