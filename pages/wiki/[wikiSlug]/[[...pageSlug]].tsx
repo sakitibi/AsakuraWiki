@@ -371,10 +371,15 @@ export default function WikiPage() {
         ) : (
             <div id="contents-wrapper">
                 <div id="container">
+                    <div id="menubar">
+                        {parsedPreviewMenuBar.map((node, i) => (
+                            <React.Fragment key={i}>{node}</React.Fragment>
+                        ))}
+                    </div>
                     <article style={{ padding: '2rem', maxWidth: 800 }}>
-                    {parsedPreview.map((node, i) => (
-                        <React.Fragment key={i}>{node}</React.Fragment>
-                    ))}
+                        {parsedPreview.map((node, i) => (
+                            <React.Fragment key={i}>{node}</React.Fragment>
+                        ))}
                         {showRedirectButton &&
                         wikiSlugStr === 'maitetsu_bkmt' &&
                         (pageSlugStr === 'FrontPage') && (
