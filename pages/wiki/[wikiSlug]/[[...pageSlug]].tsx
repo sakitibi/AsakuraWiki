@@ -265,10 +265,6 @@ export default function WikiPage() {
             }
         }
     }
-    const AdHidden = () => {
-        document.getElementById('pc-overlay-ad-parent-container')!.style.visibility = 'hidden';
-        document.getElementById('pc-overlay-ad-close-button')!.style.visibility = 'hidden'
-    }
     const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
     // プレビュー or 閲覧コンテンツ
 
