@@ -567,6 +567,21 @@ export function parseOtherInline(
             }
             last = m.index + token.length;
         }
+        else if (m[44]) {
+            const args = m[44].split(',').map(s => s.trim());
+            const [expression, decStr, style, intStr] = args;
+            const decimals = decStr !== undefined ? Number(decStr) : 0;
+            const integers = intStr !== undefined ? Number(intStr) : undefined;
+
+            try {
+                const result = calcPlugin(expression, decimals, style, integers);
+                nodes.push(<span key={key}>{result}</span>);
+            } catch (e) {
+                nodes.push(<span key={key} style={{ color: 'red' }}>計算失敗</span>);
+            }
+
+            last = m.index + token.length;
+        }
     }
     // 最後に残ったテキスト
     if (last < line.length) {
