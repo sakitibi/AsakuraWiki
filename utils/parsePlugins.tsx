@@ -848,7 +848,7 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
             </svg>
             {title}
         </Tag>
-        {open && <div style={{ paddingLeft: '1em', }}>{children}</div>}
+        <div style={{ paddingLeft: '1em', display: open ? 'block' : 'none'}}>{children}</div>
         </div>
     )
 }
