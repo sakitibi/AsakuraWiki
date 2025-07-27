@@ -39,6 +39,8 @@ export default function WikiPage() {
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
     const [menuBarContent, setMenuBarContent] = useState<string>('')
+    const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const [sideStatus, setSideStatus] = useState<boolean>(false);
 
     useEffect(() => {
         if (!wikiSlugStr) return;
@@ -324,6 +326,14 @@ export default function WikiPage() {
         [menuBarContent, wikiSlugStr]
     );
 
+    const handleClick = () => {
+        setMenuStatus((prevStatus) => {
+            const newStatus = !prevStatus;
+            document.body.style.overflow = newStatus ? 'hidden' : '';
+            return newStatus;
+        });
+    };
+
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
@@ -386,58 +396,68 @@ export default function WikiPage() {
             </form>
             </main>
         ) : (
-            <div id="contents-wrapper" style={{display: 'flex'}}>
-                <div id="container" style={{display: 'flex'}}>
-                    <div id="menubar" className='columnLeft'>
-                        {parsedPreviewMenuBar.map((node, i) => (
-                            <React.Fragment key={i}>{node}</React.Fragment>
-                        ))}
-                    </div>
-                    <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
-                        {parsedPreview.map((node, i) => (
-                            <React.Fragment key={i}>{node}</React.Fragment>
-                        ))}
-                        {showRedirectButton &&
-                        wikiSlugStr === 'maitetsu_bkmt' &&
-                        (pageSlugStr === 'FrontPage') && (
-                            <button
-                            onClick={() =>
-                                router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
-                            }
-                            >
-                            <span>リダイレクトされない場合はこちら</span>
-                            </button>
-                        )}
-                        <button onClick={handleEdit} style={{ marginLeft: 8 }}>
-                        <span>このページを編集</span>
-                        </button>
-                        <button onClick={handleDelete}>
-                        <span>このページを削除</span>
-                        </button>
-                        <br />
-                        <button onClick={handlePageLike} style={{ marginTop: 12 }}>
-                        <span>このページを高く評価</span>
-                        </button>
-                        <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
-                        <span>このページを低く評価</span>
-                        </button>
-                        <br/>
-                        <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
-                            <span>このWikiを高く評価</span>
-                        </button>
-                        <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
-                            <span>このWikiを低く評価</span>
-                        </button>
-                        <br/>
-                        <div id="ad-container" style={{ textAlign: 'center' }}>
-                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="600"></iframe>
-                        </div>
-                    </article>
-                    <Script
-                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
-                    />
+            <>
+                <div id="menubar" className='columnLeft' style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
+                    <div style={{ float: 'right', cursor: 'pointer'}} onClick={handleClick}>×</div>
+                    {parsedPreviewMenuBar.map((node, i) => (
+                        <React.Fragment key={i}>{node}</React.Fragment>
+                    ))}
                 </div>
-            </div>
+                <div id="contents-wrapper" style={{display: 'flex'}}>
+                    <header style={{display: 'block'}}>
+                        <button id="menu-button" onClick={handleClick}>
+                            <span style={{ alignItems: 'center', display: 'flex', height: '30px' }}>
+                                <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="MenuBar" width="30" height="30"/>
+                            </span>
+                        </button>
+                    </header>
+                    <div id="container" style={{display: 'flex'}}>
+                        <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
+                            {parsedPreview.map((node, i) => (
+                                <React.Fragment key={i}>{node}</React.Fragment>
+                            ))}
+                            {showRedirectButton &&
+                            wikiSlugStr === 'maitetsu_bkmt' &&
+                            (pageSlugStr === 'FrontPage') && (
+                                <button
+                                onClick={() =>
+                                    router.replace(`/special_wiki/maitetsu_bkmt/${pageSlugStr}`)
+                                }
+                                >
+                                <span>リダイレクトされない場合はこちら</span>
+                                </button>
+                            )}
+                            <button onClick={handleEdit} style={{ marginLeft: 8 }}>
+                            <span>このページを編集</span>
+                            </button>
+                            <button onClick={handleDelete}>
+                            <span>このページを削除</span>
+                            </button>
+                            <br />
+                            <button onClick={handlePageLike} style={{ marginTop: 12 }}>
+                            <span>このページを高く評価</span>
+                            </button>
+                            <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
+                            <span>このページを低く評価</span>
+                            </button>
+                            <br/>
+                            <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
+                                <span>このWikiを高く評価</span>
+                            </button>
+                            <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
+                                <span>このWikiを低く評価</span>
+                            </button>
+                            <br/>
+                            <div id="ad-container" style={{ textAlign: 'center' }}>
+                                <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="600"></iframe>
+                            </div>
+                        </article>
+                        <Script
+                            src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
+                        />
+                    </div>
+                </div>
+            </>
         )}
         </>
     )
