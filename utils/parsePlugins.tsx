@@ -206,7 +206,7 @@ export function parseOtherInline(
                 animationDuration:
                     slide === 'slide' ? '5s'
                     : slide === 'alternate' ? '7s'
-                    : '10s',
+                    : '15s',
                 animationTimingFunction:
                     slide === 'slide' || slide === 'alternate' ? 'ease-in-out' : 'linear',
                 animationIterationCount: iterationCount,

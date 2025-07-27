@@ -6,7 +6,7 @@
 
 /* スライド */
 @keyframes scroll-slide-once-xl {
-    0% { transform: translateX(1400%); }
+    0% { transform: translateX(1300%); }
     100% { transform: translateX(0%); }
 }
 @keyframes scroll-slide-once-md {
@@ -20,7 +20,7 @@
 
 /* 通常スクロール */
 @keyframes scroll-default-xl {
-    0% { transform: translateX(1400%); }
+    0% { transform: translateX(1300%); }
     100% { transform: translateX(-100%); }
 }
 @keyframes scroll-default-md {
@@ -34,7 +34,7 @@
 
 /* 往復スクロール */
 @keyframes scroll-alternate-xl {
-    0% { transform: translateX(1400%); }
+    0% { transform: translateX(1300%); }
     100% { transform: translateX(-100%); }
     }
     @keyframes scroll-alternate-md {
