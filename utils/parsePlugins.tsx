@@ -21,9 +21,6 @@ export type Context = {
 }
 
 export function useDesignColor(slug: string) {
-    const router = useRouter()
-    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
 
     useEffect(() => {
