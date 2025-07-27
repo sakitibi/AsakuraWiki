@@ -481,8 +481,8 @@ export function parseOtherInline(
             last = m.index + token.length
         }
         else if (token.startsWith('#const(')) {
-            const varName = m[1].trim();
-            const varValue = m[2].trim();
+            const varName = m[35].trim();
+            const varValue = m[36].trim();
             context.constContext = context.constContext ?? {};
 
             if (varName in context.constContext) {
