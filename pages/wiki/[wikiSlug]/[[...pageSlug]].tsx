@@ -38,6 +38,7 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
+    const [menuBarContent, setMenuBarContent] = useState<string>('')
 
     useEffect(() => {
         if (!wikiSlugStr) return;
@@ -131,6 +132,22 @@ export default function WikiPage() {
             document.body.classList.remove('yellow');
         };
     }, [designColor]);
+
+    useEffect(() => {
+        async function fetchMenuBar() {
+            const { data, error } = await supabase
+            .from('wiki_pages')
+            .select('content')
+            .eq('wiki_slug', wikiSlugStr)
+            .eq('slug', 'MenuBar')
+            .single();
+
+            if (error || !data) return;
+            setMenuBarContent(data.content);
+        }
+
+        fetchMenuBar();
+    }, [wikiSlugStr]);
 
     // 更新処理
     const handleUpdate = async (e: React.FormEvent) => {
@@ -300,12 +317,12 @@ export default function WikiPage() {
     )
     const parsedPreviewMenuBar = useMemo(
         () =>
-            parseWikiContent(previewText, {
-                wikiSlug: wikiSlugStr,
-                pageSlug: 'MenuBar',
+            parseWikiContent(menuBarContent, {
+            wikiSlug: wikiSlugStr,
+            pageSlug: 'MenuBar',
             }),
-        [previewText, wikiSlugStr, 'MenuBar']  // ← useMemo の第2引数
-    )
+        [menuBarContent, wikiSlugStr]
+    );
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
