@@ -517,7 +517,6 @@ export function parseOtherInline(
         else if (token.startsWith('&const-use(')) {
             const varName = m[39]?.trim();
             const value = context.constContext?.[varName];
-
             nodes.push(
                 <span key={key} style={{ color: '#555', display: 'none' }}>
                 {value ?? `[定数未定義:${varName}]`}
