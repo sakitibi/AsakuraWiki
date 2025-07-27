@@ -12,7 +12,6 @@ import SelContent from '@/components/SelContent';
 import { DATEDIF, DATEVALUE } from './dateFunctions';
 import { supabase } from 'lib/supabaseClient';
 import { useRouter } from 'next/router'
-import styles from 'css/wikis.min.module.css';
 
 export type Context = { wikiSlug: string; pageSlug: string }
 
@@ -94,25 +93,31 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
     const nodes: React.ReactNode[] = [];
     let nodeKey = 0;
 
-    text.split("\n").forEach((line) => {
-        // 1) 行頭が "*","**","***" 見出しか?
+    text.split(/\r?\n/).forEach((line) => {
+        // 1) 見出しか？
         const headingMatch = line.match(/^(\*{1,3})\s*(.+)/);
         if (headingMatch) {
-            const [ , stars, title ] = headingMatch;
+            const stars = headingMatch[1];
+            const titleAndAnchor = headingMatch[2];
+
+            // "タイトル#アンカー" に対応
+            const [title, anchor = ""] = titleAndAnchor.split("#").map((s) => s.trim());
+
             nodes.push(
                 <Header
                 key={`hdr-${nodeKey++}`}
                 level={stars as "*" | "**" | "***"}
                 title={title}
+                anchor={anchor}
                 />
             );
             return;
         }
 
-        // 2) 見出し以外のインラインプラグインを処理する
-        //    ここでは既存の re を使って text ノードを分解するヘルパーを想定
-        nodes.push(...parseOtherInline(line, wikiSlug, pageSlug, nodeKey));
-        nodeKey += 10; // 適当にキーを進める
+        // 2) 通常行のインラインプラグイン処理
+        const parsedLine = parseOtherInline(line, wikiSlug, pageSlug, nodeKey);
+        nodes.push(...parsedLine);
+        nodeKey += parsedLine.length || 1;
     });
 
     return nodes;
@@ -742,7 +747,7 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
 }
 
 /** Header コンポーネント */
-function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }) {
+function Header({ title, level, anchor }: { title: string; level: '*' | '**' | '***'; anchor: string}) {
     const router = useRouter()
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
@@ -855,6 +860,12 @@ function Header({ title, level, }: { title: string; level: '*' | '**' | '***'; }
         <div style={{ margin: '1em 0' }}>
             <Tag style={{...commonsStyle, ...headingStyle}}>
                 {title}
+                <a id={anchor} style={{display: 'none'}}></a>
+                <a href={`#${anchor}`}>
+                    <svg className="svg-inline--fa fa-link" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="link" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg="">
+                        <path fill="currentColor" d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"></path>
+                    </svg>
+                </a>
             </Tag>
         </div>
     )
