@@ -38,9 +38,6 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
-    const [menuBarContent, setMenuBarContent] = useState<string>('')
-    const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [sideStatus, setSideStatus] = useState<boolean>(false);
 
     useEffect(() => {
         if (!wikiSlugStr) return;
@@ -134,22 +131,6 @@ export default function WikiPage() {
             document.body.classList.remove('yellow');
         };
     }, [designColor]);
-
-    useEffect(() => {
-        async function fetchMenuBar() {
-            const { data, error } = await supabase
-            .from('wiki_pages')
-            .select('content')
-            .eq('wiki_slug', wikiSlugStr)
-            .eq('slug', 'MenuBar')
-            .single();
-
-            if (error || !data) return;
-            setMenuBarContent(data.content);
-        }
-
-        fetchMenuBar();
-    }, [wikiSlugStr]);
 
     // 更新処理
     const handleUpdate = async (e: React.FormEvent) => {
@@ -317,22 +298,6 @@ export default function WikiPage() {
             }),
         [previewText, wikiSlugStr, pageSlugStr]  // ← useMemo の第2引数
     )
-    const parsedPreviewMenuBar = useMemo(
-        () =>
-            parseWikiContent(menuBarContent, {
-            wikiSlug: wikiSlugStr,
-            pageSlug: 'MenuBar',
-            }),
-        [menuBarContent, wikiSlugStr]
-    );
-
-    const handleClick = () => {
-        setMenuStatus((prevStatus) => {
-            const newStatus = !prevStatus;
-            document.body.style.overflow = newStatus ? 'hidden' : '';
-            return newStatus;
-        });
-    };
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
@@ -397,20 +362,7 @@ export default function WikiPage() {
             </main>
         ) : (
             <>
-                <div id="menubar" className='columnLeft' style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
-                    <div style={{ float: 'right', cursor: 'pointer'}} onClick={handleClick}>×</div>
-                    {parsedPreviewMenuBar.map((node, i) => (
-                        <React.Fragment key={i}>{node}</React.Fragment>
-                    ))}
-                </div>
                 <div id="contents-wrapper" style={{display: 'flex'}}>
-                    <header style={{display: 'block'}}>
-                        <button id="menu-button" onClick={handleClick}>
-                            <span style={{ alignItems: 'center', display: 'flex', height: '30px' }}>
-                                <img src="https://wikiwiki.jp/pa/img/icon-menu-white.png" alt="MenuBar" width="30" height="30"/>
-                            </span>
-                        </button>
-                    </header>
                     <div id="container" style={{display: 'flex'}}>
                         <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
                             {parsedPreview.map((node, i) => (
