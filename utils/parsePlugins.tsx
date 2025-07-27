@@ -572,9 +572,11 @@ export function parseOtherInline(
             const [expression, decStr, style, intStr] = args;
             const decimals = decStr !== undefined ? Number(decStr) : 0;
             const integers = intStr !== undefined ? Number(intStr) : undefined;
-
+            const resolvedExpr = expression.replace(/\b[a-zA-Z_]\w*\b/g, varName => {
+                return context.constContext?.[varName] ?? context.letContext?.[varName] ?? varName;
+            });
             try {
-                const result = calcPlugin(expression, decimals, style, integers);
+                const result = calcPlugin(resolvedExpr, decimals, style, integers);
                 nodes.push(<span key={key}>{result}</span>);
             } catch (e) {
                 nodes.push(<span key={key} style={{ color: 'red' }}>計算失敗</span>);
