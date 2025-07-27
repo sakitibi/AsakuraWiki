@@ -171,6 +171,21 @@ export default function WikiPage() {
                     router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
                     location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
                 }
+            } else if(pageSlugStr === "comment"){
+                setLoading(true);
+                const { error } = await supabase
+                .from('wiki_pages')
+                .update({ title, content, updated_at: new Date() })
+                .eq('wiki_slug', wikiSlugStr)
+                .eq('slug', pageSlugStr)
+                setLoading(false)
+
+                if (error) {
+                    alert('更新に失敗しました: ' + error.message);
+                } else {
+                    router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+                    location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
+                }
             }
         }
     }
