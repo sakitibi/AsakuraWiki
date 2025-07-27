@@ -53,6 +53,18 @@ body{
         font-size: 12px;
         font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
         @include mixin.background;
+        .columnsContainer.hasLeftColumn:not(.hasRightColumn) .columnLeft {
+            grid-column: 1 / span 1;
+        }
+        .wiki-font.default{
+            & .columnLeft {
+                @include mixin.menubar(#f1fddf);
+            }
+        }
+        .columnCenter, .columnLeft, .columnRight {
+            grid-row: 1 / span 1;
+            min-width: 0;
+        }
         &:not(.pink,.blue,.yellow){
             @include mixin.defaultGreen;
         }
@@ -61,17 +73,26 @@ body{
             & button::before {
                 @include mixin.position(rgb(244, 164, 229 ), rgb(199, 17, 157));
             }
+            & .columnLeft {
+                @include mixin.menubar(#feeef6);
+            }
         }
         &.blue {
             background-image: linear-gradient(to right, rgb(146, 221, 244), rgb(45, 161, 200), rgb(29, 75, 192), rgb(43, 91, 235), rgb(75, 139, 217), rgb(113, 183, 221)) !important;
             & button::before {
                 @include mixin.position(rgb(164, 212, 244), rgb(17, 102, 199));
             }
+            & .columnLeft {
+                @include mixin.menubar(#f0f8ff);
+            }
         }
         &.yellow {
             background-image: linear-gradient(to right, rgb(237, 187, 25), rgb(197, 153, 20), rgb(149, 106, 12), rgb(162, 119, 11), rgb(209, 142, 19), rgb(234, 191, 73)) !important;
             & button::before {
                 @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
+            }
+            & .columnLeft {
+                @include mixin.menubar(#fffbed);
             }
         }
         & hr{

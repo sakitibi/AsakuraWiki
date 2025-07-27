@@ -21,3 +21,10 @@
     font-size: 15px;
     @include background;
 }
+
+@mixin menubar($bgcolor){
+    background-color: $bgcolor;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    padding: 5px;
+}

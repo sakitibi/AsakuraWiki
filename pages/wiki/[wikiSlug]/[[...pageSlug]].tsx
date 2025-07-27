@@ -386,8 +386,8 @@ export default function WikiPage() {
             </form>
             </main>
         ) : (
-            <div id="contents-wrapper">
-                <div id="container">
+            <div id="contents-wrapper" style={{display: 'flex'}}>
+                <div id="container" style={{display: 'flex'}}>
                     <div id="menubar">
                         {parsedPreviewMenuBar.map((node, i) => (
                             <React.Fragment key={i}>{node}</React.Fragment>
