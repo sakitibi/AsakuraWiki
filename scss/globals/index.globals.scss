@@ -65,6 +65,9 @@ body{
             grid-row: 1 / span 1;
             min-width: 0;
         }
+        .columnCenter {
+            grid-column: 2 / span 1;
+        }
         &:not(.pink,.blue,.yellow){
             @include mixin.defaultGreen;
         }

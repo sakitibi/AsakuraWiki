@@ -393,7 +393,7 @@ export default function WikiPage() {
                             <React.Fragment key={i}>{node}</React.Fragment>
                         ))}
                     </div>
-                    <article style={{ padding: '2rem', maxWidth: 800 }}>
+                    <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
                         {parsedPreview.map((node, i) => (
                             <React.Fragment key={i}>{node}</React.Fragment>
                         ))}
