@@ -36,12 +36,12 @@
 @keyframes scroll-alternate-xl {
     0% { transform: translateX(1300%); }
     100% { transform: translateX(-100%); }
-    }
-    @keyframes scroll-alternate-md {
+}
+@keyframes scroll-alternate-md {
     0% { transform: translateX(1000%); }
     100% { transform: translateX(-100%); }
-    }
-    @keyframes scroll-alternate-sm {
+}
+@keyframes scroll-alternate-sm {
     0% { transform: translateX(700%); }
     100% { transform: translateX(-100%); }
 }
