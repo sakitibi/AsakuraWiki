@@ -172,7 +172,7 @@ export function parseOtherInline(
         }
         const token = m[0]
         const key = `inl-${baseKey}-${m.index}`
-        console.table(m);
+        //console.table(m);
 
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
