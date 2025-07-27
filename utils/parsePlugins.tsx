@@ -162,7 +162,6 @@ export function parseOtherInline(
     const safeTrim = (v: unknown) => typeof v === 'string' ? v.trim() : ''
     let last = 0
     let m: RegExpExecArray | null
-
     // 各プラグインを順次キャプチャする正規表現
     const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?|&escape\(\)\{([\s\S]*?)\};|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(([^)]+)\)\{([^\}]+)\};|#let\(([^)]+)\)\{([^\}]+)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);/giu
 
@@ -379,25 +378,37 @@ export function parseOtherInline(
         // CENTER:
         else if (m[14]) {
             const centered = safeTrim(m[14]);
-            const contents = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1)
+            const inner = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1);
             nodes.push(
                 <div key={key} style={{ textAlign: 'center' }}>
-                    {contents}
+                <>{Array.isArray(inner) ? inner : [inner]}</>
                 </div>
-            )
-            last = m.index + token.length
+            );
+            last = m.index + token.length;
         }
+
         // LEFT:
         else if (m[15]) {
-            const inner = parseOtherInline(m[15], wikiSlug, pageSlug, context, baseKey + 1)
-            nodes.push(<div key={key} style={{ textAlign: 'left' }}>{inner}</div>)
-            last = m.index + token.length
+            const aligned = safeTrim(m[15]);
+            const inner = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
+            nodes.push(
+                <div key={key} style={{ textAlign: 'left' }}>
+                <>{Array.isArray(inner) ? inner : [inner]}</>
+                </div>
+            );
+            last = m.index + token.length;
         }
+
         // RIGHT:
         else if (m[16]) {
-            const inner = parseOtherInline(m[16], wikiSlug, pageSlug, context, baseKey + 1)
-            nodes.push(<div key={key} style={{ textAlign: 'right' }}>{inner}</div>)
-            last = m.index + token.length
+            const aligned = safeTrim(m[16]);
+            const inner = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
+            nodes.push(
+                <div key={key} style={{ textAlign: 'right' }}>
+                <>{Array.isArray(inner) ? inner : [inner]}</>
+                </div>
+            );
+            last = m.index + token.length;
         }
         else if (token.startsWith('&size(')) {
             const sizeStart = token.indexOf('(')
