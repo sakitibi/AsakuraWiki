@@ -529,8 +529,8 @@ export function parseOtherInline(
             const varName = m[39]?.trim();
             const value = context.constContext?.[varName];
             nodes.push(
-                <span key={key} style={{ color: '#555', display: 'none' }}>
-                {value ?? `[定数未定義:${varName}]`}
+                <span key={key}>
+                    {value ?? `[定数未定義:${varName}]`}
                 </span>
             );
             last = m.index + token.length;
@@ -540,8 +540,8 @@ export function parseOtherInline(
             const value = context.letContext?.[varName];
 
             nodes.push(
-                <span key={key} style={{ color: '#444', fontStyle: 'italic', display: 'none' }}>
-                {value ?? `[変数未定義:${varName}]`}
+                <span key={key} style={{ color: '#444', fontStyle: 'italic' }}>
+                    {value ?? `[変数未定義:${varName}]`}
                 </span>
             );
             last = m.index + token.length;
