@@ -137,6 +137,7 @@ export default function WikiPage() {
         e.preventDefault();
         if(editMode === 'private' && !user){
             alert("403 Forbidden あなたは編集する権限がありません");
+            console.error("403 Forbidden あなたは編集する権限がありません");
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
         } else {
@@ -236,6 +237,7 @@ export default function WikiPage() {
     const handleDelete = () => {
         if(editMode === 'private' && !user){
             alert("403 Forbidden あなたは削除する権限がありません");
+            console.error("403 Forbidden あなたは削除する権限がありません");
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
         } else {
