@@ -540,7 +540,7 @@ export function parseOtherInline(
             const value = context.letContext?.[varName];
 
             nodes.push(
-                <span key={key} style={{ color: '#444', fontStyle: 'italic' }}>
+                <span key={key}>
                     {value ?? `[変数未定義:${varName}]`}
                 </span>
             );
