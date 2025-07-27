@@ -554,6 +554,7 @@ export function parseOtherInline(
             }
             last = m.index + token.length;
         }
+        console.table(m);
     }
     // 最後に残ったテキスト
     if (last < line.length) {
