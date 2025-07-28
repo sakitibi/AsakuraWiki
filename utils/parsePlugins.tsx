@@ -683,38 +683,28 @@ export function parseOtherInline(
         const blocks: AccordionBlock[] = [];
         let cursor = 0;
         const accRe = /#accordion\(([^)]*?)\)\s*\{\{/g;
-
-        while (true) {
+        while (accRe.lastIndex < content.length) {
             accRe.lastIndex = cursor;
             const m = accRe.exec(content);
             if (!m) break;
-            const [whole, rawArgs] = m;
-            const args = rawArgs.split(',').map(s => s.trim());
 
+            const start = m.index;
+            const args = m[1].split(',').map(s => s.trim());
             const title = args[0];
             const level = args.find(a => /^(\*{1,3})$/.test(a)) as '*' | '**' | '***' ?? '*';
             const isOpen = args.includes('open');
 
-            const start = m.index;
-            const bodyStart = start + whole.length;
-
-            // 改良されたネスト対応パース
-            let depth = 1;
-            let i = bodyStart;
-            while (i < content.length && depth > 0) {
+            // 多段 {{ }} 対応の本文抽出
+            let braceDepth = 1;
+            let i = accRe.lastIndex;
+            while (i < content.length && braceDepth > 0) {
                 const two = content.slice(i, i + 2);
-                if (two === '{{') {
-                    depth++; i += 2;
-                } else if (two === '}}') {
-                    depth--; i += 2;
-                } else {
-                    i++;
-                }
+                if (two === '{{') { braceDepth++; i += 2; }
+                else if (two === '}}') { braceDepth--; i += 2; }
+                else { i++; }
             }
-
+            const body = content.slice(accRe.lastIndex, i - 2);
             const end = i;
-            const body = content.slice(bodyStart, i - 2);
-
             blocks.push({ prefix: content.slice(cursor, start) });
             blocks.push({ title, level, isOpen, body, start, end });
             cursor = end;
