@@ -159,6 +159,13 @@ export default function Home() {
                                     <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>HOTなWiki</h2>
                                     <ul>
                                         <li>
+                                            <Link href="/special_wiki/13ninstudio">
+                                                <button>
+                                                    <strong>あさクラV2.0.11 Wiki*</strong>
+                                                </button>
+                                            </Link>
+                                        </li>
+                                        <li>
                                             <Link href="/special_wiki/maitetsu_bkmt">
                                                 <button>
                                                     <strong>マイ鉄ネット撲滅委員会 Wiki*</strong>
