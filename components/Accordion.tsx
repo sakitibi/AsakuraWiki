@@ -35,10 +35,12 @@ export function extractAccordions(content: string, offset = 0): AccordionBlock[]
             }
         }
 
-        const prefix = content.slice(cursor, start); // ← blk.start の前のテキスト部分
-        const body = content.slice(accRe.lastIndex, i - 2); // brace の外側
-        const end = i; // }} の直後
-        const children: AccordionBlock[] = []; // あるいは再帰的ブロックなど
+        const prefix = content.slice(cursor, start);
+        const body = content.slice(accRe.lastIndex, i - 2);
+        const end = i;
+
+        // 🎯再帰的に子ブロックを抽出
+        const children = extractAccordions(body, offset + accRe.lastIndex);
 
         blocks.push({
             prefix,
