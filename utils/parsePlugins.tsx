@@ -586,18 +586,23 @@ export function parseOtherInline(
         type BlockItem = {
             type: 'accordion' | 'fold' | 'sel' | 'inline';
             start: number;
+            end: number;
             node: React.ReactNode;
         };
 
         const blockItems: BlockItem[] = [];
 
-        // 抽出されたアコーディオンを変換
+        // アコーディオンを変換
         accordionBlocks.forEach((blk, idx) => {
             if (!blk.title) return;
+            const raw = `#accordion(${blk.title},${blk.level},${blk.isOpen ? 'open' : 'close'})`;
+            const start = content.indexOf(raw);
+            const end = start + raw.length + (blk.body?.length ?? 0);
             const children = parseWikiContent(blk.body!, context);
             blockItems.push({
                 type: 'accordion',
-                start: content.indexOf(`#accordion(${blk.title},${blk.level},${blk.isOpen ? 'open' : 'close'})`),
+                start,
+                end,
                 node: (
                     <Accordion
                         key={`acc-${idx}`}
@@ -607,17 +612,20 @@ export function parseOtherInline(
                     >
                         {children}
                     </Accordion>
-                )
+                ),
             });
         });
 
-        // フォールド構文も変換
+        // フォールド構文を変換
         foldBlocks.forEach((blk, idx) => {
             if (!blk.title) return;
+            const start = blk.prefix ? content.indexOf(blk.prefix) + blk.prefix.length : 0;
+            const end = start + (blk.body?.length ?? 0);
             const children = parseInline(blk.body!, context);
             blockItems.push({
                 type: 'fold',
-                start: blk.prefix ? content.indexOf(blk.prefix) + blk.prefix.length : 0,
+                start,
+                end,
                 node: (
                     <Fold
                         key={`fold-${idx}`}
@@ -626,7 +634,7 @@ export function parseOtherInline(
                     >
                         {children}
                     </Fold>
-                )
+                ),
             });
         });
 
@@ -637,7 +645,8 @@ export function parseOtherInline(
             blockItems.push({
                 type: 'sel',
                 start: sel.start,
-                node: <React.Fragment key={`sel-${idx}`}>{containerNodes}</React.Fragment>
+                end: sel.end,
+                node: <React.Fragment key={`sel-${idx}`}>{containerNodes}</React.Fragment>,
             });
         });
 
@@ -652,11 +661,9 @@ export function parseOtherInline(
                 nodes.push(<React.Fragment key={`inline-${idx}`}>{inlineNodes}</React.Fragment>);
             }
             nodes.push(item.node);
-            // 終端位置の記録（selContainerなら end を使ってもいい）
-            lastPos = item.start; // 💡もし block に end があるなら lastPos = block.end にするとより正確
+            lastPos = item.end;
         });
 
-        // 最後に残った部分も補完
         if (lastPos < content.length) {
             const inlineText = content.slice(lastPos);
             const inlineNodes = parseInline(inlineText, context);
