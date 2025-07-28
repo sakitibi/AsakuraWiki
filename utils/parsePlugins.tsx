@@ -584,6 +584,7 @@ export function parseWikiContent(content: string, context: Context): React.React
     const selContainers = extractSelContainers(content);
 
     const nodes: React.ReactNode[] = [];
+    let lastPos = 0;
 
     type BlockItem = {
         type: 'accordion' | 'fold' | 'sel' | 'inline';
@@ -653,7 +654,6 @@ export function parseWikiContent(content: string, context: Context): React.React
 
     // 全ブロックを位置順に並べて挿入
     blockItems.sort((a, b) => a.start - b.start);
-    let lastPos = 0;
 
     blockItems.forEach((item, idx) => {
         if (item.start > lastPos) {
