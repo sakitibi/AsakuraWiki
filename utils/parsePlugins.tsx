@@ -608,10 +608,7 @@ export function parseWikiContent(content: string, context: Context): React.React
                     level={blk.level!}
                     initiallyOpen={blk.isOpen!}
                 >
-                    {/* ✅ blk.body を正しく解釈 */}
                     {parseWikiContent(blk.body!, context)}
-
-                    {/* 👇 blk.children は renderAccordionBlock 経由で描画済みなので不要 */}
                 </Accordion>
             ),
         });
