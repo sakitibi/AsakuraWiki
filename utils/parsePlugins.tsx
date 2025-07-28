@@ -599,10 +599,10 @@ export function parseOtherInline(
         // アコーディオンを変換
         accordionBlocks.forEach((blk, idx) => {
             if (!blk.title) return;
-            const raw = `#accordion(${blk.title},${blk.level},${blk.isOpen ? 'open' : 'close'})`;
-            const start = content.indexOf(raw);
-            const end = start + raw.length + (blk.body?.length ?? 0);
-            const children = parseWikiContent(blk.body!, context);
+            const start = blk.start!;
+            const end = blk.end!;
+            const children = parseWikiContentFragment(blk.body!, context); // 👈 変更ポイント
+
             blockItems.push({
                 type: 'accordion',
                 start,
