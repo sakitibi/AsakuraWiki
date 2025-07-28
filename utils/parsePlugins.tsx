@@ -598,12 +598,10 @@ export function parseWikiContent(content: string, context: Context): React.React
     // アコーディオンの prefix（前の余白）を inline 表示に追加
     accordionBlocks.forEach((blk, idx) => {
         if (blk.prefix) {
-            const prefixStart = blk.start!;
-            const prefixEnd = blk.start!; // prefix は inline に含まれるため、start と一致させる
             blockItems.push({
                 type: 'inline',
-                start: prefixStart - blk.prefix.length,
-                end: prefixEnd,
+                start: blk.start! - blk.prefix.length,
+                end: blk.start!,
                 node: (
                     <React.Fragment key={`acc-prefix-${idx}`}>
                         {parseInline(blk.prefix, context)}
@@ -627,6 +625,8 @@ export function parseWikiContent(content: string, context: Context): React.React
                 </Accordion>
             ),
         });
+
+        // ❌ 絶対にここで lastPos を更新しない！
     });
     // フォールド構文を変換
     foldBlocks.forEach((blk, idx) => {
