@@ -613,7 +613,7 @@ export function parseWikiContent(content: string, context: Context): React.React
             ),
         });
     });
-
+    
     // 🔸フォールド構文を変換（既存）
     foldBlocks.forEach((blk, idx) => {
         if (!blk.title || !blk.body) return;
