@@ -573,12 +573,12 @@ export function parseOtherInline(
                 if (blk.prefix) {
                     nodes.push(...parseInline(blk.prefix, context));
                 }
-                if (blk.title) {
+                if (blk.title!) {
                     const inner = parseInline(blk.body!, context);
                     nodes.push(
                         <Fold
                             key={`fold-${idx}`}
-                            title={parseInline(blk.body!, context)}
+                            title={blk.title!}
                             initiallyOpen={blk.isOpen!}
                         >
                             {inner}
