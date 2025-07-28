@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
+import { Analytics } from "@vercel/analytics/next"
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
@@ -58,6 +59,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
             </Head>
             <LenisProvider />
+            <Analytics/>
             <SessionContextProvider supabaseClient={supabase}>
                 {/* gtag.js の読み込み */}
                 <Script
