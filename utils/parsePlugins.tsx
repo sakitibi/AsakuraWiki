@@ -594,9 +594,13 @@ export function parseWikiContent(content: string, context: Context): React.React
 
     const blockItems: BlockItem[] = [];
 
-    // アコーディオンを変換
+    // アコーディオンの prefix（前の余白）を inline 表示に追加
     accordionBlocks.forEach((blk, idx) => {
-        if (!blk.title || !blk.body) return;
+        if (blk.prefix) {
+            const prefixInline = parseInline(blk.prefix, context);
+            nodes.push(<React.Fragment key={`acc-prefix-${idx}`}>{prefixInline}</React.Fragment>);
+        }
+
         blockItems.push({
             type: 'accordion',
             start: blk.start!,
@@ -702,11 +706,8 @@ function extractAccordions(content: string, offset = 0): AccordionBlock[] {
             }
         }
 
-        const body = content.slice(accRe.lastIndex, i - 2);
-        const end = i;
-
-        // 👇 子供アコーディオンを再帰的に抽出
-        const children = extractAccordions(body, start + accRe.lastIndex);
+        const body = content.slice(accRe.lastIndex, i - 2); // brace の外側
+        const end = i; // }} の直後
 
         blocks.push({
             title,
@@ -715,7 +716,7 @@ function extractAccordions(content: string, offset = 0): AccordionBlock[] {
             body,
             start: offset + start,
             end: offset + end,
-            children,
+            prefix: content.slice(offset + cursor, offset + start),
         });
 
         cursor = end;
