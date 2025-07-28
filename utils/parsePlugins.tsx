@@ -29,6 +29,7 @@ type AccordionBlock = {
     body?: string;
     start?: number;
     end?: number;
+    children?: AccordionBlock[]; // 子ブロックのためのプロパティ
 }
 
 type FoldBlock = {
@@ -666,7 +667,7 @@ export function parseOtherInline(
     /**
      * ネスト可能なアコーディオンブロックを文字列から抽出します
      */
-    function extractAccordions(content: string): AccordionBlock[] {
+    function extractAccordions(content: string, offset = 0): AccordionBlock[] {
         const blocks: AccordionBlock[] = [];
         const accRe = /#accordion\(([^)]*?)\)\s*\{\{/g;
 
@@ -682,7 +683,7 @@ export function parseOtherInline(
             const level = args.find(a => /^(?:\*{1,3})$/.test(a)) as '*' | '**' | '***' ?? '*';
             const isOpen = args.includes('open');
 
-            // ネスト対応した本文抽出
+            // 多段 {{ }} に対応した本文抽出
             let depth = 1;
             let i = accRe.lastIndex;
             while (i < content.length && depth > 0) {
@@ -699,13 +700,17 @@ export function parseOtherInline(
             const body = content.slice(accRe.lastIndex, i - 2);
             const end = i;
 
+            // 👇 子供アコーディオンを再帰的に抽出
+            const children = extractAccordions(body, start + accRe.lastIndex);
+
             blocks.push({
                 title,
                 level,
                 isOpen,
                 body,
-                start,
-                end,
+                start: offset + start,
+                end: offset + end,
+                children,
             });
 
             cursor = end;
