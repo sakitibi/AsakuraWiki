@@ -625,8 +625,6 @@ export function parseWikiContent(content: string, context: Context): React.React
                 </Accordion>
             ),
         });
-
-        // ❌ 絶対にここで lastPos を更新しない！
     });
     // フォールド構文を変換
     foldBlocks.forEach((blk, idx) => {
@@ -670,6 +668,8 @@ export function parseWikiContent(content: string, context: Context): React.React
         }
         nodes.push(item.node);
         lastPos = item.end;
+        console.log('lastPos → item.start:', lastPos, item.start);
+        console.log('inlineText:', content.slice(lastPos, item.start));
     });
 
     if (lastPos < content.length) {
