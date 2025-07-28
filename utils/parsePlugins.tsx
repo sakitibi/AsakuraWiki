@@ -634,17 +634,15 @@ export function parseWikiContent(content: string, context: Context): React.React
     });
 
     // sel_container を追加処理
+    // parseWikiContent → fragmentに sel.fullText を渡す
     selContainers.forEach((sel, idx) => {
-        const containerNodes = parseWikiContentFragment(sel.body, context);
+        const fullText = content.slice(sel.start, sel.end);
+        const containerNodes = parseWikiContentFragment(fullText, context);
         blockItems.push({
             type: 'sel',
             start: sel.start,
             end: sel.end,
-            node: (
-                <React.Fragment key={`sel-${idx}`}>
-                    {containerNodes}
-                </React.Fragment>
-            ),
+            node: <React.Fragment key={`sel-${idx}`}>{containerNodes}</React.Fragment>,
         });
     });
 
@@ -792,51 +790,37 @@ function extractSelContainers(content: string): { body: string; start: number; e
 
     return results;
 }
-    
-    function parseWikiContentFragment(content: string, context: Context): React.ReactNode[] {
-        const nodes: React.ReactNode[] = [];
-        const containers = extractSelContainers(content);
 
-        let lastIndex = 0;
+// parseWikiContentFragment → extractSelContainers を使わず、1コンテナだけ直接処理する
+function parseWikiContentFragment(containerBlock: string, context: Context): React.ReactNode[] {
+    const nodes: React.ReactNode[] = [];
 
-        for (const { body: containerBody, start, end } of containers) {
-            // 前のテキストを処理
-            const before = content.slice(lastIndex, start);
-            nodes.push(...parseInline(before, context));
+    const rowRe = /#sel_row\s*\{\{([\s\S]*?)\}\}/g;
+    const rowItems: React.ReactNode[] = [];
+    let rowMatch: RegExpExecArray | null;
 
-            const rowRe = /#sel_row\s*\{\{([\s\S]*?)\}\}/g;
-            const rowItems: React.ReactNode[] = [];
-            let rowMatch: RegExpExecArray | null;
+    while ((rowMatch = rowRe.exec(containerBlock))) {
+        const rowBody = rowMatch[1];
 
-            while ((rowMatch = rowRe.exec(containerBody))) {
-                const rowBody = rowMatch[1];
+        const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
+        const selContents: React.ReactNode[] = [];
+        let contentMatch: RegExpExecArray | null;
 
-                const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
-                const selContents: React.ReactNode[] = [];
-                let contentMatch: RegExpExecArray | null;
-
-                while ((contentMatch = contentRe.exec(rowBody))) {
-                    const [, type, inner] = contentMatch;
-                    selContents.push(
-                        <SelContent key={`sel-${start}-${rowMatch.index}-${contentMatch.index}`} type={type?.trim() || ''}>
-                            {inner.trim()}
-                        </SelContent>
-                    );
-                }
-
-                rowItems.push(<SelRow key={`sel-row-${start}-${rowMatch.index}`}>{selContents}</SelRow>);
-            }
-
-            nodes.push(<SelContainer key={`sel-container-${start}`}>{rowItems}</SelContainer>);
-            lastIndex = end;
+        while ((contentMatch = contentRe.exec(rowBody))) {
+            const [, type, inner] = contentMatch;
+            selContents.push(
+                <SelContent key={`sel-${rowMatch.index}-${contentMatch.index}`} type={type?.trim() || ''}>
+                    {inner.trim()}
+                </SelContent>
+            );
         }
 
-        // 残りを処理
-        const rest = content.slice(lastIndex);
-        nodes.push(...parseInline(rest, context));
-
-        return nodes;
+        rowItems.push(<SelRow key={`sel-row-${rowMatch.index}`}>{selContents}</SelRow>);
     }
+
+    nodes.push(<SelContainer key="sel-container">{rowItems}</SelContainer>);
+    return nodes;
+}
 
 /** Accordion コンポーネント */
 function Accordion({ title, level, initiallyOpen, children, }: { title: string; level: '*' | '**' | '***'; initiallyOpen: boolean; children: React.ReactNode; }) {
