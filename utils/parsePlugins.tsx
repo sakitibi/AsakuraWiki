@@ -581,88 +581,91 @@ export function parseOtherInline(
     /**
      * アコーディオンとインラインプラグインを再帰的にパースするメイン関数
      */
-    export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
-        const accordionBlocks = extractAccordions(content);
-        const foldBlocks = extractFolds(content, context);
-        const nodes: React.ReactNode[] = [];
+function renderAccordionBlock(blk: AccordionBlock, key: string, context: Context): React.ReactNode {
+    return (
+        <Accordion
+            key={key}
+            title={blk.title!}
+            level={blk.level!}
+            initiallyOpen={blk.isOpen!}
+        >
+            {/* 本文の描画 */}
+            {parseInline(blk.body!, context)}
 
-        type BlockItem = {
-            type: 'accordion' | 'fold' | 'inline';
-            start: number;
-            end: number;
-            node: React.ReactNode;
-        };
+            {/* 子アコーディオンを再帰的に描画 */}
+            {blk.children?.map((child, idx) =>
+                renderAccordionBlock(child, `${key}-child-${idx}`, context)
+            )}
+        </Accordion>
+    );
+}
 
-        const blockItems: BlockItem[] = [];
+export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
+    const accordionBlocks = extractAccordions(content);
+    const foldBlocks = extractFolds(content, context);
+    const nodes: React.ReactNode[] = [];
 
-        // アコーディオンを変換
-        accordionBlocks.forEach((blk, idx) => {
-            if (!blk.title || !blk.body) return;
-            const start = blk.start!;
-            const end = blk.end!;
-            const children = parseWikiContentFragment(blk.body, context); // 再帰的に sel_container も拾う！
+    type BlockItem = {
+        type: 'accordion' | 'fold' | 'inline';
+        start: number;
+        end: number;
+        node: React.ReactNode;
+    };
 
-            blockItems.push({
-                type: 'accordion',
-                start,
-                end,
-                node: (
-                    <Accordion
-                        key={`acc-${idx}`}
-                        title={blk.title}
-                        level={blk.level!}
-                        initiallyOpen={blk.isOpen!}
-                    >
-                        {children}
-                    </Accordion>
-                ),
-            });
+    const blockItems: BlockItem[] = [];
+
+    // アコーディオンを変換（再帰描画付き）
+    accordionBlocks.forEach((blk, idx) => {
+        if (!blk.title || !blk.body) return;
+        blockItems.push({
+            type: 'accordion',
+            start: blk.start!,
+            end: blk.end!,
+            node: renderAccordionBlock(blk, `acc-${idx}`, context),
         });
+    });
 
-        // フォールド構文を変換
-        foldBlocks.forEach((blk, idx) => {
-            if (!blk.title || !blk.body) return;
-            const start = blk.start!;
-            const end = blk.end!;
-            const children = parseWikiContentFragment(blk.body, context); // 同様に sel_container 対応！
-
-            blockItems.push({
-                type: 'fold',
-                start,
-                end,
-                node: (
-                    <Fold
-                        key={`fold-${idx}`}
-                        title={blk.title}
-                        initiallyOpen={blk.isOpen ?? false}
-                    >
-                        {children}
-                    </Fold>
-                ),
-            });
+    // フォールド構文を変換
+    foldBlocks.forEach((blk, idx) => {
+        if (!blk.title || !blk.body) return;
+        blockItems.push({
+            type: 'fold',
+            start: blk.start!,
+            end: blk.end!,
+            node: (
+                <Fold
+                    key={`fold-${idx}`}
+                    title={blk.title}
+                    initiallyOpen={blk.isOpen ?? false}
+                >
+                    {parseWikiContentFragment(blk.body, context)}
+                </Fold>
+            ),
         });
+    });
 
-        // 全ブロックを位置順に並べて挿入
-        blockItems.sort((a, b) => a.start - b.start);
-        let lastPos = 0;
+    // 全ブロックを位置順に並べて挿入
+    blockItems.sort((a, b) => a.start - b.start);
+    let lastPos = 0;
 
-        blockItems.forEach((item, idx) => {
-            if (item.start > lastPos) {
-                const inlineText = content.slice(lastPos, item.start);
-                const inlineNodes = parseInline(inlineText, context);
-                nodes.push(<React.Fragment key={`inline-${idx}`}>{inlineNodes}</React.Fragment>);
-            }
-            nodes.push(item.node);
-            lastPos = item.end;
-        });
-
-        if (lastPos < content.length) {
-            const inlineText = content.slice(lastPos);
+    blockItems.forEach((item, idx) => {
+        if (item.start > lastPos) {
+            const inlineText = content.slice(lastPos, item.start);
             const inlineNodes = parseInline(inlineText, context);
-            nodes.push(<React.Fragment key="inline-final">{inlineNodes}</React.Fragment>);
+            nodes.push(<React.Fragment key={`inline-${idx}`}>{inlineNodes}</React.Fragment>);
         }
-        return nodes;
+        nodes.push(item.node);
+        lastPos = item.end;
+    });
+
+    if (lastPos < content.length) {
+        const inlineText = content.slice(lastPos);
+        const inlineNodes = parseInline(inlineText, context);
+        nodes.push(<React.Fragment key="inline-final">{inlineNodes}</React.Fragment>);
     }
+
+    return nodes;
+}
 
     /**
      * ネスト可能なアコーディオンブロックを文字列から抽出します
