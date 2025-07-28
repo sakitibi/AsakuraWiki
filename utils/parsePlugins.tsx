@@ -648,8 +648,7 @@ export function parseWikiContent(content: string, context: Context): React.React
 
     // 🔹sel_container を追加処理
     selContainers.forEach((sel, idx) => {
-        const fragment = content.slice(sel.start, sel.end);
-        const containerNodes = parseWikiContentFragment(fragment, context);
+        const containerNodes = parseWikiContentFragment(sel.body, context);
         blockItems.push({
             type: 'sel',
             start: sel.start,
