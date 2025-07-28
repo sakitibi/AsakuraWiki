@@ -38,6 +38,8 @@ export type FoldBlock = {
     body?: string
     start?: number;
     end?: number;
+    children?: FoldBlock[];
+    kind?: 'fold' | 'inline';
 }
 
 export function useDesignColor(slug: string) {
