@@ -584,7 +584,6 @@ export function parseWikiContent(content: string, context: Context): React.React
     const selContainers = extractSelContainers(content);
 
     const nodes: React.ReactNode[] = [];
-    let lastPos = 0;
 
     type BlockItem = {
         type: 'accordion' | 'fold' | 'sel' | 'inline';
@@ -595,7 +594,7 @@ export function parseWikiContent(content: string, context: Context): React.React
 
     const blockItems: BlockItem[] = [];
 
-    // アコーディオンの prefix（前の余白）を inline 表示に追加
+    // 🔧 アコーディオン構文を blockItems にのみ登録（lastPos は更新しない）
     accordionBlocks.forEach((blk, idx) => {
         if (blk.prefix) {
             blockItems.push({
@@ -626,7 +625,8 @@ export function parseWikiContent(content: string, context: Context): React.React
             ),
         });
     });
-    // フォールド構文を変換
+
+    // 🔧 fold構文
     foldBlocks.forEach((blk, idx) => {
         if (!blk.title || !blk.body) return;
         blockItems.push({
@@ -645,8 +645,7 @@ export function parseWikiContent(content: string, context: Context): React.React
         });
     });
 
-    // sel_container を追加処理
-    // parseWikiContent → fragmentに sel.fullText を渡す
+    // 🔧 sel_container構文
     selContainers.forEach((sel, idx) => {
         const fullText = content.slice(sel.start, sel.end);
         const containerNodes = parseWikiContentFragment(fullText);
@@ -658,16 +657,20 @@ export function parseWikiContent(content: string, context: Context): React.React
         });
     });
 
-    // 全ブロックを位置順に並べて挿入
+    // ✅ 挿入順にソートして描画
     blockItems.sort((a, b) => a.start - b.start);
+    let lastPos = 0;
     blockItems.forEach((item, idx) => {
         if (item.start > lastPos) {
             const inlineText = content.slice(lastPos, item.start);
             const inlineNodes = parseInline(inlineText, context);
             nodes.push(<React.Fragment key={`inline-${idx}`}>{inlineNodes}</React.Fragment>);
         }
+
         nodes.push(item.node);
         lastPos = item.end;
+
+        // 🔍デバッグログ（逆転してないかチェック）
         console.log('lastPos → item.start:', lastPos, item.start);
         console.log('inlineText:', content.slice(lastPos, item.start));
     });
