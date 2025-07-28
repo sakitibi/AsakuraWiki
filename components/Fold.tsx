@@ -1,69 +1,41 @@
 import { useState } from "react";
 import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
-
-export function extractFolds(content: string, context: Context, offset = 0): FoldBlock[] {
+export function extractFolds(content: string, context: Context): FoldBlock[] {
+    const foldRe = /#fold\(([^)]*?)\)\s*\{\{([\s\S]*?)\}\}/g;
     const blocks: FoldBlock[] = [];
-    const blockRe = /(?:#fold\(([^)]*?)\)|\(([^)]*?)\))\s*\{\{/g;
-
-    let cursor = 0;
-    while (cursor < content.length) {
-        blockRe.lastIndex = cursor;
-        const m = blockRe.exec(content);
-        if (!m) break;
-
-        const start = m.index;
-        const argsStr = m[1] ?? m[2];
-        const args = argsStr.split(',').map(s => s.trim());
-        const titleRaw = args[0] ?? '項目';
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = foldRe.exec(content)) !== null) {
+        const [full, rawArgs, body] = match;
+        const args = rawArgs.split(',').map(s => s.trim());
+        const titleRaw = args[0];
         const isOpen = args.includes('open');
-        const kind = m[1] ? 'fold' : 'inline'; // fold = #fold(...) / inline = (...)
-
-        // 多段 {{ }} に対応した本文抽出
-        let depth = 1;
-        let i = blockRe.lastIndex;
-        while (i < content.length && depth > 0) {
-            const two = content.slice(i, i + 2);
-            if (two === '{{') {
-                depth++; i += 2;
-            } else if (two === '}}') {
-                depth--; i += 2;
-            } else {
-                i++;
-            }
-        }
-
-        const prefix = content.slice(cursor, start);
-        const body = content.slice(blockRe.lastIndex, i - 2);
-        const end = i;
-
         const parsedTitle = parseInline(titleRaw, context);
-        const children = extractFolds(body, context, offset + blockRe.lastIndex); // 再帰でネスト対応
-
+        const start = match.index;
+        const end = start + full.length;
         blocks.push({
-            prefix,
+            prefix: content.slice(lastIndex, start),
             title: <>{parsedTitle}</>,
-            body,
+            body: body.trim(),
             isOpen,
-            start: offset + start,
-            end: offset + end,
-            children,
-            kind,
+            start,
+            end,
         });
-
-        console.log(`📦 block[${blocks.length}]:`, { kind, titleRaw, isOpen, start, end });
-        cursor = end;
+        console.log(`📁 fold[${blocks.length}]:`, {
+            titleRaw,
+            isOpen,
+            start,
+            end,
+            body,
+        }); lastIndex = end;
     }
-
-    blocks.push({ prefix: content.slice(cursor) });
+    blocks.push({
+        prefix: content.slice(lastIndex)
+    });
     return blocks;
 }
-
-export default function Fold({
-    title,
-    initiallyOpen,
-    children
-}: {
+export default function Fold({ title, initiallyOpen, children }: {
     title: React.ReactNode;
     initiallyOpen: boolean;
     children: React.ReactNode;
