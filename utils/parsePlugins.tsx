@@ -617,7 +617,6 @@ export function parseWikiContent(content: string, context: Context): React.React
                 </Accordion>
             ),
         });
-        lastPos = blk.end!;
     });
 
     // フォールド構文を変換
