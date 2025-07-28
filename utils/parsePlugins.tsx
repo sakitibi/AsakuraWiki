@@ -644,28 +644,23 @@ export function parseOtherInline(
         // 全ブロックを位置順に並べて挿入
         blockItems.sort((a, b) => a.start - b.start);
         let lastPos = 0;
-        blockItems.forEach((item, i) => {
+
+        blockItems.forEach((item, idx) => {
             if (item.start > lastPos) {
-                const inlineContent = content.slice(lastPos, item.start);
-                const inlineNodes = parseInline(inlineContent, context);
-                blockItems.push({
-                    type: 'inline',
-                    start: lastPos,
-                    node: <React.Fragment key={`inline-${i}`}>{inlineNodes}</React.Fragment>
-                });
+                const inlineText = content.slice(lastPos, item.start);
+                const inlineNodes = parseInline(inlineText, context);
+                nodes.push(<React.Fragment key={`inline-${idx}`}>{inlineNodes}</React.Fragment>);
             }
-            lastPos = item.start;
+            nodes.push(item.node);
+            // 終端位置の記録（selContainerなら end を使ってもいい）
+            lastPos = item.start; // 💡もし block に end があるなら lastPos = block.end にするとより正確
         });
 
-        // 最後に残った部分も
+        // 最後に残った部分も補完
         if (lastPos < content.length) {
-            const inlineContent = content.slice(lastPos);
-            const inlineNodes = parseInline(inlineContent, context);
-            blockItems.push({
-                type: 'inline',
-                start: lastPos,
-                node: <React.Fragment key={`inline-last`}>{inlineNodes}</React.Fragment>
-            });
+            const inlineText = content.slice(lastPos);
+            const inlineNodes = parseInline(inlineText, context);
+            nodes.push(<React.Fragment key="inline-final">{inlineNodes}</React.Fragment>);
         }
         return nodes;
     }
