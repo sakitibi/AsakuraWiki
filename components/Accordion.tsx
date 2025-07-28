@@ -40,7 +40,7 @@ export function extractAccordions(content: string, offset = 0): AccordionBlock[]
         const end = i;
 
         // 🎯再帰的に子ブロックを抽出
-        const children = extractAccordions(body, offset + accRe.lastIndex);
+        const children = extractAccordions(body, offset + start); // ←こちら試す
 
         blocks.push({
             prefix,
