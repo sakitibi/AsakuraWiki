@@ -583,12 +583,10 @@ export function parseOtherInline(
     export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
         const accordionBlocks = extractAccordions(content);
         const foldBlocks = extractFolds(content, context);
-        const selContainers = extractSelContainers(content);
         const nodes: React.ReactNode[] = [];
 
-        // アコーディオンとフォールドとセレクトを統合して位置順に並べる
         type BlockItem = {
-            type: 'accordion' | 'fold' | 'sel' | 'inline';
+            type: 'accordion' | 'fold' | 'inline';
             start: number;
             end: number;
             node: React.ReactNode;
@@ -598,10 +596,10 @@ export function parseOtherInline(
 
         // アコーディオンを変換
         accordionBlocks.forEach((blk, idx) => {
-            if (!blk.title) return;
+            if (!blk.title || !blk.body) return;
             const start = blk.start!;
             const end = blk.end!;
-            const children = parseWikiContentFragment(blk.body!, context); // 👈 変更ポイント
+            const children = parseWikiContentFragment(blk.body, context); // 再帰的に sel_container も拾う！
 
             blockItems.push({
                 type: 'accordion',
@@ -610,7 +608,7 @@ export function parseOtherInline(
                 node: (
                     <Accordion
                         key={`acc-${idx}`}
-                        title={blk.title!}
+                        title={blk.title}
                         level={blk.level!}
                         initiallyOpen={blk.isOpen!}
                     >
@@ -622,10 +620,11 @@ export function parseOtherInline(
 
         // フォールド構文を変換
         foldBlocks.forEach((blk, idx) => {
-            if (!blk.title) return;
-            const start = blk.prefix ? content.indexOf(blk.prefix) + blk.prefix.length : 0;
-            const end = start + (blk.body?.length ?? 0);
-            const children = parseInline(blk.body!, context);
+            if (!blk.title || !blk.body) return;
+            const start = blk.start!;
+            const end = blk.end!;
+            const children = parseWikiContentFragment(blk.body, context); // 同様に sel_container 対応！
+
             blockItems.push({
                 type: 'fold',
                 start,
@@ -639,18 +638,6 @@ export function parseOtherInline(
                         {children}
                     </Fold>
                 ),
-            });
-        });
-
-        // sel_container を変換
-        selContainers.forEach((sel, idx) => {
-            const fragment = content.slice(sel.start, sel.end);
-            const containerNodes = parseWikiContentFragment(fragment, context);
-            blockItems.push({
-                type: 'sel',
-                start: sel.start,
-                end: sel.end,
-                node: <React.Fragment key={`sel-${idx}`}>{containerNodes}</React.Fragment>,
             });
         });
 
