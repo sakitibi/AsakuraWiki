@@ -89,6 +89,32 @@ function extractAccordions(content: string) {
     return blocks
 }
 
+function extractFolds(content: string) {
+    type Folds = {
+        prefix?: string
+        title?: string
+        isOpen?: boolean
+        body?: string
+    }
+    const foldRe = /#fold\(([^)]+)\)\s*\{\{([\s\S]*?)\}\}/g;
+    const blocks: Folds[] = []
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = foldRe.exec(content)) !== null) {
+        const [full, title, body] = match;
+        blocks.push({
+            prefix: content.slice(lastIndex, match.index),
+            title: title.trim(),
+            body: body.trim(),
+        });
+        lastIndex = match.index + full.length;
+    }
+
+    blocks.push({ prefix: content.slice(lastIndex) }); // 残り
+    return blocks;
+}
+
 /** インラインプラグインを処理します */
 function parseInline(text: string, context: Context): React.ReactNode[] {
     const { wikiSlug, pageSlug } = context;
@@ -610,6 +636,27 @@ export function parseOtherInline(
 
         // 1. アコーディオンを先に抜き出す
         const blocks = extractAccordions(content);
+        const folds = extractFolds(content);
+        if (folds.length > 0) {
+            folds.forEach((blk, idx) => {
+                if (blk.prefix) {
+                    nodes.push(...parseInline(blk.prefix, context));
+                }
+                if (blk.title) {
+                    const inner = parseInline(blk.body!, context);
+                    nodes.push(
+                        <Fold
+                            key={`fold-${idx}`}
+                            title={blk.title!}
+                            initiallyOpen={blk.isOpen!}
+                        >
+                            {inner}
+                        </Fold>
+                    );
+                }
+            });
+            return nodes;
+        }
         if (blocks.length > 0) {
             blocks.forEach((blk, idx) => {
                 if (blk.prefix) {
@@ -850,6 +897,36 @@ function Accordion({ title, level, initiallyOpen, children, }: { title: string; 
     )
 }
 
+function Fold({
+    title,
+    initiallyOpen,
+    children
+}: {
+    title: string;
+    initiallyOpen: boolean;
+    children: React.ReactNode;
+}){
+    const [open, setOpen] = useState(initiallyOpen)
+    const iconPath = open
+        ? "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM208 352l0-80-80 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l80 0 0-80c0-8.8 7.2-16 16-16s16 7.2 16 16l0 80 80 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-80 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16z"
+        : "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM128 240l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z";
+    return(
+        <div style={{ margin: '8px 0' }}>
+            <button onClick={() => setOpen(!open)} style={{backgroundColor: 'initial', border: 'none', color: 'inherit', cursor: 'pointer', display: 'block', float: 'left', fontSize: '22px', lineHeight: '1em', margin: '-1px 0', padding: '0'}}>
+                <svg style={{ height: '1em', verticalAlign: '-0.125em' }}aria-hidden="true" focusable="false" data-prefix="fal" data-icon="square-minus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
+                    <path fill="currentColor" d={iconPath}></path>
+                </svg>
+            </button>
+            <div style={{ display: open ? 'none' : 'block', marginLeft: '28px' }}>
+                {title}
+            </div>
+            <div style={{ display: open ? 'block' : 'none', marginLeft: '28px' }}>
+                {children}
+            </div>
+        </div>
+    )
+}
+
 /** Header コンポーネント */
 function Header({ title, level, anchor }: { title: string; level: '*' | '**' | '***'; anchor: string}) {
     const router = useRouter()
@@ -961,7 +1038,7 @@ function Header({ title, level, anchor }: { title: string; level: '*' | '**' | '
     )
 
     return (
-        <div style={{ margin: '1em 0' }}>
+        <div style={{ margin: '1em 0', marginBottom: '10px' }}>
             <Tag style={{...commonsStyle, ...headingStyle}}>
                 {title}
                 <a id={`#${anchor}`} style={{display: 'none'}}></a>
