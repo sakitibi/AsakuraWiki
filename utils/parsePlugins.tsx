@@ -21,6 +21,14 @@ type Context = {
     letContext?: Record<string, string>;
 }
 
+type AccordionBlock = {
+    prefix?: string;
+    title?: string;
+    level?: '*' | '**' | '***';
+    isOpen?: boolean;
+    body?: string;
+};
+
 type FoldBlock = {
     prefix?: string
     title?: React.ReactNode
@@ -621,71 +629,70 @@ export function parseOtherInline(
     /**
      * ネスト可能なアコーディオンブロックを文字列から抽出します
      */
-    function extractAccordions(content: string) {
-        type Block = {
-            prefix?: string
-            title?: string
-            level?: '*' | '**' | '***'
-            isOpen?: boolean
-            body?: string
-        }
-
-        const blocks: Block[] = []
-        let cursor = 0
-        const startRe = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{/g
+    function extractAccordions(content: string): AccordionBlock[] {
+        const blocks: AccordionBlock[] = [];
+        let cursor = 0;
+        const accRe = /#accordion\(([^)]*?)\)\s*\{\{/g; // ← 柔軟化！
 
         while (true) {
-            startRe.lastIndex = cursor
-            const m = startRe.exec(content)
-            if (!m) break
-            const [whole, title, lvl, state] = m
-            const bodyStart = m.index + whole.length
-            let depth = 1
-            let i = bodyStart
+            accRe.lastIndex = cursor;
+            const m = accRe.exec(content);
+            if (!m) break;
+            const [whole, rawArgs] = m;
+            const args = rawArgs.split(',').map(s => s.trim());
+
+            const title = args[0];
+            const level = args.find(a => /^(\*{1,3})$/.test(a)) as '*' | '**' | '***' ?? '*';
+            const isOpen = args.includes('open');
+            
+            const bodyStart = m.index + whole.length;
+            let depth = 1;
+            let i = bodyStart;
             while (i < content.length && depth > 0) {
                 if (content.slice(i, i + 2) === '{{') {
-                    depth++
-                    i += 2
+                    depth++; i += 2;
                 } else if (content.slice(i, i + 2) === '}}') {
-                    depth--
-                    i += 2
+                    depth--; i += 2;
                 } else {
-                    i++
+                    i++;
                 }
             }
-            const body = content.slice(bodyStart, i - 2)
-            blocks.push({ prefix: content.slice(cursor, m.index) })
-            blocks.push({ title: title.trim(), level: lvl as any, isOpen: state === 'open', body })
-            cursor = i
+
+            const body = content.slice(bodyStart, i - 2);
+            blocks.push({ prefix: content.slice(cursor, m.index) });
+            blocks.push({ title, level, isOpen, body });
+            cursor = i;
         }
 
-        blocks.push({ prefix: content.slice(cursor) })
-        return blocks
+        blocks.push({ prefix: content.slice(cursor) });
+        return blocks;
     }
 
     function extractFolds(content: string, context: Context): FoldBlock[] {
-        const foldRe = /#fold\(([^),]+)(?:,(\w+))?\)\s*\{\{([\s\S]*?)\}\}/g;
-        const blocks: FoldBlock[] = []
-        let lastIndex:number = 0;
+        const foldRe = /#fold\(([^)]*?)\)\s*\{\{([\s\S]*?)\}\}/g;
+        const blocks: FoldBlock[] = [];
+        let lastIndex = 0;
         let match: RegExpExecArray | null;
 
         while ((match = foldRe.exec(content)) !== null) {
-            const [full, rawTitle, rawFlag, body] = match;
+            const [full, rawArgs, body] = match;
+            const args = rawArgs.split(',').map(s => s.trim());
+            const titleRaw = args[0];
+            const isOpen = args.includes('open');
 
-            const parsedTitle = parseInline(rawTitle.trim(), context);
-            const isOpen = rawFlag === 'open';
+            const parsedTitle = parseInline(titleRaw, context);
 
             blocks.push({
                 prefix: content.slice(lastIndex, match.index),
                 title: <>{parsedTitle}</>,
                 body: body.trim(),
-                isOpen, // ✅ これで `initiallyOpen` に渡せる！
+                isOpen,
             });
 
             lastIndex = match.index + full.length;
         }
 
-        blocks.push({ prefix: content.slice(lastIndex) }); // 残り
+        blocks.push({ prefix: content.slice(lastIndex) });
         return blocks;
     }
 
