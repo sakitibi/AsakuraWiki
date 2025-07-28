@@ -27,13 +27,17 @@ type AccordionBlock = {
     level?: '*' | '**' | '***';
     isOpen?: boolean;
     body?: string;
-};
+    start?: number;
+    end?: number;
+}
 
 type FoldBlock = {
     prefix?: string
     title?: React.ReactNode
     isOpen?: boolean
     body?: string
+    start?: number;
+    end?: number;
 }
 
 export function useDesignColor(slug: string) {
@@ -678,7 +682,7 @@ export function parseOtherInline(
     function extractAccordions(content: string): AccordionBlock[] {
         const blocks: AccordionBlock[] = [];
         let cursor = 0;
-        const accRe = /#accordion\(([^)]*?)\)\s*\{\{/g; // ← 柔軟化！
+        const accRe = /#accordion\(([^)]*?)\)\s*\{\{/g;
 
         while (true) {
             accRe.lastIndex = cursor;
@@ -690,8 +694,9 @@ export function parseOtherInline(
             const title = args[0];
             const level = args.find(a => /^(\*{1,3})$/.test(a)) as '*' | '**' | '***' ?? '*';
             const isOpen = args.includes('open');
-            
-            const bodyStart = m.index + whole.length;
+
+            const start = m.index;
+            const bodyStart = start + whole.length;
             let depth = 1;
             let i = bodyStart;
             while (i < content.length && depth > 0) {
@@ -704,10 +709,12 @@ export function parseOtherInline(
                 }
             }
 
+            const end = i; // ← 閉じ括弧含む
             const body = content.slice(bodyStart, i - 2);
-            blocks.push({ prefix: content.slice(cursor, m.index) });
-            blocks.push({ title, level, isOpen, body });
-            cursor = i;
+
+            blocks.push({ prefix: content.slice(cursor, start) });
+            blocks.push({ title, level, isOpen, body, start, end });
+            cursor = end;
         }
 
         blocks.push({ prefix: content.slice(cursor) });
@@ -727,15 +734,19 @@ export function parseOtherInline(
             const isOpen = args.includes('open');
 
             const parsedTitle = parseInline(titleRaw, context);
+            const start = match.index;
+            const end = start + full.length;
 
             blocks.push({
-                prefix: content.slice(lastIndex, match.index),
+                prefix: content.slice(lastIndex, start),
                 title: <>{parsedTitle}</>,
                 body: body.trim(),
                 isOpen,
+                start,
+                end,
             });
 
-            lastIndex = match.index + full.length;
+            lastIndex = end;
         }
 
         blocks.push({ prefix: content.slice(lastIndex) });
@@ -756,25 +767,22 @@ export function parseOtherInline(
 
             for (let i = startIdx + startTag.length; i < content.length; i++) {
                 if (content.slice(i, i + 2) === '{{') {
-                    braceLevel++;
-                    i++;
+                    braceLevel++; i++;
                 } else if (content.slice(i, i + 2) === '}}') {
                     if (braceLevel === 0) {
                         endIdx = i;
                         break;
                     } else {
-                        braceLevel--;
-                        i++;
+                        braceLevel--; i++;
                     }
                 }
             }
 
             if (endIdx !== -1) {
                 const body = content.slice(startIdx + startTag.length, endIdx).trim();
-                results.push({ body, start: startIdx, end: endIdx + 2 }); // include closing braces
+                results.push({ body, start: startIdx, end: endIdx + 2 });
                 pos = endIdx + 2;
             } else {
-                // 閉じタグが見つからなかった
                 break;
             }
         }
