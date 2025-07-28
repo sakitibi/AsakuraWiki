@@ -145,8 +145,13 @@ export const useWikiLikeHandlers = () => {
     const userId = user?.id;
 
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;
-
     const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const pageSlugStr =
+        typeof pageQuery === 'string'
+        ? pageQuery
+        : Array.isArray(pageSlug)
+        ? pageSlug.join('/')
+        : pageSlug ?? 'FrontPage';
 
     const handleWikiLike = async () => {
         if (!userId) return;
@@ -195,7 +200,7 @@ export const useWikiLikeHandlers = () => {
         }
 
         setLoading(false);
-        router.push(`/wiki/${wikiSlugStr}`);
+        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
     };
 
     const handleWikiDisLike = async () => {
@@ -245,7 +250,7 @@ export const useWikiLikeHandlers = () => {
         }
 
         setLoading(false);
-        router.push(`/wiki/${wikiSlugStr}`);
+        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
     };
 
     return { handleWikiLike, handleWikiDisLike, loading };
