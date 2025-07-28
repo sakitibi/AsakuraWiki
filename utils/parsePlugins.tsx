@@ -135,10 +135,12 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                     title={blk.title!}
                     level={blk.level!}
                     initiallyOpen={blk.isOpen!}
-                >
-                    {children.map((child, cidx) => (
-                        <React.Fragment key={`acc-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
-                    ))}
+                    >
+                    {children.length > 0
+                        ? children.map((child, cidx) => (
+                            <React.Fragment key={`acc-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
+                        ))
+                        : blk.bodyNode}
                 </Accordion>
             ),
         });
