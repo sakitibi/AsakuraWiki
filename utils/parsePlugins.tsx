@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react'
-import Calendar2 from '@/components/Calendar2'
-import CommentForm from '@/components/CommentForm'
-import RealTimeComments from '@/components/RealTimeComments'
-import PageList from '@/components/PageList'
-import PageList2 from '@/components/PageList2'
-import IncludePage from '@/components/IncludePage'
-import TableOfContents from '@/components/TableOfContents'
+import React, { useState, useEffect } from 'react';
+import Header from '@/components/Header';
+import Accordion, { extractAccordions } from '@/components/Accordion';
+import Calendar2 from '@/components/Calendar2';
+import CommentForm from '@/components/CommentForm';
+import RealTimeComments from '@/components/RealTimeComments';
+import PageList from '@/components/PageList';
+import PageList2 from '@/components/PageList2';
+import IncludePage from '@/components/IncludePage';
+import TableOfContents from '@/components/TableOfContents';
 import SelContainer from '@/components/SelContainer';
 import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
-import calcPlugin from '@/components/calcPlugin'
+import calcPlugin from '@/components/calcPlugin';
+import Fold, { extractFolds } from '@/components/Fold';
 import { DATEDIF, DATEVALUE } from './dateFunctions';
 import { supabase } from 'lib/supabaseClient';
-import { useRouter } from 'next/router'
 
 export type Context = {
     wikiSlug: string;
@@ -22,7 +24,6 @@ export type Context = {
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
-
     useEffect(() => {
         async function fetchColor() {
             const { data, error } = await supabase
@@ -44,79 +45,9 @@ export function useDesignColor(slug: string) {
 
     return color;
 }
-/**
- * ネスト可能なアコーディオンブロックを文字列から抽出します
- */
-function extractAccordions(content: string) {
-    type Block = {
-        prefix?: string
-        title?: string
-        level?: '*' | '**' | '***'
-        isOpen?: boolean
-        body?: string
-    }
-
-    const blocks: Block[] = []
-    let cursor = 0
-    const startRe = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{/g
-
-    while (true) {
-        startRe.lastIndex = cursor
-        const m = startRe.exec(content)
-        if (!m) break
-        const [whole, title, lvl, state] = m
-        const bodyStart = m.index + whole.length
-        let depth = 1
-        let i = bodyStart
-        while (i < content.length && depth > 0) {
-            if (content.slice(i, i + 2) === '{{') {
-                depth++
-                i += 2
-            } else if (content.slice(i, i + 2) === '}}') {
-                depth--
-                i += 2
-            } else {
-                i++
-            }
-        }
-        const body = content.slice(bodyStart, i - 2)
-        blocks.push({ prefix: content.slice(cursor, m.index) })
-        blocks.push({ title: title.trim(), level: lvl as any, isOpen: state === 'open', body })
-        cursor = i
-    }
-
-    blocks.push({ prefix: content.slice(cursor) })
-    return blocks
-}
-
-function extractFolds(content: string) {
-    type Folds = {
-        prefix?: string
-        title?: string
-        isOpen?: boolean
-        body?: string
-    }
-    const foldRe = /#fold\(([^)]+)\)\s*\{\{([\s\S]*?)\}\}/g;
-    const blocks: Folds[] = []
-    let lastIndex = 0;
-    let match: RegExpExecArray | null;
-
-    while ((match = foldRe.exec(content)) !== null) {
-        const [full, title, body] = match;
-        blocks.push({
-            prefix: content.slice(lastIndex, match.index),
-            title: title.trim(),
-            body: body.trim(),
-        });
-        lastIndex = match.index + full.length;
-    }
-
-    blocks.push({ prefix: content.slice(lastIndex) }); // 残り
-    return blocks;
-}
 
 /** インラインプラグインを処理します */
-function parseInline(text: string, context: Context): React.ReactNode[] {
+export function parseInline(text: string, context: Context): React.ReactNode[] {
     const { wikiSlug, pageSlug } = context;
     const nodes: React.ReactNode[] = [];
     let nodeKey = 0;
@@ -130,10 +61,10 @@ function parseInline(text: string, context: Context): React.ReactNode[] {
 
             nodes.push(
                 <Header
-                key={`hdr-${nodeKey++}`}
-                level={stars}
-                title={title}
-                anchor={anchor}
+                    key={`hdr-${nodeKey++}`}
+                    level={stars}
+                    title={title}
+                    anchor={anchor}
                 />
             );
             return;
@@ -636,7 +567,7 @@ export function parseOtherInline(
 
         // 1. アコーディオンを先に抜き出す
         const blocks = extractAccordions(content);
-        const folds = extractFolds(content);
+        const folds = extractFolds(content, context); // ✅第2引数追加！
         if (folds.length > 0) {
             folds.forEach((blk, idx) => {
                 if (blk.prefix) {
@@ -647,7 +578,7 @@ export function parseOtherInline(
                     nodes.push(
                         <Fold
                             key={`fold-${idx}`}
-                            title={blk.title!}
+                            title={parseInline(blk.body!, context)}
                             initiallyOpen={blk.isOpen!}
                         >
                             {inner}
@@ -766,288 +697,3 @@ export function parseOtherInline(
 
         return nodes;
     }
-
-/** Accordion コンポーネント */
-function Accordion({ title, level, initiallyOpen, children, }: { title: string; level: '*' | '**' | '***'; initiallyOpen: boolean; children: React.ReactNode; }) {
-    const router = useRouter()
-    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const [open, setOpen] = useState(initiallyOpen)
-    const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
-    const designColor = useDesignColor(wikiSlugStr);
-    const iconPath = open
-        ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
-        : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7c24-24 c24s-24-10.7-24-24z'
-    const commonsStyle: React.CSSProperties = level === '*'
-    ? (
-        {
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em',
-            border: '0',
-            borderBottom: '1px solid',
-            borderLeft: '15px solid',
-            display: 'block',
-            fontSize: '1.5em',
-            marginBlockStart: '0.83em',
-            marginBlockEnd: '0.83em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            cursor: 'pointer'
-        }
-    )
-    : level === '**' ?
-        (
-            {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em',
-                cursor: 'pointer'
-            }
-        )
-    : (
-        {
-            cursor: 'pointer',
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
-        }
-    )
-    const headingStyle: React.CSSProperties = level === '*'
-    ? (
-        designColor === 'pink' ? {
-            backgroundColor: '#fad6e7',
-            borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
-            borderRight: '1px solid #ea94bc',
-            borderTop: '1px solid #ea94bc'
-        } : designColor === 'blue' ? {
-            backgroundColor: '#cce3f8',
-            borderColor: 'currentcolor currentcolor #86b8e2 #86b8e2',
-            borderRight: '1px solid #86b8e2',
-            borderTop: '1px solid #86b8e2'
-        } : designColor === 'yellow' ? {
-            backgroundColor: '#feeaa4',
-            borderColor: 'currentcolor currentcolor #fdd341 #fdd341',
-            borderRight: '1px solid #fdd341',
-            borderTop: '1px solid #fdd341'
-        } : {
-            backgroundColor: '#d1f0a0',
-            borderColor: 'currentcolor currentcolor #afd965 #afd965',
-            borderRight: '1px solid #afd965',
-            borderTop: '1px solid #afd965'
-        }
-    )
-    : level === '**' ?
-        (
-            designColor === 'pink'
-            ? {
-                borderColor: '#ea94bc'
-            } : designColor === 'blue' ? {
-                borderColor: '#86b8e2'
-            } : designColor === 'yellow' ? {
-                borderColor: '#fdd341'
-            } : {
-                borderColor: '#afd965'
-            }
-        )
-    : (
-        designColor === 'pink' ?
-        {
-            borderLeft: '15px solid #ea94bc'
-        } : designColor === 'blue' ? {
-            borderLeft: '15px solid #86b8e2'
-        } : designColor === 'yellow' ? {
-            borderLeft: '15px solid #fdd341'
-        } : {
-            borderLeft: '15px solid #afd965'
-        }
-    )
-
-    return (
-        <div style={{ margin: '1em 0' }}>
-            <Tag onClick={() => setOpen(!open)} style={{...commonsStyle,...headingStyle}}>
-                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
-                <path fill="currentColor" d={iconPath} />
-                </svg>
-                {title}
-            </Tag>
-            <div style={{ paddingLeft: '1em', display: open ? 'block' : 'none'}}>{children}</div>
-        </div>
-    )
-}
-
-function Fold({
-    title,
-    initiallyOpen,
-    children
-}: {
-    title: string;
-    initiallyOpen: boolean;
-    children: React.ReactNode;
-}){
-    const [open, setOpen] = useState(initiallyOpen)
-    const iconPath = open
-        ? "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM208 352l0-80-80 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l80 0 0-80c0-8.8 7.2-16 16-16s16 7.2 16 16l0 80 80 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-80 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16z"
-        : "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM128 240l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z";
-    return(
-        <div style={{ margin: '8px 0' }}>
-            <button onClick={() => setOpen(!open)} style={{backgroundColor: 'initial', border: 'none', color: 'inherit', cursor: 'pointer', display: 'block', float: 'left', fontSize: '22px', lineHeight: '1em', margin: '-1px 0', padding: '0'}}>
-                <svg style={{ height: '1em', verticalAlign: '-0.125em' }}aria-hidden="true" focusable="false" data-prefix="fal" data-icon="square-minus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
-                    <path fill="currentColor" d={iconPath}></path>
-                </svg>
-            </button>
-            <div style={{ display: open ? 'none' : 'block', marginLeft: '28px' }}>
-                {title}
-            </div>
-            <div style={{ display: open ? 'block' : 'none', marginLeft: '28px' }}>
-                {children}
-            </div>
-        </div>
-    )
-}
-
-/** Header コンポーネント */
-function Header({ title, level, anchor }: { title: string; level: '*' | '**' | '***'; anchor: string}) {
-    const router = useRouter()
-    const { wikiSlug } = router.query;
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
-    const designColor = useDesignColor(wikiSlugStr);
-    const commonsStyle: React.CSSProperties = level === '*'
-    ? (
-        {
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em',
-            border: '0',
-            borderBottom: '1px solid',
-            borderLeft: '15px solid',
-            display: 'block',
-            fontSize: '1.5em',
-            marginBlockStart: '0.83em',
-            marginBlockEnd: '0.83em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-        }
-    )
-    : level === '**' ?
-        (
-            {
-                display: 'block',
-                fontSize: '1.17em',
-                marginBlockStart: '1em',
-                marginBlockEnd: '1em',
-                marginInlineStart: '0px',
-                marginInlineEnd: '0px',
-                fontWeight: 'bold',
-                unicodeBidi: 'isolate',
-                border: '1px solid',
-                borderLeft: '15px solid',
-                backgroundColor: 'transparent',
-                color: '#000',
-                margin: '.2em 0 .5em',
-                padding: '.3em .3em .15em .5em',
-            }
-        )
-    : (
-        {
-            display: 'block',
-            marginBlockStart: '1.33em',
-            marginBlockEnd: '1.33em',
-            marginInlineStart: '0px',
-            marginInlineEnd: '0px',
-            fontWeight: 'bold',
-            unicodeBidi: 'isolate',
-            backgroundColor: 'transparent',
-            color: '#000',
-            margin: '.2em 0 .5em',
-            padding: '.3em .3em .15em .5em'
-        }
-    )
-    const headingStyle: React.CSSProperties = level === '*'
-    ? (
-        designColor === 'pink' ? {
-            backgroundColor: '#fad6e7',
-            borderColor: 'currentcolor currentcolor #ea94bc #ea94bc',
-            borderRight: '1px solid #ea94bc',
-            borderTop: '1px solid #ea94bc'
-        } : designColor === 'blue' ? {
-            backgroundColor: '#cce3f8',
-            borderColor: 'currentcolor currentcolor #86b8e2 #86b8e2',
-            borderRight: '1px solid #86b8e2',
-            borderTop: '1px solid #86b8e2'
-        } : designColor === 'yellow' ? {
-            backgroundColor: '#feeaa4',
-            borderColor: 'currentcolor currentcolor #fdd341 #fdd341',
-            borderRight: '1px solid #fdd341',
-            borderTop: '1px solid #fdd341'
-        } : {
-            backgroundColor: '#d1f0a0',
-            borderColor: 'currentcolor currentcolor #afd965 #afd965',
-            borderRight: '1px solid #afd965',
-            borderTop: '1px solid #afd965'
-        }
-    )
-    : level === '**' ?
-        (
-            designColor === 'pink'
-            ? {
-                borderColor: '#ea94bc'
-            } : designColor === 'blue' ? {
-                borderColor: '#86b8e2'
-            } : designColor === 'yellow' ? {
-                borderColor: '#fdd341'
-            } : {
-                borderColor: '#afd965'
-            }
-        )
-    : (
-        designColor === 'pink' ?
-        {
-            borderLeft: '#ea94bc'
-        } : designColor === 'blue' ? {
-            borderLeft: '#86b8e2'
-        } : designColor === 'yellow' ? {
-            borderLeft: '#fdd341'
-        } : {
-            borderLeft: '#afd965'
-        }
-    )
-
-    return (
-        <div style={{ margin: '1em 0', marginBottom: '10px' }}>
-            <Tag style={{...commonsStyle, ...headingStyle}}>
-                {title}
-                <a id={`#${anchor}`} style={{display: 'none'}}></a>
-                <a href={`${anchor}`} style={{opacity: '.2', position: 'absolute', right: '8px'}}>
-                    <svg className="svg-inline--fa fa-link" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="link" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg="" width="16.25" height="13">
-                        <path fill="currentColor" d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"></path>
-                    </svg>
-                </a>
-            </Tag>
-        </div>
-    )
-}
