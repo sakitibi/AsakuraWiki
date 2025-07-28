@@ -660,6 +660,12 @@ export function parseWikiContent(content: string, context: Context): React.React
         // 🔍デバッグログ（逆転してないかチェック）
         console.log('lastPos → item.start:', lastPos, item.start);
         console.log('inlineText:', content.slice(lastPos, item.start));
+        console.log(`📦 blockItems[${idx}]:`, {
+            type: item.type,
+            start: item.start,
+            end: item.end,
+            slice: content.slice(item.start, item.end),
+        });
     });
 
     if (lastPos < content.length) {
@@ -721,6 +727,9 @@ function extractAccordions(content: string, offset = 0): AccordionBlock[] {
         });
 
         cursor = end;
+        console.log(`🪗 accordion[${blocks.length - 1}]:`, {
+            title, level, isOpen, start, end, body,
+        });
     }
     return blocks;
 }
@@ -748,6 +757,10 @@ function extractAccordions(content: string, offset = 0): AccordionBlock[] {
                 isOpen,
                 start,
                 end,
+            });
+
+            console.log(`📁 fold[${blocks.length}]:`, {
+                titleRaw, isOpen, start, end, body,
             });
 
             lastIndex = end;
@@ -785,6 +798,11 @@ function extractSelContainers(content: string): { body: string; start: number; e
             const body = content.slice(startIdx + startTag.length, endIdx - 2).trim();
             results.push({ body, start: startIdx, end: endIdx + 2 });
             pos = endIdx + 2;
+            console.log(`🧩 sel_container[${results.length - 1}]:`, {
+                start: startIdx,
+                end: endIdx + 2,
+                body,
+            });
         } else {
             break;
         }
@@ -815,6 +833,13 @@ function parseWikiContentFragment(containerBlock: string): React.ReactNode[] {
                     {inner.trim()}
                 </SelContent>
             );
+            console.log(`📋 sel_row[${rowMatch?.index}]:`, {
+                raw: rowBody,
+            });
+            console.log(`  ↪ sel_content:`, {
+                type,
+                inner,
+            });
         }
 
         rowItems.push(<SelRow key={`sel-row-${rowMatch.index}`}>{selContents}</SelRow>);
