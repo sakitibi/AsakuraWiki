@@ -664,24 +664,25 @@ export function parseOtherInline(
     }
 
     function extractFolds(content: string, context: Context): FoldBlock[] {
-        const foldRe = /#fold\(([^)]+)\)\s*\{\{([\s\S]*?)\}\}/g;
+        const foldRe = /#fold\(([^),]+)(?:,(\w+))?\)\s*\{\{([\s\S]*?)\}\}/g;
         const blocks: FoldBlock[] = []
         let lastIndex:number = 0;
         let match: RegExpExecArray | null;
-        let foldCount:number = 0;
 
         while ((match = foldRe.exec(content)) !== null) {
-            const [full, rawTitle, body] = match;
+            const [full, rawTitle, rawFlag, body] = match;
+
             const parsedTitle = parseInline(rawTitle.trim(), context);
+            const isOpen = rawFlag === 'open';
 
             blocks.push({
                 prefix: content.slice(lastIndex, match.index),
                 title: <>{parsedTitle}</>,
                 body: body.trim(),
+                isOpen, // ✅ これで `initiallyOpen` に渡せる！
             });
 
             lastIndex = match.index + full.length;
-            foldCount++;
         }
 
         blocks.push({ prefix: content.slice(lastIndex) }); // 残り
