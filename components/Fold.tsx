@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FoldBlock, parseInline, Context } from "@/utils/parsePlugins";
+import parseInline from "@/components/ParseInline";
+import { FoldBlock, Context } from "@/utils/parsePlugins";
 
 export function extractFolds(content: string, context: Context): FoldBlock[] {
         const foldRe = /#fold\(([^)]*?)\)\s*\{\{([\s\S]*?)\}\}/g;
