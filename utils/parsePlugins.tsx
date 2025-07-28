@@ -598,12 +598,11 @@ export function parseWikiContent(content: string, context: Context): React.React
     // アコーディオンの prefix（前の余白）を inline 表示に追加
     accordionBlocks.forEach((blk, idx) => {
         if (blk.prefix) {
-            // prefix を inline blockItem として登録する（直接描画しない）
-            const prefixStart = blk.start! - blk.prefix.length;
-            const prefixEnd = blk.start!;
+            const prefixStart = blk.start!;
+            const prefixEnd = blk.start!; // prefix は inline に含まれるため、start と一致させる
             blockItems.push({
                 type: 'inline',
-                start: prefixStart,
+                start: prefixStart - blk.prefix.length,
                 end: prefixEnd,
                 node: (
                     <React.Fragment key={`acc-prefix-${idx}`}>
@@ -629,7 +628,6 @@ export function parseWikiContent(content: string, context: Context): React.React
             ),
         });
     });
-
     // フォールド構文を変換
     foldBlocks.forEach((blk, idx) => {
         if (!blk.title || !blk.body) return;
@@ -664,7 +662,6 @@ export function parseWikiContent(content: string, context: Context): React.React
 
     // 全ブロックを位置順に並べて挿入
     blockItems.sort((a, b) => a.start - b.start);
-
     blockItems.forEach((item, idx) => {
         if (item.start > lastPos) {
             const inlineText = content.slice(lastPos, item.start);
