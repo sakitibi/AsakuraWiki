@@ -757,42 +757,41 @@ function extractAccordions(content: string, offset = 0): AccordionBlock[] {
         return blocks;
     }
 
-    function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
-        const results: { body: string; start: number; end: number }[] = [];
-        const startTag = '#sel_container{{';
-        let pos = 0;
+function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
+    const results: { body: string; start: number; end: number }[] = [];
+    const startTag = '#sel_container{{';
+    let pos = 0;
 
-        while (pos < content.length) {
-            const startIdx = content.indexOf(startTag, pos);
-            if (startIdx === -1) break;
+    while (pos < content.length) {
+        const startIdx = content.indexOf(startTag, pos);
+        if (startIdx === -1) break;
 
-            let braceLevel = 0;
-            let endIdx = -1;
+        let braceLevel = 1; // ← ここが重要！
+        let endIdx = -1;
 
-            for (let i = startIdx + startTag.length; i < content.length; i++) {
-                if (content.slice(i, i + 2) === '{{') {
-                    braceLevel++; i++;
-                } else if (content.slice(i, i + 2) === '}}') {
-                    if (braceLevel === 0) {
-                        endIdx = i;
-                        break;
-                    } else {
-                        braceLevel--; i++;
-                    }
+        for (let i = startIdx + startTag.length; i < content.length; i++) {
+            if (content.slice(i, i + 2) === '{{') {
+                braceLevel++; i++;
+            } else if (content.slice(i, i + 2) === '}}') {
+                braceLevel--; i++;
+                if (braceLevel === 0) {
+                    endIdx = i;
+                    break;
                 }
-            }
-
-            if (endIdx !== -1) {
-                const body = content.slice(startIdx + startTag.length, endIdx).trim();
-                results.push({ body, start: startIdx, end: endIdx + 2 });
-                pos = endIdx + 2;
-            } else {
-                break;
             }
         }
 
-        return results;
+        if (endIdx !== -1) {
+            const body = content.slice(startIdx + startTag.length, endIdx - 2).trim();
+            results.push({ body, start: startIdx, end: endIdx + 2 });
+            pos = endIdx + 2;
+        } else {
+            break;
+        }
     }
+
+    return results;
+}
     
     function parseWikiContentFragment(content: string, context: Context): React.ReactNode[] {
         const nodes: React.ReactNode[] = [];
