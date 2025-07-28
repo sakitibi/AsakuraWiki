@@ -36,7 +36,7 @@ export function extractAccordions(content: string, offset = 0): AccordionBlock[]
         }
 
         const prefix = content.slice(cursor, start);
-        const body = content.slice(accRe.lastIndex, i - 2);
+        const body = content.slice(accRe.lastIndex, i); // ← `-2` を外す
         const end = i;
 
         // 🎯再帰的に子ブロックを抽出
