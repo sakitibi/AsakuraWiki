@@ -32,6 +32,13 @@ type AccordionBlock = {
     children?: AccordionBlock[]; // 子ブロックのためのプロパティ
 }
 
+type BlockItem = {
+    type: 'accordion' | 'fold' | 'sel' | 'inline';
+    start: number;
+    end: number;
+    node: React.ReactNode;
+};
+
 type FoldBlock = {
     prefix?: string
     title?: React.ReactNode
@@ -578,27 +585,44 @@ export function parseOtherInline(
     return nodes
 }
 
-export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
-    const accordionBlocks = extractAccordions(content);
+function extractSelContainersSafe(content: string, excludeRanges: { start: number; end: number }[], offset = 0): { body: string; start: number; end: number }[] {
+    const raw = extractSelContainers(content);
+    return raw
+        .map(sel => ({
+            ...sel,
+            start: offset + sel.start,
+            end: offset + sel.end,
+        }))
+        .filter(sel =>
+            !excludeRanges.some(range =>
+                sel.start >= range.start && sel.end <= range.end
+            )
+        );
+}
+
+function generateBlockItems(content: string, context: Context, offset = 0): BlockItem[] {
+    const accordionBlocks = extractAccordions(content, offset);
     const foldBlocks = extractFolds(content, context);
-    const selContainers = extractSelContainers(content);
+    const accordionRanges = accordionBlocks.map(b => ({ start: b.start!, end: b.end! }));
+    const selContainers = extractSelContainersSafe(content, accordionRanges, offset);
 
-    const nodes: React.ReactNode[] = [];
+    const items: BlockItem[] = [];
 
-    type BlockItem = {
-        type: 'accordion' | 'fold' | 'sel' | 'inline';
-        start: number;
-        end: number;
-        node: React.ReactNode;
-    };
-
-    const blockItems: BlockItem[] = [];
-
-    // 🔧 アコーディオン構文を blockItems にのみ登録（lastPos は更新しない）
     accordionBlocks.forEach((blk, idx) => {
-        blockItems.push({
+        if (blk.prefix) {
+            items.push({
+                type: 'inline',
+                start: blk.start! - blk.prefix.length,
+                end: blk.start!,
+                node: <React.Fragment key={`acc-prefix-${idx}`}>{parseInline(blk.prefix, context)}</React.Fragment>,
+            });
+        }
+
+        const children = generateBlockItems(blk.body!, context, blk.start!);
+
+        items.push({
             type: 'accordion',
-            start: blk.start!, // prefix 分は除外
+            start: blk.start!,
             end: blk.end!,
             node: (
                 <Accordion
@@ -607,16 +631,17 @@ export function parseWikiContent(content: string, context: Context): React.React
                     level={blk.level!}
                     initiallyOpen={blk.isOpen!}
                 >
-                    {parseWikiContent(blk.body!, { ...context })}
+                    {children.map((child, cidx) => (
+                        <React.Fragment key={`acc-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
+                    ))}
                 </Accordion>
             ),
         });
     });
 
-    // 🔧 fold構文
     foldBlocks.forEach((blk, idx) => {
         if (!blk.title || !blk.body) return;
-        blockItems.push({
+        items.push({
             type: 'fold',
             start: blk.start!,
             end: blk.end!,
@@ -632,17 +657,23 @@ export function parseWikiContent(content: string, context: Context): React.React
         });
     });
 
-    // 🔧 sel_container構文
     selContainers.forEach((sel, idx) => {
-        const fullText = content.slice(sel.start, sel.end);
+        const fullText = content.slice(sel.start - offset, sel.end - offset); // content はローカルなブロック
         const containerNodes = parseWikiContentFragment(fullText);
-        blockItems.push({
+        items.push({
             type: 'sel',
             start: sel.start,
             end: sel.end,
             node: <React.Fragment key={`sel-${idx}`}>{containerNodes}</React.Fragment>,
         });
     });
+
+    return items;
+}
+
+export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
+    const blockItems = generateBlockItems(content, context);
+    const nodes: React.ReactNode[] = [];
 
     // ✅ 挿入順にソートして描画
     blockItems.sort((a, b) => a.start - b.start);
@@ -657,9 +688,7 @@ export function parseWikiContent(content: string, context: Context): React.React
         nodes.push(item.node);
         lastPos = item.end;
 
-        // 🔍デバッグログ（逆転してないかチェック）
         console.log('lastPos → item.start:', lastPos, item.start);
-        console.log('inlineText:', content.slice(lastPos, item.start));
         console.log(`📦 blockItems[${idx}]:`, {
             type: item.type,
             start: item.start,
