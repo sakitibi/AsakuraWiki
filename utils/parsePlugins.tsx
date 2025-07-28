@@ -581,12 +581,12 @@ export function parseOtherInline(
 export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
     const accordionBlocks = extractAccordions(content);
     const foldBlocks = extractFolds(content, context);
-    const selContainers = extractSelContainers(content); // 🔹追加！
+    const selContainers = extractSelContainers(content);
 
     const nodes: React.ReactNode[] = [];
 
     type BlockItem = {
-        type: 'accordion' | 'fold' | 'sel' | 'inline'; // 🔹sel追加
+        type: 'accordion' | 'fold' | 'sel' | 'inline';
         start: number;
         end: number;
         node: React.ReactNode;
@@ -594,7 +594,7 @@ export function parseWikiContent(content: string, context: Context): React.React
 
     const blockItems: BlockItem[] = [];
 
-    // 🔸アコーディオンを変換（既存）
+    // アコーディオンを変換
     accordionBlocks.forEach((blk, idx) => {
         if (!blk.title || !blk.body) return;
         blockItems.push({
@@ -613,8 +613,8 @@ export function parseWikiContent(content: string, context: Context): React.React
             ),
         });
     });
-    
-    // 🔸フォールド構文を変換（既存）
+
+    // フォールド構文を変換
     foldBlocks.forEach((blk, idx) => {
         if (!blk.title || !blk.body) return;
         blockItems.push({
@@ -633,7 +633,7 @@ export function parseWikiContent(content: string, context: Context): React.React
         });
     });
 
-    // 🔹sel_container を追加処理
+    // sel_container を追加処理
     selContainers.forEach((sel, idx) => {
         const containerNodes = parseWikiContentFragment(sel.body, context);
         blockItems.push({
@@ -648,7 +648,7 @@ export function parseWikiContent(content: string, context: Context): React.React
         });
     });
 
-    // 🔸全ブロックを位置順に並べて挿入（既存）
+    // 全ブロックを位置順に並べて挿入
     blockItems.sort((a, b) => a.start - b.start);
     let lastPos = 0;
 
