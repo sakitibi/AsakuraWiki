@@ -589,10 +589,6 @@ function renderAccordionBlock(blk: AccordionBlock, key: string, context: Context
             level={blk.level!}
             initiallyOpen={blk.isOpen!}
         >
-            {/* 本文の描画 */}
-            {parseInline(blk.body!, context)}
-
-            {/* 子アコーディオンを再帰的に描画 */}
             {blk.children?.map((child, idx) =>
                 renderAccordionBlock(child, `${key}-child-${idx}`, context)
             )}
