@@ -578,24 +578,6 @@ export function parseOtherInline(
     return nodes
 }
 
-    /**
-     * アコーディオンとインラインプラグインを再帰的にパースするメイン関数
-     */
-function renderAccordionBlock(blk: AccordionBlock, key: string, context: Context): React.ReactNode {
-    return (
-        <Accordion
-            key={key}
-            title={blk.title!}
-            level={blk.level!}
-            initiallyOpen={blk.isOpen!}
-        >
-            {blk.children?.map((child, idx) =>
-                renderAccordionBlock(child, `${key}-child-${idx}`, context)
-            )}
-        </Accordion>
-    );
-}
-
 export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
     const accordionBlocks = extractAccordions(content);
     const foldBlocks = extractFolds(content, context);
@@ -619,7 +601,19 @@ export function parseWikiContent(content: string, context: Context): React.React
             type: 'accordion',
             start: blk.start!,
             end: blk.end!,
-            node: renderAccordionBlock(blk, `acc-${idx}`, context),
+            node: (
+                <Accordion
+                    key={`acc-${idx}`}
+                    title={blk.title!}
+                    level={blk.level!}
+                    initiallyOpen={blk.isOpen!}
+                >
+                    {/* ✅ blk.body を正しく解釈 */}
+                    {parseWikiContent(blk.body!, context)}
+
+                    {/* 👇 blk.children は renderAccordionBlock 経由で描画済みなので不要 */}
+                </Accordion>
+            ),
         });
     });
 
