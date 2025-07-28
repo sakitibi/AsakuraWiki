@@ -106,7 +106,7 @@ function extractSelContainersSafe(content: string, excludeRanges: { start: numbe
 }
 
 function generateBlockItems(content: string, context: Context, offset = 0): BlockItem[] {
-    const accordionBlocks = extractAccordions(content, offset);
+    const accordionBlocks = extractAccordions(content, offset, context);
     const foldBlocks = extractFolds(content, context);
     const accordionRanges = accordionBlocks.map(b => ({ start: b.start!, end: b.end! }));
     const selContainers = extractSelContainersSafe(content, accordionRanges, offset);
