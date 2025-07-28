@@ -792,7 +792,7 @@ function extractSelContainers(content: string): { body: string; start: number; e
 }
 
 // parseWikiContentFragment → extractSelContainers を使わず、1コンテナだけ直接処理する
-function parseWikiContentFragment(containerBlock: string, context: Context): React.ReactNode[] {
+function parseWikiContentFragment(containerBlock: string): React.ReactNode[] {
     const nodes: React.ReactNode[] = [];
 
     const rowRe = /#sel_row\s*\{\{([\s\S]*?)\}\}/g;
