@@ -28,31 +28,6 @@ type FoldBlock = {
     body?: string
 }
 
-function extractFolds(content: string, context: Context): FoldBlock[] {
-    const foldRe = /#fold\(([^)]+)\)\s*\{\{([\s\S]*?)\}\}/g;
-    const blocks: FoldBlock[] = []
-    let lastIndex = 0;
-    let match: RegExpExecArray | null;
-    let foldCount = 0;
-
-    while ((match = foldRe.exec(content)) !== null) {
-        const [full, rawTitle, body] = match;
-        const parsedTitle = parseInline(rawTitle.trim(), context);
-
-        blocks.push({
-            prefix: content.slice(lastIndex, match.index),
-            title: <>{parsedTitle}</>,
-            body: body.trim(),
-        });
-
-        lastIndex = match.index + full.length;
-        foldCount++;
-    }
-
-    blocks.push({ prefix: content.slice(lastIndex) }); // 残り
-    return blocks;
-}
-
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
     useEffect(() => {
@@ -75,51 +50,6 @@ export function useDesignColor(slug: string) {
     }, [slug]);
 
     return color;
-}
-
-/**
- * ネスト可能なアコーディオンブロックを文字列から抽出します
- */
-function extractAccordions(content: string) {
-    type Block = {
-        prefix?: string
-        title?: string
-        level?: '*' | '**' | '***'
-        isOpen?: boolean
-        body?: string
-    }
-
-    const blocks: Block[] = []
-    let cursor = 0
-    const startRe = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{/g
-
-    while (true) {
-        startRe.lastIndex = cursor
-        const m = startRe.exec(content)
-        if (!m) break
-        const [whole, title, lvl, state] = m
-        const bodyStart = m.index + whole.length
-        let depth = 1
-        let i = bodyStart
-        while (i < content.length && depth > 0) {
-            if (content.slice(i, i + 2) === '{{') {
-                depth++
-                i += 2
-            } else if (content.slice(i, i + 2) === '}}') {
-                depth--
-                i += 2
-            } else {
-                i++
-            }
-        }
-        const body = content.slice(bodyStart, i - 2)
-        blocks.push({ prefix: content.slice(cursor, m.index) })
-        blocks.push({ title: title.trim(), level: lvl as any, isOpen: state === 'open', body })
-        cursor = i
-    }
-
-    blocks.push({ prefix: content.slice(cursor) })
-    return blocks
 }
 
 /** インラインプラグインを処理します */
@@ -688,6 +618,76 @@ export function parseOtherInline(
         return parseWikiContentFragment(content, context);
     }
 
+    /**
+     * ネスト可能なアコーディオンブロックを文字列から抽出します
+     */
+    function extractAccordions(content: string) {
+        type Block = {
+            prefix?: string
+            title?: string
+            level?: '*' | '**' | '***'
+            isOpen?: boolean
+            body?: string
+        }
+
+        const blocks: Block[] = []
+        let cursor = 0
+        const startRe = /#accordion\(([^,]+),(\*{1,3}),(open|close)\)\s*\{\{/g
+
+        while (true) {
+            startRe.lastIndex = cursor
+            const m = startRe.exec(content)
+            if (!m) break
+            const [whole, title, lvl, state] = m
+            const bodyStart = m.index + whole.length
+            let depth = 1
+            let i = bodyStart
+            while (i < content.length && depth > 0) {
+                if (content.slice(i, i + 2) === '{{') {
+                    depth++
+                    i += 2
+                } else if (content.slice(i, i + 2) === '}}') {
+                    depth--
+                    i += 2
+                } else {
+                    i++
+                }
+            }
+            const body = content.slice(bodyStart, i - 2)
+            blocks.push({ prefix: content.slice(cursor, m.index) })
+            blocks.push({ title: title.trim(), level: lvl as any, isOpen: state === 'open', body })
+            cursor = i
+        }
+
+        blocks.push({ prefix: content.slice(cursor) })
+        return blocks
+    }
+
+    function extractFolds(content: string, context: Context): FoldBlock[] {
+        const foldRe = /#fold\(([^)]+)\)\s*\{\{([\s\S]*?)\}\}/g;
+        const blocks: FoldBlock[] = []
+        let lastIndex:number = 0;
+        let match: RegExpExecArray | null;
+        let foldCount:number = 0;
+
+        while ((match = foldRe.exec(content)) !== null) {
+            const [full, rawTitle, body] = match;
+            const parsedTitle = parseInline(rawTitle.trim(), context);
+
+            blocks.push({
+                prefix: content.slice(lastIndex, match.index),
+                title: <>{parsedTitle}</>,
+                body: body.trim(),
+            });
+
+            lastIndex = match.index + full.length;
+            foldCount++;
+        }
+
+        blocks.push({ prefix: content.slice(lastIndex) }); // 残り
+        return blocks;
+    }
+
     function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
         const results: { body: string; start: number; end: number }[] = [];
         const startTag = '#sel_container{{';
@@ -914,8 +914,8 @@ function Fold({
 }){
     const [open, setOpen] = useState(initiallyOpen)
     const iconPath = open
-        ? "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM208 352l0-80-80 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l80 0 0-80c0-8.8 7.2-16 16-16s16 7.2 16 16l0 80 80 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-80 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16z"
-        : "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM128 240l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z";
+        ? "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM128 240l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+        : "M64 64C46.3 64 32 78.3 32 96l0 320c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L64 64zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM208 352l0-80-80 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l80 0 0-80c0-8.8 7.2-16 16-16s16 7.2 16 16l0 80 80 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-80 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16z";
     return(
         <div style={{ margin: '8px 0' }}>
             <button onClick={() => setOpen(!open)} style={{backgroundColor: 'initial', border: 'none', color: 'inherit', cursor: 'pointer', display: 'block', float: 'left', fontSize: '22px', lineHeight: '1em', margin: '-1px 0', padding: '0'}}>
