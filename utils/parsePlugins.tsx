@@ -697,19 +697,22 @@ export function parseOtherInline(
 
             const start = m.index;
             const bodyStart = start + whole.length;
+
+            // 改良されたネスト対応パース
             let depth = 1;
             let i = bodyStart;
             while (i < content.length && depth > 0) {
-                if (content.slice(i, i + 2) === '{{') {
+                const two = content.slice(i, i + 2);
+                if (two === '{{') {
                     depth++; i += 2;
-                } else if (content.slice(i, i + 2) === '}}') {
+                } else if (two === '}}') {
                     depth--; i += 2;
                 } else {
                     i++;
                 }
             }
 
-            const end = i; // ← 閉じ括弧含む
+            const end = i;
             const body = content.slice(bodyStart, i - 2);
 
             blocks.push({ prefix: content.slice(cursor, start) });
