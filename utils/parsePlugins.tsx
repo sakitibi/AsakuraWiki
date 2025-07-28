@@ -616,6 +616,7 @@ export function parseWikiContent(content: string, context: Context): React.React
                 </Accordion>
             ),
         });
+        lastPos = blk.end!;
     });
 
     // フォールド構文を変換
@@ -631,7 +632,7 @@ export function parseWikiContent(content: string, context: Context): React.React
                     title={blk.title}
                     initiallyOpen={blk.isOpen ?? false}
                 >
-                    {parseWikiContentFragment(blk.body, context)}
+                    {parseWikiContentFragment(blk.body)}
                 </Fold>
             ),
         });
@@ -641,7 +642,7 @@ export function parseWikiContent(content: string, context: Context): React.React
     // parseWikiContent → fragmentに sel.fullText を渡す
     selContainers.forEach((sel, idx) => {
         const fullText = content.slice(sel.start, sel.end);
-        const containerNodes = parseWikiContentFragment(fullText, context);
+        const containerNodes = parseWikiContentFragment(fullText);
         blockItems.push({
             type: 'sel',
             start: sel.start,
@@ -706,17 +707,20 @@ function extractAccordions(content: string, offset = 0): AccordionBlock[] {
             }
         }
 
+        const prefix = content.slice(cursor, start); // ← blk.start の前のテキスト部分
         const body = content.slice(accRe.lastIndex, i - 2); // brace の外側
         const end = i; // }} の直後
+        const children: AccordionBlock[] = []; // あるいは再帰的ブロックなど
 
         blocks.push({
+            prefix,
             title,
             level,
             isOpen,
             body,
             start: offset + start,
             end: offset + end,
-            prefix: content.slice(offset + cursor, offset + start),
+            children,
         });
 
         cursor = end;
