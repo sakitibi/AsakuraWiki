@@ -607,7 +607,7 @@ export function parseWikiContent(content: string, context: Context): React.React
                     level={blk.level!}
                     initiallyOpen={blk.isOpen!}
                 >
-                    {parseWikiContent(blk.body!, context)}
+                    {parseWikiContent(blk.body!, { ...context })}
                 </Accordion>
             ),
         });
