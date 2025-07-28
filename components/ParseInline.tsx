@@ -44,7 +44,7 @@ export default function parseInline(text: string, context: Context): React.React
 }
 
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
-function parseOtherInline(
+export function parseOtherInline(
     line: string,
     wikiSlug: string,
     pageSlug: string,

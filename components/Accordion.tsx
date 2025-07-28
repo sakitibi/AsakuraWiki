@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useDesignColor, AccordionBlock } from "@/utils/parsePlugins";
-
+import { useDesignColor, AccordionBlock, Context } from "@/utils/parsePlugins";
+import parseInline from "@/components/ParseInline";
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
 */
-export function extractAccordions(content: string, offset = 0): AccordionBlock[] {
+export function extractAccordions(content: string, offset = 0, context: Context): AccordionBlock[] {
     const blocks: AccordionBlock[] = [];
     const accRe = /#accordion\(([^)]*?)\)\s*\{\{/g;
 
@@ -37,10 +37,11 @@ export function extractAccordions(content: string, offset = 0): AccordionBlock[]
 
         const prefix = content.slice(cursor, start);
         const body = content.slice(accRe.lastIndex, i); // ← `-2` を外す
+        const parsedBody = parseInline(body, context);
         const end = i;
 
         // 🎯再帰的に子ブロックを抽出
-        const children = extractAccordions(body, offset + start); // ←こちら試す
+        const children = extractAccordions(body, offset + start, context); // ←こちら試す
 
         blocks.push({
             prefix,
@@ -48,6 +49,7 @@ export function extractAccordions(content: string, offset = 0): AccordionBlock[]
             level,
             isOpen,
             body,
+            bodyNode: parsedBody,
             start: offset + start,
             end: offset + end,
             children,

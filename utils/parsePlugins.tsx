@@ -19,6 +19,7 @@ export type AccordionBlock = {
     level?: '*' | '**' | '***';
     isOpen?: boolean;
     body?: string;
+    bodyNode?: React.ReactNode[];
     start?: number;
     end?: number;
     children?: AccordionBlock[]; // 子ブロックのためのプロパティ
