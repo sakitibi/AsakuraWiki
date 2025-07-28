@@ -596,22 +596,9 @@ export function parseWikiContent(content: string, context: Context): React.React
 
     // 🔧 アコーディオン構文を blockItems にのみ登録（lastPos は更新しない）
     accordionBlocks.forEach((blk, idx) => {
-        /*if (blk.prefix) {
-            blockItems.push({
-                type: 'inline',
-                start: blk.start! - blk.prefix.length,
-                end: blk.start!,
-                node: (
-                    <React.Fragment key={`acc-prefix-${idx}`}>
-                        {parseInline(blk.prefix, context)}
-                    </React.Fragment>
-                ),
-            });
-        }*/
-
         blockItems.push({
             type: 'accordion',
-            start: blk.start!,
+            start: blk.start!, // prefix 分は除外
             end: blk.end!,
             node: (
                 <Accordion
