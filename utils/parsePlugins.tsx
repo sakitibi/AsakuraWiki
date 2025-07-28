@@ -584,7 +584,7 @@ export function parseOtherInline(
 
         // アコーディオンとフォールドとセレクトを統合して位置順に並べる
         type BlockItem = {
-            type: 'accordion' | 'fold' | 'sel';
+            type: 'accordion' | 'fold' | 'sel' | 'inline';
             start: number;
             node: React.ReactNode;
         };
@@ -643,8 +643,30 @@ export function parseOtherInline(
 
         // 全ブロックを位置順に並べて挿入
         blockItems.sort((a, b) => a.start - b.start);
-        blockItems.forEach(item => nodes.push(item.node));
+        let lastPos = 0;
+        blockItems.forEach((item, i) => {
+            if (item.start > lastPos) {
+                const inlineContent = content.slice(lastPos, item.start);
+                const inlineNodes = parseInline(inlineContent, context);
+                blockItems.push({
+                    type: 'inline',
+                    start: lastPos,
+                    node: <React.Fragment key={`inline-${i}`}>{inlineNodes}</React.Fragment>
+                });
+            }
+            lastPos = item.start;
+        });
 
+        // 最後に残った部分も
+        if (lastPos < content.length) {
+            const inlineContent = content.slice(lastPos);
+            const inlineNodes = parseInline(inlineContent, context);
+            blockItems.push({
+                type: 'inline',
+                start: lastPos,
+                node: <React.Fragment key={`inline-last`}>{inlineNodes}</React.Fragment>
+            });
+        }
         return nodes;
     }
 
