@@ -13,7 +13,6 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
 
         const start = m.index;
         let i = foldRe.lastIndex;
-        const end = i;
         const args = m[1].split(',').map(s => s.trim());
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
@@ -33,6 +32,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         }
 
         const body = content.slice(foldRe.lastIndex, i - 2); // }} を除く
+        const end = i; // ✅ 修正：本文抽出後に end を定義
         const prefix = content.slice(cursor, start);
 
         // 🎯 再帰で子 fold を抽出
@@ -43,8 +43,8 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             title: <>{parsedTitle}</>,
             body,
             isOpen,
-            start: offset + start,  // ← OK！
-            end: offset + end,      // ← OK！
+            start: offset + start,
+            end: offset + end,
             children,
         });
 
