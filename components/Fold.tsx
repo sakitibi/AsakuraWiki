@@ -19,7 +19,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         const parsedTitle = parseInline(titleRaw, context);
 
         // 🧠 多段 {{ }} に対応した本文抽出
-        const foldOpenEnd = m.index + m[0].length;
+        const foldOpenEnd = content.indexOf("{{", m.index) + 2;
         let i = foldOpenEnd;
 
         let depth = 1;
