@@ -20,6 +20,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         const parsedTitle = parseInline(titleRaw, context);
 
         // 🧠 多段 {{ }} に対応した本文抽出
+        // 🧠 多段 {{ }} に対応した本文抽出
         const foldOpenEnd = content.indexOf("{{", m.index) + 2;
         let i = foldOpenEnd;
 
@@ -35,12 +36,23 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             }
         }
 
-        // 🧠 guard：i - 2 >= foldOpenEnd を保証
-        if (i - 2 < foldOpenEnd) continue;
-
         const bodyStart = foldOpenEnd;
-        const bodyEnd = i - 2;  // "}}" の2つ前
+        const bodyEnd = i - 2; // "}}" の2つ前
+
+        // ✅ ガード削除 ＋ ログ追加（skipされてたらここに出る）
+        if (bodyEnd < bodyStart) {
+            console.log("⛔ fold skipped due to bodyEnd < bodyStart", {
+                foldOpenEnd,
+                i,
+                bodyStart,
+                bodyEnd,
+                contentPreview: content.slice(bodyStart, i),
+            });
+        }
+
         const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
+        console.log("✅ body raw:", JSON.stringify(body));
+        console.log("🔍 body preview:", body);
         console.log("✅ body raw:", JSON.stringify(body));
         console.log("🔍 body preview:", body);
         const end = i;
