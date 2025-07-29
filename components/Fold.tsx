@@ -1,12 +1,17 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
 
-export function extractFolds(content: string, context: Context, offset = 0): FoldBlock[] {
-    console.log("🔥 extractFolds called");
+export function extractFolds(content: string, context: Context, offset = 0, depth = 0): FoldBlock[] {
+    console.log("🔥 extractFolds called at depth", depth);
+    const MAX_DEPTH = 10;
+    if (depth > MAX_DEPTH) {
+        console.error("⛔ 再帰深度上限に達したため打ち切ります\n#accordionなどの別プラグインをご利用ください、");
+        return [];
+    }
+
     const blocks: FoldBlock[] = [];
     const foldRe = /#fold\(([^)]*?)\)\s*\{\{/g;
-
     const matches = Array.from(content.matchAll(foldRe));
     let cursor = 0;
 
@@ -15,49 +20,46 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         const args = m[1].split(',').map(s => s.trim());
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
-        const parsedTitle = parseInline(titleRaw, context); // ← 展開済みの title を取得
+        const parsedTitleNodes = parseInline(titleRaw, context);
 
         const foldOpenEnd = content.indexOf("{{", start) + 2;
         let i = foldOpenEnd;
-        let depth = 1;
-        while (i < content.length && depth > 0) {
+        let depthCount = 1;
+        while (i < content.length && depthCount > 0) {
             const two = content.slice(i, i + 2);
             if (two === '{{') {
-                depth++; i += 2;
+                depthCount++; i += 2;
             } else if (two === '}}') {
-                depth--; i += 2;
+                depthCount--; i += 2;
             } else {
                 i++;
             }
+        }
+
+        if (depthCount !== 0) {
+            console.warn("⚠️ foldブロックの閉じタグ不足によりスキップ", { titleRaw, start });
+            continue;
         }
 
         const bodyStart = foldOpenEnd;
         const bodyEnd = i - 2;
         const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
 
-        console.log("🧪 foldBlock 構築直前", {
-            body,
-            bodyType: typeof body,
-            bodyLength: body.length,
-            raw: JSON.stringify(body),
-            prefixSlice: content.slice(cursor, start),
-        });
-
         blocks.push({
             prefix: content.slice(cursor, start),
-            title: <>{parsedTitle}</>, // ← 展開結果を JSX 表示に埋め込む
+            title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
             body,
             isOpen,
             start: offset + start,
             end: offset + i,
-            children: extractFolds(body, context, offset + foldOpenEnd),
+            children: extractFolds(body, context, offset + foldOpenEnd, depth + 1),
         });
 
         cursor = i;
     }
 
     const tail = content.slice(cursor).trim();
-    const tailFolds = extractFolds(tail, context, offset + cursor);
+    const tailFolds = extractFolds(tail, context, offset + cursor, depth + 1);
 
     if (tailFolds.length > 0) {
         blocks.push(...tailFolds);
