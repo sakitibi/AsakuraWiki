@@ -156,42 +156,39 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
         }
 
         const children = blk.children
-            ? blk.children.map((child, cidx) => ({
-                type: 'fold',
-                start: child.start!,
-                end: child.end!,
-                node: (
-                    <Fold
-                        key={`fold-child-${idx}-${cidx}`}
-                        title={child.title!}
-                        initiallyOpen={child.isOpen ?? false}
-                    >
-                        {child.body
-                            ? parseWikiContentFragment(child.body)
-                            : null}
-                    </Fold>
-                ),
-            }))
-            : [];
-
-        items.push({
-            type: 'fold',
-            start: blk.start!,
-            end: blk.end!,
-            node: (
-                <Fold
-                    key={`fold-${idx}`}
-                    title={blk.title}
-                    initiallyOpen={blk.isOpen ?? false}
-                >
-                    {children.length > 0
-                        ? children.map(c => c.node)
-                        : blk.body
+            ? blk.children.flatMap((child, cidx) => {
+                const items: BlockItem[] = [];
+                if (child.prefix) {
+                    items.push({
+                        type: 'inline',
+                        start: child.start! - child.prefix.length,
+                        end: child.start!,
+                        node: <React.Fragment key={`fold-prefix-${idx}-${cidx}`}>{parseInline(child.prefix, context)}</React.Fragment>,
+                    });
+                }
+                items.push({
+                    type: 'fold',
+                    start: child.start!,
+                    end: child.end!,
+                    node: (
+                        <Fold
+                        key={`fold-${idx}`}
+                        title={blk.title}
+                        initiallyOpen={blk.isOpen ?? false}
+                        >
+                        {children.length > 0
+                            ? children.map((child, cidx) => (
+                                <React.Fragment key={`fold-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
+                            ))
+                            : blk.body
                             ? parseWikiContentFragment(blk.body)
                             : null}
-                </Fold>
-            ),
-        });
+                        </Fold>
+                    ),
+                });
+                return items;
+            })
+            : [];
     });
 
     selContainers.forEach((sel, idx) => {
