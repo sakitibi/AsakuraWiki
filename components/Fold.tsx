@@ -13,8 +13,10 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         if (!m) break;
 
         const start = m.index;
-        let i = foldRe.lastIndex;
-        const args = m[1].split(',').map(s => s.trim()); // セミコロン除去しない
+        const foldOpenEnd = m.index + m[0].length; // 🔍 fold構文の冒頭（#fold(...){{）の終端
+        let i = foldOpenEnd;
+
+        const args = m[1].split(',').map(s => s.trim());
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
         const parsedTitle = parseInline(titleRaw, context);
@@ -32,10 +34,10 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             }
         }
 
-        const body = content.slice(foldRe.lastIndex, i - 2); // }} を除く
-        const end = i; // ✅ パース後に end を定義
+        const body = content.slice(foldOpenEnd, i - 2); // }} を除く
+        const end = i;
         const prefix = content.slice(cursor, start);
-        const children = extractFolds(body, context, offset + foldRe.lastIndex);
+        const children = extractFolds(body, context, offset + foldOpenEnd);
 
         blocks.push({
             prefix,
@@ -51,7 +53,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             titleRaw, isOpen, start, end, body,
         });
 
-        cursor = end; // ✅ カーソルも fold 終端へ
+        cursor = end;
     }
 
     const tail = content.slice(cursor).trim();
