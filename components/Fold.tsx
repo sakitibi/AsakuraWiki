@@ -74,7 +74,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             isOpen,
             start: offset + start,
             end: offset + i,
-            children: extractFolds(body, context, offset + foldOpenEnd, depth + 1),
+            children: extractFolds(body, context, 0, depth + 1)
         });
 
         cursor = i;

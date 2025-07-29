@@ -158,10 +158,10 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
 
         if (blk.prefix) {
             items.push({
-            type: 'inline',
-            start: blk.start - blk.prefix.length,
-            end: blk.start,
-            node: <React.Fragment key={`fold-prefix-${idx}`}>{parseInline(blk.prefix, context)}</React.Fragment>,
+                type: 'inline',
+                start: blk.start - blk.prefix.length,
+                end: blk.start,
+                node: <React.Fragment key={`fold-prefix-${idx}`}>{parseInline(blk.prefix, context)}</React.Fragment>,
             });
         }
 
