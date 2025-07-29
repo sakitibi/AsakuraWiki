@@ -17,16 +17,24 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
     for (const m of matches) {
         const start = m.index!;
-        const args = m[1].split(',').map(s => s.trim());
-        if (args.length < 1) continue;
 
-        const titleRaw = args[0] ?? 'タイトル未設定';
+        // ✅ 修正箇所：一番右のカンマで title と option を分割
+        const foldHeader = m[1];
+        const lastCommaIndex = foldHeader.lastIndexOf(',');
+        if (lastCommaIndex === -1) {
+            console.warn("⚠️ fold にカンマが含まれていないためスキップ");
+            continue;
+        }
+
+        const titleRaw = foldHeader.slice(0, lastCommaIndex).trim();
+        const optionStr = foldHeader.slice(lastCommaIndex + 1).trim();
+        const isOpen = optionStr.includes('open');
+
         if (!titleRaw || !titleRaw.match(/\S/)) {
             console.warn("🚫 titleRaw が空か無効 → fold スキップ");
             continue;
         }
 
-        const isOpen = args.includes('open');
         const parsedTitleNodes = parseInline(titleRaw, context);
         console.log("🪪 titleRaw:", titleRaw);
         console.log("🎨 parsedTitle:", parsedTitleNodes);
