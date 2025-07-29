@@ -211,6 +211,10 @@ export function parseWikiContent(content: string, context: Context, offset = 0):
     blockItems.sort((a, b) => a.start - b.start);
     let lastPos = offset;
 
+    if (blockItems.length === 0) {
+        console.warn("🚫 No blockItems generated. fold構文が崩れている可能性");
+    }
+
     blockItems.forEach((item, idx) => {
         console.log('📦 blockItems:', blockItems);
         const relativeStart = item.start - offset;
