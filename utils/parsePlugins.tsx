@@ -165,7 +165,7 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
             });
         }
 
-        const children = generateBlockItems(blk.body!, context, blk.start);
+        const children = generateBlockItems(blk.body!, context, 0);
 
         items.push({
             type: 'fold',
