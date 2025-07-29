@@ -145,7 +145,15 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
         });
     });
 
+    console.log('🔍 foldBlocks数:', foldBlocks.length);
     foldBlocks.forEach((blk, idx) => {
+        console.log(`  ↪ fold[${idx}]:`, {
+            start: blk.start,
+            end: blk.end,
+            prefix: blk.prefix,
+            body: blk.body,
+        });
+
         if (!blk.start || !blk.end) return; // 無効な fold スキップ
 
         if (blk.prefix) {
