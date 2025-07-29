@@ -37,7 +37,17 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         }
 
         const bodyStart = foldOpenEnd;
-        const bodyEnd = i - 2; // "}}" の2つ前
+        const bodyEnd = i - 2;
+
+        let body: string;
+        if (bodyEnd >= bodyStart) {
+            body = content.slice(bodyStart, bodyEnd);
+        } else {
+            body = '';  // 明示的に空文字を代入
+            console.log("⚠️ bodyEnd < bodyStart なので空文字代入", { bodyStart, bodyEnd });
+        }
+
+        console.log("✅ body raw:", JSON.stringify(body));
 
         // ✅ ガード削除 ＋ ログ追加（skipされてたらここに出る）
         if (bodyEnd < bodyStart) {
@@ -50,7 +60,6 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             });
         }
 
-        const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
         console.log("✅ body raw:", JSON.stringify(body));
         console.log("🔍 body preview:", body);
         console.log("✅ body raw:", JSON.stringify(body));
