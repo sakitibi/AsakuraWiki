@@ -182,7 +182,7 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                     <React.Fragment key={`fold-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
                     ))
                 : blk.body
-                ? parseWikiContent(blk.body, context)
+                ? parseWikiContent(blk.body, context, blk.start)
                 : null}
             </Fold>
             ),
@@ -203,16 +203,19 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
     return items;
 }
 
-export function parseWikiContent(content: string, context: Context): React.ReactNode[] {
-    const blockItems = generateBlockItems(content, context);
+export function parseWikiContent(content: string, context: Context, offset: number = 0): React.ReactNode[] {
+    const blockItems = generateBlockItems(content, context, offset);
     const nodes: React.ReactNode[] = [];
 
     // ✅ 挿入順にソートして描画
     blockItems.sort((a, b) => a.start - b.start);
-    let lastPos = 0;
+    let lastPos = offset;
+
     blockItems.forEach((item, idx) => {
         if (item.start > lastPos) {
-            const inlineText = content.slice(lastPos, item.start);
+            const sliceStart = item.start - offset;
+            const sliceEnd = item.start - offset;
+            const inlineText = content.slice(lastPos - offset, sliceStart);
             const inlineNodes = parseInline(inlineText, context);
             nodes.push(<React.Fragment key={`inline-${idx}`}>{inlineNodes}</React.Fragment>);
         }
@@ -225,12 +228,12 @@ export function parseWikiContent(content: string, context: Context): React.React
             type: item.type,
             start: item.start,
             end: item.end,
-            slice: content.slice(item.start, item.end),
+            slice: content.slice(item.start - offset, item.end - offset),
         });
     });
 
-    if (lastPos < content.length) {
-        const inlineText = content.slice(lastPos);
+    if (lastPos - offset < content.length) {
+        const inlineText = content.slice(lastPos - offset);
         const inlineNodes = parseInline(inlineText, context);
         nodes.push(<React.Fragment key="inline-final">{inlineNodes}</React.Fragment>);
     }
