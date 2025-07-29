@@ -203,7 +203,7 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
     return items;
 }
 
-export function parseWikiContent(content: string, context: Context, offset: number = 0): React.ReactNode[] {
+export function parseWikiContent(content: string, context: Context, offset = 0): React.ReactNode[] {
     const blockItems = generateBlockItems(content, context, offset);
     const nodes: React.ReactNode[] = [];
 
@@ -212,12 +212,17 @@ export function parseWikiContent(content: string, context: Context, offset: numb
     let lastPos = offset;
 
     blockItems.forEach((item, idx) => {
+        const relativeStart = item.start - offset;
+        const relativeEnd = item.end - offset;
+
         if (item.start > lastPos) {
-            const sliceStart = item.start - offset;
-            const sliceEnd = item.start - offset;
-            const inlineText = content.slice(lastPos - offset, sliceStart);
+            const inlineText = content.slice(lastPos - offset, relativeStart);
             const inlineNodes = parseInline(inlineText, context);
-            nodes.push(<React.Fragment key={`inline-${idx}`}>{inlineNodes}</React.Fragment>);
+            nodes.push(
+                <React.Fragment key={`inline-${idx}`}>
+                    {inlineNodes}
+                </React.Fragment>
+            );
         }
 
         nodes.push(item.node);
@@ -228,19 +233,22 @@ export function parseWikiContent(content: string, context: Context, offset: numb
             type: item.type,
             start: item.start,
             end: item.end,
-            slice: content.slice(item.start - offset, item.end - offset),
+            slice: content.slice(relativeStart, relativeEnd),
         });
     });
 
     if (lastPos - offset < content.length) {
         const inlineText = content.slice(lastPos - offset);
         const inlineNodes = parseInline(inlineText, context);
-        nodes.push(<React.Fragment key="inline-final">{inlineNodes}</React.Fragment>);
+        nodes.push(
+            <React.Fragment key="inline-final">
+                {inlineNodes}
+            </React.Fragment>
+        );
     }
 
     return nodes;
 }
-
 
 function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
     const results: { body: string; start: number; end: number }[] = [];
