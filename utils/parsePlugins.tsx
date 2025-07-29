@@ -146,36 +146,32 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
     });
 
     foldBlocks.forEach((blk, idx) => {
+        if (!blk.start || !blk.end) return; // 無効な fold スキップ
+
         if (blk.prefix) {
             items.push({
             type: 'inline',
-            start: blk.start! - blk.prefix.length,
-            end: blk.start!,
+            start: blk.start - blk.prefix.length,
+            end: blk.start,
             node: <React.Fragment key={`fold-prefix-${idx}`}>{parseInline(blk.prefix, context)}</React.Fragment>,
             });
         }
 
+        const children = generateBlockItems(blk.body!, context, blk.start);
+
         items.push({
             type: 'fold',
-            start: blk.start!,
-            end: blk.end!,
+            start: blk.start,
+            end: blk.end,
             node: (
             <Fold
                 key={`fold-${idx}`}
                 title={blk.title}
                 initiallyOpen={blk.isOpen ?? false}
             >
-                {blk.children?.length
-                ? blk.children.map((child, cidx) => (
-                    <React.Fragment key={`fold-child-${idx}-${cidx}`}>
-                        {child.prefix && <span>{parseInline(child.prefix, context)}</span>}
-                        <Fold
-                        title={child.title!}
-                        initiallyOpen={child.isOpen ?? false}
-                        >
-                        {child.body ? parseWikiContent(child.body, context) : null}
-                        </Fold>
-                    </React.Fragment>
+                {children.length > 0
+                ? children.map((child, cidx) => (
+                    <React.Fragment key={`fold-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
                     ))
                 : blk.body
                 ? parseWikiContent(blk.body, context)
