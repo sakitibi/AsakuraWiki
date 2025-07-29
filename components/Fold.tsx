@@ -41,6 +41,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         const bodyStart = foldOpenEnd;
         const bodyEnd = i - 2;  // "}}" の2つ前
         const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
+        console.log("✅ body raw:", JSON.stringify(body));
         console.log("🔍 body preview:", body);
         const end = i;
         const prefix = content.slice(cursor, start);
