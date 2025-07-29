@@ -1,6 +1,7 @@
 import { useState } from "react";
 import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
+
 export function extractFolds(content: string, context: Context, offset = 0): FoldBlock[] {
     const blocks: FoldBlock[] = [];
     const foldRe = /#fold\(([^)]*?)\)\s*\{\{/g;
@@ -13,7 +14,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
 
         const start = m.index;
         let i = foldRe.lastIndex;
-        const args = m[1].split(',').map(s => s.trim());
+        const args = m[1].split(',').map(s => s.trim()); // セミコロン除去しない
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
         const parsedTitle = parseInline(titleRaw, context);
@@ -32,10 +33,8 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         }
 
         const body = content.slice(foldRe.lastIndex, i - 2); // }} を除く
-        const end = i; // ✅ 修正：本文抽出後に end を定義
+        const end = i; // ✅ パース後に end を定義
         const prefix = content.slice(cursor, start);
-
-        // 🎯 再帰で子 fold を抽出
         const children = extractFolds(body, context, offset + foldRe.lastIndex);
 
         blocks.push({
@@ -52,7 +51,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             titleRaw, isOpen, start, end, body,
         });
 
-        cursor = end;
+        cursor = end; // ✅ カーソルも fold 終端へ
     }
 
     const tail = content.slice(cursor).trim();
@@ -63,6 +62,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             end: offset + content.length,
         });
     }
+
     return blocks;
 }
 
