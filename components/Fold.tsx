@@ -59,7 +59,11 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             titleRaw, isOpen, start, end, body,
         });
         console.log(`🔍 foldOpenEnd: ${foldOpenEnd}, i: ${i}, i-2: ${i - 2}`);
-
+        console.log("🔍 foldOpenEnd:", foldOpenEnd);
+        console.log("🔍 content after foldOpenEnd:", content.slice(foldOpenEnd, foldOpenEnd + 20));
+        console.log("🔍 stopping index i:", i);
+        console.log("🔍 content at i:", content.slice(i, i + 10));
+        console.log("🔍 depth:", depth);
         cursor = end;
     }
 
