@@ -3,6 +3,7 @@ import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
 
 export function extractFolds(content: string, context: Context, offset = 0): FoldBlock[] {
+    console.log("🔥 extractFolds called");
     const blocks: FoldBlock[] = [];
     const foldRe = /#fold\(([^)]*?)\)\s*\{\{/g;
 
