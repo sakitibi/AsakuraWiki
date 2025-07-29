@@ -40,6 +40,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             bodyType: typeof body,
             bodyLength: body.length,
             raw: JSON.stringify(body),
+            prefixSlice: content.slice(cursor, start),
         });
 
         blocks.push({
