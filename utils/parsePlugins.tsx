@@ -7,13 +7,13 @@ import SelContent from '@/components/SelContent';
 import { supabase } from 'lib/supabaseClient';
 import parseInline from '@/components/ParseInline';
 
-export type Context = {
+export interface Context {
     wikiSlug: string;
     pageSlug: string;
     letContext?: Record<string, string>;
 }
 
-export type AccordionBlock = {
+export interface AccordionBlock {
     prefix?: string;
     title?: string;
     level?: '*' | '**' | '***';
@@ -25,22 +25,21 @@ export type AccordionBlock = {
     children?: AccordionBlock[]; // 子ブロックのためのプロパティ
 }
 
-type BlockItem = {
+interface BlockItem {
     type: 'accordion' | 'fold' | 'sel' | 'inline';
     start: number;
     end: number;
     node: React.ReactNode;
 };
 
-export type FoldBlock = {
-    prefix?: string
-    title?: React.ReactNode
-    isOpen?: boolean
-    body?: string
+export interface FoldBlock {
+    prefix: string;
+    title?: React.ReactNode;
+    body?: string;
+    isOpen?: boolean;
     start?: number;
     end?: number;
     children?: FoldBlock[];
-    kind?: 'fold' | 'inline';
 }
 
 export function useDesignColor(slug: string) {
@@ -147,7 +146,34 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
     });
 
     foldBlocks.forEach((blk, idx) => {
-        if (!blk.title || !blk.body) return;
+        if (blk.prefix) {
+            items.push({
+                type: 'inline',
+                start: blk.start! - blk.prefix.length,
+                end: blk.start!,
+                node: <React.Fragment key={`fold-prefix-${idx}`}>{parseInline(blk.prefix, context)}</React.Fragment>,
+            });
+        }
+
+        const children = blk.children
+            ? blk.children.map((child, cidx) => ({
+                type: 'fold',
+                start: child.start!,
+                end: child.end!,
+                node: (
+                    <Fold
+                        key={`fold-child-${idx}-${cidx}`}
+                        title={child.title!}
+                        initiallyOpen={child.isOpen ?? false}
+                    >
+                        {child.body
+                            ? parseWikiContentFragment(child.body)
+                            : null}
+                    </Fold>
+                ),
+            }))
+            : [];
+
         items.push({
             type: 'fold',
             start: blk.start!,
@@ -158,7 +184,11 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                     title={blk.title}
                     initiallyOpen={blk.isOpen ?? false}
                 >
-                    {parseWikiContentFragment(blk.body)}
+                    {children.length > 0
+                        ? children.map(c => c.node)
+                        : blk.body
+                            ? parseWikiContentFragment(blk.body)
+                            : null}
                 </Fold>
             ),
         });
