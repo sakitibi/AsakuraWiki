@@ -55,9 +55,12 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         cursor = end;
     }
 
-    blocks.push({
-        prefix: content.slice(cursor),
-    });
+    const tail = content.slice(cursor).trim();
+    if (tail.length > 0) {
+        blocks.push({
+            prefix: content.slice(cursor),
+        });
+    }
 
     return blocks;
 }
