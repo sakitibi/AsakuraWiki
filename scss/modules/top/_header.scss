@@ -138,5 +138,18 @@
         margin-bottom: 1rem;
         margin-top: 0;
         padding-left: 2rem;
+        &>.ol{
+            counter-reset: subsection;
+            list-style-type: none;
+            margin: 8px auto;
+            &>.li::before{
+                content: "(" counter(subsection) ") ";
+                counter-increment: subsection;
+                left: -40px;
+                position: absolute;
+                text-align: right;
+                width: 38px;
+            }
+        }
     }
 }
