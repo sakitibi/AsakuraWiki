@@ -18,7 +18,14 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     for (const m of matches) {
         const start = m.index!;
         const args = m[1].split(',').map(s => s.trim());
+        if (args.length < 1) continue;
+
         const titleRaw = args[0] ?? 'タイトル未設定';
+        if (!titleRaw || !titleRaw.match(/\S/)) {
+            console.warn("🚫 titleRaw が空か無効 → fold スキップ");
+            continue;
+        }
+
         const isOpen = args.includes('open');
         const parsedTitleNodes = parseInline(titleRaw, context);
         console.log("🪪 titleRaw:", titleRaw);
@@ -46,6 +53,11 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const bodyStart = foldOpenEnd;
         const bodyEnd = i - 2;
         const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
+
+        if (body.trim() === content.trim()) {
+            console.warn("🔁 body と親 content が同一のため再帰終了");
+            continue;
+        }
 
         blocks.push({
             prefix: content.slice(cursor, start),
