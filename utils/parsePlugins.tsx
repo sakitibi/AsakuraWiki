@@ -167,24 +167,32 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                     });
                 }
                 items.push({
-                    type: 'fold',
-                    start: child.start!,
-                    end: child.end!,
-                    node: (
-                        <Fold
-                        key={`fold-${idx}`}
-                        title={blk.title}
-                        initiallyOpen={blk.isOpen ?? false}
-                        >
-                        {children.length > 0
-                            ? children.map((child, cidx) => (
-                                <React.Fragment key={`fold-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
-                            ))
-                            : blk.body
-                            ? parseWikiContentFragment(blk.body)
-                            : null}
-                        </Fold>
-                    ),
+                type: 'fold',
+                start: blk.start!,
+                end: blk.end!,
+                node: (
+                    <Fold
+                    key={`fold-${idx}`}
+                    title={blk.title}
+                    initiallyOpen={blk.isOpen ?? false}
+                    >
+                    {blk.children?.length
+                        ? blk.children.map((child, cidx) => (
+                            <React.Fragment key={`fold-child-${idx}-${cidx}`}>
+                            {child.prefix && <span>{parseInline(child.prefix, context)}</span>}
+                            <Fold
+                                title={child.title!}
+                                initiallyOpen={child.isOpen ?? false}
+                            >
+                                {child.body ? parseWikiContent(child.body, context) : null}
+                            </Fold>
+                            </React.Fragment>
+                        ))
+                        : blk.body
+                        ? parseWikiContent(blk.body, context)
+                        : null}
+                    </Fold>
+                ),
                 });
                 return items;
             })
