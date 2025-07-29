@@ -21,6 +21,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
         const parsedTitleNodes = parseInline(titleRaw, context);
+        console.log("🪪 titleRaw:", titleRaw);
+        console.log("🎨 parsedTitle:", parsedTitleNodes);
 
         const foldOpenEnd = content.indexOf("{{", start) + 2;
         let i = foldOpenEnd;
