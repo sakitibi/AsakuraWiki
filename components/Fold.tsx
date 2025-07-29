@@ -39,11 +39,10 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         const bodyStart = foldOpenEnd;
         const bodyEnd = i - 2;
 
-        let body: string;
+        let body = '';
         if (bodyEnd >= bodyStart) {
             body = content.slice(bodyStart, bodyEnd);
         } else {
-            body = '';  // 明示的に空文字を代入
             console.log("⚠️ bodyEnd < bodyStart なので空文字代入", { bodyStart, bodyEnd });
         }
 
@@ -67,6 +66,16 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         const end = i;
         const prefix = content.slice(cursor, start);
         const children = extractFolds(body, context, offset + foldOpenEnd);
+
+        console.log("🧪 foldBlock準備:", {
+            prefix,
+            titleRaw,
+            isOpen,
+            body,
+            bodyType: typeof body,
+            bodyLength: body.length,
+            childrenCount: children.length
+        });
 
         blocks.push({
             prefix,
