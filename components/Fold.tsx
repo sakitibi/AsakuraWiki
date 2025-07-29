@@ -46,7 +46,13 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             console.log("⚠️ bodyEnd < bodyStart なので空文字代入", { bodyStart, bodyEnd });
         }
 
-        console.log("✅ body raw:", JSON.stringify(body));
+        // 🔬 body型チェックログ
+        console.log("🧪 foldBlock 構築直前", {
+            body,
+            bodyType: typeof body,
+            bodyLength: body.length,
+            raw: JSON.stringify(body),
+        });
 
         // ✅ ガード削除 ＋ ログ追加（skipされてたらここに出る）
         if (bodyEnd < bodyStart) {
