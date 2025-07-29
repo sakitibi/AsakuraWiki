@@ -7,23 +7,18 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
     const blocks: FoldBlock[] = [];
     const foldRe = /#fold\(([^)]*?)\)\s*\{\{/g;
 
+    const matches = Array.from(content.matchAll(foldRe));
     let cursor = 0;
-    while (cursor < content.length) {
-        foldRe.lastIndex = cursor;
-        const m = foldRe.exec(content);
-        if (!m) break;
 
-        const start = m.index;
+    for (const m of matches) {
+        const start = m.index!;
         const args = m[1].split(',').map(s => s.trim());
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
         const parsedTitle = parseInline(titleRaw, context);
 
-        // 🧠 多段 {{ }} に対応した本文抽出
-        // 🧠 多段 {{ }} に対応した本文抽出
-        const foldOpenEnd = content.indexOf("{{", m.index) + 2;
+        const foldOpenEnd = content.indexOf("{{", start) + 2;
         let i = foldOpenEnd;
-
         let depth = 1;
         while (i < content.length && depth > 0) {
             const two = content.slice(i, i + 2);
@@ -38,15 +33,8 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
 
         const bodyStart = foldOpenEnd;
         const bodyEnd = i - 2;
+        const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
 
-        let body = '';
-        if (bodyEnd >= bodyStart) {
-            body = content.slice(bodyStart, bodyEnd);
-        } else {
-            console.log("⚠️ bodyEnd < bodyStart なので空文字代入", { bodyStart, bodyEnd });
-        }
-
-        // 🔬 body型チェックログ
         console.log("🧪 foldBlock 構築直前", {
             body,
             bodyType: typeof body,
@@ -54,55 +42,17 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             raw: JSON.stringify(body),
         });
 
-        // ✅ ガード削除 ＋ ログ追加（skipされてたらここに出る）
-        if (bodyEnd < bodyStart) {
-            console.log("⛔ fold skipped due to bodyEnd < bodyStart", {
-                foldOpenEnd,
-                i,
-                bodyStart,
-                bodyEnd,
-                contentPreview: content.slice(bodyStart, i),
-            });
-        }
-
-        console.log("✅ body raw:", JSON.stringify(body));
-        console.log("🔍 body preview:", body);
-        console.log("✅ body raw:", JSON.stringify(body));
-        console.log("🔍 body preview:", body);
-        const end = i;
-        const prefix = content.slice(cursor, start);
-        const children = extractFolds(body, context, offset + foldOpenEnd);
-
-        console.log("🧪 foldBlock準備:", {
-            prefix,
-            titleRaw,
-            isOpen,
-            body,
-            bodyType: typeof body,
-            bodyLength: body.length,
-            childrenCount: children.length
-        });
-
         blocks.push({
-            prefix,
+            prefix: content.slice(cursor, start),
             title: <>{parsedTitle}</>,
             body,
             isOpen,
             start: offset + start,
-            end: offset + end,
-            children,
+            end: offset + i,
+            children: extractFolds(body, context, offset + foldOpenEnd),
         });
 
-        console.log(`📁 fold[${blocks.length - 1}]:`, {
-            titleRaw, isOpen, start, end, body,
-        });
-        console.log(`🔍 foldOpenEnd: ${foldOpenEnd}, i: ${i}, i-2: ${i - 2}`);
-        console.log("🔍 foldOpenEnd:", foldOpenEnd);
-        console.log("🔍 content after foldOpenEnd:", content.slice(foldOpenEnd, foldOpenEnd + 20));
-        console.log("🔍 stopping index i:", i);
-        console.log("🔍 content at i:", content.slice(i, i + 10));
-        console.log("🔍 depth:", depth);
-        cursor = end;
+        cursor = i;
     }
 
     const tail = content.slice(cursor).trim();
