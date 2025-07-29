@@ -15,7 +15,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         const args = m[1].split(',').map(s => s.trim());
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
-        const parsedTitle = parseInline(titleRaw, context);
+        const parsedTitle = parseInline(titleRaw, context); // ← 展開済みの title を取得
 
         const foldOpenEnd = content.indexOf("{{", start) + 2;
         let i = foldOpenEnd;
@@ -45,7 +45,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
 
         blocks.push({
             prefix: content.slice(cursor, start),
-            title: <>{parsedTitle}</>,
+            title: <>{parsedTitle}</>, // ← 展開結果を JSX 表示に埋め込む
             body,
             isOpen,
             start: offset + start,
@@ -57,7 +57,11 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
     }
 
     const tail = content.slice(cursor).trim();
-    if (tail.length > 0) {
+    const tailFolds = extractFolds(tail, context, offset + cursor);
+
+    if (tailFolds.length > 0) {
+        blocks.push(...tailFolds);
+    } else if (tail.length > 0) {
         blocks.push({
             prefix: tail,
             start: offset + cursor,
