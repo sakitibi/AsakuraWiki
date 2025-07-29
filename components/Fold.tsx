@@ -37,7 +37,9 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         // 🧠 guard：i - 2 >= foldOpenEnd を保証
         if (i - 2 < foldOpenEnd) continue;
 
-        const body = content.slice(foldOpenEnd, i - 2);
+        const bodyStart = foldOpenEnd;
+        const bodyEnd = i - 2;  // "}}" の2つ前
+        const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
         console.log("🔍 body preview:", body);
         const end = i;
         const prefix = content.slice(cursor, start);
