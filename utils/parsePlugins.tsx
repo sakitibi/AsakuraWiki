@@ -212,6 +212,7 @@ export function parseWikiContent(content: string, context: Context, offset = 0):
     let lastPos = offset;
 
     blockItems.forEach((item, idx) => {
+        console.log('📦 blockItems:', blockItems);
         const relativeStart = item.start - offset;
         const relativeEnd = item.end - offset;
 
