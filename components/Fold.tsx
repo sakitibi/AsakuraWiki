@@ -13,15 +13,15 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         if (!m) break;
 
         const start = m.index;
-        const foldOpenEnd = m.index + m[0].length; // 🔍 fold構文の冒頭（#fold(...){{）の終端
-        let i = foldOpenEnd;
-
         const args = m[1].split(',').map(s => s.trim());
         const titleRaw = args[0] ?? 'タイトル未設定';
         const isOpen = args.includes('open');
         const parsedTitle = parseInline(titleRaw, context);
 
         // 🧠 多段 {{ }} に対応した本文抽出
+        const foldOpenEnd = m.index + m[0].length;
+        let i = foldOpenEnd;
+
         let depth = 1;
         while (i < content.length && depth > 0) {
             const two = content.slice(i, i + 2);
@@ -34,7 +34,10 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
             }
         }
 
-        const body = content.slice(foldOpenEnd, i - 2); // }} を除く
+        // 🧠 guard：i - 2 >= foldOpenEnd を保証
+        if (i - 2 < foldOpenEnd) continue;
+
+        const body = content.slice(foldOpenEnd, i - 2);
         const end = i;
         const prefix = content.slice(cursor, start);
         const children = extractFolds(body, context, offset + foldOpenEnd);
