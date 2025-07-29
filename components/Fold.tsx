@@ -38,6 +38,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         if (i - 2 < foldOpenEnd) continue;
 
         const body = content.slice(foldOpenEnd, i - 2);
+        console.log("🔍 body preview:", body);
         const end = i;
         const prefix = content.slice(cursor, start);
         const children = extractFolds(body, context, offset + foldOpenEnd);
@@ -55,6 +56,7 @@ export function extractFolds(content: string, context: Context, offset = 0): Fol
         console.log(`📁 fold[${blocks.length - 1}]:`, {
             titleRaw, isOpen, start, end, body,
         });
+        console.log(`🔍 foldOpenEnd: ${foldOpenEnd}, i: ${i}, i-2: ${i - 2}`);
 
         cursor = end;
     }
