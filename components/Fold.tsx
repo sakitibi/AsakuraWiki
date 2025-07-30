@@ -2,27 +2,6 @@ import React, { useState } from "react";
 import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
 
-function renderFolds(blocks: FoldBlock[], context: Context) {
-    return blocks.map((block, idx) => (
-        <React.Fragment key={idx}>
-            {block.prefix?.trim() && <div>{block.prefix}</div>}
-            {block.title ? (
-                <Fold title={block.title} initiallyOpen={block.isOpen ?? false}>
-                    <div>
-                        {block.children?.length
-                            ? renderFolds(block.children, context)
-                            : block.body?.includes('#fold(')
-                                ? renderFolds(extractFolds(block.body, context), context)
-                                : block.body && <div>{block.body}</div>}
-                    </div>
-                </Fold>
-            ) : (
-                block.body && <div>{block.body}</div>
-            )}
-        </React.Fragment>
-    ));
-}
-
 export function extractFolds(content: string, context: Context, offset = 0, depth = 0): FoldBlock[] {
     console.log("🔥 extractFolds called at depth", depth);
     const MAX_DEPTH = 100;
@@ -86,16 +65,18 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             continue;
         }
 
-        const childFolds = extractFolds(body, context, 0, depth + 1);
-
+        const childFolds = extractFolds(body, context, 0, depth + 1); // 🔁 再帰呼び出し済
         const prefix = content.slice(cursor, start);
+
         if (prefix.trim() && !prefix.trim().match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
 
             blocks.push({
-                prefix: content.slice(cursor, start),
+                prefix,
                 title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
-                body,
+                body: hasNestedFold && childFolds.length === 0
+                    ? '' // 🔧 空の子Foldで折り返す場合は body を省略（描画側で再処理させる）
+                    : body,
                 isOpen,
                 start: offset + start,
                 end: offset + i,
