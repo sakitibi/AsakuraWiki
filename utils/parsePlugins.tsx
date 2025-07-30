@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Accordion, { extractAccordions } from '@/components/Accordion';
-import Fold, { extractFolds } from '@/components/Fold';
+import { extractFolds, renderFolds } from '@/components/Fold';
 import SelContainer from '@/components/SelContainer';
 import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
@@ -154,9 +154,9 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
             body: blk.body,
         });
 
-        if (!blk.start || !blk.end) return; // 無効な fold スキップ
+        if (!blk.start || !blk.end) return;
 
-        if (blk.prefix) {
+        if (blk.prefix?.trim()) {
             items.push({
                 type: 'inline',
                 start: blk.start - blk.prefix.length,
@@ -165,26 +165,15 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
             });
         }
 
-        const children = generateBlockItems(blk.body!, context, 0);
-
+        // 🪄 ここを renderFolds に切り替えることでネスト描画もサポート！
         items.push({
             type: 'fold',
             start: blk.start,
             end: blk.end,
             node: (
-            <Fold
-                key={`fold-${idx}`}
-                title={blk.title}
-                initiallyOpen={blk.isOpen ?? false}
-            >
-                {children.length > 0
-                ? children.map((child, cidx) => (
-                    <React.Fragment key={`fold-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
-                    ))
-                : blk.body
-                ? parseWikiContent(blk.body, context, blk.start)
-                : null}
-            </Fold>
+                <React.Fragment key={`fold-${idx}`}>
+                    {renderFolds([blk], context)}
+                </React.Fragment>
             ),
         });
     });

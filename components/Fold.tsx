@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
 
-function renderFolds(blocks: FoldBlock[], context: Context) {
+export function renderFolds(blocks: FoldBlock[], context: Context) {
     return blocks.map((block, idx) => (
         <React.Fragment key={idx}>
-            {block.prefix && <div>{block.prefix}</div>}
-            {(block.title) ? (
+            {block.prefix?.trim() && <div>{block.prefix}</div>}
+            {block.title ? (
                 <Fold title={block.title} initiallyOpen={block.isOpen ?? false}>
                     <div>
                         {block.children?.length
                             ? renderFolds(block.children, context)
-                            : block.body && block.body.includes('#fold(')
+                            : block.body?.includes('#fold(')
                                 ? renderFolds(extractFolds(block.body, context), context)
                                 : block.body && <div>{block.body}</div>}
                     </div>
@@ -106,9 +106,9 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         cursor = i;
     }
 
-    if (depth === 0) {
+    if (depth === 0 && cursor < content.length) {
         const tail = content.slice(cursor);
-        if (tail.trim() && !tail.trim().match(/^}}+$/)) {
+        if (tail.trim()) {
             blocks.push({
                 prefix: tail,
                 body: '',
@@ -120,11 +120,10 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
     }
-
     return blocks;
 }
 
-export default function Fold({ title, initiallyOpen, children }: {
+function Fold({ title, initiallyOpen, children }: {
     title: React.ReactNode;
     initiallyOpen: boolean;
     children: React.ReactNode;
