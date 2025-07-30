@@ -1,4 +1,6 @@
 import { useUser } from '@supabase/auth-helpers-react';
+import Head from 'next/head';
+import FooterJp from '@/utils/pageParts/FooterJp';
 
 export default function DashboardPage() {
     const user = useUser();
@@ -8,15 +10,23 @@ export default function DashboardPage() {
         user?.user_metadata?.username || // カスタムフィールド
         user?.email ||                   // 最後の手段
         'ゲスト';
-
     return (
-        <main style={{ padding: '2rem' }}>
-            <h1>🎉 ダッシュボード</h1>
-            {user ? (
-                <p>こんにちは、{name} さん！</p>
-            ) : (
-                <p>ログインが必要です</p>
-            )}
-        </main>
+        <>
+            <Head>
+                <title>ダッシュボード</title>
+            </Head>
+            <main style={{ padding: '2rem' }}>
+                <h1>🎉 ダッシュボード</h1>
+                {user ? (
+                    <div id="content">
+                        <p>こんにちは、{name} さん！</p>
+                        <div id="dashboard"></div>
+                    </div>
+                ) : (
+                    <p>ログインが必要です</p>
+                )}
+            </main>
+            <FooterJp/>
+        </>
     );
 }
