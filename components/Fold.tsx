@@ -11,6 +11,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     }
 
     const blocks: FoldBlock[] = [];
+    // foldRe の確認
     const foldRe = /#fold\((.*?)\)\s*\{\{/g;
     const matches = Array.from(content.matchAll(foldRe));
     let cursor = 0;
@@ -90,6 +91,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             prefix: tail,
             start: offset + cursor,
             end: offset + content.length,
+            children: [] // ✅ ここ追加することで安全な再帰構造保証
         });
     }
 
