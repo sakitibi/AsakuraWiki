@@ -51,7 +51,7 @@ export function extractAccordions(content: string, offset = 0, context: Context)
                 ' '.repeat(relEnd - relStart) +
                 bodyForInline.slice(relEnd);
         }
-        const parsedBody = parseWikiContent(body, context, offset + accRe.lastIndex);
+        const parsedBody = parseWikiContent(bodyForInline, context, offset + accRe.lastIndex);
 
         blocks.push({
             prefix,
