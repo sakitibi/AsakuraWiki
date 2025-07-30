@@ -276,38 +276,26 @@ function extractSelContainers(content: string): { body: string; start: number; e
         const startIdx = content.indexOf(startTag, pos);
         if (startIdx === -1) break;
 
-        let braceLevel = 1; // ← ここが重要！
-        let endIdx = -1;
+        // 🧠 extractBracedBlock による構文抽出
+        const braceStart = startIdx + startTag.length - 1; // 最初の `{` から
+        const { body, end } = extractBracedBlock(content, braceStart);
 
-        for (let i = startIdx + startTag.length; i < content.length; i++) {
-            if (content.slice(i, i + 2) === '{{') {
-                braceLevel++; i++;
-            } else if (content.slice(i, i + 2) === '}}') {
-                braceLevel--; i++;
-                if (braceLevel === 0) {
-                    endIdx = i;
-                    break;
-                }
-            }
-        }
+        results.push({
+            body: body.trim(),
+            start: startIdx,
+            end,
+        });
 
-        if (endIdx !== -1) {
-            const body = content.slice(startIdx + startTag.length, endIdx - 2).trim();
-            results.push({ body, start: startIdx, end: endIdx + 2 });
-            pos = endIdx + 2;
-            console.log(`🧩 sel_container[${results.length - 1}]:`, {
-                start: startIdx,
-                end: endIdx + 2,
-                body,
-            });
-        } else {
-            break;
-        }
+        pos = end;
+        console.log(`🧩 sel_container[${results.length - 1}]:`, {
+            start: startIdx,
+            end,
+            body,
+        });
     }
 
     return results;
 }
-
 // parseWikiContentFragment → extractSelContainers を使わず、1コンテナだけ直接処理する
 function parseWikiContentFragment(containerBlock: string): React.ReactNode[] {
     const nodes: React.ReactNode[] = [];
