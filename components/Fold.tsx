@@ -101,7 +101,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
     if (depth === 0) {
         const tail = content.slice(cursor).trim();
-        if (tail.length > 0) {
+        if (tail && !tail.match(/^}}+$/)) {
             blocks.push({
                 prefix: tail,
                 body: '',
@@ -113,7 +113,6 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
     }
-
     return blocks;
 }
 
