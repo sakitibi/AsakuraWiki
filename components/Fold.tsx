@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
 
-export function renderFolds(blocks: FoldBlock[], context: Context) {
+function renderFolds(blocks: FoldBlock[], context: Context) {
     return blocks.map((block, idx) => (
         <React.Fragment key={idx}>
             {block.prefix?.trim() && <div>{block.prefix}</div>}
@@ -123,7 +123,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     return blocks;
 }
 
-function Fold({ title, initiallyOpen, children }: {
+export default function Fold({ title, initiallyOpen, children }: {
     title: React.ReactNode;
     initiallyOpen: boolean;
     children: React.ReactNode;
