@@ -37,10 +37,11 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const parsedTitleNodes = parseInline(titleRaw, context);
         const foldOpenEndInLocal = content.indexOf("{{", startInLocal) + 2;
         const foldOpenEnd = offset + foldOpenEndInLocal;
+
         let i = foldOpenEnd;
         let depthCount = 1;
-        while (i < content.length && depthCount > 0) {
-            const two = content.slice(i, i + 2);
+        while (i < offset + content.length && depthCount > 0) {
+            const two = content.slice(i - offset, i - offset + 2);
             if (two === '{{') {
                 depthCount++; i += 2;
             } else if (two === '}}') {
@@ -50,46 +51,26 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             }
         }
 
-        console.log("📍 foldマッチ位置:", {
-            start,
-            foldOpenEnd,
-            end: i,
-            foldHeader,
-            bodyPreview: content.slice(foldOpenEnd, i).slice(0, 50),
-            remainingPreview: content.slice(i).slice(0, 50)
-        });
+        const bodyStartInLocal = foldOpenEndInLocal;
+        const bodyEndInLocal = i - offset - 2;
+        const body = bodyEndInLocal >= bodyStartInLocal ? content.slice(bodyStartInLocal, bodyEndInLocal) : '';
 
-        // ✅ 修正①：depth不一致 or 無限ループ検出で終了
-        if (depthCount !== 0 || i > content.length) {
-            console.warn("⚠️ foldブロック終了位置が不正 → skip", { titleRaw, start });
-            continue;
-        }
-
-        const bodyStart = foldOpenEnd;
-        const bodyEnd = i - 2;
-        const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
-
-        // ✅ 修正②：中身が空で子foldも無い → skip
         if (!body.trim() && !body.includes('#fold(')) {
             console.warn("🚫 fold body が空 → skip", { titleRaw, start });
             continue;
         }
 
-        // ✅ 修正③：親bodyと一致 → skip（無限ループ予防）
         if (depth === 0 && body.trim() === content.trim()) {
             console.warn("🔁 body と親 content が完全一致 → skip（depth 0限定）");
             continue;
         }
 
         const childFolds = extractFolds(body, context, foldOpenEnd, depth + 1);
-        const prefix = content.slice(cursor, start);
+        const prefix = content.slice(cursor, startInLocal);
         const trimmedPrefix = prefix.trim();
 
-        // ✅ 修正④：prefix が "}}" のみなら push しない
         if (trimmedPrefix && !trimmedPrefix.match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
-            
-
             const resolvedBody = hasNestedFold ? body : '';
 
             blocks.push({
@@ -98,15 +79,14 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
                 body: resolvedBody,
                 isOpen,
                 start,
-                end: offset + i,
+                end: i,
                 children: hasNestedFold ? childFolds : []
             });
         }
 
-        cursor = i;
+        cursor = startInLocal + content.slice(startInLocal, i - offset).length;
     }
 
-    // ✅ 最後に残った tail が foldでなければ inlineブロックとして保存
     if (depth === 0 && cursor < content.length) {
         const tail = content.slice(cursor);
         const trimmedTail = tail.trim();
@@ -122,7 +102,6 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
     }
-
     return blocks;
 }
 
