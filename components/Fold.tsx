@@ -62,6 +62,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
         const childFolds = extractFolds(body, context, 0, depth + 1);
         const prefix = content.slice(cursor, startLocal);
+        console.log("🧪 prefix:", prefix);
         const trimmedPrefix = prefix.trim();
         if (trimmedPrefix && !trimmedPrefix.match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
