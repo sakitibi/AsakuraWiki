@@ -126,6 +126,7 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
             });
         }
         const children = generateBlockItems(blk.body!, context, blk.start!);
+        // 💡 Accordion 描画時に blk.bodyNode を使わず parseWikiContent を使う
         items.push({
             type: 'accordion',
             start: blk.start!,
