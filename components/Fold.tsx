@@ -4,22 +4,19 @@ import { FoldBlock, Context } from "@/utils/parsePlugins";
 
 export function extractFolds(content: string, context: Context, offset = 0, depth = 0): FoldBlock[] {
     console.log("🔥 extractFolds called at depth", depth);
-    const MAX_DEPTH = 10;
+    const MAX_DEPTH = 100;
     if (depth > MAX_DEPTH) {
         console.error("⛔ 再帰深度上限に達したため打ち切ります\n#accordionなどの別プラグインをご利用ください、");
         return [];
     }
 
     const blocks: FoldBlock[] = [];
-    // foldRe の確認
     const foldRe = /#fold\((.*?)\)\s*\{\{/g;
     const matches = Array.from(content.matchAll(foldRe));
     let cursor = 0;
 
     for (const m of matches) {
         const start = m.index!;
-
-        // ✅ 修正箇所：一番右のカンマで title と option を分割
         const foldHeader = m[1];
         const lastCommaIndex = foldHeader.lastIndexOf(',');
         if (lastCommaIndex === -1) {
@@ -68,6 +65,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             continue;
         }
 
+        const childFolds = extractFolds(body, context, 0, depth + 1);
+
         blocks.push({
             prefix: content.slice(cursor, start),
             title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
@@ -75,7 +74,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             isOpen,
             start: offset + start,
             end: offset + i,
-            children: extractFolds(body, context, 0, depth + 1)
+            children: Array.isArray(childFolds) ? childFolds : []
         });
 
         cursor = i;
@@ -91,7 +90,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             prefix: tail,
             start: offset + cursor,
             end: offset + content.length,
-            children: [] // ✅ ここ追加することで安全な再帰構造保証
+            children: []
         });
     }
 
