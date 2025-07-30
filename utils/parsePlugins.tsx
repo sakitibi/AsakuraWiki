@@ -107,11 +107,16 @@ function extractSelContainersSafe(content: string, excludeRanges: { start: numbe
 function generateBlockItems(content: string, context: Context, offset = 0): BlockItem[] {
     const accordionBlocks = extractAccordions(content, offset, context);
     const foldBlocks = extractFolds(content, context);
-    const accordionRanges = accordionBlocks.map(b => ({
-        start: b.start!,
-        end: b.end!
-    }));
-    const selContainers = extractSelContainersSafe(content, accordionRanges, offset);
+
+    // ✅ accordion の prefix 範囲だけを抽出
+    const accordionPrefixRanges = accordionBlocks
+        .map(b => ({
+            start: b.start! - b.prefix!.length,
+            end: b.start!
+        }))
+        .filter(r => r.start !== r.end); // 空prefix防止
+
+    const selContainers = extractSelContainersSafe(content, accordionPrefixRanges, offset);
     const items: BlockItem[] = [];
 
     accordionBlocks.forEach((blk, idx) => {
