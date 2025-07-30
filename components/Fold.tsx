@@ -30,6 +30,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         if (!titleRaw || !titleRaw.match(/\S/)) continue;
 
         const parsedTitleNodes = parseInline(titleRaw, context);
+        console.log("🧪 parsedTitleNodes:", parsedTitleNodes);
+        console.log("🧪 parsedTitleNodes.length:", parsedTitleNodes.length);
         const foldOpenEndLocal = content.indexOf("{{", startLocal) + 2;
 
         let iLocal = foldOpenEndLocal;
