@@ -6,12 +6,12 @@ export function renderFolds(blocks: FoldBlock[]) {
     return blocks.map((block, idx) => (
         <React.Fragment key={idx}>
             {block.prefix && <div>{block.prefix}</div>}
-            {(block.title && block.body) ? (
+            {(block.title) ? (
                 <Fold title={block.title} initiallyOpen={block.isOpen ?? false}>
                     <div>
                         {block.children?.length
                             ? renderFolds(block.children)
-                            : block.body}
+                            : block.body && <div>{block.body}</div>}
                     </div>
                 </Fold>
             ) : (
