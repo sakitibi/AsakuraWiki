@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import parseInline from "@/components/ParseInline";
 import { FoldBlock, Context } from "@/utils/parsePlugins";
 
-export function renderFolds(blocks: FoldBlock[]) {
+function renderFolds(blocks: FoldBlock[], context: Context) {
     return blocks.map((block, idx) => (
         <React.Fragment key={idx}>
             {block.prefix && <div>{block.prefix}</div>}
@@ -10,8 +10,10 @@ export function renderFolds(blocks: FoldBlock[]) {
                 <Fold title={block.title} initiallyOpen={block.isOpen ?? false}>
                     <div>
                         {block.children?.length
-                            ? renderFolds(block.children)
-                            : block.body && <div>{block.body}</div>}
+                            ? renderFolds(block.children, context)
+                            : block.body && block.body.includes('#fold(')
+                                ? renderFolds(extractFolds(block.body, context), context)
+                                : block.body && <div>{block.body}</div>}
                     </div>
                 </Fold>
             ) : (
@@ -88,14 +90,16 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
         const prefix = content.slice(cursor, start);
         if (prefix.trim() && !prefix.trim().match(/^}}+$/)) {
+            const hasNestedFold = body.includes('#fold(');
+
             blocks.push({
-                prefix,
+                prefix: content.slice(cursor, start),
                 title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
                 body,
                 isOpen,
                 start: offset + start,
                 end: offset + i,
-                children: Array.isArray(childFolds) ? childFolds : []
+                children: hasNestedFold ? childFolds : []
             });
         }
 
