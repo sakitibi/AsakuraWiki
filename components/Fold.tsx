@@ -80,25 +80,20 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         cursor = i;
     }
 
-    const tail = content.slice(cursor).trim();
-
-    if (tail.length > 0) {
-        blocks.push({
-            prefix: tail,
-            body: '', // ✅ 明示的に空bodyにする
-            title: <></>, // ✅ titleも空にすることで描画安全化
-            isOpen: false,
-            start: offset + cursor,
-            end: offset + content.length,
-            children: []
-        });
-    } else if (tail.length > 0) {
-        blocks.push({
-            prefix: tail,
-            start: offset + cursor,
-            end: offset + content.length,
-            children: []
-        });
+    // ✅ 再帰レベルが0のときだけtail処理を行う
+    if (depth === 0) {
+        const tail = content.slice(cursor).trim();
+        if (tail.length > 0) {
+            blocks.push({
+                prefix: tail,
+                body: '',
+                title: <></>,
+                isOpen: false,
+                start: offset + cursor,
+                end: offset + content.length,
+                children: []
+            });
+        }
     }
 
     return blocks;
