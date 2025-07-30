@@ -49,6 +49,15 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             }
         }
 
+        console.log("📍 foldマッチ位置:", {
+            start,
+            foldOpenEnd,
+            end: i,
+            foldHeader,
+            bodyPreview: content.slice(foldOpenEnd, i).slice(0, 50),
+            remainingPreview: content.slice(i).slice(0, 50)
+        });
+
         // ✅ 修正①：depth不一致 or 無限ループ検出で終了
         if (depthCount !== 0 || i > content.length) {
             console.warn("⚠️ foldブロック終了位置が不正 → skip", { titleRaw, start });
