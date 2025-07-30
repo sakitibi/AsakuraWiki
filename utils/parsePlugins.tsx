@@ -113,6 +113,7 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
     }));
     const selContainers = extractSelContainersSafe(content, accordionRanges, offset);
     const items: BlockItem[] = [];
+
     accordionBlocks.forEach((blk, idx) => {
         if (blk.prefix) {
             items.push({
@@ -136,68 +137,82 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                     level={blk.level!}
                     initiallyOpen={blk.isOpen!}
                 >
-                    {children.length > 0 ? children.map((child, cidx) => (
-                        <React.Fragment key={`acc-child-${idx}-${cidx}`}>{child.node}</React.Fragment>
-                    )) : blk.bodyNode
-                }</Accordion>
+                    {children.length > 0
+                        ? children.map((child, cidx) => (
+                            <React.Fragment key={`acc-child-${idx}-${cidx}`}>
+                                {child.node}
+                            </React.Fragment>
+                        ))
+                        : blk.body
+                        ? parseWikiContent(blk.body, context, blk.start!)
+                        : null}
+                </Accordion>
             ),
         });
     });
+
     console.log('🔍 foldBlocks数:', foldBlocks.length);
     foldBlocks.forEach((blk, idx) => {
-        console.log(` ↪ fold[${idx}]:`,
-            {
-                start: blk.start,
-                end: blk.end,
-                prefix: blk.prefix,
-                body: blk.body,
-            }
-        );
+        console.log(` ↪ fold[${idx}]:`, {
+            start: blk.start,
+            end: blk.end,
+            prefix: blk.prefix,
+            body: blk.body,
+        });
+
         if (!blk.start || !blk.end) return;
-        {
-            items.push({
-                type: 'inline',
-                start: blk.start - blk.prefix.length,
-                end: blk.start,
-                node: <React.Fragment key={`fold-prefix-${idx}`}>
-                        {parseInline(blk.prefix, context)}
-                    </React.Fragment>,
-                });
-            }
-            const children = generateBlockItems(blk.body!, context, 0);
-            items.push({
-                type: 'fold',
-                start: blk.start,
-                end: blk.end,
-                node: (
-                    <Fold
-                        key={`fold-${idx}`}
-                        title={blk.title}
-                        initiallyOpen={blk.isOpen ?? false}
-                    >
-                        {children.length > 0 ? children.map((child, cidx) => (
+
+        items.push({
+            type: 'inline',
+            start: blk.start - blk.prefix.length,
+            end: blk.start,
+            node: <React.Fragment key={`fold-prefix-${idx}`}>
+                    {parseInline(blk.prefix, context)}
+                </React.Fragment>,
+        });
+
+        const children = generateBlockItems(blk.body!, context, 0);
+        items.push({
+            type: 'fold',
+            start: blk.start,
+            end: blk.end,
+            node: (
+                <Fold
+                    key={`fold-${idx}`}
+                    title={blk.title}
+                    initiallyOpen={blk.isOpen ?? false}
+                >
+                    {children.length > 0
+                        ? children.map((child, cidx) => (
                             <React.Fragment key={`fold-child-${idx}-${cidx}`}>
                                 {child.node}
                             </React.Fragment>
-                        )) : blk.body ? parseWikiContent(blk.body, context, blk.start) : null}
-                    </Fold>
-                ),
-            });
+                        ))
+                        : blk.body
+                        ? parseWikiContent(blk.body, context, blk.start)
+                        : null}
+                </Fold>
+            ),
         });
-        selContainers.forEach((sel, idx) => {
-            const fullText = content.slice(sel.start - offset, sel.end - offset);
-            const containerNodes = parseWikiContentFragment(fullText);
-            items.push({
-                type: 'sel',
-                start: sel.start,
-                end: sel.end,
-                node: <React.Fragment key={`sel-${idx}`}>
-                        {containerNodes}
-                </React.Fragment>,
-                });
-            });
-            return items;
-        }
+    });
+
+    selContainers.forEach((sel, idx) => {
+        const fullText = content.slice(sel.start - offset, sel.end - offset);
+        const containerNodes = parseWikiContentFragment(fullText);
+        items.push({
+            type: 'sel',
+            start: sel.start,
+            end: sel.end,
+            node: (
+                <React.Fragment key={`sel-${idx}`}>
+                    {containerNodes}
+                </React.Fragment>
+            ),
+        });
+    });
+
+    return items;
+}
 
 export function parseWikiContent(content: string, context: Context, offset = 0): React.ReactNode[] {
     const blockItems = generateBlockItems(content, context, offset);
