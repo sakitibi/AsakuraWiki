@@ -48,6 +48,10 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const bodyStart = foldOpenEndLocal;
         const bodyEnd = iLocal - 2;
         const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
+        console.log("🧪 fold match:", m[0]);
+        console.log("🧪 foldHeader:", foldHeader);
+        console.log("🧪 titleRaw:", titleRaw);
+        console.log("🧪 body:", body);
 
         if (!body.trim() && !body.includes('#fold(')) continue;
         if (depth === 0 && body.trim() === content.trim()) continue;
