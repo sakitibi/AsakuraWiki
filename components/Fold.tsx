@@ -34,8 +34,6 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         }
 
         const parsedTitleNodes = parseInline(titleRaw, context);
-        console.log("🪪 titleRaw:", titleRaw);
-        console.log("🎨 parsedTitle:", parsedTitleNodes);
 
         const foldOpenEnd = content.indexOf("{{", start) + 2;
         let i = foldOpenEnd;
@@ -60,23 +58,20 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const bodyEnd = i - 2;
         const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
 
-        if (body.trim() === content.trim()) {
-            console.warn("🔁 body と親 content が同一のため再帰終了");
+        if (depth === 0 && body.trim() === content.trim()) {
+            console.warn("🔁 body と親 content が完全一致 → skip（depth 0限定）");
             continue;
         }
 
-        const childFolds = extractFolds(body, context, 0, depth + 1); // 🔁 再帰呼び出し済
+        const childFolds = extractFolds(body, context, 0, depth + 1);
         const prefix = content.slice(cursor, start);
 
         if (prefix.trim() && !prefix.trim().match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
-
             blocks.push({
                 prefix,
                 title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
-                body: hasNestedFold && childFolds.length === 0
-                    ? '' // 🔧 空の子Foldで折り返す場合は body を省略（描画側で再処理させる）
-                    : body,
+                body: hasNestedFold && childFolds.length === 0 ? '' : body,
                 isOpen,
                 start: offset + start,
                 end: offset + i,
@@ -101,6 +96,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
     }
+
     return blocks;
 }
 
