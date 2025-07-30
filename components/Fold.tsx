@@ -6,7 +6,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     console.log("🔥 extractFolds called at depth", depth);
     const MAX_DEPTH = 100;
     if (depth > MAX_DEPTH) {
-        console.error("⛔ 再帰深度上限に達したため打ち切ります\n#accordionなどの別プラグインをご利用ください、");
+        console.error("⛔ 再帰深度上限に達したため打ち切ります\n#accordionなどの別プラグインをご利用ください");
         return [];
     }
 
@@ -16,75 +16,61 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     let cursor = 0;
 
     for (const m of matches) {
-        const startInLocal = m.index!;
-        const start = offset + startInLocal;
+        const startLocal = m.index!;
+        const startGlobal = offset + startLocal;
         const foldHeader = m[1];
         const lastCommaIndex = foldHeader.lastIndexOf(',');
-        if (lastCommaIndex === -1) {
-            console.warn("⚠️ fold にカンマが含まれていないためスキップ");
-            continue;
-        }
+        if (lastCommaIndex === -1) continue;
 
         const titleRaw = foldHeader.slice(0, lastCommaIndex).trim();
         const optionStr = foldHeader.slice(lastCommaIndex + 1).trim();
         const isOpen = optionStr.includes('open');
-
-        if (!titleRaw || !titleRaw.match(/\S/)) {
-            console.warn("🚫 titleRaw が空か無効 → fold スキップ");
-            continue;
-        }
+        if (!titleRaw || !titleRaw.match(/\S/)) continue;
 
         const parsedTitleNodes = parseInline(titleRaw, context);
-        const foldOpenEndInLocal = content.indexOf("{{", startInLocal) + 2;
-        const foldOpenEnd = offset + foldOpenEndInLocal;
+        const foldOpenEndLocal = content.indexOf("{{", startLocal) + 2;
 
-        let i = foldOpenEnd;
+        let iLocal = foldOpenEndLocal;
         let depthCount = 1;
-        while (i < offset + content.length && depthCount > 0) {
-            const two = content.slice(i - offset, i - offset + 2);
+        while (iLocal < content.length && depthCount > 0) {
+            const two = content.slice(iLocal, iLocal + 2);
             if (two === '{{') {
-                depthCount++; i += 2;
+                depthCount++; iLocal += 2;
             } else if (two === '}}') {
-                depthCount--; i += 2;
+                depthCount--; iLocal += 2;
             } else {
-                i++;
+                iLocal++;
             }
         }
 
-        const bodyStartInLocal = foldOpenEndInLocal;
-        const bodyEndInLocal = i - offset - 2;
-        const body = bodyEndInLocal >= bodyStartInLocal ? content.slice(bodyStartInLocal, bodyEndInLocal) : '';
+        if (depthCount !== 0 || iLocal > content.length) continue;
 
-        if (!body.trim() && !body.includes('#fold(')) {
-            console.warn("🚫 fold body が空 → skip", { titleRaw, start });
-            continue;
-        }
+        const bodyStart = foldOpenEndLocal;
+        const bodyEnd = iLocal - 2;
+        const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
 
-        if (depth === 0 && body.trim() === content.trim()) {
-            console.warn("🔁 body と親 content が完全一致 → skip（depth 0限定）");
-            continue;
-        }
+        if (!body.trim() && !body.includes('#fold(')) continue;
+        if (depth === 0 && body.trim() === content.trim()) continue;
 
-        const childFolds = extractFolds(body, context, foldOpenEnd, depth + 1);
-        const prefix = content.slice(cursor, startInLocal);
+        const childFolds = extractFolds(body, context, 0, depth + 1);
+        const prefix = content.slice(cursor, startLocal);
         const trimmedPrefix = prefix.trim();
-
         if (trimmedPrefix && !trimmedPrefix.match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
             const resolvedBody = hasNestedFold ? body : '';
 
             blocks.push({
                 prefix,
-                title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
+                title: <>{parsedTitleNodes.map((n, i) => <React.Fragment key={i}>{n}</React.Fragment>)}</>,
                 body: resolvedBody,
                 isOpen,
-                start,
-                end: i,
+                start: startGlobal,
+                end: offset + iLocal,
                 children: hasNestedFold ? childFolds : []
             });
         }
 
-        cursor = startInLocal + content.slice(startInLocal, i - offset).length;
+        cursor = iLocal;
     }
 
     if (depth === 0 && cursor < content.length) {
@@ -102,6 +88,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
     }
+
     return blocks;
 }
 
