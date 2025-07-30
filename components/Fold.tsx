@@ -49,8 +49,9 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             }
         }
 
-        if (depthCount !== 0) {
-            console.warn("⚠️ foldブロックの閉じタグ不足によりスキップ", { titleRaw, start });
+        // ✅ 修正①：depth不一致 or 無限ループ検出で終了
+        if (depthCount !== 0 || i > content.length) {
+            console.warn("⚠️ foldブロック終了位置が不正 → skip", { titleRaw, start });
             continue;
         }
 
@@ -65,8 +66,10 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
         const childFolds = extractFolds(body, context, 0, depth + 1);
         const prefix = content.slice(cursor, start);
+        const trimmedPrefix = prefix.trim();
 
-        if (prefix.trim() && !prefix.trim().match(/^}}+$/)) {
+        // ✅ 修正②：prefix が "}}" のみなら push しない
+        if (trimmedPrefix && !trimmedPrefix.match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
             blocks.push({
                 prefix,
@@ -84,7 +87,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
     if (depth === 0 && cursor < content.length) {
         const tail = content.slice(cursor);
-        if (tail.trim()) {
+        const trimmedTail = tail.trim();
+        if (trimmedTail) {
             blocks.push({
                 prefix: tail,
                 body: '',
