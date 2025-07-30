@@ -81,10 +81,17 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     }
 
     const tail = content.slice(cursor).trim();
-    const tailFolds = extractFolds(tail, context, offset + cursor, depth + 1);
 
-    if (tailFolds.length > 0) {
-        blocks.push(...tailFolds);
+    if (tail.length > 0) {
+        blocks.push({
+            prefix: tail,
+            body: '', // ✅ 明示的に空bodyにする
+            title: <></>, // ✅ titleも空にすることで描画安全化
+            isOpen: false,
+            start: offset + cursor,
+            end: offset + content.length,
+            children: []
+        });
     } else if (tail.length > 0) {
         blocks.push({
             prefix: tail,
