@@ -80,7 +80,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             continue;
         }
 
-        const childFolds = extractFolds(body, context, 0, depth + 1);
+        const childFolds = extractFolds(body, context, offset + bodyStart, depth + 1);
         const prefix = content.slice(cursor, start);
         const trimmedPrefix = prefix.trim();
 
