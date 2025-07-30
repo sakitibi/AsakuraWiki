@@ -37,11 +37,22 @@ export function extractAccordions(content: string, offset = 0, context: Context)
 
         const prefix = content.slice(cursor, start);
         const body = content.slice(accRe.lastIndex, i - 2);
-        const parsedBody = parseInline(body, context);
         const end = i;
 
         // 🎯再帰的に子ブロックを抽出
-        const children = extractAccordions(body, offset + start, context); // ←こちら試す
+        const children = extractAccordions(body, offset + accRe.lastIndex, context);
+
+        // ✅ children の位置を空白にして inline 解釈用文字列生成
+        let bodyForInline = body;
+        for (const child of children) {
+            const relStart = child.start! - offset - accRe.lastIndex;
+            const relEnd = child.end! - offset - accRe.lastIndex;
+            bodyForInline =
+                bodyForInline.slice(0, relStart) +
+                ' '.repeat(relEnd - relStart) +
+                bodyForInline.slice(relEnd);
+        }
+        const parsedBody = parseInline(bodyForInline, context);
 
         blocks.push({
             prefix,
