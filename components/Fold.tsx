@@ -87,10 +87,14 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         // ✅ 修正④：prefix が "}}" のみなら push しない
         if (trimmedPrefix && !trimmedPrefix.match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
+            
+
+            const resolvedBody = hasNestedFold ? body : '';
+
             blocks.push({
                 prefix,
                 title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
-                body: hasNestedFold && childFolds.length === 0 ? '' : body,
+                body: resolvedBody,
                 isOpen,
                 start: offset + start,
                 end: offset + i,
