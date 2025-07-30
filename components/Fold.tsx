@@ -16,7 +16,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     let cursor = 0;
 
     for (const m of matches) {
-        const start = offset + m.index!;
+        const startInLocal = m.index!;
+        const start = offset + startInLocal;
         const foldHeader = m[1];
         const lastCommaIndex = foldHeader.lastIndexOf(',');
         if (lastCommaIndex === -1) {
@@ -34,8 +35,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         }
 
         const parsedTitleNodes = parseInline(titleRaw, context);
-
-        const foldOpenEnd = offset + content.indexOf("{{", m.index!) + 2;
+        const foldOpenEndInLocal = content.indexOf("{{", startInLocal) + 2;
+        const foldOpenEnd = offset + foldOpenEndInLocal;
         let i = foldOpenEnd;
         let depthCount = 1;
         while (i < content.length && depthCount > 0) {
