@@ -86,22 +86,25 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
         const childFolds = extractFolds(body, context, 0, depth + 1);
 
-        blocks.push({
-            prefix: content.slice(cursor, start),
-            title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
-            body,
-            isOpen,
-            start: offset + start,
-            end: offset + i,
-            children: Array.isArray(childFolds) ? childFolds : []
-        });
+        const prefix = content.slice(cursor, start);
+        if (prefix.trim() && !prefix.trim().match(/^}}+$/)) {
+            blocks.push({
+                prefix,
+                title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
+                body,
+                isOpen,
+                start: offset + start,
+                end: offset + i,
+                children: Array.isArray(childFolds) ? childFolds : []
+            });
+        }
 
         cursor = i;
     }
 
     if (depth === 0) {
-        const tail = content.slice(cursor).trim();
-        if (tail && !tail.match(/^}}+$/)) {
+        const tail = content.slice(cursor);
+        if (tail.trim() && !tail.trim().match(/^}}+$/)) {
             blocks.push({
                 prefix: tail,
                 body: '',
@@ -113,6 +116,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
     }
+
     return blocks;
 }
 
