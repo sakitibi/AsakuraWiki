@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useDesignColor, AccordionBlock, Context } from "@/utils/parsePlugins";
-import parseInline from "@/components/ParseInline";
+import { useDesignColor, AccordionBlock, Context, parseWikiContent } from "@/utils/parsePlugins";
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
 */
@@ -52,7 +51,7 @@ export function extractAccordions(content: string, offset = 0, context: Context)
                 ' '.repeat(relEnd - relStart) +
                 bodyForInline.slice(relEnd);
         }
-        const parsedBody = parseInline(bodyForInline, context);
+        const parsedBody = parseWikiContent(body, context, offset + accRe.lastIndex);
 
         blocks.push({
             prefix,
