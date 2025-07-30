@@ -16,7 +16,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
     let cursor = 0;
 
     for (const m of matches) {
-        const start = m.index!;
+        const start = offset + m.index!;
         const foldHeader = m[1];
         const lastCommaIndex = foldHeader.lastIndexOf(',');
         if (lastCommaIndex === -1) {
@@ -35,7 +35,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
 
         const parsedTitleNodes = parseInline(titleRaw, context);
 
-        const foldOpenEnd = content.indexOf("{{", start) + 2;
+        const foldOpenEnd = offset + content.indexOf("{{", m.index!) + 2;
         let i = foldOpenEnd;
         let depthCount = 1;
         while (i < content.length && depthCount > 0) {
@@ -80,7 +80,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             continue;
         }
 
-        const childFolds = extractFolds(body, context, offset + bodyStart, depth + 1);
+        const childFolds = extractFolds(body, context, foldOpenEnd, depth + 1);
         const prefix = content.slice(cursor, start);
         const trimmedPrefix = prefix.trim();
 
@@ -96,7 +96,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
                 title: <>{parsedTitleNodes.map((node, idx) => <React.Fragment key={idx}>{node}</React.Fragment>)}</>,
                 body: resolvedBody,
                 isOpen,
-                start: offset + start,
+                start,
                 end: offset + i,
                 children: hasNestedFold ? childFolds : []
             });
