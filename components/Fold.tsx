@@ -19,11 +19,13 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const startLocal = m.index!;
         const startGlobal = offset + startLocal;
         const foldHeader = m[1];
+
+        // 📌 区切りは "最後のカンマ" のみ（セミコロンは区切りとしない）
         const lastCommaIndex = foldHeader.lastIndexOf(',');
         if (lastCommaIndex === -1) continue;
 
-        const titleRaw = foldHeader.slice(0, lastCommaIndex).trim();
-        const optionStr = foldHeader.slice(lastCommaIndex + 1).trim();
+        const titleRaw = foldHeader.slice(0, lastCommaIndex).trim(); // titleにセミコロンが含まれていてもOK
+        const optionStr = foldHeader.slice(lastCommaIndex + 1).trim(); // open / close オプションなど
         const isOpen = optionStr.includes('open');
         if (!titleRaw || !titleRaw.match(/\S/)) continue;
 
