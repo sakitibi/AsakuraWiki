@@ -72,9 +72,15 @@ export function isValidLineRange(range: string): boolean {
     return /^(\d+)?-(\d+)?$/.test(trimmed) || /^\d+$/.test(trimmed)
 }
 
-export function extractBracedBlock(source: string, startIdx: number, braceCount: number): {
+export function extractBracedBlock(
+    source: string,
+    startIdx: number,
+    braceCount: number
+): {
     body: string;
     end: number;
+    success: boolean;
+    unmatchedDepth?: number;
 } {
     let depth = braceCount;
     let i = startIdx + braceCount;
@@ -86,18 +92,19 @@ export function extractBracedBlock(source: string, startIdx: number, braceCount:
         } else if (char === '}') {
             depth--;
             if (depth === 0) {
-                // 🧼 正しく閉じ括弧まで到達
                 const body = source.slice(startIdx + braceCount, i);
-                console.log(`[extractBracedBlock] sliced body: "${body}"`);
-                return { body, end: i + 1 };
+                return { body, end: i + 1, success: true };
             }
         }
         i++;
     }
 
-    // 🚨 括弧閉じられてない
-    console.warn(`[extractBracedBlock] Failed to find closing brace from ${startIdx}`);
-    return { body: source.slice(startIdx + braceCount), end: source.length };
+    return {
+        body: source.slice(startIdx + braceCount),
+        end: source.length,
+        success: false,
+        unmatchedDepth: depth
+    };
 }
 
 function extractSelContainersSafe(content: string, excludeRanges: { start: number; end: number }[], offset = 0): { body: string; start: number; end: number }[] {
@@ -226,54 +233,62 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
     return items;
 }
 
-export function parseWikiContent(content: string, context: Context, offset = 0): React.ReactNode[] {
+export function parseWikiContent(
+    content: string,
+    context: Context,
+    offset = 0
+): React.ReactNode[] {
     const blockItems = generateBlockItems(content, context, offset);
     const nodes: React.ReactNode[] = [];
 
-    // ✅ 挿入順にソートして描画
-    blockItems.sort((a, b) => a.start - b.start);
-    let lastPos = offset;
-
     if (blockItems.length === 0) {
         console.warn("🚫 No blockItems generated. fold構文が崩れている可能性");
+        const fallbackInline = parseInline(content.trim(), context);
+        return [<React.Fragment key="inline-empty">{fallbackInline}</React.Fragment>];
     }
 
-    blockItems.forEach((item, idx) => {
-        console.log('📦 blockItems:', blockItems);
-        const relativeStart = item.start - offset;
-        const relativeEnd = item.end - offset;
+    const sortedItems = [...blockItems].sort((a, b) => a.start - b.start);
+    let lastPos = offset;
 
+    sortedItems.forEach((item, idx) => {
+        const relativeStart = item.start - offset;
+
+        // 📌 ブロックが挿入されるまでのテキストを inline として処理
         if (item.start > lastPos) {
             const inlineText = content.slice(lastPos - offset, relativeStart);
-            const inlineNodes = parseInline(inlineText, context);
-            nodes.push(
+            if (inlineText.trim()) {
+                const inlineNodes = parseInline(inlineText, context);
+                nodes.push(
                 <React.Fragment key={`inline-${idx}`}>
                     {inlineNodes}
                 </React.Fragment>
-            );
+                );
+            }
         }
 
         nodes.push(item.node);
         lastPos = item.end;
-
-        console.log('lastPos → item.start:', lastPos, item.start);
-        console.log(`📦 blockItems[${idx}]:`, {
-            type: item.type,
-            start: item.start,
-            end: item.end,
-            slice: content.slice(relativeStart, relativeEnd),
-        });
     });
 
-    if (lastPos - offset < content.length) {
-        const inlineText = content.slice(lastPos - offset);
-        const cleaned = inlineText.replace(/};+$/, '').replace(/}$/, '').trim(); // ← 追加の `}` 除去
+    // 🔚 残りテキストがあるなら末尾にも inline を追加
+    const finalRelative = lastPos - offset;
+    if (finalRelative < content.length) {
+        const trailingText = content.slice(finalRelative);
+        const cleaned = cleanupTrailingBraces(trailingText);
         if (cleaned) {
             const inlineNodes = parseInline(cleaned, context);
-            nodes.push(<React.Fragment key="inline-final">{inlineNodes}</React.Fragment>);
+            nodes.push(
+                <React.Fragment key="inline-final">
+                {inlineNodes}
+                </React.Fragment>
+            );
         }
     }
     return nodes;
+}
+
+function cleanupTrailingBraces(text: string): string {
+    return text.replace(/};+$/, '').replace(/}$/, '').trim();
 }
 
 function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
@@ -287,14 +302,9 @@ function extractSelContainers(content: string): { body: string; start: number; e
         const braceStart = startIdx + match[0].length - braceCount;
 
         const { body, end } = extractBracedBlock(content, braceStart, braceCount);
-        results.push({ body: body.trim(), start: startIdx, end });
+        results.push({ body, start: startIdx, end });
 
         re.lastIndex = end;
-        console.log(`🧩 sel_container[${results.length - 1}]:`, {
-            start: startIdx,
-            end,
-            body,
-        });
     }
 
     return results;
