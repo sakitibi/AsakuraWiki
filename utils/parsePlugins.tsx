@@ -91,10 +91,9 @@ export function extractBracedBlock(source: string, startIdx: number, braceCount:
             i++;
         }
     }
-
     return {
         body: source.slice(startIdx + braceCount, i),
-        end: i + braceCount,
+        end: i, // ← 末尾braceを含んでしまうため
     };
 }
 
