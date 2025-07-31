@@ -312,38 +312,38 @@ function extractSelContainers(content: string): { body: string; start: number; e
 
 function parseWikiContentFragment(containerBlock: string): React.ReactNode[] {
     const nodes: React.ReactNode[] = [];
-
-    const rowRe = /#sel_row\s*(\{+)/g;
     const rowItems: React.ReactNode[] = [];
+    const rowRe = /#sel_row\s*(\{+)/g;
     let match: RegExpExecArray | null;
 
     while ((match = rowRe.exec(containerBlock))) {
         const braceCount = match[1].length;
         const startIdx = match.index;
         const braceStart = startIdx + match[0].length - braceCount;
-
         const { body } = extractBracedBlock(containerBlock, braceStart, braceCount);
-        const rowBody = body;
 
-        const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
         const selContents: React.ReactNode[] = [];
+        const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
         let contentMatch: RegExpExecArray | null;
 
-        while ((contentMatch = contentRe.exec(rowBody))) {
+        while ((contentMatch = contentRe.exec(body))) {
             const [, type, inner] = contentMatch;
-            selContents.push(
+            if (inner?.trim()) {
+                selContents.push(
                 <SelContent key={`sel-${match.index}-${contentMatch.index}`} type={type?.trim() || ''}>
                     {inner.trim()}
                 </SelContent>
-            );
-            console.log(`📋 sel_row[${match.index}]:`, { raw: rowBody });
-            console.log(`  ↪ sel_content:`, { type, inner });
+                );
+            }
         }
 
         rowItems.push(<SelRow key={`sel-row-${match.index}`}>{selContents}</SelRow>);
         rowRe.lastIndex = braceStart + body.length + braceCount;
     }
 
-    nodes.push(<SelContainer key="sel-container">{rowItems}</SelContainer>);
+    if (rowItems.length > 0) {
+        nodes.push(<SelContainer key="sel-container">{rowItems}</SelContainer>);
+    }
+
     return nodes;
 }
