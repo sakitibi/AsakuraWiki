@@ -20,18 +20,18 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const startGlobal = offset + startLocal;
         const foldHeader = m[1];
 
-        // 📌 区切りは "最後のカンマ" のみ（セミコロンは区切りとしない）
         const lastCommaIndex = foldHeader.lastIndexOf(',');
         if (lastCommaIndex === -1) continue;
 
-        const titleRaw = foldHeader.slice(0, lastCommaIndex).trim(); // titleにセミコロンが含まれていてもOK
-        const optionStr = foldHeader.slice(lastCommaIndex + 1).trim(); // open / close オプションなど
+        const titleRaw = foldHeader.slice(0, lastCommaIndex).trim();
+        const optionStr = foldHeader.slice(lastCommaIndex + 1).trim();
         const isOpen = optionStr.includes('open');
         if (!titleRaw || !titleRaw.match(/\S/)) continue;
 
         const parsedTitleNodes = parseInline(titleRaw, context);
         console.log("🧪 parsedTitleNodes:", parsedTitleNodes);
         console.log("🧪 parsedTitleNodes.length:", parsedTitleNodes.length);
+
         const foldOpenEndLocal = content.indexOf("{{", startLocal) + 2;
 
         let iLocal = foldOpenEndLocal;
@@ -64,7 +64,9 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const prefix = content.slice(cursor, startLocal);
         console.log("🧪 prefix:", prefix);
         const trimmedPrefix = prefix.trim();
-        if (trimmedPrefix && !trimmedPrefix.match(/^}}+$/)) {
+
+        // ✅ 修正済み条件：prefixが空でもpush可能にする
+        if (!trimmedPrefix || !trimmedPrefix.match(/^}}+$/)) {
             const hasNestedFold = body.includes('#fold(');
             const resolvedBody = hasNestedFold ? body : '';
 
