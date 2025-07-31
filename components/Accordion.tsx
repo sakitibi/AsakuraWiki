@@ -21,13 +21,15 @@ export function extractAccordions(content: string, offset = 0, context: Context)
         const isOpen = args.includes('open');
         const braceCount = m[2].length;
         const braceStart = start + m[0].length - braceCount;
-        const source = content;              // 全体文字列が対象
-        const startIdx = braceStart;        // 実際の開始インデックス（braceStart はそのまま使える）
-        const { body, end } = extractBracedBlock(source, startIdx, braceCount);
+
+        // ✅ extractBracedBlock を利用して本文抽出
+        const { body, end } = extractBracedBlock(content, braceStart, braceCount);
+        if (!body) break; // パース失敗時は中断
 
         const prefix = content.slice(cursor, start);
         const children = extractAccordions(body, offset + braceStart, context);
 
+        // 子要素を空白で埋めて inline 向けに整形
         let bodyForInline = body;
         for (const child of children) {
             const relStart = child.start! - offset - braceStart;
@@ -53,7 +55,7 @@ export function extractAccordions(content: string, offset = 0, context: Context)
 
         cursor = end;
         console.log(`🪗 accordion[${blocks.length - 1}]:`, {
-        title, level, isOpen, start, end, body
+            title, level, isOpen, start, end, body
         });
     }
 
