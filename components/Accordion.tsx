@@ -7,7 +7,8 @@ import { useDesignColor, AccordionBlock, Context, parseWikiContent, extractBrace
 export function extractAccordions(content: string, offset = 0, context: Context): AccordionBlock[] {
     // extractAccordions の頭に
     console.log('▶︎ extractAccordions called. content slice:', content.slice(0, 50), '…');
-    const blocks: AccordionBlock[] = [];
+    const blocks = extractAccordions(content, offset, context);
+    console.log(`extractAccordions found ${blocks.length} blocks at offset=${offset}`);
     const accRe = /#accordion\(([^)]*?)\)\s*(\{+)/g;
 
     let cursor = 0;
