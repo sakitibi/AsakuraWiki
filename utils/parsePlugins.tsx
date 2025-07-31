@@ -151,20 +151,19 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
             end: blk.end!,
             node: (
                 <Accordion
-                    key={`acc-${idx}`}
-                    title={blk.title!}
-                    level={blk.level!}
-                    initiallyOpen={blk.isOpen!}
+                key={`acc-${idx}`}
+                title={blk.title!}
+                level={blk.level!}
+                initiallyOpen={blk.isOpen!}
                 >
-                    {children.length > 0
-                        ? children.map((child, cidx) => (
-                            <React.Fragment key={`acc-child-${idx}-${cidx}`}>
-                                {child.node}
-                            </React.Fragment>
-                        ))
-                        : blk.body
-                        ? parseWikiContent(blk.body, context, blk.start!)
-                        : null}
+                <>
+                    {blk.children!.map((child, cidx) => (
+                    <React.Fragment key={`acc-child-${idx}-${cidx}`}>
+                        {child.bodyNode}
+                    </React.Fragment>
+                    ))}
+                    {blk.bodyNode}
+                </>
                 </Accordion>
             ),
         });
