@@ -312,6 +312,7 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&size(')) {
+            console.log('[parse] &size match OK');
             const sizeStart = token.indexOf('(');
             const braceStart = token.indexOf('{');
             const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10);
@@ -493,6 +494,8 @@ export function parseOtherInline(
             }
 
             last = m.index + token.length;
+        } else {
+            console.log('[parse] skipped:', token);
         }
     }
     // 最後に残ったテキスト
