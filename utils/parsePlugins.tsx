@@ -143,8 +143,7 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                     </React.Fragment>,
             });
         }
-        const children = generateBlockItems(blk.body!, context, blk.start!);
-        // 💡 Accordion 描画時に blk.bodyNode を使わず parseWikiContent を使う
+        const children = generateBlockItems(blk.body!, context, blk.start!); // 再帰で描画生成
         items.push({
             type: 'accordion',
             start: blk.start!,
@@ -156,14 +155,13 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                 level={blk.level!}
                 initiallyOpen={blk.isOpen!}
                 >
-                <>
-                    {blk.children?.map((child, cidx) => (
-                    <React.Fragment key={`acc-child-${idx}-${cidx}`}>
-                        {child.bodyNode}
-                    </React.Fragment>
-                    ))}
-                    {blk.bodyNode}
-                </>
+                    <>
+                        {children.map((childItem, cidx) => (
+                        <React.Fragment key={`acc-child-${idx}-${cidx}`}>
+                            {childItem.node}
+                        </React.Fragment>
+                        ))}
+                    </>
                 </Accordion>
             ),
         });
