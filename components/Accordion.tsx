@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useDesignColor, AccordionBlock, Context, parseWikiContent } from "@/utils/parsePlugins";
+import { useDesignColor, AccordionBlock, Context, parseWikiContent, extractBracedBlock } from "@/utils/parsePlugins";
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
 */
 export function extractAccordions(content: string, offset = 0, context: Context): AccordionBlock[] {
     const blocks: AccordionBlock[] = [];
-    const accRe = /#accordion\(([^)]*?)\)\s*\{\{/g;
+    const accRe = /#accordion\(([^)]*?)\)\s*(\{+)/g;
 
     let cursor = 0;
     while (cursor < content.length) {
@@ -19,39 +19,25 @@ export function extractAccordions(content: string, offset = 0, context: Context)
         const title = args[0];
         const level = args.find(a => /^(?:\*{1,3})$/.test(a)) as '*' | '**' | '***' ?? '*';
         const isOpen = args.includes('open');
-
-        // 多段 {{ }} に対応した本文抽出
-        let depth = 1;
-        let i = accRe.lastIndex;
-        while (i < content.length && depth > 0) {
-            const two = content.slice(i, i + 2);
-            if (two === '{{') {
-                depth++; i += 2;
-            } else if (two === '}}') {
-                depth--; i += 2;
-            } else {
-                i++;
-            }
-        }
+        const braceCount = m[2].length;
+        const braceStart = start + m[0].length - braceCount;
+        const source = content;              // 全体文字列が対象
+        const startIdx = braceStart;        // 実際の開始インデックス（braceStart はそのまま使える）
+        const { body, end } = extractBracedBlock(source, startIdx, braceCount);
 
         const prefix = content.slice(cursor, start);
-        const body = content.slice(accRe.lastIndex, i - 2);
-        const end = i;
+        const children = extractAccordions(body, offset + braceStart, context);
 
-        // 🎯再帰的に子ブロックを抽出
-        const children = extractAccordions(body, offset + accRe.lastIndex, context);
-
-        // ✅ children の位置を空白にして inline 解釈用文字列生成
         let bodyForInline = body;
         for (const child of children) {
-            const relStart = child.start! - offset - accRe.lastIndex;
-            const relEnd = child.end! - offset - accRe.lastIndex;
-            bodyForInline =
-                bodyForInline.slice(0, relStart) +
-                ' '.repeat(relEnd - relStart) +
-                bodyForInline.slice(relEnd);
+            const relStart = child.start! - offset - braceStart;
+            const relEnd = child.end! - offset - braceStart;
+            bodyForInline = bodyForInline.slice(0, relStart)
+                + ' '.repeat(relEnd - relStart)
+                + bodyForInline.slice(relEnd);
         }
-        const parsedBody = parseWikiContent(bodyForInline, context, offset + accRe.lastIndex);
+
+        const parsedBody = parseWikiContent(bodyForInline, context, offset + braceStart);
 
         blocks.push({
             prefix,
@@ -62,14 +48,15 @@ export function extractAccordions(content: string, offset = 0, context: Context)
             bodyNode: parsedBody,
             start: offset + start,
             end: offset + end,
-            children,
+            children
         });
 
         cursor = end;
         console.log(`🪗 accordion[${blocks.length - 1}]:`, {
-            title, level, isOpen, start, end, body,
+        title, level, isOpen, start, end, body
         });
     }
+
     return blocks;
 }
 
