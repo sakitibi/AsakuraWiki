@@ -56,13 +56,12 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const prefix = content.slice(cursor, startLocal);
         const trimmedPrefix = prefix.trim();
 
-        if (!trimmedPrefix || !trimmedPrefix.match(/^}}+$/)) {
-            const resolvedBody = body;
-
+        // ✅ 修正：prefix が "}}}" のような閉じタグだけなら除外、それ以外は push
+        if (!trimmedPrefix.match(/^\s*}}+\s*$/)) {
             blocks.push({
                 prefix,
                 title: <>{parsedTitleNodes.map((n, i) => <React.Fragment key={i}>{n}</React.Fragment>)}</>,
-                body: resolvedBody,
+                body,
                 isOpen,
                 start: startGlobal,
                 end: offset + iLocal,
@@ -70,13 +69,15 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
 
-        cursor = iLocal;
+        // ✅ 修正：cursor更新は fold 範囲全体を考慮
+        cursor = startLocal + content.slice(startLocal, iLocal).length;
     }
 
+    // ✅ 修正：tailが純粋な閉じ記号だけなら無視
     if (depth === 0 && cursor < content.length) {
         const tail = content.slice(cursor);
         const trimmedTail = tail.trim();
-        if (trimmedTail && !trimmedTail.match(/^}}+$/)) {
+        if (!trimmedTail.match(/^\s*}}+\s*$/)) {
             blocks.push({
                 prefix: tail,
                 body: '',
