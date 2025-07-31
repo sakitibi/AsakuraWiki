@@ -56,10 +56,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const prefix = content.slice(cursor, startLocal);
         const trimmedPrefix = prefix.trim();
 
-        // ✅ 修正済み条件：prefixが空でもpush可能にする
         if (!trimmedPrefix || !trimmedPrefix.match(/^}}+$/)) {
-            const hasNestedFold = body.includes('#fold(');
-            const resolvedBody = hasNestedFold ? body : '';
+            const resolvedBody = body;
 
             blocks.push({
                 prefix,
@@ -68,7 +66,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
                 isOpen,
                 start: startGlobal,
                 end: offset + iLocal,
-                children: hasNestedFold ? childFolds : []
+                children: body.includes('#fold(') ? childFolds : []
             });
         }
 
