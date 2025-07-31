@@ -146,6 +146,7 @@ export function parseOtherInline(
         else if (token.startsWith('&escape(')) {
             const braceStart = token.indexOf('{');
             const braceBlock = extractBracedBlock(token, braceStart, 1); // ✅ 修正ここ！
+            console.log(`[plugin-parse] &size|&color braceBlock.body: "${braceBlock.body}"`);
             nodes.push(
                 <span key={key} dangerouslySetInnerHTML={{ __html: braceBlock.body }} />
             )
@@ -318,6 +319,7 @@ export function parseOtherInline(
             const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10);
 
             const braceBlock = extractBracedBlock(token, braceStart, 1);
+            console.log(`[plugin-parse] &size|&color braceBlock.body: "${braceBlock.body}"`);
 
             // 🔍 ログ: &size 構文詳細
             console.log(`[&size] size: ${fontSize}px, inner: ${braceBlock.body}`);
@@ -344,6 +346,7 @@ export function parseOtherInline(
                 continue
             }
             const braceBlock = extractBracedBlock(token, braceStart, 1); // ✅ 修正ここ！
+            console.log(`[plugin-parse] &size|&color braceBlock.body: "${braceBlock.body}"`);
             const args = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s))
             const color = args[0]
             const background = args[1]

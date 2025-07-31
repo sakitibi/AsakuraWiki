@@ -72,34 +72,32 @@ export function isValidLineRange(range: string): boolean {
     return /^(\d+)?-(\d+)?$/.test(trimmed) || /^\d+$/.test(trimmed)
 }
 
-export function extractBracedBlock(source: string, startIdx: number, braceCount: number): { body: string, end: number } {
-    let depth = 0;
-    let i = startIdx;
-    const open = '{'.repeat(braceCount);
-    const close = '}'.repeat(braceCount);
+export function extractBracedBlock(source: string, startIdx: number, braceCount: number): {
+    body: string;
+    end: number;
+} {
+    let depth = braceCount;
+    let i = startIdx + braceCount;
 
-    while (i <= source.length - braceCount) {
-        const slice = source.slice(i, i + braceCount);
-        if (slice === open) {
+    while (i < source.length) {
+        const char = source[i];
+        if (char === '{') {
             depth++;
-            i += braceCount;
-        } else if (slice === close) {
+        } else if (char === '}') {
             depth--;
-            i += braceCount;
-            if (depth === 0) break;
-        } else {
-            i++;
+            if (depth === 0) {
+                // 🧼 正しく閉じ括弧まで到達
+                const body = source.slice(startIdx + braceCount, i);
+                console.log(`[extractBracedBlock] sliced body: "${body}"`);
+                return { body, end: i + 1 };
+            }
         }
+        i++;
     }
-    console.log("📦 extractBracedBlock:", {
-        body: source.slice(startIdx + braceCount, i),
-        end: i,
-        braceClosePreview: source.slice(i - braceCount, i + braceCount),
-    });
-    return {
-        body: source.slice(startIdx + braceCount, i - braceCount),
-        end: i
-    };
+
+    // 🚨 括弧閉じられてない
+    console.warn(`[extractBracedBlock] Failed to find closing brace from ${startIdx}`);
+    return { body: source.slice(startIdx + braceCount), end: source.length };
 }
 
 function extractSelContainersSafe(content: string, excludeRanges: { start: number; end: number }[], offset = 0): { body: string; start: number; end: number }[] {
