@@ -91,6 +91,11 @@ export function extractBracedBlock(source: string, startIdx: number, braceCount:
             i++;
         }
     }
+    console.log("📦 extractBracedBlock:", {
+        body: source.slice(startIdx + braceCount, i),
+        end: i,
+        braceClosePreview: source.slice(i - braceCount, i + braceCount),
+    });
     return {
         body: source.slice(startIdx + braceCount, i),
         end: i, // ← 末尾braceを含んでしまうため
