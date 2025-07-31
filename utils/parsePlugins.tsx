@@ -97,7 +97,7 @@ export function extractBracedBlock(source: string, startIdx: number, braceCount:
         braceClosePreview: source.slice(i - braceCount, i + braceCount),
     });
     return {
-        body: source.slice(startIdx + braceCount, i - braceCount), // ← brace分だけ後退
+        body: source.slice(startIdx + braceCount, i - braceCount),
         end: i
     };
 }
