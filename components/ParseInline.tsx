@@ -137,8 +137,9 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&escape(')) {
-            const braceStart = token.indexOf('{')
-            const braceBlock = extractBracedBlock(token, braceStart)
+            const braceStart = token.indexOf('{');
+            const braceCount = token.slice(braceStart).match(/^\{+/)?.[0].length ?? 2;
+            const braceBlock = extractBracedBlock(token, braceStart, braceCount);
             nodes.push(
                 <span key={key} dangerouslySetInnerHTML={{ __html: braceBlock.body }} />
             )
@@ -306,8 +307,9 @@ export function parseOtherInline(
         }
         else if (token.startsWith('&size(')) {
             const sizeStart = token.indexOf('(')
-            const braceStart = token.indexOf('{', sizeStart)
-            const braceBlock = extractBracedBlock(token, braceStart)
+            const braceStart = token.indexOf('{');
+            const braceCount = token.slice(braceStart).match(/^\{+/)?.[0].length ?? 2;
+            const braceBlock = extractBracedBlock(token, braceStart, braceCount);
             const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10)
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
             nodes.push(
@@ -320,14 +322,13 @@ export function parseOtherInline(
         else if (token.startsWith('&color(')) {
             const parenStart = token.indexOf('(')
             const parenEnd = token.indexOf(')', parenStart)
-            const braceStart = token.indexOf('{', parenEnd)
+            const braceStart = token.indexOf('{');
             if (parenEnd === -1 || braceStart === -1) {
                 nodes.push(<span key={key} style={{ color: 'red' }}>構文エラー: &color 構文不正</span>)
                 continue
             }
-
-            const braceBlock = extractBracedBlock(token, braceStart)
-
+            const braceCount = token.slice(braceStart).match(/^\{+/)?.[0].length ?? 2;
+            const braceBlock = extractBracedBlock(token, braceStart, braceCount);
             const args = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s))
             const color = args[0]
             const background = args[1]
