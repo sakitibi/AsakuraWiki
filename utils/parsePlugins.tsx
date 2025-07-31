@@ -330,20 +330,31 @@ function parseWikiContentFragment(containerBlock: string): React.ReactNode[] {
             const [, type, inner] = contentMatch;
             if (inner?.trim()) {
                 selContents.push(
-                <SelContent key={`sel-${match.index}-${contentMatch.index}`} type={type?.trim() || ''}>
-                    {inner.trim()}
-                </SelContent>
+                    <SelContent key={`sel-${match.index}-${contentMatch.index}`} type={type?.trim() || ''}>
+                        {inner.trim()}
+                    </SelContent>
                 );
             }
         }
 
-        rowItems.push(<SelRow key={`sel-row-${match.index}`}>{selContents}</SelRow>);
+        rowItems.push(
+            <SelRow
+                key={`sel-row-${match.index}`}
+            >
+                {selContents}
+            </SelRow>
+        );
         rowRe.lastIndex = braceStart + body.length + braceCount;
     }
 
     if (rowItems.length > 0) {
-        nodes.push(<SelContainer key="sel-container">{rowItems}</SelContainer>);
+        nodes.push(
+            <SelContainer
+                key="sel-container"
+            >
+                {rowItems}
+            </SelContainer>
+        );
     }
-
     return nodes;
 }
