@@ -47,8 +47,9 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         if (depthCount !== 0 || iLocal > content.length) continue;
 
         const bodyStart = foldOpenEndLocal;
-        const bodyEnd = iLocal - 2;
-        const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
+        const bodyRaw = content.slice(bodyStart, iLocal);
+        const body = bodyRaw.endsWith('}}') ? bodyRaw.slice(0, -2) : bodyRaw;
+
         if (!body.trim() && !body.includes('#fold(')) continue;
         if (depth === 0 && body.trim() === content.trim()) continue;
 
@@ -56,7 +57,6 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const prefix = content.slice(cursor, startLocal);
         const trimmedPrefix = prefix.trim();
 
-        // ✅ 修正：prefix が "}}}" のような閉じタグだけなら除外、それ以外は push
         if (!trimmedPrefix.match(/^\s*}}+\s*$/)) {
             blocks.push({
                 prefix,
@@ -69,11 +69,9 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
             });
         }
 
-        // ✅ 修正：cursor更新は fold 範囲全体を考慮
-        cursor = startLocal + content.slice(startLocal, iLocal).length;
+        cursor = iLocal;
     }
 
-    // ✅ 修正：tailが純粋な閉じ記号だけなら無視
     if (depth === 0 && cursor < content.length) {
         const tail = content.slice(cursor);
         const trimmedTail = tail.trim();
