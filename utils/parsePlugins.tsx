@@ -157,7 +157,7 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
                 initiallyOpen={blk.isOpen!}
                 >
                 <>
-                    {blk.children!.map((child, cidx) => (
+                    {blk.children?.map((child, cidx) => (
                     <React.Fragment key={`acc-child-${idx}-${cidx}`}>
                         {child.bodyNode}
                     </React.Fragment>
