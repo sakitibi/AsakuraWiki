@@ -62,12 +62,19 @@ export function parseOtherInline(
     const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);/giu
 
     while ((m = re.exec(line))) {
-        // トークンの手前テキストをそのまま文字ノードに
+        const token = m[0];
+        const key = `inl-${baseKey}-${m.index}`;
+
+        // 🔍 ログ: キャプチャされたトークンと位置
+        console.log(`[plugin-match] token: "${token}" at index ${m.index}`);
+
         if (m.index > last) {
-            nodes.push(line.slice(last, m.index))
+            const plainText = line.slice(last, m.index);
+            nodes.push(plainText);
+
+            // 🔍 ログ: プレーンテキスト部分
+            console.log(`[text] before plugin: "${plainText}"`);
         }
-        const token = m[0]
-        const key = `inl-${baseKey}-${m.index}`
         //console.table(m);
 
         // --- plugin branches ---
@@ -305,17 +312,27 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&size(')) {
-            const sizeStart = token.indexOf('(')
+            const sizeStart = token.indexOf('(');
             const braceStart = token.indexOf('{');
-            const braceBlock = extractBracedBlock(token, braceStart, 1); // ✅ 修正ここ！
-            const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10)
-            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
+            const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10);
+
+            const braceBlock = extractBracedBlock(token, braceStart, 1);
+
+            // 🔍 ログ: &size 構文詳細
+            console.log(`[&size] size: ${fontSize}px, inner: ${braceBlock.body}`);
+
+            const hasBlockPlugin = /#accordion|#fold|#sel_container|#sel_row/.test(braceBlock.body);
+            const content = hasBlockPlugin
+                ? braceBlock.body
+                : parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1);
+
             nodes.push(
                 <span key={key} style={{ fontSize: `${fontSize}px` }}>
                     {content}
                 </span>
-            )
-            last = m.index + token.length // ✅これに変更！
+            );
+            last = m.index + token.length;
+            continue;
         }
         else if (token.startsWith('&color(')) {
             const parenStart = token.indexOf('(')
