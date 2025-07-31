@@ -5,6 +5,8 @@ import { useDesignColor, AccordionBlock, Context, parseWikiContent, extractBrace
  * ネスト可能なアコーディオンブロックを文字列から抽出します
 */
 export function extractAccordions(content: string, offset = 0, context: Context): AccordionBlock[] {
+    // extractAccordions の頭に
+    console.log('▶︎ extractAccordions called. content slice:', content.slice(0, 50), '…');
     const blocks: AccordionBlock[] = [];
     const accRe = /#accordion\(([^)]*?)\)\s*(\{+)/g;
 
