@@ -29,11 +29,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         if (!titleRaw || !titleRaw.match(/\S/)) continue;
 
         const parsedTitleNodes = parseInline(titleRaw, context);
-        console.log("🧪 parsedTitleNodes:", parsedTitleNodes);
-        console.log("🧪 parsedTitleNodes.length:", parsedTitleNodes.length);
 
         const foldOpenEndLocal = content.indexOf("{{", startLocal) + 2;
-
         let iLocal = foldOpenEndLocal;
         let depthCount = 1;
         while (iLocal < content.length && depthCount > 0) {
@@ -52,17 +49,11 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const bodyStart = foldOpenEndLocal;
         const bodyEnd = iLocal - 2;
         const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
-        console.log("🧪 fold match:", m[0]);
-        console.log("🧪 foldHeader:", foldHeader);
-        console.log("🧪 titleRaw:", titleRaw);
-        console.log("🧪 body:", body);
-
         if (!body.trim() && !body.includes('#fold(')) continue;
         if (depth === 0 && body.trim() === content.trim()) continue;
 
         const childFolds = extractFolds(body, context, 0, depth + 1);
         const prefix = content.slice(cursor, startLocal);
-        console.log("🧪 prefix:", prefix);
         const trimmedPrefix = prefix.trim();
 
         // ✅ 修正済み条件：prefixが空でもpush可能にする
