@@ -47,8 +47,8 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         if (depthCount !== 0 || iLocal > content.length) continue;
 
         const bodyStart = foldOpenEndLocal;
-        const bodyRaw = content.slice(bodyStart, iLocal);
-        const body = bodyRaw.endsWith('}}') ? bodyRaw.slice(0, -2) : bodyRaw;
+        const bodyEnd = iLocal - 2; // 👈 ここで閉じ `}}` を除外
+        const body = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
 
         if (!body.trim() && !body.includes('#fold(')) continue;
         if (depth === 0 && body.trim() === content.trim()) continue;
