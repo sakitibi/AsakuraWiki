@@ -264,7 +264,7 @@ export function parseWikiContent(content: string, context: Context, offset = 0):
 
     if (lastPos - offset < content.length) {
         const inlineText = content.slice(lastPos - offset);
-        const cleaned = inlineText.replace(/^};+$/, '').trim(); // ← 👈
+        const cleaned = inlineText.replace(/};+$/, '').replace(/}$/, '').trim(); // ← 追加の `}` 除去
         if (cleaned) {
             const inlineNodes = parseInline(cleaned, context);
             nodes.push(<React.Fragment key="inline-final">{inlineNodes}</React.Fragment>);
