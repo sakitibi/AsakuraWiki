@@ -138,8 +138,7 @@ export function parseOtherInline(
         }
         else if (token.startsWith('&escape(')) {
             const braceStart = token.indexOf('{');
-            const braceCount = token.slice(braceStart).match(/^\{+/)?.[0].length ?? 2;
-            const braceBlock = extractBracedBlock(token, braceStart, braceCount);
+            const braceBlock = extractBracedBlock(token, braceStart, 1); // ✅ 修正ここ！
             nodes.push(
                 <span key={key} dangerouslySetInnerHTML={{ __html: braceBlock.body }} />
             )
@@ -308,8 +307,7 @@ export function parseOtherInline(
         else if (token.startsWith('&size(')) {
             const sizeStart = token.indexOf('(')
             const braceStart = token.indexOf('{');
-            const braceCount = token.slice(braceStart).match(/^\{+/)?.[0].length ?? 2;
-            const braceBlock = extractBracedBlock(token, braceStart, braceCount);
+            const braceBlock = extractBracedBlock(token, braceStart, 1); // ✅ 修正ここ！
             const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10)
             const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
             nodes.push(
@@ -327,8 +325,7 @@ export function parseOtherInline(
                 nodes.push(<span key={key} style={{ color: 'red' }}>構文エラー: &color 構文不正</span>)
                 continue
             }
-            const braceCount = token.slice(braceStart).match(/^\{+/)?.[0].length ?? 2;
-            const braceBlock = extractBracedBlock(token, braceStart, braceCount);
+            const braceBlock = extractBracedBlock(token, braceStart, 1); // ✅ 修正ここ！
             const args = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s))
             const color = args[0]
             const background = args[1]
