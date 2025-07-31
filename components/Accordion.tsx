@@ -4,14 +4,25 @@ import { useDesignColor, AccordionBlock, Context, parseWikiContent, extractBrace
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
 */
-export function extractAccordions(content: string, offset = 0, context: Context): AccordionBlock[] {
-    // extractAccordions の頭に
-    console.log('▶︎ extractAccordions called. content slice:', content.slice(0, 50), '…');
-    const blocks = extractAccordions(content, offset, context);
-    console.log(`extractAccordions found ${blocks.length} blocks at offset=${offset}`);
-    const accRe = /#accordion\(([^)]*?)\)\s*(\{+)/g;
+export function extractAccordions(
+    content: string,
+    offset = 0,
+    context: Context
+): AccordionBlock[] {
+    // 呼び出し確認用ログ
+    console.log(
+        '▶ extractAccordions called. content slice:',
+        content.slice(0, 50),
+        '…'
+    );
 
+    // ここで初期配列を用意（⚠️ 自分自身は呼び出さない）
+    const blocks: AccordionBlock[] = [];
+    console.log(`initial blocks length: ${blocks.length}`);
+
+    const accRe = /#accordion\(([^)]*?)\)\s*(\{+)/g;
     let cursor = 0;
+
     while (cursor < content.length) {
         accRe.lastIndex = cursor;
         const m = accRe.exec(content);
@@ -20,32 +31,39 @@ export function extractAccordions(content: string, offset = 0, context: Context)
         const start = m.index;
         const args = m[1].split(',').map(s => s.trim());
         const title = args[0];
-        const level = args.find(a => /^(?:\*{1,3})$/.test(a)) as '*' | '**' | '***' ?? '*';
+        const level =
+        (args.find(a => /^(?:\*{1,3})$/.test(a)) as '*' | '**' | '***') ?? '*';
         const isOpen = args.includes('open');
         const braceCount = m[2].length;
         const braceStart = start + m[0].length - braceCount;
 
-        // ✅ extractBracedBlock を利用して本文抽出
+        // extractBracedBlock で本文と終端位置を取得
         const { body, end } = extractBracedBlock(content, braceStart, braceCount);
-        if (!body) break; // パース失敗時は中断
+        if (!body) break;  // 括弧未閉じなら抜ける
 
-        const prefix = content.slice(cursor, start);
+        // ネストされた子アコーディオンはここで再帰抽出
         const children = extractAccordions(body, offset + braceStart, context);
 
-        // 子要素を空白で埋めて inline 向けに整形
+        // 子要素分を全て空白に置換して inline 向けに整形
         let bodyForInline = body;
         for (const child of children) {
             const relStart = child.start! - offset - braceStart;
             const relEnd = child.end! - offset - braceStart;
-            bodyForInline = bodyForInline.slice(0, relStart)
-                + ' '.repeat(relEnd - relStart)
-                + bodyForInline.slice(relEnd);
+            bodyForInline =
+                bodyForInline.slice(0, relStart) +
+                ' '.repeat(relEnd - relStart) +
+                bodyForInline.slice(relEnd);
         }
 
-        const parsedBody = parseWikiContent(bodyForInline, context, offset + braceStart);
+        // parseWikiContent で残りテキストをパース
+        const parsedBody = parseWikiContent(
+            bodyForInline,
+            context,
+            offset + braceStart
+        );
 
         blocks.push({
-            prefix,
+            prefix: content.slice(cursor, start),
             title,
             level,
             isOpen,
@@ -53,15 +71,24 @@ export function extractAccordions(content: string, offset = 0, context: Context)
             bodyNode: parsedBody,
             start: offset + start,
             end: offset + end,
-            children
+            children,
+        });
+
+        console.log(`🪗 accordion[${blocks.length - 1}]:`, {
+            title,
+            level,
+            isOpen,
+            start,
+            end,
         });
 
         cursor = end;
-        console.log(`🪗 accordion[${blocks.length - 1}]:`, {
-            title, level, isOpen, start, end, body
-        });
     }
 
+    // 最終ブロック数をログ
+    console.log(
+        `extractAccordions found ${blocks.length} blocks at offset=${offset}`
+    );
     return blocks;
 }
 
