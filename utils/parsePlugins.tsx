@@ -169,44 +169,33 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
 
     console.log('🔍 foldBlocks数:', foldBlocks.length);
     foldBlocks.forEach((blk, idx) => {
-        console.log(` ↪ fold[${idx}]:`, {
-            start: blk.start,
-            end: blk.end,
-            prefix: blk.prefix,
-            body: blk.body,
-        });
-
-        if (!blk.start || !blk.end) return;
-
+        if (blk.start == null || blk.end == null) return;
+        // prefix インライン
         items.push({
             type: 'inline',
             start: blk.start - blk.prefix.length,
             end: blk.start,
-            node: <React.Fragment key={`fold-prefix-${idx}`}>
-                    {parseInline(blk.prefix, context)}
-                </React.Fragment>,
+            node: (
+            <React.Fragment key={`fold-prefix-${idx}`}>
+                {parseInline(blk.prefix, context)}
+            </React.Fragment>
+            ),
         });
 
-        const children = generateBlockItems(blk.body!, context, 0);
+        // 折りたたみ中身も必ず再帰
+        const children = generateBlockItems(blk.body!, context, blk.start);
+
         items.push({
             type: 'fold',
             start: blk.start,
             end: blk.end,
             node: (
-                <Fold
-                    key={`fold-${idx}`}
-                    title={blk.title}
-                    initiallyOpen={blk.isOpen ?? false}
-                >
-                    {children.length > 0
-                        ? children.map((child, cidx) => (
-                            <React.Fragment key={`fold-child-${idx}-${cidx}`}>
-                                {child.node}
-                            </React.Fragment>
-                        ))
-                        : blk.body
-                        ? parseWikiContent(blk.body, context, blk.start)
-                        : null}
+                <Fold key={`fold-${idx}`} title={blk.title} initiallyOpen={blk.isOpen ?? false}>
+                    {children.map((child, cidx) => (
+                    <React.Fragment key={`fold-child-${idx}-${cidx}`}>
+                        {child.node}
+                    </React.Fragment>
+                    ))}
                 </Fold>
             ),
         });
