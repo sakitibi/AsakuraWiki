@@ -242,10 +242,22 @@ export function parseWikiContent(
 
     // ───② generateBlockItems 実行前 ────────────────────────────────
     console.log('▶ about to call generateBlockItems');
-    const blockItems = generateBlockItems(content, context, offset);
+    const rawItems = generateBlockItems(content, context, offset);
     console.log(
-        `▶ generateBlockItems returned ${blockItems.length} items`,
-        blockItems.map(b => ({ type: b.type, start: b.start, end: b.end }))
+        `▶ generateBlockItems returned ${rawItems.length} items`,
+        rawItems.map(b => ({ type: b.type, start: b.start, end: b.end }))
+    );
+
+    // ───新規追加: 不正アイテムを除外────────────────────────────────
+    const blockItems = rawItems.filter(item =>
+        typeof item.start === 'number' &&
+        typeof item.end   === 'number' &&
+        item.start >= offset &&
+        item.end > item.start
+    );
+    console.log(
+        `▶ filtered blockItems: ${blockItems.length} items`,
+        blockItems.map(b => `${b.type}@${b.start}-${b.end}`)
     );
 
     const nodes: React.ReactNode[] = [];
@@ -260,7 +272,7 @@ export function parseWikiContent(
     }
 
     // ───④ ソート後のアイテム順をログ ─────────────────────────────────
-    const sortedItems = [...blockItems].sort((a, b) => a.start - b.start);
+    const sortedItems = [...blockItems].sort((a, b) => a.start! - b.start!);
     console.log(
         '▶ sortedItems order:',
         sortedItems.map(item => `${item.type}@${item.start}-${item.end}`)
@@ -301,7 +313,7 @@ export function parseWikiContent(
         const rest = content.slice(lastRel).trim();
         console.log(
         `▶ trailing text [${lastRel}–${content.length}]:`,
-            rest.replace(/\n/g, '⏎')
+        rest.replace(/\n/g, '⏎')
         );
         if (rest) {
             const tn = parseInline(rest, context);
