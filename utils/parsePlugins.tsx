@@ -137,31 +137,36 @@ function generateBlockItems(content: string, context: Context, offset = 0): Bloc
             items.push({
                 type: 'inline',
                 start: blk.start! - blk.prefix.length,
-                end: blk.start!,
-                node: <React.Fragment key={`acc-prefix-${idx}`}>
-                        {parseInline(blk.prefix, context)}
-                    </React.Fragment>,
+                end:   blk.start!,
+                node: (
+                <React.Fragment key={`acc-prefix-${idx}`}>
+                    {parseInline(blk.prefix, context)}
+                </React.Fragment>
+                ),
             });
         }
-        const children = generateBlockItems(blk.body!, context, blk.start!); // 再帰で描画生成
+
+        // ここも修正：再帰結果の名前を childItems に
+        const childItems = generateBlockItems(blk.body!, context, blk.start!);
+
         items.push({
             type: 'accordion',
             start: blk.start!,
-            end: blk.end!,
+            end:   blk.end!,
             node: (
                 <Accordion
-                key={`acc-${idx}`}
-                title={blk.title!}
-                level={blk.level!}
-                initiallyOpen={blk.isOpen!}
+                    key={`acc-${idx}`}
+                    title={blk.title!}
+                    level={blk.level!}
+                    initiallyOpen={blk.isOpen!}
                 >
-                    <>
-                        {children.map((childItem, cidx) => (
-                        <React.Fragment key={`acc-child-${idx}-${cidx}`}>
-                            {childItem.node}
-                        </React.Fragment>
-                        ))}
-                    </>
+                    {childItems.map((ci, cidx) => (
+                    <React.Fragment
+                        key={`acc-child-${idx}-${ci.start}-${cidx}`}
+                    >
+                        {ci.node}
+                    </React.Fragment>
+                    ))}
                 </Accordion>
             ),
         });
