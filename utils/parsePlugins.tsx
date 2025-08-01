@@ -1,55 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Accordion, { extractAccordions } from '@/components/Accordion';
-import Fold, { extractFolds } from '@/components/Fold';
+import Accordion from '@/components/Accordion';
 import SelContainer from '@/components/SelContainer';
 import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
 import { supabase } from 'lib/supabaseClient';
 import parseInline from '@/components/ParseInline';
+import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
 
-export interface Context {
-    wikiSlug: string;
-    pageSlug: string;
-    letContext?: Record<string, string>;
-}
-
-export interface AccordionBlock {
-    prefix?: string;
-    title?: string;
-    level?: '*' | '**' | '***';
-    isOpen?: boolean;
-    body?: string;
-    bodyNode?: React.ReactNode[];
-    start?: number;
-    end?: number;
-    children?: AccordionBlock[]; // 子ブロックのためのプロパティ
-}
-
-interface BlockItem {
-    type: 'accordion' | 'fold' | 'sel' | 'inline';
-    start: number;
-    end: number;
-    node: React.ReactNode;
-};
-
-export interface FoldBlock {
-    prefix: string;
-    title?: React.ReactNode;
-    body?: string;
-    isOpen?: boolean;
-    start?: number;
-    end?: number;
-    children?: FoldBlock[];
-}
-
-type Token =
-    | { type: 'text';        content: string }
-    | { type: 'open';        title: string; level: '*'|'**'|'***'; isOpen: boolean }
-    | { type: 'close' };
-
-type ASTNode =
-    | { type: 'text';        content: string }
-    | { type: 'accordion';   title: string; level: '*'|'**'|'***'; isOpen: boolean; children: ASTNode[] };
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);

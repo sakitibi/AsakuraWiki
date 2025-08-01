@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import parseInline from "@/components/ParseInline";
-import { FoldBlock, Context } from "@/utils/parsePlugins";
+import { FoldBlock, Context } from "@/components/parsePluginTypes";
 
 export function extractFolds(content: string, context: Context, offset = 0, depth = 0): FoldBlock[] {
     console.log("🔥 extractFolds called at depth", depth);

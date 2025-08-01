@@ -1,4 +1,4 @@
-import { Context, extractBracedBlock, isValidLineRange } from "@/utils/parsePlugins";
+import { extractBracedBlock, isValidLineRange } from "@/utils/parsePlugins";
 import Header from "@/components/Header";
 import Calendar2 from '@/components/Calendar2';
 import CommentForm from '@/components/CommentForm';
@@ -9,6 +9,7 @@ import IncludePage from '@/components/IncludePage';
 import TableOfContents from '@/components/TableOfContents';
 import calcPlugin from '@/components/calcPlugin';
 import { DATEDIF, DATEVALUE } from '@/utils/dateFunctions';
+import { Context } from "@/components/parsePluginTypes";
 
 /** インラインプラグインを処理します */
 export default function parseInline(text: string, context: Context): React.ReactNode[] {
