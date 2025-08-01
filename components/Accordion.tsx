@@ -9,26 +9,25 @@ export function extractAccordions(
     offset = 0,
     context: Context
 ): AccordionBlock[] {
-    // 呼び出し確認ログ
+    // ① 呼び出し直後のログ
     console.log(
-        '▶ extractAccordions called. offset=',
-        offset,
-        ' snippet=',
-        JSON.stringify(content.slice(0, 60))
+        '▶ extractAccordions called.',
+        { offset, snippet: content.slice(0, 60).replace(/\n/g, '⏎') }
     );
 
+    // ② 正規表現をセット
     const accRe = /#accordion\(([^)]*?)\)\s*(\{+)/g;
 
-    // ── デバッグ: 全マッチ位置を列挙 ───────────────────
+    // ── デバッグ: 全ヒット位置だけ先に列挙 ───────────────────
     const rawMatches: number[] = [];
-    let debugM: RegExpExecArray | null;
+    let debugMatch: RegExpExecArray | null;
     accRe.lastIndex = 0;
-    while ((debugM = accRe.exec(content))) {
-        rawMatches.push(debugM.index);
+    while ((debugMatch = accRe.exec(content))) {
+        rawMatches.push(debugMatch.index);
     }
     console.log('  ↪ raw #accordion indices:', rawMatches);
 
-    // ── 本格処理 ───────────────────────────────────
+    // ③ 本格的な抽出ループ
     const blocks: AccordionBlock[] = [];
     let cursor = 0;
     accRe.lastIndex = 0;
@@ -47,17 +46,17 @@ export function extractAccordions(
         const braceCount = m[2].length;
         const braceStart = start + m[0].length - braceCount;
 
-        // extractBracedBlock で本文と終端位置を取得
+        // ④ 本文抜き出し
         const { body, end } = extractBracedBlock(content, braceStart, braceCount);
         if (!body) {
-            console.warn('  ⚠️ extractBracedBlock failed (unmatched braces)');
+            console.warn('  ⚠ extractBracedBlock failed (unmatched braces)');
             break;
         }
 
-        // ネスト Accordion の再帰抽出
+        // ⑤ ネスト Accordion を再帰抽出
         const children = extractAccordions(body, offset + braceStart, context);
 
-        // inline 用に子要素部分をマスク
+        // ⑥ inline 用に子要素範囲を空白マスク
         let bodyForInline = body;
         for (const child of children) {
             const relStart = child.start! - offset - braceStart;
@@ -68,7 +67,6 @@ export function extractAccordions(
                 bodyForInline.slice(relEnd);
         }
 
-        // 残りテキストをパース
         const parsedBody = parseWikiContent(
             bodyForInline,
             context,
@@ -97,7 +95,9 @@ export function extractAccordions(
         cursor = end;
     }
 
-    console.log(`=> extractAccordions returning ${blocks.length} blocks\n`);
+    console.log(
+        `=> extractAccordions returning ${blocks.length} blocks at offset=${offset}`
+    );
     return blocks;
 }
 
