@@ -9,14 +9,14 @@ import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/FooterJp';
 
-type WikiPage = {
+interface WikiPage {
     wikiSlug: string;
     pageSlug: string;
     name: string;
     updated_at: string;
 }
 
-type LikedWiki = {
+interface LikedWiki {
     wikiSlug: string;
     name: string;
     like_count: number;
