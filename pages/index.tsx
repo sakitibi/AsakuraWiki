@@ -24,7 +24,7 @@ interface LikedWiki {
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState<boolean>(true)
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
     const [recentPages, setRecentPages] = useState<WikiPage[]>([])
