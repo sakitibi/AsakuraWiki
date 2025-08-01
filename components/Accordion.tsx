@@ -9,54 +9,47 @@ export function extractAccordions(
     offset = 0,
     context: Context
 ): AccordionBlock[] {
-    // ① 呼び出し直後のログ
     console.log(
         '▶ extractAccordions called.',
         { offset, snippet: content.slice(0, 60).replace(/\n/g, '⏎') }
     );
 
-    // ② 正規表現をセット
-    const accRe = /#accordion\(([^)]*?)\)\s*(\{+)/g;
+    // ② 強化した正規表現
+    const accRe = /#accordion\s*(?:\(\s*([^)]*?)\s*\)|\s+([^{]+?))\s*\{/gm;
 
-    // ── デバッグ: 全ヒット位置だけ先に列挙 ───────────────────
-    const rawMatches: number[] = [];
-    let debugMatch: RegExpExecArray | null;
-    accRe.lastIndex = 0;
-    while ((debugMatch = accRe.exec(content))) {
-        rawMatches.push(debugMatch.index);
-    }
-    console.log('  ↪ raw #accordion indices:', rawMatches);
-
-    // ③ 本格的な抽出ループ
     const blocks: AccordionBlock[] = [];
-    let cursor = 0;
-    accRe.lastIndex = 0;
+    let m: RegExpExecArray | null;
 
-    while (cursor < content.length) {
-        accRe.lastIndex = cursor;
-        const m = accRe.exec(content);
-        if (!m) break;
-
+    while ((m = accRe.exec(content))) {
         const start = m.index;
-        const args = m[1].split(',').map(s => s.trim());
+
+        // タイトル／オプション解釈
+        const raw = (m[1] || m[2] || '').trim();
+        const args = raw.split(',').map(s => s.trim());
         const title = args[0];
         const level =
         (args.find(a => /^(?:\*{1,3})$/.test(a)) as '*' | '**' | '***') ?? '*';
         const isOpen = args.includes('open');
-        const braceCount = m[2].length;
-        const braceStart = start + m[0].length - braceCount;
+
+        // 単一「{」マッチを想定
+        const braceCount = 1;
+        const braceStart = accRe.lastIndex - braceCount;
 
         // ④ 本文抜き出し
-        const { body, end } = extractBracedBlock(content, braceStart, braceCount);
+        const { body, end } = extractBracedBlock(
+        content,
+        braceStart,
+        braceCount
+        );
         if (!body) {
-            console.warn('  ⚠ extractBracedBlock failed (unmatched braces)');
-            break;
+            console.warn(`⚠ extractBracedBlock failed at ${braceStart}`);
+            continue;
         }
 
-        // ⑤ ネスト Accordion を再帰抽出
+        // ⑤ ネスト再帰
         const children = extractAccordions(body, offset + braceStart, context);
 
-        // ⑥ inline 用に子要素範囲を空白マスク
+        // ⑥ inline 用にマスク
         let bodyForInline = body;
         for (const child of children) {
             const relStart = child.start! - offset - braceStart;
@@ -66,7 +59,6 @@ export function extractAccordions(
                 ' '.repeat(relEnd - relStart) +
                 bodyForInline.slice(relEnd);
         }
-
         const parsedBody = parseWikiContent(
             bodyForInline,
             context,
@@ -74,7 +66,10 @@ export function extractAccordions(
         );
 
         blocks.push({
-            prefix: content.slice(cursor, start),
+            prefix: content.slice(
+                blocks.length ? blocks[blocks.length - 1].end! - offset : 0,
+                start
+            ),
             title,
             level,
             isOpen,
@@ -92,7 +87,8 @@ export function extractAccordions(
             childCount: children.length,
         });
 
-        cursor = end;
+        // 次の検索スタート位置をマニュアルで更新しても OK
+        accRe.lastIndex = end;
     }
 
     console.log(
