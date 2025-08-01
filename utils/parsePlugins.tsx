@@ -235,22 +235,45 @@ export function parseWikiContent(
     context: Context,
     offset = 0
 ): React.ReactNode[] {
+    // ─── Debug: parseWikiContent に渡される原文の先頭スニペットを出力 ───
+    console.log(
+        `▶ parseWikiContent called (offset=${offset}). snippet:`,
+        JSON.stringify(content.slice(0, 100).replace(/\n/g, '⏎'))
+    );
+
+    // ─── Debug: generateBlockItems の実行直前 ───
+    console.log('▶ calling generateBlockItems...');
     const blockItems = generateBlockItems(content, context, offset);
+    console.log(
+        `▶ generateBlockItems returned ${blockItems.length} items:`,
+        blockItems.map((b) => ({ type: b.type, start: b.start, end: b.end }))
+    );
+
     const nodes: React.ReactNode[] = [];
 
     if (blockItems.length === 0) {
-        console.warn("🚫 No blockItems generated. fold構文が崩れている可能性");
+        console.warn(
+        "🚫 No blockItems generated. fold構文が崩れている可能性"
+        );
         const fallbackInline = parseInline(content.trim(), context);
         return [<React.Fragment key="inline-empty">{fallbackInline}</React.Fragment>];
     }
 
+    // ─── Debug: ソート後のアイテム順序を確認 ───
     const sortedItems = [...blockItems].sort((a, b) => a.start - b.start);
+    console.log(
+        '▶ sortedItems:',
+        sortedItems.map((b) => `${b.type}@${b.start}-${b.end}`)
+    );
+
     let lastPos = offset;
 
     sortedItems.forEach((item, idx) => {
+        console.log(`▶ item[${idx}]:`, item);
+
         const relativeStart = item.start - offset;
 
-        // 📌 ブロックが挿入されるまでのテキストを inline として処理
+        // テキストを inline として挿入すべき範囲を検出
         if (item.start > lastPos) {
             const inlineText = content.slice(lastPos - offset, relativeStart);
             if (inlineText.trim()) {
@@ -263,11 +286,12 @@ export function parseWikiContent(
             }
         }
 
+        // ブロックノードを追加
         nodes.push(item.node);
         lastPos = item.end;
     });
 
-    // 🔚 残りテキストがあるなら末尾にも inline を追加
+    // 残余テキストの inline 処理
     const finalRelative = lastPos - offset;
     if (finalRelative < content.length) {
         const trailingText = content.slice(finalRelative);
@@ -281,6 +305,8 @@ export function parseWikiContent(
             );
         }
     }
+
+    console.log(`▶ parseWikiContent returning ${nodes.length} React nodes\n`);
     return nodes;
 }
 
