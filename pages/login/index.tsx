@@ -21,6 +21,9 @@ export default function LoginPage() {
                     <Link href="/login/gitlab">
                         <button style={buttonStyle}><span>GitLabでログイン</span></button>
                     </Link>
+                    <Link href="/login/discord">
+                        <button style={buttonStyle}><span>Discordでログイン</span></button>
+                    </Link>
                 </div>
             </main>
             <FooterJp/>
