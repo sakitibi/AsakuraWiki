@@ -229,78 +229,81 @@ export function parseWikiContent(
     context: Context,
     offset = 0
 ): React.ReactNode[] {
-    // ─── Debug: parseWikiContent に渡される原文の先頭スニペットを出力 ───
     console.log(
         `▶ parseWikiContent called (offset=${offset}). snippet:`,
         JSON.stringify(content.slice(0, 100).replace(/\n/g, '⏎'))
     );
 
-    // ─── Debug: generateBlockItems の実行直前 ───
     console.log('▶ calling generateBlockItems...');
-    const blockItems = generateBlockItems(content, context, offset);
+    let blockItems = generateBlockItems(content, context, offset);
     console.log(
         `▶ generateBlockItems returned ${blockItems.length} items:`,
         blockItems.map((b) => ({ type: b.type, start: b.start, end: b.end }))
     );
 
-    const nodes: React.ReactNode[] = [];
+    // フォールバック: blockItems なしでも #accordion があるなら強制抽出
+    if (blockItems.length === 0 && content.includes('#accordion')) {
+        const accs = extractAccordions(content, offset, context);
 
-    if (blockItems.length === 0) {
-        console.warn(
-        "🚫 No blockItems generated. fold構文が崩れている可能性"
-        );
-        const fallbackInline = parseInline(content.trim(), context);
-        return [<React.Fragment key="inline-empty">{fallbackInline}</React.Fragment>];
+        return accs.map((acc, i) => {
+            // デフォルト値を設定
+            const title       = acc.title       ?? '';
+            const level       = acc.level       ?? '*';
+            const initiallyOpen = acc.isOpen     ?? false;
+            const bodyNode    = acc.bodyNode    ?? [];
+
+            return (
+            <Accordion
+                key={`acc-${i}`}
+                title={title}
+                level={level as '*' | '**' | '***'}
+                initiallyOpen={initiallyOpen}
+            >
+                {bodyNode}
+            </Accordion>
+            );
+        });
     }
 
-    // ─── Debug: ソート後のアイテム順序を確認 ───
+    const nodes: React.ReactNode[] = [];
     const sortedItems = [...blockItems].sort((a, b) => a.start - b.start);
     console.log(
         '▶ sortedItems:',
         sortedItems.map((b) => `${b.type}@${b.start}-${b.end}`)
     );
 
-    let lastPos = offset;
+    let lastRel = 0;
 
     sortedItems.forEach((item, idx) => {
         console.log(`▶ item[${idx}]:`, item);
+        const relStart = item.start! - offset;
+        const relEnd   = item.end!   - offset;
 
-        const relativeStart = item.start - offset;
-
-        // テキストを inline として挿入すべき範囲を検出
-        if (item.start > lastPos) {
-            const inlineText = content.slice(lastPos - offset, relativeStart);
-            if (inlineText.trim()) {
-                const inlineNodes = parseInline(inlineText, context);
-                nodes.push(
-                <React.Fragment key={`inline-${idx}`}>
-                    {inlineNodes}
-                </React.Fragment>
-                );
+        // inline テキスト
+        if (relStart > lastRel) {
+            const snippet = content.slice(lastRel, relStart);
+            if (snippet.trim()) {
+                const inl = parseInline(snippet, context);
+                nodes.push(<React.Fragment key={`inline-${idx}`}>{inl}</React.Fragment>);
             }
         }
 
-        // ブロックノードを追加
+        // ブロックノード
         nodes.push(item.node);
-        lastPos = item.end;
+        lastRel = relEnd;
     });
 
-    // 残余テキストの inline 処理
-    const finalRelative = lastPos - offset;
-    if (finalRelative < content.length) {
-        const trailingText = content.slice(finalRelative);
-        const cleaned = cleanupTrailingBraces(trailingText);
+    // 残余テキスト
+    if (lastRel < content.length) {
+        const trailing = content.slice(lastRel);
+        const cleaned = cleanupTrailingBraces(trailing);
         if (cleaned) {
-            const inlineNodes = parseInline(cleaned, context);
-            nodes.push(
-                <React.Fragment key="inline-final">
-                {inlineNodes}
-                </React.Fragment>
-            );
+            const tn = parseInline(cleaned, context);
+            nodes.push(<React.Fragment key="inline-final">{tn}</React.Fragment>);
         }
     }
 
-    console.log(`▶ parseWikiContent returning ${nodes.length} React nodes\n`);
+    console.log(`▶ parseWikiContent returning ${nodes.length} React nodes`);
     return nodes;
 }
 
