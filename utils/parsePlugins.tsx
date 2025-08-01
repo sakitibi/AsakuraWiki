@@ -229,86 +229,88 @@ export function parseWikiContent(
     context: Context,
     offset = 0
 ): React.ReactNode[] {
+    // ───① 呼び出し直後のログ ─────────────────────────────────
     console.log(
-        `▶ parseWikiContent called (offset=${offset}). snippet:`,
-        JSON.stringify(content.slice(0, 100).replace(/\n/g, '⏎'))
+        `▶ parseWikiContent called (offset=${offset})`,
+        {
+        contentLength: content.length,
+        snippet: content
+            .slice(0, 100)
+            .replace(/\n/g, '⏎')
+        }
     );
 
-    console.log('▶ calling generateBlockItems...');
-    let blockItems = generateBlockItems(content, context, offset);
+    // ───② generateBlockItems 実行前 ────────────────────────────────
+    console.log('▶ about to call generateBlockItems');
+    const blockItems = generateBlockItems(content, context, offset);
     console.log(
-        `▶ generateBlockItems returned ${blockItems.length} items:`,
-        blockItems.map((b) => ({ type: b.type, start: b.start, end: b.end }))
+        `▶ generateBlockItems returned ${blockItems.length} items`,
+        blockItems.map(b => ({ type: b.type, start: b.start, end: b.end }))
     );
-
-    // フォールバック: blockItems なしでも #accordion があるなら強制抽出
-    if (blockItems.length === 0 && content.includes('#accordion')) {
-        const accs = extractAccordions(content, offset, context);
-
-        return accs.map((acc, i) => {
-            // デフォルト値を設定
-            const title       = acc.title       ?? '';
-            const level       = acc.level       ?? '*';
-            const initiallyOpen = acc.isOpen     ?? false;
-            const bodyNode    = acc.bodyNode    ?? [];
-
-            return (
-            <Accordion
-                key={`acc-${i}`}
-                title={title}
-                level={level as '*' | '**' | '***'}
-                initiallyOpen={initiallyOpen}
-            >
-                {bodyNode}
-            </Accordion>
-            );
-        });
-    }
 
     const nodes: React.ReactNode[] = [];
+
+    // ───③ フォールバック確認 ─────────────────────────────────────
+    if (blockItems.length === 0) {
+        console.warn(
+        '🚫 parseWikiContent: no blockItems generated—falling back to inline'
+        );
+        const fallback = parseInline(content.trim(), context);
+        return [<React.Fragment key="inline-empty">{fallback}</React.Fragment>];
+    }
+
+    // ───④ ソート後のアイテム順をログ ─────────────────────────────────
     const sortedItems = [...blockItems].sort((a, b) => a.start - b.start);
     console.log(
-        '▶ sortedItems:',
-        sortedItems.map((b) => `${b.type}@${b.start}-${b.end}`)
+        '▶ sortedItems order:',
+        sortedItems.map(item => `${item.type}@${item.start}-${item.end}`)
     );
 
     let lastRel = 0;
-
     sortedItems.forEach((item, idx) => {
-        console.log(`▶ item[${idx}]:`, item);
+        console.log(`▶ processing item[${idx}]`, item);
+
         const relStart = item.start! - offset;
         const relEnd   = item.end!   - offset;
 
-        // inline テキスト
+        // ─ inline 部分を追加 ─
         if (relStart > lastRel) {
-            const snippet = content.slice(lastRel, relStart);
-            if (snippet.trim()) {
+            const snippet = content.slice(lastRel, relStart).trim();
+            if (snippet) {
+                console.log(
+                `   ↳ inline snippet [${lastRel}–${relStart}]:`,
+                snippet.replace(/\n/g, '⏎')
+                );
                 const inl = parseInline(snippet, context);
-                nodes.push(<React.Fragment key={`inline-${idx}`}>{inl}</React.Fragment>);
+                nodes.push(
+                <React.Fragment key={`inline-${idx}`}>{inl}</React.Fragment>
+                );
             }
         }
 
-        // ブロックノード
+        // ─ ブロックノードを追加 ─
+        console.log(
+        `   ↳ adding block node ${item.type}@${relStart}-${relEnd}`
+        );
         nodes.push(item.node);
         lastRel = relEnd;
     });
 
-    // 残余テキスト
+    // ───⑤ 残余テキストの inline 処理 ───────────────────────────────
     if (lastRel < content.length) {
-        const trailing = content.slice(lastRel);
-        const cleaned = cleanupTrailingBraces(trailing);
-        if (cleaned) {
-            const tn = parseInline(cleaned, context);
+        const rest = content.slice(lastRel).trim();
+        console.log(
+        `▶ trailing text [${lastRel}–${content.length}]:`,
+            rest.replace(/\n/g, '⏎')
+        );
+        if (rest) {
+            const tn = parseInline(rest, context);
             nodes.push(<React.Fragment key="inline-final">{tn}</React.Fragment>);
         }
     }
 
     console.log(`▶ parseWikiContent returning ${nodes.length} React nodes`);
     return nodes;
-}
-
-function cleanupTrailingBraces(text: string): string {
-    return text.replace(/};+$/, '').replace(/}$/, '').trim();
 }
 
 function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
