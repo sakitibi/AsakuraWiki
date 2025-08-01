@@ -61,8 +61,7 @@ export function extractAccordions(
         }
         const parsedBody = parseWikiContent(
             bodyForInline,
-            context,
-            offset + braceStart
+            context
         );
 
         blocks.push({
