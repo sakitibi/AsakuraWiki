@@ -42,6 +42,15 @@ export interface FoldBlock {
     children?: FoldBlock[];
 }
 
+type Token =
+    | { type: 'text';        content: string }
+    | { type: 'open';        title: string; level: '*'|'**'|'***'; isOpen: boolean }
+    | { type: 'close' };
+
+type ASTNode =
+    | { type: 'text';        content: string }
+    | { type: 'accordion';   title: string; level: '*'|'**'|'***'; isOpen: boolean; children: ASTNode[] };
+
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
     useEffect(() => {
@@ -122,207 +131,107 @@ function extractSelContainersSafe(content: string, excludeRanges: { start: numbe
         );
 }
 
-function generateBlockItems(content: string, context: Context, offset = 0): BlockItem[] {
-    const accordionBlocks = extractAccordions(content, offset, context);
-    const foldBlocks = extractFolds(content, context);
-    const accordionRanges = accordionBlocks.map(b => ({
-        start: b.start!,
-        end: b.end!
-    }));
-    const selContainers = extractSelContainersSafe(content, accordionRanges, offset);
-    const items: BlockItem[] = [];
+function tokenize(src: string): Token[] {
+    const tokens: Token[] = [];
+    let i = 0;
 
-    accordionBlocks.forEach((blk, idx) => {
-        if (blk.prefix) {
-            items.push({
-                type: 'inline',
-                start: blk.start! - blk.prefix.length,
-                end:   blk.start!,
-                node: (
-                <React.Fragment key={`acc-prefix-${idx}`}>
-                    {parseInline(blk.prefix, context)}
-                </React.Fragment>
-                ),
+    while (i < src.length) {
+        // #accordion（開き）
+        const openRe = /^#accordion\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
+        const openM = src.slice(i).match(openRe);
+        if (openM) {
+            const argsRaw = (openM[1] || openM[2] || '').trim().split(',').map(s => s.trim());
+            tokens.push({
+                type: 'open',
+                title: argsRaw[0] || '',
+                level: (argsRaw.find(a => /^\*{1,3}$/.test(a)) as '*'|'**'|'***') ?? '*',
+                isOpen: argsRaw.includes('open'),
             });
+            i += openM[0].length;
+            continue;
         }
 
-        // ここも修正：再帰結果の名前を childItems に
-        const childItems = generateBlockItems(blk.body!, context, blk.start!);
+        // 閉じ braces
+        const closeM = src.slice(i).match(/^\}{2,}/);
+        if (closeM) {
+            tokens.push({ type: 'close' });
+            i += closeM[0].length;
+            continue;
+        }
 
-        items.push({
-            type: 'accordion',
-            start: blk.start!,
-            end:   blk.end!,
-            node: (
-                <Accordion
-                    key={`acc-${idx}`}
-                    title={blk.title!}
-                    level={blk.level!}
-                    initiallyOpen={blk.isOpen!}
-                >
-                    {childItems.map((ci, cidx) => (
-                    <React.Fragment
-                        key={`acc-child-${idx}-${ci.start}-${cidx}`}
-                    >
-                        {ci.node}
-                    </React.Fragment>
-                    ))}
-                </Accordion>
-            ),
-        });
+        // それ以外はテキスト１文字ずつ
+        tokens.push({ type: 'text', content: src[i++] });
+    }
+
+    return tokens;
+}
+
+function buildAST(src: string): ASTNode[] {
+    const tokens = tokenize(src);
+    const root: ASTNode[] = [];
+    const stack: ASTNode[][] = [root];
+
+    for (const tk of tokens) {
+        const curr = stack[stack.length - 1];
+        if (tk.type === 'text') {
+            const last = curr[curr.length - 1];
+            if (last?.type === 'text') {
+                last.content += tk.content;
+            } else {
+                curr.push({ type: 'text', content: tk.content });
+            }
+        }
+        else if (tk.type === 'open') {
+            const node: ASTNode = {
+                type: 'accordion',
+                title: tk.title,
+                level: tk.level,
+                isOpen: tk.isOpen,
+                children: [],
+            };
+            curr.push(node);
+            stack.push((node as any).children);
+        }
+        else if (tk.type === 'close') {
+            if (stack.length > 1) stack.pop();
+        }
+    }
+
+    return root;
+}
+
+function renderAST(
+    nodes: ASTNode[],
+    context: Context
+): React.ReactNode[] {
+    return nodes.map((node, idx) => {
+        if (node.type === 'text') {
+        // parseInline は既存のインラインパーサ
+        return <React.Fragment key={`t${idx}`}>{ parseInline(node.content, context) }</React.Fragment>;
+        }
+        // accordion ノード
+        return (
+        <Accordion
+            key={`a${idx}`}
+            title={node.title}
+            level={node.level}
+            initiallyOpen={node.isOpen}
+        >
+            { renderAST(node.children, context) }
+        </Accordion>
+        );
     });
-
-    console.log('🔍 foldBlocks数:', foldBlocks.length);
-    foldBlocks.forEach((blk, idx) => {
-        if (blk.start == null || blk.end == null) return;
-        // prefix インライン
-        items.push({
-            type: 'inline',
-            start: blk.start - blk.prefix.length,
-            end: blk.start,
-            node: (
-            <React.Fragment key={`fold-prefix-${idx}`}>
-                {parseInline(blk.prefix, context)}
-            </React.Fragment>
-            ),
-        });
-
-        // 折りたたみ中身も必ず再帰
-        const children = generateBlockItems(blk.body!, context, blk.start);
-
-        items.push({
-            type: 'fold',
-            start: blk.start,
-            end: blk.end,
-            node: (
-                <Fold key={`fold-${idx}`} title={blk.title} initiallyOpen={blk.isOpen ?? false}>
-                    {children.map((child, cidx) => (
-                    <React.Fragment key={`fold-child-${idx}-${cidx}`}>
-                        {child.node}
-                    </React.Fragment>
-                    ))}
-                </Fold>
-            ),
-        });
-    });
-
-    selContainers.forEach((sel, idx) => {
-        const fullText = content.slice(sel.start - offset, sel.end - offset);
-        const containerNodes = parseWikiContentFragment(fullText);
-        items.push({
-            type: 'sel',
-            start: sel.start,
-            end: sel.end,
-            node: (
-                <React.Fragment key={`sel-${idx}`}>
-                    {containerNodes}
-                </React.Fragment>
-            ),
-        });
-    });
-
-    return items;
 }
 
 export function parseWikiContent(
     content: string,
-    context: Context,
-    offset = 0
+    context: Context
 ): React.ReactNode[] {
-    // ───① 呼び出し直後のログ ─────────────────────────────────
-    console.log(
-        `▶ parseWikiContent called (offset=${offset})`,
-        {
-        contentLength: content.length,
-        snippet: content
-            .slice(0, 100)
-            .replace(/\n/g, '⏎')
-        }
-    );
+    // トークン→AST化
+    const ast = buildAST(content);
 
-    // ───② generateBlockItems 実行前 ────────────────────────────────
-    console.log('▶ about to call generateBlockItems');
-    const rawItems = generateBlockItems(content, context, offset);
-    console.log(
-        `▶ generateBlockItems returned ${rawItems.length} items`,
-        rawItems.map(b => ({ type: b.type, start: b.start, end: b.end }))
-    );
-
-    // ───新規追加: 不正アイテムを除外────────────────────────────────
-    const blockItems = rawItems.filter(item =>
-        typeof item.start === 'number' &&
-        typeof item.end   === 'number' &&
-        item.start >= offset &&
-        item.end > item.start
-    );
-    console.log(
-        `▶ filtered blockItems: ${blockItems.length} items`,
-        blockItems.map(b => `${b.type}@${b.start}-${b.end}`)
-    );
-
-    const nodes: React.ReactNode[] = [];
-
-    // ───③ フォールバック確認 ─────────────────────────────────────
-    if (blockItems.length === 0) {
-        console.warn(
-        '🚫 parseWikiContent: no blockItems generated—falling back to inline'
-        );
-        const fallback = parseInline(content.trim(), context);
-        return [<React.Fragment key="inline-empty">{fallback}</React.Fragment>];
-    }
-
-    // ───④ ソート後のアイテム順をログ ─────────────────────────────────
-    const sortedItems = [...blockItems].sort((a, b) => a.start! - b.start!);
-    console.log(
-        '▶ sortedItems order:',
-        sortedItems.map(item => `${item.type}@${item.start}-${item.end}`)
-    );
-
-    let lastRel = 0;
-    sortedItems.forEach((item, idx) => {
-        console.log(`▶ processing item[${idx}]`, item);
-
-        const relStart = item.start! - offset;
-        const relEnd   = item.end!   - offset;
-
-        // ─ inline 部分を追加 ─
-        if (relStart > lastRel) {
-            const snippet = content.slice(lastRel, relStart).trim();
-            if (snippet) {
-                console.log(
-                `   ↳ inline snippet [${lastRel}–${relStart}]:`,
-                snippet.replace(/\n/g, '⏎')
-                );
-                const inl = parseInline(snippet, context);
-                nodes.push(
-                <React.Fragment key={`inline-${idx}`}>{inl}</React.Fragment>
-                );
-            }
-        }
-
-        // ─ ブロックノードを追加 ─
-        console.log(
-        `   ↳ adding block node ${item.type}@${relStart}-${relEnd}`
-        );
-        nodes.push(item.node);
-        lastRel = relEnd;
-    });
-
-    // ───⑤ 残余テキストの inline 処理 ───────────────────────────────
-    if (lastRel < content.length) {
-        const rest = content.slice(lastRel).trim();
-        console.log(
-        `▶ trailing text [${lastRel}–${content.length}]:`,
-        rest.replace(/\n/g, '⏎')
-        );
-        if (rest) {
-            const tn = parseInline(rest, context);
-            nodes.push(<React.Fragment key="inline-final">{tn}</React.Fragment>);
-        }
-    }
-
-    console.log(`▶ parseWikiContent returning ${nodes.length} React nodes`);
-    return nodes;
+    // AST→React ノード
+    return renderAST(ast, context);
 }
 
 function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
