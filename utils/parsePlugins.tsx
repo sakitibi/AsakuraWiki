@@ -3,7 +3,7 @@ import Accordion from '@/components/Accordion';
 import SelContainer from '@/components/SelContainer';
 import SelRow from '@/components/SelRow';
 import SelContent from '@/components/SelContent';
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 import parseInline from '@/components/ParseInline';
 import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
 
@@ -12,7 +12,7 @@ export function useDesignColor(slug: string) {
     const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
     useEffect(() => {
         async function fetchColor() {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseBrowser
                 .from('wikis')
                 .select('design_color')
                 .eq('slug', slug)

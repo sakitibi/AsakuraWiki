@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 
 export default function DiscordLogin() {
     useEffect(() => {
-        supabase.auth.signInWithOAuth({
+        supabaseBrowser.auth.signInWithOAuth({
             provider: 'discord',
             options: {
                 redirectTo: `${window.location.origin}/dashboard`,

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 
 export default function NewPage() {
     const router = useRouter();
@@ -22,7 +22,7 @@ export default function NewPage() {
         if (!wikiSlugStr) return;
 
         const fetchWiki = async() => {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseBrowser
             .from('wikis')
             .select('name, description, owner_id, edit_mode, design_color')
             .eq('slug', wikiSlugStr)
@@ -37,7 +37,7 @@ export default function NewPage() {
         }
 
         const fetchEditMode = async () => {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseBrowser
                 .from('wikis')
                 .select('edit_mode')
                 .eq('slug', wikiSlugStr)
@@ -83,7 +83,7 @@ export default function NewPage() {
 
         setLoading(true);
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseBrowser
         .from('wiki_pages')
         .insert([
             {

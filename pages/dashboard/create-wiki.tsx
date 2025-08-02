@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 import { ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 
 export default function CreateWikiPage() {
@@ -20,7 +20,7 @@ export default function CreateWikiPage() {
         setLoading(true);
 
         // ログインユーザー取得
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user } } = await supabaseBrowser.auth.getUser();
         if (!user) {
             alert('ログインしてください');
             setLoading(false);
@@ -37,7 +37,7 @@ export default function CreateWikiPage() {
         }
 
         // 1) wikis テーブルに挿入
-        const {error: wikiError} = await supabase
+        const {error: wikiError} = await supabaseBrowser
             .from('wikis')
             .insert([{
                 slug,
@@ -60,7 +60,7 @@ export default function CreateWikiPage() {
         // 2) wiki_pages テーブルに「ホーム」ページを挿入（お好みで）
         // 例：ホームページのslugは固定で "home" にする
         // ホームページを作成する例
-        const { error: pageError } = await supabase
+        const { error: pageError } = await supabaseBrowser
         .from('wiki_pages')
         .insert([{
             wiki_slug: slug,    // 親Wikiのslugを外部キーで指定

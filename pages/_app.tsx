@@ -1,7 +1,7 @@
 import { LenisProvider } from 'utils/LenisProvider';
 import type { AppProps } from 'next/app';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
-import { supabase } from '../lib/supabaseClient';
+import { supabaseServer } from '../lib/supabaseClientServer';
 import '../css/index.min.globals.css';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -60,7 +60,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             </Head>
             <LenisProvider />
             <Analytics/>
-            <SessionContextProvider supabaseClient={supabase}>
+            <SessionContextProvider supabaseClient={supabaseServer}>
                 {/* gtag.js の読み込み */}
                 <Script
                     strategy="afterInteractive"

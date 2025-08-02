@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { useUser } from '@supabase/auth-helpers-react';
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
 import 'css/wikis.min.module.css';
@@ -48,7 +48,7 @@ export default function WikiPage() {
         if (!wikiSlugStr) return;
 
         async function fetchColor() {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseBrowser
             .from('wikis')
             .select('design_color')
             .eq('slug', wikiSlugStr)
@@ -83,7 +83,7 @@ export default function WikiPage() {
         (async () => {
             console.log('wikiSlugStr:', wikiSlugStr); // ← ここで確認
 
-            const { data: wikiData, error: wikiError } = await supabase
+            const { data: wikiData, error: wikiError } = await supabaseBrowser
                 .from('wikis')
                 .select('edit_mode')
                 .eq('slug', wikiSlugStr)
@@ -98,7 +98,7 @@ export default function WikiPage() {
             console.log('取得した edit_mode:', wikiData.edit_mode); // ← ここで確認
             setEditMode(wikiData.edit_mode);
 
-            const { data: pageData, error: pageError } = await supabase
+            const { data: pageData, error: pageError } = await supabaseBrowser
                 .from('wiki_pages')
                 .select('title, content')
                 .eq('wiki_slug', wikiSlugStr)
@@ -148,7 +148,7 @@ export default function WikiPage() {
         } else {
             if(!special_wiki_list_found){
                 setLoading(true);
-                const { error } = await supabase
+                const { error } = await supabaseBrowser
                 .from('wiki_pages')
                 .update({ title, content, updated_at: new Date() })
                 .eq('wiki_slug', wikiSlugStr)
@@ -163,7 +163,7 @@ export default function WikiPage() {
                 }
             } else if(special_wiki_list[0] && pageSlugStr === "sinsei"){
                 setLoading(true);
-                const { error } = await supabase
+                const { error } = await supabaseBrowser
                 .from('wiki_pages')
                 .update({ title, content, updated_at: new Date() })
                 .eq('wiki_slug', wikiSlugStr)
@@ -178,7 +178,7 @@ export default function WikiPage() {
                 }
             } else if(special_wiki_list[0] && pageSlugStr === "comment"){
                 setLoading(true);
-                const { error } = await supabase
+                const { error } = await supabaseBrowser
                 .from('wiki_pages')
                 .update({ title, content, updated_at: new Date() })
                 .eq('wiki_slug', wikiSlugStr)
@@ -226,7 +226,7 @@ export default function WikiPage() {
                     return;
                 }
 
-                const { error } = await supabase
+                const { error } = await supabaseBrowser
                     .from('wiki_pages')
                     .delete()
                     .eq('wiki_slug', wikiSlugStr)

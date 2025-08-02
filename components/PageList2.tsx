@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 
 type PageItem = {
     slug: string
@@ -37,7 +37,7 @@ export default function PageList2({
         async function load() {
             try {
                 // ベースクエリ
-                let query = supabase
+                let query = supabaseBrowser
                 .from('wiki_pages')
                 .select('slug, title')
                 .eq('wiki_slug', wikiSlug)

@@ -1,15 +1,11 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "jsx": "preserve", // or "preserve" if you prefer
-    "jsxImportSource": "react", // new‐JSX transform
-    "module": "esnext",
-    "moduleResolution": "node",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "preserve",
+    "jsxImportSource": "react",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -17,17 +13,11 @@
     "noEmit": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".", // for "@/…" paths
+    "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
-    "types": [
-      "react",
-      "react-dom"
-    ] // ← ensure React’s JSX types load first
-    ,
+    "types": ["react", "react-dom"],
     "incremental": true,
     "resolveJsonModule": true,
     "isolatedModules": true
@@ -38,7 +28,5 @@
     "**/*.ts",
     "**/*.tsx"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

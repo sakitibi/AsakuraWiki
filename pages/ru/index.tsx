@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 import HeaderRu from '@/utils/pageParts/HeaderRu';
 import MenuRu from '@/utils/pageParts/MenuRu';
 import RightMenuRu from '@/utils/pageParts/RightMenuRu';
@@ -42,7 +42,7 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchRecentPages() {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseBrowser
                 .from('wiki_pages')
                 .select(`
                     wiki_slug,
@@ -65,8 +65,8 @@ export default function Home() {
                 updated_at: d.updated_at,
             }))
             const unique = flattened.filter(
-                (item, idx, arr) =>
-                arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
+                (item:any, idx:any, arr:any) =>
+                arr.findIndex((x:any) => x.wikiSlug === item.wikiSlug) === idx
             )
             setRecentPages(unique)
             setPages(unique) // ← これを追加！
@@ -78,7 +78,7 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchLikedWikis() {
-            const { data, error } = await supabase.rpc('get_top_wikis_by_like_count')
+            const { data, error } = await supabaseBrowser.rpc('get_top_wikis_by_like_count')
 
             if (error || !data) {
                 console.error('fetchLikedWikis error:', error)

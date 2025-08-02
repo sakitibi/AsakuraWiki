@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 
 type PageItem = { slug: string; title: string }
 
@@ -26,7 +26,7 @@ export default function PageList({ prefix }: { prefix?: string }) {
         async function load() {
             setLoading(true)
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseBrowser
                 .from('wiki_pages')
                 .select('slug, title')
                 .eq('wiki_slug', wikiSlug)

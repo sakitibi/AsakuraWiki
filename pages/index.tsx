@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { supabase } from 'lib/supabaseClient';
+import { supabaseBrowser } from 'lib/supabaseClientBrowser';
 import HeaderJp from '@/utils/pageParts/HeaderJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
@@ -41,7 +41,7 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchRecentPages() {
-            const { data, error } = await supabase
+            const { data, error } = await supabaseBrowser
                 .from('wiki_pages')
                 .select(`
                     wiki_slug,
@@ -77,7 +77,7 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchLikedWikis() {
-            const { data, error } = await supabase.rpc('get_top_wikis_by_like_count')
+            const { data, error } = await supabaseBrowser.rpc('get_top_wikis_by_like_count')
 
             if (error || !data) {
                 console.error('fetchLikedWikis error:', error)
