@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { supabaseBrowser } from 'lib/supabaseClientBrowser';
+import { supabaseServer } from 'lib/supabaseClientServer';
 
 export default async function handler(
     req: NextApiRequest,
@@ -21,7 +21,7 @@ export default async function handler(
 
         if (req.method === 'GET') {
         // 必要なフィールドをすべて列挙して取得
-        const { data, error } = await supabaseBrowser
+        const { data, error } = await supabaseServer
             .from('wiki_pages')
             .select(`
             id,
@@ -58,7 +58,7 @@ export default async function handler(
             return res.status(400).json({ error: 'Invalid request body' })
         }
 
-        const { error } = await supabaseBrowser
+        const { error } = await supabaseServer
             .from('wiki_pages')
             .update({ content, title, updated_at: new Date() })
             .eq('wiki_slug', wikiSlug)

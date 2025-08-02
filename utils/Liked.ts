@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@supabase/auth-helpers-react';
-import { supabaseBrowser } from 'lib/supabaseClientBrowser';
+import { supabaseServer } from 'lib/supabaseClientServer';
 
 export const usePageLikeHandlers = () => {
     const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ export const usePageLikeHandlers = () => {
         if (!userId) return;
         setLoading(true);
 
-        const { data, error } = await supabaseBrowser
+        const { data, error } = await supabaseServer
         .from('pages_liked')
         .select('user_id, like, dislike')
         .eq('user_id', userId) // ✅ 正しく使えてる
@@ -41,7 +41,7 @@ export const usePageLikeHandlers = () => {
 
     if (!data) {
         // 初評価
-        await supabaseBrowser.from('pages_liked').insert({
+        await supabaseServer.from('pages_liked').insert({
             user_id: userId,
             wiki_slug: wikiSlugStr,
             page_slug: pageSlugStr,
@@ -52,14 +52,14 @@ export const usePageLikeHandlers = () => {
         });
     } else if (data.like === 1) {
     // 👍を再度押した → 取り消し
-        await supabaseBrowser
+        await supabaseServer
         .from('pages_liked')
         .update({ like: 1, dislike: 0, heikinlike: 1 })
         .eq('user_id', userId)
         .eq('wiki_slug', wikiSlugStr)
         .eq('page_slug', pageSlugStr);
     } else {
-        await supabaseBrowser
+        await supabaseServer
         .from('pages_liked')
         .update({ like: 1, dislike: 0, heikinlike: 1 })
         .eq('user_id', userId)
@@ -75,7 +75,7 @@ export const usePageLikeHandlers = () => {
         if (!userId) return;
         setLoading(true);
 
-        const { data, error } = await supabaseBrowser
+        const { data, error } = await supabaseServer
         .from('pages_liked')
         .select('user_id, like, dislike')
         .eq('user_id', userId)
@@ -91,7 +91,7 @@ export const usePageLikeHandlers = () => {
 
         if (!data) {
             // 初評価
-            await supabaseBrowser.from('pages_liked').insert({
+            await supabaseServer.from('pages_liked').insert({
                 user_id: userId,
                 wiki_slug: wikiSlugStr,
                 page_slug: pageSlugStr,
@@ -102,7 +102,7 @@ export const usePageLikeHandlers = () => {
             });
         } else if (data.dislike === 1) {
             // 👍を再度押した → 取り消し
-            await supabaseBrowser.from('pages_liked').update({
+            await supabaseServer.from('pages_liked').update({
                 like: 0,
                 dislike: 0,
                 heikinlike: 0
@@ -111,7 +111,7 @@ export const usePageLikeHandlers = () => {
                 .eq('page_slug', pageSlugStr);
         } else {
             // 👍から👎へ変更
-            await supabaseBrowser.from('pages_liked').update({
+            await supabaseServer.from('pages_liked').update({
                 like: 0,
                 dislike: 1,
                 heikinlike: -1
@@ -146,7 +146,7 @@ export const useWikiLikeHandlers = () => {
         if (!userId) return;
         setLoading(true);
 
-        const { data, error } = await supabaseBrowser
+        const { data, error } = await supabaseServer
         .from('wikis_liked')
         .select('user_id, like, dislike')
         .eq('user_id', userId)
@@ -162,7 +162,7 @@ export const useWikiLikeHandlers = () => {
 
         if (!data) {
             // 初評価
-            await supabaseBrowser.from('wikis_liked').insert({
+            await supabaseServer.from('wikis_liked').insert({
                 user_id: userId,
                 wiki_slug: wikiSlugStr,
                 like: 1,
@@ -172,7 +172,7 @@ export const useWikiLikeHandlers = () => {
             });
         } else if (data.like === 1) {
             // 👍を再度押した → 取り消し
-            await supabaseBrowser.from('wikis_liked').update({
+            await supabaseServer.from('wikis_liked').update({
                 like: 0,
                 dislike: 0,
                 heikinlike: 0
@@ -180,7 +180,7 @@ export const useWikiLikeHandlers = () => {
                 .eq('wiki_slug', wikiSlugStr)
         } else {
             // 👎から👍へ変更
-            await supabaseBrowser.from('wikis_liked').update({
+            await supabaseServer.from('wikis_liked').update({
                 like: 1,
                 dislike: 0,
                 heikinlike: 1
@@ -196,7 +196,7 @@ export const useWikiLikeHandlers = () => {
         if (!userId) return;
         setLoading(true);
 
-        const { data, error } = await supabaseBrowser
+        const { data, error } = await supabaseServer
         .from('wikis_liked')
         .select('user_id, like, dislike')
         .eq('user_id', userId)
@@ -212,7 +212,7 @@ export const useWikiLikeHandlers = () => {
 
         if (!data) {
             // 初評価
-            await supabaseBrowser.from('wikis_liked').insert({
+            await supabaseServer.from('wikis_liked').insert({
                 user_id: userId,
                 wiki_slug: wikiSlugStr,
                 like: 0,
@@ -222,7 +222,7 @@ export const useWikiLikeHandlers = () => {
             });
         } else if (data.dislike === 1) {
             // 👍を再度押した → 取り消し
-            await supabaseBrowser.from('wikis_liked').update({
+            await supabaseServer.from('wikis_liked').update({
                 like: 0,
                 dislike: 0,
                 heikinlike: 0
@@ -230,7 +230,7 @@ export const useWikiLikeHandlers = () => {
                 .eq('wiki_slug', wikiSlugStr)
         } else {
             // 👍から👎へ変更
-            await supabaseBrowser.from('wikis_liked').update({
+            await supabaseServer.from('wikis_liked').update({
                 like: 0,
                 dislike: 1,
                 heikinlike: -1

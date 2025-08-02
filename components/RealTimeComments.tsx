@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabaseBrowser } from 'lib/supabaseClientBrowser';
+import { supabaseServer } from 'lib/supabaseClientServer';
 
 interface Comment {
     id: number
@@ -26,7 +26,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
 
         // ── 初回ロード ──
         ;(async () => {
-            const res = await supabaseBrowser
+            const res = await supabaseServer
                 .from('comments')
                 .select('*')
                 .eq('wiki_slug', wikiSlug)
@@ -38,7 +38,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         })()
 
         // ── リアルタイム購読 ──
-        const channel = supabaseBrowser
+        const channel = supabaseServer
             .channel(`comments-${wikiSlug}-${pageSlug}`)
             .on(
                 'postgres_changes',
@@ -62,7 +62,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
             });
 
         return () => {
-            supabaseBrowser.removeChannel(channel)
+            supabaseServer.removeChannel(channel)
         }
     }, [wikiSlug, pageSlug])
 
@@ -74,7 +74,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         }
 
         setIsSending(true);
-        const res = await supabaseBrowser.from('comments').insert({
+        const res = await supabaseServer.from('comments').insert({
             name,
             body,
             wiki_slug: wikiSlug,

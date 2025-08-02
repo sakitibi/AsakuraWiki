@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
-import { supabaseBrowser } from 'lib/supabaseClientBrowser';
+import { supabaseServer } from 'lib/supabaseClientServer';
 
 export default function WikiSettingsPage() {
     const router = useRouter();
@@ -24,7 +24,7 @@ export default function WikiSettingsPage() {
 
         const fetchWiki = async () => {
             setLoading(true);
-            const { data, error } = await supabaseBrowser
+            const { data, error } = await supabaseServer
             .from('wikis')
             .select('name, description, owner_id, edit_mode, design_color')
             .eq('slug', slugStr)
@@ -67,7 +67,7 @@ export default function WikiSettingsPage() {
         e.preventDefault();
         setLoading(true);
 
-        const { error } = await supabaseBrowser
+        const { error } = await supabaseServer
         .from('wikis')
         .update({ name, description, edit_mode: editMode, updated_at: new Date(), design_color: designColor })
         .eq('slug', slugStr);
@@ -88,18 +88,18 @@ export default function WikiSettingsPage() {
 
         // 1. 子ページ（wiki_pages）を削除
         // wiki_pages 削除時は wiki_slug で親Wikiのページを一括削除
-        const { error: pageError } = await supabaseBrowser
+        const { error: pageError } = await supabaseServer
             .from('wiki_pages')
             .delete()
             .eq('wiki_slug', slugStr);  // ← 親Wikiのslugをキーに削除
 
         // wikis 削除はこれでOK
-        const { error: wikiError } = await supabaseBrowser
+        const { error: wikiError } = await supabaseServer
             .from('wikis')
             .delete()
             .eq('slug', slugStr);
 
-        const { error: deletionError } = await supabaseBrowser
+        const { error: deletionError } = await supabaseServer
             .from('deleted_wikis')
             /*.delete()
             .eq('slug', slugStr)*/

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabaseBrowser } from '../../lib/supabaseClientBrowser';
+import { supabaseServer } from '../../lib/supabaseClientServer';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -13,7 +13,7 @@ export default function LoginPage() {
         setLoading(true);
         setErrorMsg('');
 
-        const { data, error } = await supabaseBrowser.auth.signInWithPassword({
+        const { data, error } = await supabaseServer.auth.signInWithPassword({
             email,
             password,
         });

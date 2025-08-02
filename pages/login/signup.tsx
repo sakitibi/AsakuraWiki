@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabaseBrowser } from '@/lib/supabaseClientBrowser';
+import { supabaseServer } from '@/lib/supabaseClientServer';
 
 export default function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ export default function SignUpPage() {
         setLoading(true);
         setErrorMsg('');
 
-        const { data, error } = await supabaseBrowser.auth.signUp({
+        const { data, error } = await supabaseServer.auth.signUp({
             email,
             password,
             options: {
