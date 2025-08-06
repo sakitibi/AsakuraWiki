@@ -1,0 +1,1 @@
+.list .list1{list-style-type:disc !important}.list .list3{list-style-type:square !important}.list :not(.list1,.list3){list-style-type:circle}

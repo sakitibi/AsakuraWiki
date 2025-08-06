@@ -1,0 +1,171 @@
+@use 'mixin';
+@use 'button';
+@use 'marquee';
+
+body{
+    ul{
+        &.list1{
+            list-style-type: disc !important;
+        }
+        &.list2{
+            list-style-type: circle !important;
+        }
+    }
+    &:not(.wiki-font){
+        font-family: Noto Sans Japanese, sans-serif !important;
+        @include mixin.defaultGreen;
+        & ul {
+            display: block;
+            list-style-type: disc;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            padding-inline-start: 40px;
+            unicode-bidi: isolate;
+        }
+        & *, :after, :before {
+            box-sizing: border-box;
+        }
+        & aside {
+            display: block;
+            unicode-bidi: isolate;
+        }
+        & a, a:active, a:focus, a:hover {
+            color: #ef8688;
+            -webkit-text-decoration: underline;
+            text-decoration: underline;
+        }
+        & a {
+            color: #337ab7;
+        }
+        & a:-webkit-any-link {
+            color: -webkit-link;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        li {
+            display: list-item;
+            unicode-bidi: isolate;
+        }
+    }
+
+    &.wiki-font{
+        font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+        font-size: 12px;
+        font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
+        @include mixin.background;
+        .columnsContainer.hasLeftColumn:not(.hasRightColumn) .columnLeft {
+            grid-column: 1 / span 1;
+        }
+        .wiki-font.default{
+            & .columnLeft {
+                @include mixin.menubar(#f1fddf);
+            }
+        }
+        .columnCenter, .columnLeft, .columnRight {
+            grid-row: 1 / span 1;
+            min-width: 0;
+        }
+        .columnCenter {
+            grid-column: 2 / span 1;
+        }
+        &:not(.pink,.blue,.yellow){
+            @include mixin.defaultGreen;
+        }
+        &.pink {
+            background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
+            & button::before {
+                @include mixin.position(rgb(244, 164, 229 ), rgb(199, 17, 157));
+            }
+            & .columnLeft {
+                @include mixin.menubar(#feeef6);
+            }
+        }
+        &.blue {
+            background-image: linear-gradient(to right, rgb(146, 221, 244), rgb(45, 161, 200), rgb(29, 75, 192), rgb(43, 91, 235), rgb(75, 139, 217), rgb(113, 183, 221)) !important;
+            & button::before {
+                @include mixin.position(rgb(164, 212, 244), rgb(17, 102, 199));
+            }
+            & .columnLeft {
+                @include mixin.menubar(#f0f8ff);
+            }
+        }
+        &.yellow {
+            background-image: linear-gradient(to right, rgb(237, 187, 25), rgb(197, 153, 20), rgb(149, 106, 12), rgb(162, 119, 11), rgb(209, 142, 19), rgb(234, 191, 73)) !important;
+            & button::before {
+                @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
+            }
+            & .columnLeft {
+                @include mixin.menubar(#fffbed);
+            }
+        }
+        & hr{
+            background-color: #777;
+            border: 0;
+            color: #777;
+            height: 1px;
+            display: block;
+            margin-block-start: 0.5em;
+            margin-inline-start: auto;
+            unicode-bidi: isolate;
+            overflow: visible;
+            border-style: inset;
+            border-width: 1px;
+        }
+    }
+}
+
+input:not([type=submit],[type=checkbox]) {
+    width: 100%;
+}
+
+a, a:active, a:focus, a:hover {
+    color: #ef8688;
+    -webkit-text-decoration: underline;
+    text-decoration: underline;
+}
+a {
+    color: #337ab7;
+}
+
+a:-webkit-any-link {
+    color: -webkit-link;
+    cursor: pointer;
+}
+
+@keyframes bg-color{
+    from{
+        background-position: 0% 0%;
+    }
+    12.5%{
+        background-position: 75% 0%;
+    }
+    25%{
+        background-position: 150% 0%;
+    }
+    37.5%{
+        background-position: 225% 0%;
+    }
+    50%{
+        background-position: 300% 0%;
+    }
+    67.5%{
+        background-position: 225% 0%;
+    }
+    75%{
+        background-position: 150% 0%;
+    }
+    87.5%{
+        background-position: 75% 0%;
+    }
+    to{
+        background-position: 0% 0%;
+    }
+}
+
+header{
+    text-align: center;
+}
+
+#sanninnsenn{
+    font-weight: bold;
+}

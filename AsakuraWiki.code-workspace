@@ -1,0 +1,22 @@
+{
+    "folders": [
+        {
+        "path": "./"
+        }
+    ],
+    "settings": {
+        "liveSassCompile.settings.formats": [
+            {
+                "format": "compressed",
+                "extensionName": ".min.css",
+                "savePath": "/css",
+            }
+        ],
+        "liveSassCompile.settings.autoprefix": [
+            "last 2 versions",
+            "ie >= 11",
+            "Android >= 4",
+            "ios_saf >= 8"
+        ]
+    }
+}

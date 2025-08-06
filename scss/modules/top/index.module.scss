@@ -1,0 +1,34 @@
+@use 'header';
+@use 'menu';
+@use 'button';
+@use 'pForBeginner';
+@use 'media';
+@use 'mixin';
+
+.pHotWiki__title{
+    @include mixin.pLikedWiki;
+    &::before{
+        @include mixin.pLikedMixinBefore("https://yt3.googleusercontent.com/zGfLgzUwOf0wmsIi3yULulr3V3JonJxxP__Clwieqo1Dgdk2A9xgiWSIOCKMBcSvn1Qh5ku5BCU=s160-c-k-c0x00ffffff-no-rj");
+    }
+}
+
+.pRecentWiki__title{
+    @include mixin.pLikedWiki;
+    &::before{
+        @include mixin.pLikedMixinBefore("https://yt3.googleusercontent.com/G9RoM7rcvv3yJm-EwgG_Pq5FoXx0ljCPF0jr-BbViEt1oKsTJ04SQ5FSlvZKPDKF_JPSdNH6=s160-c-k-c0x00ffffff-no-rj");
+    }
+}
+
+.pLikedWiki__title{
+    @include mixin.pLikedWiki;
+    &::before{
+        @include mixin.pLikedMixinBefore("https://yt3.googleusercontent.com/psWk0LSFeKsc2iPtKkcs8_j_vvwUblAoxTZ-TbBJPwkzleNgZEBdAI3EhxAY-STeKYLU7ZJK-w=s160-c-k-c0x00ffffff-no-rj");
+    }
+}
+
+.footer{
+    text-align: center;
+    background-color: aquamarine;
+    clear: both;
+    width: 100%;
+}
