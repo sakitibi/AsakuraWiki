@@ -91,7 +91,7 @@ body{
         .pEntry__content {
             color: #444;
             font-size: 13px;
-            &>.danger_list{
+            & .danger_list{
                 color: red;
             }
             &>h2 {
@@ -102,7 +102,7 @@ body{
                 padding: 15px 10px;
             }
             &>ol{
-                &li::marker{
+                & li::marker{
                     unicode-bidi: isolate;
                     font-variant-numeric: tabular-nums;
                     text-transform: none;
