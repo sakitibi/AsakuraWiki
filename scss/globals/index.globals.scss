@@ -91,7 +91,7 @@ body{
         .pEntry__content {
             color: #444;
             font-size: 13px;
-            &.danger_list{
+            &>.danger_list{
                 color: red;
             }
             &>h2 {
