@@ -323,23 +323,23 @@ export default function WikiPage() {
                         <div className="article text-center">
                             <h1>404 Not Found</h1>
                             <div className={styles.noticeWikiRemoval} role='alert'>
-                                <span className={styles.noticeWikiRemoval__icon}>
+                                <span className="noticeWikiRemoval__icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
                                         <path d="M96 256L96 96L544 96L544 256L640 256L640 304L544 304L544 512L352 512L192 608L192 512L96 512L96 304L0 304L0 256L96 256zM160 192L160 384L480 384L480 192L160 192zM256 256C273.7 256 288 270.3 288 288C288 305.7 273.7 320 256 320C238.3 320 224 305.7 224 288C224 270.3 238.3 256 256 256zM352 288C352 270.3 366.3 256 384 256C401.7 256 416 270.3 416 288C416 305.7 401.7 320 384 320C366.3 320 352 305.7 352 288z"></path>
                                     </svg>
                                 </span>
-                                <span className={styles.noticeWikiRemoval__text}>
+                                <span className="noticeWikiRemoval__text">
                                     <strong>重要：</strong>
                                     <b>お探しのコンテンツは当サービスの利用規約に違反したため削除されました。</b>
                                 </span>
                             </div>
                             <div className={styles.noticeWikiRemovalRelated}>
-                                <span className={styles.noticeWikiRemoval__icon}>
+                                <span className="noticeWikiRemoval__icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
                                         <path d="M544 96L96 96L96 544L544 544L544 96zM280 400L304 400L304 336L256 336L256 288L352 288L352 400L384 400L384 448L256 448L256 400L280 400zM352 192L352 256L288 256L288 192L352 192z"></path>
                                     </svg>
                                 </span>
-                                <span className={styles.noticeWikiRemoval__text}>
+                                <span className="noticeWikiRemoval__text">
                                     関連ページ：
                                     <a href="https://sakitibi-com9.webnode.jp/page/10" target='_blank'>13nin利用規約</a>
                                     <a href="/policies" target='_blank'>あさクラWiki利用規約</a>

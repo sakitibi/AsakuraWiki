@@ -11,6 +11,34 @@ body{
             list-style-type: circle !important;
         }
     }
+    .noticeWikiRemoval__icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        width: 2.5em;
+        height: 2.5em;
+        margin: 0 1em 0 -0.8em;
+        & svg{
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            transform: translateX(-4%);
+        }
+    }
+
+    .noticeWikiRemoval__text {
+        min-width: 0;
+        word-break: break-word;
+        line-height: 1.5;
+        & a{
+            color: #842029;
+            text-decoration: underline;
+            transition: color 0.2s ease-in-out;
+            &:hover{
+                color: #58151c;
+            }
+        }
+    }
     &:not(.wiki-font){
         font-family: Noto Sans Japanese, sans-serif !important;
         @include mixin.defaultGreen;
@@ -45,6 +73,67 @@ body{
         li {
             display: list-item;
             unicode-bidi: isolate;
+        }
+        /* pEntry関連 */
+        .pEntry__header {
+            margin-bottom: 25px;
+            & h1 {
+                background-color: #eaeaea;
+                background-image: url("https://wikiwiki.jp/pa/assets/84566d2e21c8bbef1c53.png");
+                color: #6a6a6a;
+                font-size: 20px;
+                font-weight: 700;
+                margin-top: 0;
+                padding: 15px;
+                text-align: center;
+            }
+        }
+        .pEntry__content {
+            color: #444;
+            font-size: 13px;
+            &.danger_list{
+                color: red;
+            }
+            &>h2 {
+                background-color: #f6f6f6;
+                font-size: 16px;
+                margin-bottom: 10px;
+                margin-top: 20px;
+                padding: 15px 10px;
+            }
+            &>ol{
+                &li::marker{
+                    unicode-bidi: isolate;
+                    font-variant-numeric: tabular-nums;
+                    text-transform: none;
+                    text-indent: 0px !important;
+                    text-align: start !important;
+                    text-align-last: auto !important;
+                }
+                display: block;
+                margin-block-start: 1em;
+                margin-block-end: 1em;
+                padding-inline-start: 40px;
+                unicode-bidi: isolate;
+                margin-bottom: 1rem;
+                margin-top: 0;
+                padding-left: 2rem;
+                &>ol{
+                    counter-reset: subsection;
+                    list-style-type: none;
+                    margin: 8px auto;
+                    &>li{
+                        &::before{
+                            content: "(" counter(subsection) ") ";
+                            counter-increment: subsection;
+                            left: -40px;
+                            position: absolute;
+                            text-align: right;
+                            width: 38px;
+                        }
+                    }
+                }
+            }
         }
     }
 

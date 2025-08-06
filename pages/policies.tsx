@@ -27,11 +27,11 @@ export default function Policies(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/policies"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <header className={styles.pEntry__header}>
+                        <header className="pEntry__header">
                             <h1>利用規約</h1>
                         </header>
                         <p>本利用規約（以下「本規約」と言います。）には、本サービスの提供条件及び当社とユーザーの皆様との間の権利義務関係が定められています。本サービスの利用に際しては、本規約の全文をお読みいただいたうえで、本規約に同意いただく必要があります。</p>
-                        <div className={styles.pEntry__content}>
+                        <div className="pEntry__content">
                             <h2>第1条（適用）</h2>
                             <ol>
                                 <li>本規約は、本サービスの提供条件及び本サービスの利用に関する当社とユーザーとの間の権利義務関係を定めることを目的とし、ユーザーと当社との間の本サービスの利用に関わる一切の関係に適用されます。</li>
@@ -97,8 +97,8 @@ export default function Policies(){
                                         <li>面識のない異性との出会いを目的とした情報</li>
                                     </ol>
                                 </li>
-                                <li className={styles.danger_list}>本サービスのネットワークまたはシステム等に過度な負荷をかける行為</li>
-                                <li className={styles.danger_list}>本サービスの運営を妨害するおそれのある行為</li>
+                                <li className="danger_list">本サービスのネットワークまたはシステム等に過度な負荷をかける行為</li>
+                                <li className="danger_list">本サービスの運営を妨害するおそれのある行為</li>
                                 <li>当社のネットワークまたはシステム等に不正にアクセスし、または不正なアクセスを試みる行為</li>
                                 <li>第三者に成りすます行為</li>
                                 <li>本サービスの他の利用者のIDまたはパスワードを利用する行為</li>
@@ -110,12 +110,12 @@ export default function Policies(){
                                 <li>面識のない異性との出会いを目的とした行為</li>
                                 <li>
                                     <strong>
-                                        <a className={styles.danger_list} href="https://wikiwiki.jp/maitestu-net">マイ鉄ネットワーク</a>、
-                                        <a className={styles.danger_list} href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
+                                        <a className="danger_list" href="https://wikiwiki.jp/maitestu-net">マイ鉄ネットワーク</a>、
+                                        <a className="danger_list" href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
                                         などの荒らしを擁護、支援、宣伝などをする行為
                                     </strong>
                                 </li>
-                                <li><a className={styles.danger_list} href="https://sakitibi-com9.webnode.jp/page/10">13ninstudioの利用規約</a>に反する行為</li>
+                                <li><a className="danger_list" href="https://sakitibi-com9.webnode.jp/page/10">13ninstudioの利用規約</a>に反する行為</li>
                                 <li>前各号の行為を直接または間接に惹起し、または容易にする行為</li>
                                 <li>その他、当社が不適切と判断する行為</li>
                             </ol>
