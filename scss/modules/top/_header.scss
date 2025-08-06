@@ -107,7 +107,7 @@
 
 .pEntry__header {
     margin-bottom: 25px;
-    & .h1 {
+    & h1 {
         background-color: #eaeaea;
         background-image: url("https://wikiwiki.jp/pa/assets/84566d2e21c8bbef1c53.png");
         color: #6a6a6a;
@@ -122,15 +122,19 @@
 .pEntry__content {
     color: #444;
     font-size: 13px;
-    &>.h2 {
+    &.danger_list{
+        color: red;
+    }
+    &>h2 {
         background-color: #f6f6f6;
         font-size: 16px;
         margin-bottom: 10px;
         margin-top: 20px;
         padding: 15px 10px;
     }
-    &>.ol{
-        &.li::marker{
+    &>ol{
+        &
+        &li::marker{
             unicode-bidi: isolate;
             font-variant-numeric: tabular-nums;
             text-transform: none;
@@ -146,11 +150,11 @@
         margin-bottom: 1rem;
         margin-top: 0;
         padding-left: 2rem;
-        &>.ol{
+        &>ol{
             counter-reset: subsection;
             list-style-type: none;
             margin: 8px auto;
-            &>.li{
+            &>li{
                 &::before{
                     content: "(" counter(subsection) ") ";
                     counter-increment: subsection;
