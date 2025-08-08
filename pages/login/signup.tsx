@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
+import { notuseUsername } from '@/utils/user_list';
 
 export default function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -8,10 +9,18 @@ export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
+    const notuseUser_list_found = notuseUsername.find(value => value === username);
+
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
+
+        if(notuseUser_list_found){
+            setErrorMsg('このユーザー名は使用出来ません、');
+            setLoading(false);
+            return;
+        }
 
         const { data, error } = await supabaseServer.auth.signUp({
             email,
