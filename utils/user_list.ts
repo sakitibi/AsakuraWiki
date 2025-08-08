@@ -9,3 +9,7 @@ export const notuseUsername:string[] = [
     "ウォーターチャレンジ",
     "秋月"
 ];
+
+export const adminerUserId:string[] = [
+    "9d2347a2-6322-4d55-93f1-71d8440e5f32"
+];
