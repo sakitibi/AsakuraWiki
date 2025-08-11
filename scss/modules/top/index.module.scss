@@ -26,14 +26,14 @@
     }
 }
 
-.l-footer {
+.lFooter {
     background-color: #cce19b;
     & .c-copyright {
         margin-top: 24px;
     }
 }
 
-.c-copyright {
+.cCopyright {
     background-color: #b2c780;
     color: #fff;
     font-size: 10px;
@@ -41,14 +41,14 @@
     text-align: center;
 }
 
-.p-footer-nav {
+.pFooterNav {
     list-style: none;
     margin: 0;
     padding: 0;
     text-align: center;
 }
 
-.p-footer-nav__item {
+.pFooterNav__item {
     display: inline-block;
     font-size: 10px;
     line-height: 1;
