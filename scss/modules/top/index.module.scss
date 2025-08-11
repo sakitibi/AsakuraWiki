@@ -26,9 +26,17 @@
     }
 }
 
-.footer{
+.l-footer {
+    background-color: #cce19b;
+    & .c-copyright {
+        margin-top: 24px;
+    }
+}
+
+.c-copyright {
+    background-color: #b2c780;
+    color: #fff;
+    font-size: 10px;
+    padding: .5em 0;
     text-align: center;
-    background-color: aquamarine;
-    clear: both;
-    width: 100%;
 }
