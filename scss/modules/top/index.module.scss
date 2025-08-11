@@ -40,3 +40,18 @@
     padding: .5em 0;
     text-align: center;
 }
+
+.p-footer-nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.p-footer-nav__item {
+    display: inline-block;
+    font-size: 10px;
+    line-height: 1;
+    margin: 0;
+    padding: 0 1em;
+}
