@@ -5,7 +5,7 @@ export default function FooterJp(){
         <footer className={styles.lFooter}>
             <div className="container">
                 <ul className={styles.pFooterNav}>
-                    <li className={styles.pFooterNav__item}>
+                    <li className={`${styles.pFooterNav__item} style-list-none`}>
                         <a href="/policies">利用規約</a>
                     </li>
                 </ul>
