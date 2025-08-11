@@ -9,7 +9,7 @@ export default function LeftMenuJp({ URL }: Props){
     return(
         <div id="menu">
             <nav className={styles.menu}>
-                <ul>
+                <ul id="menu-list">
                     <li>
                         <Link href="/">
                             <button><span>ホーム</span></button>
