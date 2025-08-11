@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import { ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
+import Head from 'next/head';
 
 export default function CreateWikiPage() {
     const [wikiId, setWikiId] = useState('');
@@ -82,55 +83,58 @@ export default function CreateWikiPage() {
 
     return (
         <>
+            <Head>
+                <title>新しいWikiを作る</title>
+            </Head>
             <main style={{ padding: '2rem', maxWidth: 600 }}>
-            <h1>🆕 新しいWikiを作る</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                Wiki ID（変更できません）:
-                <input
-                    value={wikiId}
-                    onChange={(e) => setWikiId(e.target.value)}
-                    required
-                    pattern="^[a-z0-9\-_]+$"
-                    title="小文字の英数字とハイフンとアンダーバーのみ使用できます"
-                    placeholder="例: example"
-                    style={{ width: '100%' }}
-                />
-                </label>
-                <br /><br />
-                <label>
-                Wikiタイトル（変更可能）:
-                <input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                    style={{ width: '100%' }}
-                />
-                </label>
-                <br /><br />
-                <label>
-                説明:
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    style={{ width: '100%', height: 80 }}
-                />
-                </label>
-                <br /><br />
-                <label>
-                <input
-                    type="checkbox"
-                    checked={agree}
-                    onChange={(e) => setAgree(e.target.checked)}
-                    required
-                />
-                <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>利用規約</a>に同意します
-                </label>
-                <br/><br/>
-                <button type="submit" disabled={loading}>
-                <span>{loading ? '作成中…' : 'Wikiを作成'}</span>
-                </button>
-            </form>
+                <h1>新しいWikiを作る</h1>
+                <form onSubmit={handleSubmit}>
+                    <label>
+                    Wiki ID（変更できません）:
+                    <input
+                        value={wikiId}
+                        onChange={(e) => setWikiId(e.target.value)}
+                        required
+                        pattern="^[a-z0-9\-_]+$"
+                        title="小文字の英数字とハイフンとアンダーバーのみ使用できます"
+                        placeholder="例: example"
+                        style={{ width: '100%' }}
+                    />
+                    </label>
+                    <br /><br />
+                    <label>
+                    Wikiタイトル（変更可能）:
+                    <input
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                        style={{ width: '100%' }}
+                    />
+                    </label>
+                    <br /><br />
+                    <label>
+                    説明:
+                    <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        style={{ width: '100%', height: 80 }}
+                    />
+                    </label>
+                    <br /><br />
+                    <label>
+                    <input
+                        type="checkbox"
+                        checked={agree}
+                        onChange={(e) => setAgree(e.target.checked)}
+                        required
+                    />
+                    <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>利用規約</a>に同意します
+                    </label>
+                    <br/><br/>
+                    <button type="submit" disabled={loading}>
+                    <span>{loading ? '作成中…' : 'Wikiを作成'}</span>
+                    </button>
+                </form>
             </main>
         </>
     );
