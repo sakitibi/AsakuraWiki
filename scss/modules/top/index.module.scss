@@ -55,7 +55,7 @@
     margin: 0;
     padding: 0 1em;
     &::marker{
-        display: none;
+        list-style-type: none !important;
     }
     &:not(:first-child) {
         border-left: 1px solid #6c803d;
