@@ -42,7 +42,7 @@ body{
         @include mixin.defaultGreen;
         & ul{
             &:not(
-                .style-list-none,
+                #p-footer-nav,
                 #menu-list
             ) {
                 display: block;
