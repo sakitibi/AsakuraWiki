@@ -54,4 +54,12 @@
     line-height: 1;
     margin: 0;
     padding: 0 1em;
+    &:not(:first-child) {
+        border-left: 1px solid #6c803d;
+    }
+    & a {
+        color: #6c803d;
+        -webkit-text-decoration: none;
+        text-decoration: none;
+    }
 }
