@@ -202,8 +202,11 @@ export default function WikiSettingsPage() {
                                 <input
                                     type="radio"
                                     name="iscli"
-                                    checked={isCLI ? false : true}
                                     value="false"
+                                    onChange={() =>
+                                        isCLI ? setIsCLI(false) : setIsCLI(true)
+                                    }
+                                    checked={!isCLI}
                                 />
                             </label>
                             <label>
@@ -211,8 +214,11 @@ export default function WikiSettingsPage() {
                                 <input
                                     type="radio"
                                     name="iscli"
-                                    checked={isCLI ? true : false}
                                     value="true"
+                                    onChange={() =>
+                                        isCLI ? setIsCLI(false) : setIsCLI(true)
+                                    }
+                                    checked={isCLI}
                                 />
                             </label>
                             <br /><br />
