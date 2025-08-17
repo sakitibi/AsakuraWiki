@@ -191,15 +191,25 @@ export default function WikiPage() {
     };
 
     const handleDelete = () => {
-        if (editMode === 'private' && !user) {
-            alert("403 Forbidden あなたは削除する権限がありません");
-            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
-            return;
-        }
         if (!special_wiki_list_found) {
-            router.push({
-                pathname: `/wiki/${wikiSlugStr}`,
-                query: { cmd: 'delete', page: pageSlugStr },
+            const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
+            if (!ok) return;
+
+            fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+                method: 'DELETE',
+            })
+            .then(async (res) => {
+                if (!res.ok) {
+                    const data = await res.json();
+                    alert('削除に失敗しました: ' + data.error);
+                } else {
+                    alert('削除しました');
+                    router.replace(`/wiki/${wikiSlugStr}`);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                alert('削除に失敗しました: ' + err.message);
             });
         }
     };
