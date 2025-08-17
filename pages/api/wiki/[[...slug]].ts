@@ -19,6 +19,7 @@ export default async function handler(
 
         const wikiSlug:string = parts[0]
         const pageSlug:string = parts.slice(1).join('/') || 'FrontPage'
+        const allow_cli:boolean = false;
 
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
@@ -38,8 +39,9 @@ export default async function handler(
             if (parts.length === 1) {
                 const { data, error } = await supabaseServer
                     .from('wiki_pages')
-                    .select('slug')
+                    .select('slug, cli_used')
                     .eq('wiki_slug', wikiSlug)
+                    .eq('cli_used', allow_cli)
 
                 if (error) {
                     console.error('Supabase GET slugs error:', error)
@@ -48,7 +50,8 @@ export default async function handler(
 
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
-                    page_slugs: data.map(p => p.slug)
+                    page_slugs: data.map(p => p.slug),
+                    cli_used: allow_cli
                 })
             }
 
