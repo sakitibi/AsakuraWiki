@@ -150,6 +150,9 @@ export default async function handler(
             if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Forbidden' })
             }
+            if(pageSlug === "FrontPage"){
+                return res.status(400).json({ error: 'bad request'})
+            }
 
             const { error: deleteError } = await supabaseServer
                 .from('wiki_pages')
