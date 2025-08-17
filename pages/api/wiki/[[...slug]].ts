@@ -39,19 +39,22 @@ export default async function handler(
             if (parts.length === 1) {
                 const { data, error } = await supabaseServer
                     .from('wiki_pages')
-                    .select('slug, cli_used')
+                    .select(`
+                        slug,
+                        wikis!inner ( cli_used )
+                    `)
                     .eq('wiki_slug', wikiSlug)
-                    .eq('cli_used', allow_cli)
+                    .eq('wikis.cli_used', allow_cli)
 
                 if (error) {
                     console.error('Supabase GET slugs error:', error)
-                    return res.status(500).json({ error: error.message })
+                    return res.status(500).json({ error: error?.message })
                 }
 
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
                     page_slugs: data.map(p => p.slug),
-                    cli_used: allow_cli
+                    cli_used: data.map(p => p.wikis?.[0]?.cli_used) // 参考で返す場合
                 })
             }
 
