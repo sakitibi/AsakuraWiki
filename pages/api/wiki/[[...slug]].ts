@@ -20,6 +20,16 @@ export default async function handler(
         const wikiSlug = parts[0]
         const pageSlug = parts.slice(1).join('/') || 'FrontPage'
 
+        // ====== 認証ユーザー取得 ======
+        let userId: string | null = null
+        const authHeader = req.headers.authorization
+        if (authHeader?.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1]
+            const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
+            if (authError) console.error('Supabase auth error:', authError)
+            if (user) userId = user.id
+        }
+
         // ======================
         // GET: ページ取得
         // ======================
@@ -53,7 +63,6 @@ export default async function handler(
             if (!data) {
                 return res.status(404).json({ error: 'Page not found' })
             }
-
             return res.status(200).json(data)
         }
 
@@ -61,7 +70,7 @@ export default async function handler(
         // PUT: ページ更新
         // ======================
         if (req.method === 'PUT') {
-            const { content, title, user } = req.body
+            const { content, title } = req.body
             if (typeof content !== 'string' || typeof title !== 'string') {
                 return res.status(400).json({ error: 'Invalid request body' })
             }
@@ -75,7 +84,7 @@ export default async function handler(
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if (wiki.edit_mode === 'private' && (!user || !user.id)) {
+            if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
             }
 
@@ -93,18 +102,16 @@ export default async function handler(
         // DELETE: ページ削除
         // ======================
         if (req.method === 'DELETE') {
-            const userId = (req as any).user?.id || null
-
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wikis')
-                .select('id, edit_mode')
+                .select('id, edit_mode, owner_id')
                 .eq('slug', wikiSlug)
                 .maybeSingle()
 
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if (wiki.edit_mode === 'private' && (!userId)) {
+            if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Forbidden' })
             }
 
@@ -122,40 +129,39 @@ export default async function handler(
         // POST: 新規ページ作成
         // ======================
         if (req.method === 'POST') {
-            const { slug, title, content, user } = req.body
+            const { slug, title, content } = req.body
             if (!slug || !title || !content) {
                 return res.status(400).json({ error: 'Missing parameters' })
-        }
+            }
 
-        const { data: wiki, error: wikiError } = await supabaseServer
-            .from('wikis')
-            .select('edit_mode, owner_id')
-            .eq('slug', wikiSlug)
-            .maybeSingle()
+            const { data: wiki, error: wikiError } = await supabaseServer
+                .from('wikis')
+                .select('edit_mode, owner_id')
+                .eq('slug', wikiSlug)
+                .maybeSingle()
 
-        if (wikiError) return res.status(500).json({ error: wikiError.message })
-        if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
+            if (wikiError) return res.status(500).json({ error: wikiError.message })
+            if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-        if (wiki.edit_mode === 'private' && (!user || !user.id)) {
-            return res.status(403).json({ error: 'Not authorized to create page' })
-        }
+            if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
+                return res.status(403).json({ error: 'Not authorized to create page' })
+            }
 
-        const { data, error } = await supabaseServer
-            .from('wiki_pages')
-            .insert([{ wiki_slug: wikiSlug, slug, title, content, author_id: user?.id ?? null }])
-            .select()
-            .maybeSingle()
+            const { data, error } = await supabaseServer
+                .from('wiki_pages')
+                .insert([{ wiki_slug: wikiSlug, slug, title, content, author_id: userId }])
+                .select()
+                .maybeSingle()
 
-        if (error) return res.status(500).json({ error: error.message })
+            if (error) return res.status(500).json({ error: error.message })
             return res.status(200).json(data)
         }
 
         // ======================
         // 許可されていないメソッド
         // ======================
-        res.setHeader('Allow', ['GET','PUT','DELETE','POST'])
+        res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST'])
         return res.status(405).json({ error: 'Method not allowed' })
-
     } catch (e) {
         console.error('API exception:', e)
         return res.status(500).json({ error: 'Internal server error' })
