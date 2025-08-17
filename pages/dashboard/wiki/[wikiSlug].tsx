@@ -52,7 +52,7 @@ export default function WikiSettingsPage() {
             setName(data.name);
             setDescription(data.description);
             setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
-            setIsCLI(data.iscli);
+            setIsCLI(data.cli_used);
             setdesignColor(
                 data.design_color === 'pink' ? 'pink' : 
                 data.design_color === 'blue' ? 'blue' : 
