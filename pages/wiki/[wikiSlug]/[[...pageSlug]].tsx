@@ -227,38 +227,49 @@ export default function WikiPage() {
     useEffect(() => {
         if (cmdStr !== 'delete') return;
         if (!pageSlugStr || !wikiSlugStr) return;
+        if (!user) return; // ← user が取得できるまで待機
 
-        if (pageSlugStr === 'FrontPage') {
-            alert('FrontPage は削除できません');
-            router.replace(`/wiki/${wikiSlugStr}`);
-            return;
-        }
+        const deletePage = async () => {
+            if (pageSlugStr === 'FrontPage') {
+                alert('FrontPage は削除できません');
+                router.replace(`/wiki/${wikiSlugStr}`);
+                return;
+            }
 
-        const confirmAndDelete = async () => {
             const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
             if (!ok) {
                 router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
                 return;
             }
 
-            const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user }),
-            });
+            try {
+                const { data: { session } } = await supabaseServer.auth.getSession();
+                const token = session?.access_token;
 
-            if (!res.ok) {
-                const err = await res.json();
-                alert('削除に失敗しました: ' + err.error);
-            } else {
-                alert('削除しました');
+                const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user: { id: user.id } }),
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert('削除に失敗しました: ' + err.error);
+                } else {
+                    alert('削除しました');
+                    router.replace(`/wiki/${wikiSlugStr}`);
+                }
+            } catch (err: any) {
+                console.error(err);
+                alert('削除に失敗しました: ' + err.message);
             }
-
-            router.replace(`/wiki/${wikiSlugStr}`);
         };
 
-        confirmAndDelete();
-    }, [cmdStr, pageSlugStr, wikiSlugStr]);
+        deletePage();
+    }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
 
     const isEdit = cmdStr === 'edit';
     // プレビュー or 閲覧コンテンツ
