@@ -70,55 +70,52 @@ export default function WikiPage() {
 
     // URL取得（編集モード判定用）
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setUrlObj(new URL(window.location.href))
-        }
-    }, [])
-
-    // Supabase から読み込み
-    useEffect(() => {
         if (!wikiSlugStr || !pageSlugStr) return;
 
         setLoading(true);
 
         (async () => {
-            console.log('wikiSlugStr:', wikiSlugStr); // ← ここで確認
+            try {
+                // Wiki情報取得
+                const { data: wikiData, error: wikiError } = await supabaseServer
+                    .from('wikis')
+                    .select('edit_mode')
+                    .eq('slug', wikiSlugStr)
+                    .maybeSingle();
 
-            const { data: wikiData, error: wikiError } = await supabaseServer
-                .from('wikis')
-                .select('edit_mode')
-                .eq('slug', wikiSlugStr)
-                .maybeSingle();
+                if (wikiError || !wikiData) {
+                    setError('Wikiの情報取得に失敗しました');
+                    setLoading(false);
+                    return;
+                }
 
-            if (wikiError || !wikiData) {
-                setError('Wikiの情報取得に失敗しました');
+                setEditMode(wikiData.edit_mode);
+
+                // ページ情報取得
+                const { data: pageData, error: pageError } = await supabaseServer
+                    .from('wiki_pages')
+                    .select('title, content')
+                    .eq('wiki_slug', wikiSlugStr)
+                    .eq('slug', pageSlugStr)
+                    .maybeSingle();
+
+                if (pageError || !pageData) {
+                    setError('ページの読み込みに失敗しました');
+                    setPage(null);
+                } else {
+                    setPage(pageData);
+                    setTitle(pageData.title);
+                    setContent(pageData.content);
+                    setError(null);
+                }
+            } catch (err) {
+                console.error(err);
+                setError('ページ読み込み中にエラーが発生しました');
+            } finally {
                 setLoading(false);
-                return;
             }
-
-            console.log('取得した edit_mode:', wikiData.edit_mode); // ← ここで確認
-            setEditMode(wikiData.edit_mode);
-
-            const { data: pageData, error: pageError } = await supabaseServer
-                .from('wiki_pages')
-                .select('title, content')
-                .eq('wiki_slug', wikiSlugStr)
-                .eq('slug', pageSlugStr)
-                .maybeSingle();
-
-            if (pageError || !pageData) {
-                setError('ページの読み込みに失敗しました');
-                setPage(null);
-            } else {
-                setPage(pageData);
-                setTitle(pageData.title);
-                setContent(pageData.content);
-                setError(null);
-            }
-
-            setLoading(false);
         })();
-    }, [wikiSlugStr, pageSlugStr, user]);
+    }, [wikiSlugStr, pageSlugStr]);
 
     useEffect(() => {
         console.log('更新された editMode:', editMode);

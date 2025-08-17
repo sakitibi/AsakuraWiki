@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useUser, useSession } from '@supabase/auth-helpers-react';
 import { supabaseServer } from 'lib/supabaseClientServer';
 
 export default function NewPage() {
     const router = useRouter();
     const user = useUser();
+    const session = useSession();
     const { wikiSlug } = router.query; // ✅ 変数名統一
     const wikiSlugStr = typeof wikiSlug === 'string' ? wikiSlug : '';
 
@@ -57,54 +58,59 @@ export default function NewPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        // 🔐 プライベートWikiならログイン必須
-        if (editMode === 'private' && !user) {
-            alert('このWikiはログインしないとページ作成できません');
-            router.push('/login');
-            return;
-        }
-
-        if(wikiSlugStr === "maitetsu_bkmt" && ownerId !== user!.id){
-            alert('このWikiはログインしないとページ作成できません');
-            router.push('/login');
-            return;
-        }
+        setLoading(true);
 
         if (!wikiSlugStr) {
             alert('Wikiの識別子が無効です');
+            setLoading(false);
             return;
         }
 
         if (slug.trim().toLowerCase().endsWith('.askr')) {
             alert('ページIDの末尾に「.askr」を使用することはできません。');
+            setLoading(false);
+            return;
+        }
+
+        if (editMode === 'private' && !user) {
+            alert('このWikiはログインしないとページ作成できません');
+            setLoading(false);
+            router.push('/login');
+            return;
+        }
+
+        if(wikiSlugStr === "maitetsu_bkmt" && ownerId !== user!.id){
+            alert('このWikiはページ作成できません');
+            setLoading(false);
             return;
         }
 
         setLoading(true);
 
-        const { data, error } = await supabaseServer
-        .from('wiki_pages')
-        .insert([
-            {
-            wiki_slug: wikiSlugStr,
-            slug,
-            title,
-            content,
-            author_id: user?.id ?? null, // 安全化
+        try {
+            const res = await fetch(`/api/wiki/${wikiSlugStr}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session?.access_token ?? ''}`
+                },
+                body: JSON.stringify({ slug, title, content }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert('作成に失敗しました: ' + data.error);
+                return;
             }
-        ])
-        .select()
-        .single();
-        setLoading(false);
 
-        if (error) {
-            alert('作成に失敗しました: ' + error.message);
-            return;
+            router.push(`/wiki/${wikiSlugStr}/${slug}`);
+        } catch (err: any) {
+            console.error(err);
+            alert('作成中にエラーが発生しました: ' + err.message);
+        } finally {
+            setLoading(false);
         }
-
-        // ✅ 正常なWikiページにリダイレクト
-        router.push(`/wiki/${wikiSlugStr}/${slug}`);
     };
 
     // ✅ クエリ未確定時はローディング画面
