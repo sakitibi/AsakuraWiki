@@ -7,18 +7,18 @@ export default async function handler(
 ) {
     try {
         const raw = req.query.slug
-        const parts = Array.isArray(raw)
-        ? raw
-        : typeof raw === 'string'
-            ? [raw]
-            : []
+        const parts:string[] = Array.isArray(raw)
+            ? raw
+            : typeof raw === 'string'
+                ? [raw]
+                : []
 
         if (parts.length === 0) {
             return res.status(400).json({ error: 'Invalid path' })
         }
 
-        const wikiSlug = parts[0]
-        const pageSlug = parts.slice(1).join('/') || 'FrontPage'
+        const wikiSlug:string = parts[0]
+        const pageSlug:string = parts.slice(1).join('/') || 'FrontPage'
 
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
@@ -31,26 +31,43 @@ export default async function handler(
         }
 
         // ======================
-        // GET: ページ取得
+        // GET: ページ取得 or ページ一覧
         // ======================
         if (req.method === 'GET') {
+            // ✅ wikiSlug 直下のみ指定された場合 → ページ slug 一覧を返す
+            if (parts.length === 1) {
+                const { data, error } = await supabaseServer
+                    .from('wiki_pages')
+                    .select('slug')
+                    .eq('wiki_slug', wikiSlug)
+
+                if (error) {
+                    console.error('Supabase GET slugs error:', error)
+                    return res.status(500).json({ error: error.message })
+                }
+
+                return res.status(200).json({
+                    wiki_slug: wikiSlug,
+                    page_slugs: data.map(p => p.slug)
+                })
+            }
+
+            // ✅ 通常の単一ページ取得
             const { data, error } = await supabaseServer
                 .from('wiki_pages')
                 .select(`
-                id,
-                wiki_id,
-                slug,
-                wiki_slug,
-                title,
-                content,
-                description,
-                owner_id,
-                author_id,
-                created_at,
-                updated_at,
-                wikis:wiki_id (
-                    edit_mode
-                )
+                    id,
+                    wiki_id,
+                    slug,
+                    wiki_slug,
+                    title,
+                    content,
+                    description,
+                    owner_id,
+                    author_id,
+                    created_at,
+                    updated_at,
+                    wikis:wiki_id ( edit_mode )
                 `)
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
