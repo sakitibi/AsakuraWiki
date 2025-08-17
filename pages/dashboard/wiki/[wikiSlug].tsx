@@ -18,6 +18,7 @@ export default function WikiSettingsPage() {
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [designColor, setdesignColor] = useState<'pink' | 'blue' | 'yellow' |'default'>('default');
+    const [isCLI, setIsCLI] = useState<boolean>(true);
 
     useEffect(() => {
         if (!slugStr || !user) return;
@@ -26,7 +27,7 @@ export default function WikiSettingsPage() {
             setLoading(true);
             const { data, error } = await supabaseServer
             .from('wikis')
-            .select('name, description, owner_id, edit_mode, design_color')
+            .select('name, description, owner_id, edit_mode, design_color, iscli')
             .eq('slug', slugStr)
             .maybeSingle();
 
@@ -51,6 +52,7 @@ export default function WikiSettingsPage() {
             setName(data.name);
             setDescription(data.description);
             setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
+            setIsCLI(data.iscli);
             setdesignColor(
                 data.design_color === 'pink' ? 'pink' : 
                 data.design_color === 'blue' ? 'blue' : 
@@ -69,7 +71,7 @@ export default function WikiSettingsPage() {
 
         const { error } = await supabaseServer
         .from('wikis')
-        .update({ name, description, edit_mode: editMode, updated_at: new Date(), design_color: designColor })
+        .update({ name, description, edit_mode: editMode, updated_at: new Date(), design_color: designColor, iscli: isCLI })
         .eq('slug', slugStr);
 
         setLoading(false);
@@ -193,6 +195,25 @@ export default function WikiSettingsPage() {
                                     <option value="blue">ブルー</option>
                                     <option value="yellow">イエロー</option>
                                 </select>
+                            </label>
+                            <br /><br />
+                            <label>
+                                CLI EDITOR利用不可
+                                <input
+                                    type="radio"
+                                    name="iscli"
+                                    checked={isCLI ? false : true}
+                                    value="false"
+                                />
+                            </label>
+                            <label>
+                                CLI EDITOR利用可能
+                                <input
+                                    type="radio"
+                                    name="iscli"
+                                    checked={isCLI ? true : false}
+                                    value="true"
+                                />
                             </label>
                             <br /><br />
                             <button type="submit" disabled={loading}>
