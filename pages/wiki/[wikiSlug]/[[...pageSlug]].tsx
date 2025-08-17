@@ -19,7 +19,7 @@ export default function WikiPage() {
     const router = useRouter()
     const user = useUser();
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
-    const cmdStr = typeof cmd === 'string' ? cmd : '';
+    const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
 
     // クエリ→文字列化
         const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
@@ -260,7 +260,7 @@ export default function WikiPage() {
         confirmAndDelete();
     }, [cmdStr, pageSlugStr, wikiSlugStr]);
 
-    const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
+    const isEdit = cmdStr === 'edit';
     // プレビュー or 閲覧コンテンツ
 
     let commentSubmit:any = null;
