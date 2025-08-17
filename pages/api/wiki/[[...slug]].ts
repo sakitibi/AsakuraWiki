@@ -35,58 +35,67 @@ export default async function handler(
         // GET: ページ取得 or ページ一覧
         // ======================
         if (req.method === 'GET') {
-            // ✅ wikiSlug 直下のみ指定された場合 → ページ slug 一覧を返す
+            // 1️⃣ wikiSlug 直下のみ指定された場合 → ページ slug 一覧 + cli_used
             if (parts.length === 1) {
-                const { data, error } = await supabaseServer
-                    .from('wiki_pages')
-                    .select(`
-                        slug,
-                        wikis!inner ( cli_used )
-                    `)
-                    .eq('wiki_slug', wikiSlug)
-                    .eq('wikis.cli_used', allow_cli)
+                // wiki_pages から slug 一覧取得
+                const { data: pages, error: pagesErr } = await supabaseServer
+                .from('wiki_pages')
+                .select('slug')
+                .eq('wiki_slug', wikiSlug)
 
-                if (error) {
-                    console.error('Supabase GET slugs error:', error)
-                    return res.status(500).json({ error: error?.message })
+                if (pagesErr) {
+                    console.error('Supabase GET pages error:', pagesErr)
+                    return res.status(500).json({ error: pagesErr.message })
+                }
+
+                // wikis から cli_used を取得
+                const { data: wiki, error: wikiErr } = await supabaseServer
+                .from('wikis')
+                .select('cli_used')
+                .eq('slug', wikiSlug)
+                .maybeSingle()
+
+                if (wikiErr) {
+                    console.error('Supabase GET wiki error:', wikiErr)
+                    return res.status(500).json({ error: wikiErr.message })
                 }
 
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
-                    page_slugs: data.map(p => p.slug),
-                    cli_used: data.map(p => p.wikis?.[0]?.cli_used) // 参考で返す場合
+                    page_slugs: pages.map(p => p.slug),
+                    cli_used: wiki?.cli_used ?? false
                 })
             }
 
-            // ✅ 通常の単一ページ取得
-            const { data, error } = await supabaseServer
+            // 2️⃣ 通常の単一ページ取得
+            const { data: page, error: pageErr } = await supabaseServer
                 .from('wiki_pages')
                 .select(`
-                    id,
-                    wiki_id,
-                    slug,
-                    wiki_slug,
-                    title,
-                    content,
-                    description,
-                    owner_id,
-                    author_id,
-                    created_at,
-                    updated_at,
-                    wikis:wiki_id ( edit_mode )
+                id,
+                wiki_id,
+                slug,
+                wiki_slug,
+                title,
+                content,
+                description,
+                owner_id,
+                author_id,
+                created_at,
+                updated_at
                 `)
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
                 .maybeSingle()
 
-            if (error) {
-                console.error('Supabase GET error:', error)
-                return res.status(500).json({ error: error.message })
+            if (pageErr) {
+                console.error('Supabase GET page error:', pageErr)
+                return res.status(500).json({ error: pageErr.message })
             }
-            if (!data) {
+            if (!page) {
                 return res.status(404).json({ error: 'Page not found' })
             }
-            return res.status(200).json(data)
+
+            return res.status(200).json(page)
         }
 
         // ======================
