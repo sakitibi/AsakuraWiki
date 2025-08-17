@@ -1,6 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
+function checkCLIAllowed(wiki: { cli_used?: boolean }) {
+    if (wiki.cli_used === false) {
+        throw { status: 403, message: 'CLI access forbidden for this wiki' }
+    }
+}
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -19,7 +25,6 @@ export default async function handler(
 
         const wikiSlug:string = parts[0]
         const pageSlug:string = parts.slice(1).join('/') || 'FrontPage'
-        const allow_cli:boolean = false;
 
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
@@ -109,12 +114,17 @@ export default async function handler(
 
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wikis')
-                .select('edit_mode, owner_id')
+                .select('edit_mode, owner_id, cli_used')
                 .eq('slug', wikiSlug)
                 .maybeSingle()
 
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
+
+            // CLIアクセス禁止チェック
+            try { checkCLIAllowed(wiki) } catch (e:any) {
+                return res.status(e.status).json({ error: e.message })
+            }
 
             if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
@@ -136,12 +146,17 @@ export default async function handler(
         if (req.method === 'DELETE') {
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wikis')
-                .select('id, edit_mode, owner_id')
+                .select('id, edit_mode, owner_id, cli_used')
                 .eq('slug', wikiSlug)
                 .maybeSingle()
 
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
+
+            // CLIアクセス禁止チェック
+            try { checkCLIAllowed(wiki) } catch (e:any) {
+                return res.status(e.status).json({ error: e.message })
+            }
 
             if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Forbidden' })
@@ -168,12 +183,17 @@ export default async function handler(
 
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wikis')
-                .select('edit_mode, owner_id')
+                .select('edit_mode, owner_id, cli_used')
                 .eq('slug', wikiSlug)
                 .maybeSingle()
 
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
+
+            // CLIアクセス禁止チェック
+            try { checkCLIAllowed(wiki) } catch (e:any) {
+                return res.status(e.status).json({ error: e.message })
+            }
 
             if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Not authorized to create page' })
