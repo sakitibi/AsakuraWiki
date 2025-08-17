@@ -97,7 +97,7 @@ export default async function handler(
 
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wikis')
-                .select('id, edit_mode, owner_id')
+                .select('id, edit_mode')
                 .eq('slug', wikiSlug)
                 .maybeSingle()
 
