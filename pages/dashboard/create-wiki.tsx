@@ -48,6 +48,7 @@ export default function CreateWikiPage() {
                 edit_mode: 'public',      // 初期値を決めておく
                 created_at: new Date(),
                 updated_at: new Date(),
+                cli_used: true,
             }])
             .select()
             .single();
@@ -59,7 +60,7 @@ export default function CreateWikiPage() {
         }
 
         // 2) wiki_pages テーブルに「ホーム」ページを挿入（お好みで）
-        // 例：ホームページのslugは固定で "home" にする
+        // 例：ホームページのslugは固定で "FrontPage" にする
         // ホームページを作成する例
         const { error: pageError } = await supabaseServer
         .from('wiki_pages')
