@@ -138,7 +138,9 @@ export default function WikiPage() {
         };
     }, [designColor]);
 
+    // ======================
     // 更新処理
+    // ======================
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -150,10 +152,16 @@ export default function WikiPage() {
 
         setLoading(true);
         try {
+            const { data: { session } } = await supabaseServer.auth.getSession();
+            const token = session?.access_token;
+
             const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, content, user }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ title, content }),
             });
 
             if (!res.ok) {
@@ -187,18 +195,24 @@ export default function WikiPage() {
             pathname: `/wiki/${wikiSlugStr}`,
             query: { cmd: 'edit', page: pageSlugStr },
         });
-        location.href = `/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`;
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (!special_wiki_list_found) {
             const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
             if (!ok) return;
 
-            fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
-                method: 'DELETE',
-            })
-            .then(async (res) => {
+            const { data: { session } } = await supabaseServer.auth.getSession();
+            const token = session?.access_token;
+
+            try {
+                const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
                 if (!res.ok) {
                     const data = await res.json();
                     alert('削除に失敗しました: ' + data.error);
@@ -206,11 +220,10 @@ export default function WikiPage() {
                     alert('削除しました');
                     router.replace(`/wiki/${wikiSlugStr}`);
                 }
-            })
-            .catch((err) => {
+            } catch (err: any) {
                 console.error(err);
                 alert('削除に失敗しました: ' + err.message);
-            });
+            }
         }
     };
 
