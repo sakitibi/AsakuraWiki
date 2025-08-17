@@ -1,36 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
-// CORS ヘルパー
-function setCorsHeaders(res: NextApiResponse) {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // 全部のオリジンから許可
-    res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-}
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    setCorsHeaders(res);
-
-    // Preflight (OPTIONS) に対応
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+) {
     try {
-        const raw = req.query.slug;
+        const raw = req.query.slug
         const parts = Array.isArray(raw)
         ? raw
         : typeof raw === 'string'
-        ? [raw]
-        : [];
+            ? [raw]
+            : []
         if (parts.length === 0) {
-            return res.status(400).json({ error: 'Invalid path' });
+            return res.status(400).json({ error: 'Invalid path' })
         }
-
-        const wikiSlug = parts[0];
-        const pageSlug = parts.slice(1).join('/') || 'FrontPage';
+        const wikiSlug = parts[0]
+        const pageSlug = parts.slice(1).join('/') || 'FrontPage'
 
         if (req.method === 'GET') {
+            // wiki_pages + wikis.join で edit_mode も取得
             const { data, error } = await supabaseServer
                 .from('wiki_pages')
                 .select(`
@@ -44,47 +33,108 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 owner_id,
                 author_id,
                 created_at,
-                updated_at
+                updated_at,
+                wikis:wiki_id (
+                    edit_mode
+                )
                 `)
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
-                .maybeSingle();
+                .maybeSingle()
 
             if (error) {
-                console.error('Supabase GET error:', error);
-                return res.status(500).json({ error: error.message });
+                console.error('Supabase GET error:', error)
+                return res.status(500).json({ error: error.message })
             }
             if (!data) {
-                return res.status(404).json({ error: 'Page not found' });
+                return res.status(404).json({ error: 'Page not found' })
             }
 
-            return res.status(200).json(data);
+            return res.status(200).json(data)
         }
 
         if (req.method === 'PUT') {
-            const { content, title } = req.body;
+            const { content, title, user } = req.body
             if (typeof content !== 'string' || typeof title !== 'string') {
-                return res.status(400).json({ error: 'Invalid request body' });
+                return res.status(400).json({ error: 'Invalid request body' })
+            }
+
+            // 該当 wiki の edit_mode を確認
+            const { data: wiki, error: wikiError } = await supabaseServer
+                .from('wikis')
+                .select('edit_mode')
+                .eq('slug', wikiSlug)
+                .maybeSingle()
+
+            if (wikiError) {
+                console.error('Supabase wiki fetch error:', wikiError)
+                return res.status(500).json({ error: wikiError.message })
+            }
+            if (!wiki) {
+                return res.status(404).json({ error: 'Wiki not found' })
+            }
+
+            if (wiki.edit_mode === 'private' && (!user || !user.id)) {
+                return res.status(403).json({ error: 'Not authorized to edit' })
             }
 
             const { error } = await supabaseServer
                 .from('wiki_pages')
                 .update({ content, title, updated_at: new Date() })
                 .eq('wiki_slug', wikiSlug)
-                .eq('slug', pageSlug);
+                .eq('slug', pageSlug)
 
             if (error) {
-                console.error('Supabase PUT error:', error);
-                return res.status(500).json({ error: error.message });
+                console.error('Supabase PUT error:', error)
+                return res.status(500).json({ error: error.message })
+            }
+
+            return res.status(200).json({ success: true })
+        }
+
+        if (req.method === 'DELETE') {
+            // Supabase Authからユーザーを取得（Next.jsならmiddlewareでJWTを検証してreq.userなどに注入しておくと便利）
+            const userId = (req as any).user?.id || null;
+
+            // 該当wikiのedit_modeをチェック
+            const { data: wiki, error: wikiError } = await supabaseServer
+                .from('wikis')
+                .select('id, edit_mode, owner_id')
+                .eq('slug', wikiSlug)
+                .maybeSingle();
+
+            if (wikiError) {
+                console.error('Supabase wiki fetch error:', wikiError);
+                return res.status(500).json({ error: wikiError.message });
+            }
+            if (!wiki) {
+                return res.status(404).json({ error: 'Wiki not found' });
+            }
+
+            // privateモードなら userId が必須
+            if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
+                return res.status(403).json({ error: 'Forbidden' });
+            }
+
+            // ページ削除
+            const { error: deleteError } = await supabaseServer
+                .from('wiki_pages')
+                .delete()
+                .eq('wiki_slug', wikiSlug)
+                .eq('slug', pageSlug);
+
+            if (deleteError) {
+                console.error('Supabase DELETE error:', deleteError);
+                return res.status(500).json({ error: deleteError.message });
             }
 
             return res.status(200).json({ success: true });
         }
 
-        res.setHeader('Allow', ['GET', 'PUT', 'OPTIONS']);
-        return res.status(405).json({ error: 'Method not allowed' });
+        res.setHeader('Allow', ['GET', 'PUT'])
+        return res.status(405).json({ error: 'Method not allowed' })
     } catch (e) {
-        console.error('API exception:', e);
-        return res.status(500).json({ error: 'Internal server error' });
+        console.error('API exception:', e)
+        return res.status(500).json({ error: 'Internal server error' })
     }
 }
