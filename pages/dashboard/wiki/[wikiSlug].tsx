@@ -27,7 +27,7 @@ export default function WikiSettingsPage() {
             setLoading(true);
             const { data, error } = await supabaseServer
             .from('wikis')
-            .select('name, description, owner_id, edit_mode, design_color, iscli')
+            .select('name, description, owner_id, edit_mode, design_color, cli_used')
             .eq('slug', slugStr)
             .maybeSingle();
 
@@ -71,7 +71,7 @@ export default function WikiSettingsPage() {
 
         const { error } = await supabaseServer
         .from('wikis')
-        .update({ name, description, edit_mode: editMode, updated_at: new Date(), design_color: designColor, iscli: isCLI })
+        .update({ name, description, edit_mode: editMode, updated_at: new Date(), design_color: designColor, cli_used: isCLI })
         .eq('slug', slugStr);
 
         setLoading(false);
