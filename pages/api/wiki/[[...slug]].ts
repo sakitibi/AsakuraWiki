@@ -1,12 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
-function checkCLIAllowed(wiki: { cli_used?: boolean }) {
-    if (wiki.cli_used === false) {
-        throw { status: 403, message: 'CLI access forbidden for this wiki' }
-    }
-}
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -40,25 +34,23 @@ export default async function handler(
         // GET: ページ取得 or ページ一覧
         // ======================
         if (req.method === 'GET') {
-            // 1️⃣ wikiSlug 直下のみ指定された場合 → ページ slug 一覧 + cli_used
             if (parts.length === 1) {
-                // wiki_pages から slug 一覧取得
+                // wikiSlug直下のみ → ページ slug 一覧 + cli_used
                 const { data: pages, error: pagesErr } = await supabaseServer
-                .from('wiki_pages')
-                .select('slug')
-                .eq('wiki_slug', wikiSlug)
+                    .from('wiki_pages')
+                    .select('slug')
+                    .eq('wiki_slug', wikiSlug)
 
                 if (pagesErr) {
                     console.error('Supabase GET pages error:', pagesErr)
                     return res.status(500).json({ error: pagesErr.message })
                 }
 
-                // wikis から cli_used を取得
                 const { data: wiki, error: wikiErr } = await supabaseServer
-                .from('wikis')
-                .select('cli_used')
-                .eq('slug', wikiSlug)
-                .maybeSingle()
+                    .from('wikis')
+                    .select('cli_used')
+                    .eq('slug', wikiSlug)
+                    .maybeSingle()
 
                 if (wikiErr) {
                     console.error('Supabase GET wiki error:', wikiErr)
@@ -72,21 +64,21 @@ export default async function handler(
                 })
             }
 
-            // 2️⃣ 通常の単一ページ取得
+            // 単一ページ取得
             const { data: page, error: pageErr } = await supabaseServer
                 .from('wiki_pages')
                 .select(`
-                id,
-                wiki_id,
-                slug,
-                wiki_slug,
-                title,
-                content,
-                description,
-                owner_id,
-                author_id,
-                created_at,
-                updated_at
+                    id,
+                    wiki_id,
+                    slug,
+                    wiki_slug,
+                    title,
+                    content,
+                    description,
+                    owner_id,
+                    author_id,
+                    created_at,
+                    updated_at
                 `)
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
@@ -104,6 +96,22 @@ export default async function handler(
         }
 
         // ======================
+        // CLI操作制限チェック
+        // ======================
+        async function checkCLIAllowed() {
+            const { data: wiki, error } = await supabaseServer
+                .from('wikis')
+                .select('cli_used, edit_mode, owner_id')
+                .eq('slug', wikiSlug)
+                .maybeSingle()
+
+            if (error) throw { status: 500, message: error.message }
+            if (!wiki) throw { status: 404, message: 'Wiki not found' }
+            if (wiki.cli_used === false) throw { status: 403, message: 'CLI access forbidden for this wiki' }
+            return wiki
+        }
+
+        // ======================
         // PUT: ページ更新
         // ======================
         if (req.method === 'PUT') {
@@ -112,19 +120,8 @@ export default async function handler(
                 return res.status(400).json({ error: 'Invalid request body' })
             }
 
-            const { data: wiki, error: wikiError } = await supabaseServer
-                .from('wikis')
-                .select('edit_mode, owner_id, cli_used')
-                .eq('slug', wikiSlug)
-                .maybeSingle()
-
-            if (wikiError) return res.status(500).json({ error: wikiError.message })
-            if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
-
-            // CLIアクセス禁止チェック
-            try { checkCLIAllowed(wiki) } catch (e:any) {
-                return res.status(e.status).json({ error: e.message })
-            }
+            let wiki
+            try { wiki = await checkCLIAllowed() } catch (e:any) { return res.status(e.status).json({ error: e.message }) }
 
             if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
@@ -144,19 +141,8 @@ export default async function handler(
         // DELETE: ページ削除
         // ======================
         if (req.method === 'DELETE') {
-            const { data: wiki, error: wikiError } = await supabaseServer
-                .from('wikis')
-                .select('id, edit_mode, owner_id, cli_used')
-                .eq('slug', wikiSlug)
-                .maybeSingle()
-
-            if (wikiError) return res.status(500).json({ error: wikiError.message })
-            if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
-
-            // CLIアクセス禁止チェック
-            try { checkCLIAllowed(wiki) } catch (e:any) {
-                return res.status(e.status).json({ error: e.message })
-            }
+            let wiki
+            try { wiki = await checkCLIAllowed() } catch (e:any) { return res.status(e.status).json({ error: e.message }) }
 
             if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Forbidden' })
@@ -181,19 +167,8 @@ export default async function handler(
                 return res.status(400).json({ error: 'Missing parameters' })
             }
 
-            const { data: wiki, error: wikiError } = await supabaseServer
-                .from('wikis')
-                .select('edit_mode, owner_id, cli_used')
-                .eq('slug', wikiSlug)
-                .maybeSingle()
-
-            if (wikiError) return res.status(500).json({ error: wikiError.message })
-            if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
-
-            // CLIアクセス禁止チェック
-            try { checkCLIAllowed(wiki) } catch (e:any) {
-                return res.status(e.status).json({ error: e.message })
-            }
+            let wiki
+            try { wiki = await checkCLIAllowed() } catch (e:any) { return res.status(e.status).json({ error: e.message }) }
 
             if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
                 return res.status(403).json({ error: 'Not authorized to create page' })
