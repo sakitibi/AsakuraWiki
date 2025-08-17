@@ -141,60 +141,32 @@ export default function WikiPage() {
     // 更新処理
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
-        if(editMode === 'private' && !user){
+
+        if (editMode === 'private' && !user) {
             alert("403 Forbidden あなたは編集する権限がありません");
-            console.error("403 Forbidden あなたは編集する権限がありません");
             location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
             return;
-        } else {
-            if(!special_wiki_list_found){
-                setLoading(true);
-                const { error } = await supabaseServer
-                .from('wiki_pages')
-                .update({ title, content, updated_at: new Date() })
-                .eq('wiki_slug', wikiSlugStr)
-                .eq('slug', pageSlugStr)
-                setLoading(false)
-
-                if (error) {
-                    alert('更新に失敗しました: ' + error.message);
-                } else {
-                    router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-                    location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
-                }
-            } else if(special_wiki_list[0] && pageSlugStr === "sinsei"){
-                setLoading(true);
-                const { error } = await supabaseServer
-                .from('wiki_pages')
-                .update({ title, content, updated_at: new Date() })
-                .eq('wiki_slug', wikiSlugStr)
-                .eq('slug', pageSlugStr)
-                setLoading(false)
-
-                if (error) {
-                    alert('更新に失敗しました: ' + error.message);
-                } else {
-                    router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-                    location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
-                }
-            } else if(special_wiki_list[0] && pageSlugStr === "comment"){
-                setLoading(true);
-                const { error } = await supabaseServer
-                .from('wiki_pages')
-                .update({ title, content, updated_at: new Date() })
-                .eq('wiki_slug', wikiSlugStr)
-                .eq('slug', pageSlugStr)
-                setLoading(false)
-
-                if (error) {
-                    alert('更新に失敗しました: ' + error.message);
-                } else {
-                    router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-                    location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
-                }
-            }
         }
-    }
+
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, content, user }),
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                alert('更新に失敗しました: ' + err.error);
+                return;
+            }
+
+            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== "sinsei") {
@@ -209,6 +181,29 @@ export default function WikiPage() {
         }
     }, []);
 
+    // 編集モード切り替え
+    const handleEdit = () => {
+        router.push({
+            pathname: `/wiki/${wikiSlugStr}`,
+            query: { cmd: 'edit', page: pageSlugStr },
+        });
+        location.href = `/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`;
+    };
+
+    const handleDelete = () => {
+        if (editMode === 'private' && !user) {
+            alert("403 Forbidden あなたは削除する権限がありません");
+            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
+            return;
+        }
+        if (!special_wiki_list_found) {
+            router.push({
+                pathname: `/wiki/${wikiSlugStr}`,
+                query: { cmd: 'delete', page: pageSlugStr },
+            });
+        }
+    };
+
     useEffect(() => {
         if (cmdStr !== 'delete') return;
         if (!pageSlugStr || !wikiSlugStr) return;
@@ -220,57 +215,31 @@ export default function WikiPage() {
         }
 
         const confirmAndDelete = async () => {
-            if(!special_wiki_list_found){
-                const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
-                if (!ok || special_wiki_list_found) {
-                    router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-                    return;
-                }
-
-                const { error } = await supabaseServer
-                    .from('wiki_pages')
-                    .delete()
-                    .eq('wiki_slug', wikiSlugStr)
-                    .eq('slug', pageSlugStr);
-
-                if (error) {
-                    alert('削除に失敗しました: ' + error.message);
-                } else {
-                    alert('削除しました');
-                }
-
-                router.replace(`/wiki/${wikiSlugStr}`);
+            const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
+            if (!ok) {
+                router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+                return;
             }
+
+            const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user }),
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                alert('削除に失敗しました: ' + err.error);
+            } else {
+                alert('削除しました');
+            }
+
+            router.replace(`/wiki/${wikiSlugStr}`);
         };
 
         confirmAndDelete();
     }, [cmdStr, pageSlugStr, wikiSlugStr]);
 
-    // 編集モード切り替え
-    const handleEdit = () => {
-        router.push({
-            pathname: `/wiki/${wikiSlugStr}`,
-            query: { cmd: 'edit', page: pageSlugStr },
-        });
-        location.href = `/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`;
-    };
-
-    const handleDelete = () => {
-        if(editMode === 'private' && !user){
-            alert("403 Forbidden あなたは削除する権限がありません");
-            console.error("403 Forbidden あなたは削除する権限がありません");
-            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
-            return;
-        } else {
-            if(!special_wiki_list_found){
-                router.push({
-                    pathname: `/wiki/${wikiSlugStr}`,
-                    query: { cmd: 'delete', page: pageSlugStr },
-                });
-                location.href = `/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`;
-            }
-        }
-    }
     const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
     // プレビュー or 閲覧コンテンツ
 
