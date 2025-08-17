@@ -123,6 +123,10 @@ export default function WikiSettingsPage() {
         router.push('/');
     };
 
+    const isCLIChanges = () => {
+        isCLI ? setIsCLI(false) : setIsCLI(true);
+    }
+
     if (loading) return <p>読み込み中...</p>;
 
     return (
@@ -203,9 +207,7 @@ export default function WikiSettingsPage() {
                                     type="radio"
                                     name="iscli"
                                     value="false"
-                                    onChange={() =>
-                                        isCLI ? setIsCLI(false) : setIsCLI(true)
-                                    }
+                                    onChange={() => isCLIChanges()}
                                     checked={!isCLI}
                                 />
                             </label>
@@ -215,9 +217,7 @@ export default function WikiSettingsPage() {
                                     type="radio"
                                     name="iscli"
                                     value="true"
-                                    onChange={() =>
-                                        isCLI ? setIsCLI(false) : setIsCLI(true)
-                                    }
+                                    onChange={() => isCLIChanges()}
                                     checked={isCLI}
                                 />
                             </label>
