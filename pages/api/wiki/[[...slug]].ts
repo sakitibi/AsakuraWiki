@@ -104,7 +104,7 @@ export default async function handler(
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if (wiki.edit_mode === 'private' && (!userId || userId !== wiki.owner_id)) {
+            if (wiki.edit_mode === 'private' && (!userId)) {
                 return res.status(403).json({ error: 'Forbidden' })
             }
 
