@@ -2,6 +2,7 @@ export interface Context {
     wikiSlug: string;
     pageSlug: string;
     letContext?: Record<string, string>;
+    variables: Record<string, string>;
 }
 
 export interface AccordionBlock {

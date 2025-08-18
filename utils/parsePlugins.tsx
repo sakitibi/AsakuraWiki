@@ -7,7 +7,7 @@ import { supabaseServer } from 'lib/supabaseClientServer';
 import parseInline from '@/components/ParseInline';
 import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
 import ExportBlock from '@/components/ExportBlock';
-import ImportBlock from '@/components/ImportBlock';
+import ImportBlock, { resolveImports } from '@/components/ImportBlock';
 
 
 export function useDesignColor(slug: string) {
@@ -78,7 +78,7 @@ export function extractBracedBlock(
 function extractSelContainersSafe(content: string, excludeRanges: { start: number; end: number }[], offset = 0): { body: string; start: number; end: number }[] {
     const raw = extractSelContainers(content);
     return raw
-        .map(sel => ({
+        .map((sel: { body: string; start: number; end: number }) => ({
             ...sel,
             start: offset + sel.start,
             end: offset + sel.end,
@@ -120,7 +120,7 @@ function tokenize(src: string): Token[] {
         const exportMatch = src.match(/^#export\((global|local)\)\{(.+?)\};$/);
         if (exportMatch) {
             const scope = exportMatch[1] as 'global' | 'local';
-            const variables = exportMatch[2].split(',').map(v => v.trim());
+            const variables = exportMatch[2].split(',').map((v: string) => v.trim());
             return [{ type: 'export', scope, variables }];
         }
 
@@ -128,7 +128,7 @@ function tokenize(src: string): Token[] {
         if (importMatch) {
             const slug = importMatch[1];
             const page = importMatch[2];
-            const variables = importMatch[3].split(',').map(v => v.trim());
+            const variables = importMatch[3].split(',').map((v: string) => v.trim());
             return [{ type: 'import', slug, page, variables }];
         }
 
@@ -249,13 +249,13 @@ function renderAST(
     });
 }
 
-export function parseWikiContent(
+export async function parseWikiContent(
     content: string,
     context: Context
-): React.ReactNode[] {
+): Promise<React.ReactNode[]> {
+    await resolveImports(content, context); // ← import変数を注入
     // トークン→AST化
     const ast = buildAST(content);
-
     // AST→React ノード
     return renderAST(ast, context);
 }
