@@ -115,6 +115,20 @@ function tokenize(src: string): Token[] {
             i += closeM[0].length;
             continue;
         }
+        const exportMatch = src.match(/^#export\((global|local)\)\{(.+?)\};$/);
+        if (exportMatch) {
+            const scope = exportMatch[1] as 'global' | 'local';
+            const variables = exportMatch[2].split(',').map(v => v.trim());
+            return [{ type: 'export', scope, variables }];
+        }
+
+        const importMatch = src.match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};$/);
+        if (importMatch) {
+            const slug = importMatch[1];
+            const page = importMatch[2];
+            const variables = importMatch[3].split(',').map(v => v.trim());
+            return [{ type: 'import', slug, page, variables }];
+        }
 
         // それ以外はテキスト１文字ずつ
         tokens.push({ type: 'text', content: src[i++] });
@@ -152,6 +166,25 @@ function buildAST(src: string): ASTNode[] {
         else if (tk.type === 'close') {
             if (stack.length > 1) stack.pop();
         }
+        else if (tk.type === 'export') {
+            const node: ASTNode = {
+                type: 'export',
+                scope: tk.scope,
+                children: [],
+            };
+            curr.push(node);
+            stack.push((node as any).children);
+        }
+        else if (tk.type === 'import') {
+            const node: ASTNode = {
+                type: 'import',
+                slug: tk.slug,
+                page: tk.page,
+                children: [],
+            };
+            curr.push(node);
+            stack.push((node as any).children);
+        }
     }
 
     return root;
@@ -163,20 +196,28 @@ function renderAST(
 ): React.ReactNode[] {
     return nodes.map((node, idx) => {
         if (node.type === 'text') {
-        // parseInline は既存のインラインパーサ
-        return <React.Fragment key={`t${idx}`}>{ parseInline(node.content, context) }</React.Fragment>;
+            return (
+                <React.Fragment key={`t${idx}`}>
+                    {parseInline(node.content, context)}
+                </React.Fragment>
+            );
         }
-        // accordion ノード
-        return (
-        <Accordion
-            key={`a${idx}`}
-            title={node.title}
-            level={node.level}
-            initiallyOpen={node.isOpen}
-        >
-            { renderAST(node.children, context) }
-        </Accordion>
-        );
+
+        if (node.type === 'accordion') {
+            return (
+                <Accordion
+                    key={`a${idx}`}
+                    title={node.title}
+                    level={node.level}
+                    initiallyOpen={node.isOpen}
+                >
+                    {renderAST(node.children, context)}
+                </Accordion>
+            );
+        }
+
+        // 他のノード型は無視するか、別途処理
+        return null;
     });
 }
 
