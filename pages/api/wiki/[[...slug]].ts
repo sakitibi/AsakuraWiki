@@ -110,6 +110,19 @@ export default async function handler(
                 return res.status(400).json({ error: 'Invalid request body' })
             }
 
+            // まず対象ページが存在するか確認
+            const { data: existingPage, error: existingErr } = await supabaseServer
+                .from('wiki_pages')
+                .select('id')
+                .eq('wiki_slug', wikiSlug)
+                .eq('slug', pageSlug)
+                .maybeSingle()
+
+            if (existingErr) return res.status(500).json({ error: existingErr.message })
+            if (!existingPage) {
+                return res.status(404).json({ error: `${pageSlug} not found` })
+            }
+
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wikis')
                 .select('edit_mode, owner_id')
@@ -139,6 +152,24 @@ export default async function handler(
         if (req.method === 'DELETE') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
 
+            // まず対象ページが存在するか確認
+            const { data: existingPage, error: existingErr } = await supabaseServer
+                .from('wiki_pages')
+                .select('id')
+                .eq('wiki_slug', wikiSlug)
+                .eq('slug', pageSlug)
+                .maybeSingle()
+
+            if (existingErr) return res.status(500).json({ error: existingErr.message })
+            if (!existingPage) {
+                return res.status(404).json({ error: `${pageSlug} not found` })
+            }
+
+            // FrontPage は削除不可
+            if (pageSlug === "FrontPage") {
+                return res.status(400).json({ error: 'FrontPage cannot be deleted' })
+            }
+
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wikis')
                 .select('id, edit_mode, owner_id')
@@ -150,9 +181,6 @@ export default async function handler(
 
             if (wiki.edit_mode === 'private' && !userId) {
                 return res.status(403).json({ error: 'Forbidden' })
-            }
-            if(pageSlug === "FrontPage"){
-                return res.status(400).json({ error: 'bad request'})
             }
 
             const { error: deleteError } = await supabaseServer
