@@ -409,8 +409,7 @@ export default function WikiPage() {
                                 minHeight: 100,
                             }}
                             >
-                            {Array.isArray(parsedPreview) &&
-                            parsedPreview.map((node: React.ReactNode, i: number) => (
+                            {parsedPreview?.map((node, i) => (
                                 <React.Fragment key={i}>{node}</React.Fragment>
                             ))}
                             </div>
@@ -431,8 +430,7 @@ export default function WikiPage() {
                             <div id="contents-wrapper" style={{display: 'flex'}}>
                                 <div id="container" style={{display: 'flex'}}>
                                     <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
-                                        {Array.isArray(parsedPreview) &&
-                                        parsedPreview.map((node: React.ReactNode, i: number) => (
+                                        {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
                                         {showRedirectButton &&
