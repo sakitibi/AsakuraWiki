@@ -6,6 +6,8 @@ import SelContent from '@/components/SelContent';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import parseInline from '@/components/ParseInline';
 import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
+import ExportBlock from '@/components/ExportBlock';
+import ImportBlock from '@/components/ImportBlock';
 
 
 export function useDesignColor(slug: string) {
@@ -170,6 +172,7 @@ function buildAST(src: string): ASTNode[] {
             const node: ASTNode = {
                 type: 'export',
                 scope: tk.scope,
+                variables: [],
                 children: [],
             };
             curr.push(node);
@@ -180,6 +183,7 @@ function buildAST(src: string): ASTNode[] {
                 type: 'import',
                 slug: tk.slug,
                 page: tk.page,
+                variables: [],
                 children: [],
             };
             curr.push(node);
@@ -213,6 +217,30 @@ function renderAST(
                 >
                     {renderAST(node.children, context)}
                 </Accordion>
+            );
+        }
+        else if (node.type === 'export') {
+            return (
+                <ExportBlock
+                    key={`e${idx}`}
+                    scope={node.scope}
+                    variables={node.variables}
+                >
+                {renderAST(node.children, context)}
+                </ExportBlock>
+            );
+        }
+
+        else if (node.type === 'import') {
+            return (
+                <ImportBlock
+                    key={`i${idx}`}
+                    slug={node.slug}
+                    page={node.page}
+                    variables={node.variables}
+                >
+                {renderAST(node.children, context)}
+                </ImportBlock>
             );
         }
 

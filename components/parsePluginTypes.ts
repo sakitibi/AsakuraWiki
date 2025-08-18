@@ -35,5 +35,5 @@ export type Token =
 export type ASTNode =
     | { type: 'text'; content: string }
     | { type: 'accordion'; title: string; level: '*' | '**' | '***'; isOpen: boolean; children: ASTNode[] }
-    | { type: 'export'; scope: 'global' | 'local'; children: ASTNode[] }
-    | { type: 'import'; slug: string; page: string; children: ASTNode[] };
+    | { type: 'export'; scope: 'global' | 'local'; variables: string[]; children: ASTNode[] }
+    | { type: 'import'; slug: string; page: string; variables: string[]; children: ASTNode[] };
