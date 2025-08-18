@@ -68,8 +68,6 @@ export default function IncludePage({
         })
     }, [wikiSlug, page, stylesheetURL, lineRange])
 
-    const context = { wikiSlug, pageSlug: page, variables: {}, }
-
     return (
         <div className="include-page">
         {showTitle && <h2 className="include-page__title">{page}</h2>}
