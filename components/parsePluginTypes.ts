@@ -27,6 +27,13 @@ export interface FoldBlock {
     children?: FoldBlock[];
 }
 
+export interface ImportBlockProps{
+    slug: string;
+    page: string;
+    variables: string[];
+    children?: React.ReactNode;
+}
+
 export type Token =
     | { type: 'text'; content: string }
     | { type: 'open'; title: string; level: '*' | '**' | '***'; isOpen: boolean }

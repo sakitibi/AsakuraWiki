@@ -5,11 +5,11 @@ import { AccordionBlock, Context } from "./parsePluginTypes";
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
 */
-export function extractAccordions(
+export async function extractAccordions(
     content: string,
     offset = 0,
     context: Context
-): AccordionBlock[] {
+): Promise<AccordionBlock[]> {
     console.log(
         '▶ extractAccordions called.',
         { offset, snippet: content.slice(0, 60).replace(/\n/g, '⏎') }
@@ -48,7 +48,7 @@ export function extractAccordions(
         }
 
         // ⑤ ネスト再帰
-        const children = extractAccordions(body, offset + braceStart, context);
+        const children = await extractAccordions(body, offset + braceStart, context);
 
         // ⑥ inline 用にマスク
         let bodyForInline = body;
@@ -60,7 +60,7 @@ export function extractAccordions(
                 ' '.repeat(relEnd - relStart) +
                 bodyForInline.slice(relEnd);
         }
-        const parsedBody = parseWikiContent(
+        const parsedBody = await parseWikiContent(
             bodyForInline,
             context
         );
