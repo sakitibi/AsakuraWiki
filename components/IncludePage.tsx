@@ -18,6 +18,7 @@ export default function IncludePage({
 }: IncludePageProps) {
     const [rawContent, setRawContent] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
+    const [parsedNodes, setParsedNodes] = useState<React.ReactNode[]>([])
 
     useEffect(() => {
         if (stylesheetURL) {
@@ -32,29 +33,34 @@ export default function IncludePage({
             if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
             return res.json()
         })
-        .then(data => {
+        .then(async data => {
             let content: string = data.content || ''
             const lines = content.split('\n')
 
-        if (lineRange) {
-            const [startRaw = '', endRaw = ''] = lineRange.split('-')
-            const start = startRaw ? parseInt(startRaw) : 1
-            const end = endRaw ? parseInt(endRaw) : lines.length
+            if (lineRange) {
+                const [startRaw = '', endRaw = ''] = lineRange.split('-')
+                const start = startRaw ? parseInt(startRaw) : 1
+                const end = endRaw ? parseInt(endRaw) : lines.length
 
-            // ここで明示的に範囲をチェック（空欄ならスキップ）
-            if (startRaw || endRaw) {
-                if (
-                    isNaN(start) || isNaN(end) ||
-                    start < 1 || end > lines.length || start > end
-                ) {
-                    setError('無効な行範囲です')
-                    return
+                if (startRaw || endRaw) {
+                    if (isNaN(start) || isNaN(end) || start < 1 || end > lines.length || start > end) {
+                        setError('無効な行範囲です')
+                        return
+                    }
+                    content = lines.slice(start - 1, end).join('\n')
                 }
-                content = lines.slice(start - 1, end).join('\n')
             }
-        }
 
             setRawContent(content)
+
+            const context = {
+                wikiSlug,
+                pageSlug: page,
+                variables: {},
+            }
+
+            const nodes = await parseWikiContent(content, context)
+            setParsedNodes(nodes)
         })
         .catch(err => {
             console.error(err)
@@ -62,7 +68,7 @@ export default function IncludePage({
         })
     }, [wikiSlug, page, stylesheetURL, lineRange])
 
-    const context = { wikiSlug, pageSlug: page }
+    const context = { wikiSlug, pageSlug: page, variables: {}, }
 
     return (
         <div className="include-page">
@@ -70,8 +76,8 @@ export default function IncludePage({
         {error ? (
             <p style={{ color: 'red' }}>読み込み失敗: {error}</p>
         ) : (
-            parseWikiContent(rawContent, context).map((node, i) => (
-            <React.Fragment key={i}>{node}</React.Fragment>
+            parsedNodes.map((node, i) => (
+                <React.Fragment key={i}>{node}</React.Fragment>
             ))
         )}
         </div>
