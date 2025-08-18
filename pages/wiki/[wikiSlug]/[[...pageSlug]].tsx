@@ -36,7 +36,6 @@ export default function WikiPage() {
     const [error, setError]     = useState<string | null>(null)
     const [title, setTitle]     = useState<string>('')
     const [content, setContent] = useState<string>('')  // ← textarea の中身
-    const [urlObj, setUrlObj]   = useState<URL | null>(null)
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
@@ -301,8 +300,9 @@ export default function WikiPage() {
             parseWikiContent(previewText, {
                 wikiSlug: wikiSlugStr,
                 pageSlug: pageSlugStr,
+                variables: {}, // ← これを追加
             }),
-        [previewText, wikiSlugStr, pageSlugStr]  // ← useMemo の第2引数
+        [previewText, wikiSlugStr, pageSlugStr]
     )
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
@@ -405,7 +405,8 @@ export default function WikiPage() {
                                 minHeight: 100,
                             }}
                             >
-                            {parsedPreview.map((node, i) => (
+                            {Array.isArray(parsedPreview) &&
+                            parsedPreview.map((node: React.ReactNode, i: number) => (
                                 <React.Fragment key={i}>{node}</React.Fragment>
                             ))}
                             </div>
@@ -426,7 +427,8 @@ export default function WikiPage() {
                             <div id="contents-wrapper" style={{display: 'flex'}}>
                                 <div id="container" style={{display: 'flex'}}>
                                     <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
-                                        {parsedPreview.map((node, i) => (
+                                        {Array.isArray(parsedPreview) &&
+                                        parsedPreview.map((node: React.ReactNode, i: number) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
                                         {showRedirectButton &&
