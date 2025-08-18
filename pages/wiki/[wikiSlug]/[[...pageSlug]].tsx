@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
@@ -39,6 +39,7 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
+    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
 
     const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
@@ -295,15 +296,18 @@ export default function WikiPage() {
     }, 1000);
 
     const previewText = isEdit ? content : page?.content ?? ''
-    const parsedPreview = useMemo(
-        () =>
-            parseWikiContent(previewText, {
-                wikiSlug: wikiSlugStr,
-                pageSlug: pageSlugStr,
-                variables: {}, // ← これを追加
-            }),
-        [previewText, wikiSlugStr, pageSlugStr]
-    )
+    useEffect(() => {
+        const fetchParsedPreview = async () => {
+            const result = await parseWikiContent(previewText, {
+            wikiSlug: wikiSlugStr,
+            pageSlug: pageSlugStr,
+            variables: {},
+            });
+            setParsedPreview(result);
+        };
+
+        fetchParsedPreview();
+    }, [previewText, wikiSlugStr, pageSlugStr]);
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
