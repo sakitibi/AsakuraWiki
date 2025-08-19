@@ -1,5 +1,6 @@
 import { supabaseServer } from '@/lib/supabaseClientBrowser';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 interface ExportBlockProps{
     scope: 'global' | 'local';
@@ -30,8 +31,6 @@ export const getVariableValues = async (wikiSlug: string, variables: string[]) =
 
     return Object.fromEntries(data!.map(({ name, value }) => [name, value]));
 };
-
-import { useRouter } from 'next/router';
 
 export default function ExportBlock({
     scope,
