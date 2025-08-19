@@ -54,19 +54,23 @@ export const getExportedVariablesWithDefaults = async (
     if (!exportMatch) return [];
 
     const [, scope, vars] = exportMatch;
-    const variableNames = vars.split(',').map((v:any) => v.trim());
+    const variableNames = vars.split(',').map((v: string) => v.trim());
 
     const defaults: Record<string, string> = {};
+    const kinds: Record<string, 'const' | 'let'> = {};
 
     for (const name of variableNames) {
         const constMatch = content.match(new RegExp(`#const\\(${name}:\\w+\\)\\{([^}]+)\\}`));
         const letMatch = content.match(new RegExp(`#let\\(${name}:\\w+\\)\\{([^}]+)\\}`));
         if (constMatch) {
             defaults[name] = constMatch[1];
+            kinds[name] = 'const';
         } else if (letMatch) {
             defaults[name] = letMatch[1];
+            kinds[name] = 'let';
         } else {
-            defaults[name] = ''; // 初期値が見つからない場合は空文字
+            defaults[name] = '';
+            kinds[name] = 'const'; // デフォルトは const 扱い（必要なら null にしてもOK）
         }
     }
 
@@ -74,6 +78,7 @@ export const getExportedVariablesWithDefaults = async (
         name,
         value: defaults[name],
         scope,
+        kind: kinds[name],
     }));
 };
 
