@@ -7,6 +7,12 @@ interface ExportBlockProps{
     variables: string[];
 }
 
+interface ExportedVariable {
+    name: string;
+    value: string;
+    scope: 'global' | 'local';
+}
+
 export const getExportedVariables = async (wikiSlug: string, pageSlug: string) => {
     const { data } = await supabaseServer
         .from('wikis')
@@ -32,6 +38,45 @@ export const getVariableValues = async (wikiSlug: string, variables: string[]) =
     return Object.fromEntries(data!.map(({ name, value }) => [name, value]));
 };
 
+export const getExportedVariablesWithDefaults = async (
+    wikiSlug: string,
+    pageSlug: string
+): Promise<ExportedVariable[]> => {
+    const { data } = await supabaseServer
+        .from('wikis')
+        .select('content')
+        .eq('wiki_slug', wikiSlug)
+        .eq('slug', pageSlug)
+        .single();
+
+    const content = data?.content ?? '';
+    const exportMatch = content.match(/#export\((global|local)\)\{(.+?)\}/);
+    if (!exportMatch) return [];
+
+    const [, scope, vars] = exportMatch;
+    const variableNames = vars.split(',').map((v:any) => v.trim());
+
+    const defaults: Record<string, string> = {};
+
+    for (const name of variableNames) {
+        const constMatch = content.match(new RegExp(`#const\\(${name}:\\w+\\)\\{([^}]+)\\}`));
+        const letMatch = content.match(new RegExp(`#let\\(${name}:\\w+\\)\\{([^}]+)\\}`));
+        if (constMatch) {
+            defaults[name] = constMatch[1];
+        } else if (letMatch) {
+            defaults[name] = letMatch[1];
+        } else {
+            defaults[name] = ''; // 初期値が見つからない場合は空文字
+        }
+    }
+
+    return variableNames.map((name:string) => ({
+        name,
+        value: defaults[name],
+        scope,
+    }));
+};
+
 export default function ExportBlock({
     scope,
     variables,
@@ -39,27 +84,18 @@ export default function ExportBlock({
     const router = useRouter();
 
     useEffect(() => {
-        const wikiSlug = router.query.wikiSlug as string;
-        const pageSlug = router.query.pageSlug as string;
-
         async function saveVariables() {
-            console.log('Exporting:', { scope, variables });
+            const wikiSlug = router.query.wikiSlug as string;
+            const pageSlug = router.query.pageSlug as string;
 
-            if (!wikiSlug || !pageSlug || variables.length === 0) {
-                console.warn('Missing export context:', { wikiSlug, pageSlug, variables });
-                return;
-            }
-
-            // 初期値は空文字列で保存
-            const payload = variables.map(name => ({
+            const exported = await getExportedVariablesWithDefaults(wikiSlug, pageSlug);
+            const payload = exported.map(({ name, value, scope }) => ({
                 wiki_slug: wikiSlug,
                 name,
-                value: '', // ← ここを修正
+                value,
                 scope,
-                page_slug: pageSlug ?? "FrontPage",
+                page_slug: pageSlug,
             }));
-
-            console.log("payload: ", payload);
 
             const { error } = await supabaseServer
                 .from('wiki_variables')
@@ -75,7 +111,7 @@ export default function ExportBlock({
         }
 
         saveVariables();
-    }, [scope, variables]);
+    }, []);
 
     return (
         <div style={{ border: '1px dashed #aaa', padding: '0.5em', marginBottom: '1em', display: 'none' }}>
