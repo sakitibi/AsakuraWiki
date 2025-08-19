@@ -162,7 +162,7 @@ export default function Home() {
                                         <li>
                                             <Link href="/special_wiki/13ninstudio">
                                                 <button>
-                                                    <strong>あさクラV2.0.17 Wiki*</strong>
+                                                    <strong>あさクラV2.0.18 Wiki*</strong>
                                                 </button>
                                             </Link>
                                         </li>
