@@ -57,7 +57,9 @@ export default function ExportBlock({
 
             const { error } = await supabaseServer
                 .from('wiki_variables')
-                .upsert(payload, { onConflict: 'name' }); // ←制約名に変更するならここ
+                .upsert(payload, {
+                    onConflict: 'wiki_slug_name_unique', // ← 複合ユニーク制約を使うならこれ
+                });
 
             if (error) {
                 console.error('Export failed:', error.message);
