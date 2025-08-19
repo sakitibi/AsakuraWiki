@@ -39,7 +39,7 @@ export async function resolveImports(content: string, context: Context) {
 
         // 対象ページの content を取得
         const { data: pageData, error: pageError } = await supabaseServer
-            .from('wikis')
+            .from('wiki_pages')
             .select('content')
             .eq('wiki_slug', wikiSlug)
             .eq('slug', pageSlug)
