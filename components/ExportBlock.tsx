@@ -37,28 +37,34 @@ export default function ExportBlock({
     variables,
 }: ExportBlockProps) {
     const router = useRouter();
+
     useEffect(() => {
         const wikiSlug = router.query.wikiSlug as string;
-        const pageSlug = router.query.pageSlug as string; // もし2階層なら
+        const pageSlug = router.query.pageSlug as string;
+
         async function saveVariables() {
             console.log('Exporting:', { scope, variables });
+
             if (!wikiSlug || !pageSlug || variables.length === 0) {
                 console.warn('Missing export context:', { wikiSlug, pageSlug, variables });
                 return;
             }
 
+            // 初期値は空文字列で保存
             const payload = variables.map(name => ({
                 wiki_slug: wikiSlug,
                 name,
-                value: `{${name}}`,
+                value: '', // ← ここを修正
                 scope,
-                page_slug: pageSlug,
+                page_slug: pageSlug ?? "FrontPage",
             }));
+
             console.log("payload: ", payload);
+
             const { error } = await supabaseServer
                 .from('wiki_variables')
                 .upsert(payload, {
-                    onConflict: 'wiki_slug,name', // ← カラム名をカンマ区切りで指定
+                    onConflict: 'wiki_slug,name',
                 });
 
             if (error) {
