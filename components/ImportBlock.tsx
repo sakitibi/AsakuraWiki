@@ -29,6 +29,7 @@ export const processImport = async (line: string) => {
 };
 
 export async function resolveImports(content: string, context: Context) {
+    console.log("resolveImports called");
     const importRe = /#import\(([^:]+):([^)]+)\)\{(.+?)\};/g;
     let match: RegExpExecArray | null;
 
@@ -43,7 +44,8 @@ export async function resolveImports(content: string, context: Context) {
             .eq('wiki_slug', wikiSlug)
             .eq('slug', pageSlug)
             .single();
-
+        
+        console.log("pageData content: ", pageData?.content);
         if (pageError || !pageData?.content) continue;
 
         // 対象ページの #export を抽出
