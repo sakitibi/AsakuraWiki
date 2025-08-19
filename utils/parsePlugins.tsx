@@ -178,7 +178,7 @@ function buildAST(src: string): ASTNode[] {
                 children: [],
             };
             curr.push(node);
-            stack.push((node as any).children);
+            stack.push(node.children);
         }
         else if (tk.type === 'import') {
             const node: ASTNode = {
@@ -189,7 +189,7 @@ function buildAST(src: string): ASTNode[] {
                 children: [],
             };
             curr.push(node);
-            stack.push((node as any).children);
+            stack.push(node.children);
         }
     }
 
