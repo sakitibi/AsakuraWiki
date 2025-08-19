@@ -174,7 +174,7 @@ function buildAST(src: string): ASTNode[] {
             const node: ASTNode = {
                 type: 'export',
                 scope: tk.scope,
-                variables: [],
+                variables: tk.variables,
                 children: [],
             };
             curr.push(node);
@@ -185,7 +185,7 @@ function buildAST(src: string): ASTNode[] {
                 type: 'import',
                 slug: tk.slug,
                 page: tk.page,
-                variables: [],
+                variables: tk.variables,
                 children: [],
             };
             curr.push(node);
