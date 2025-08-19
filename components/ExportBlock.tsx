@@ -49,7 +49,7 @@ export default function ExportBlock({
                 name,
                 value: `{${name}}`,
                 scope,
-                page_slug: pageSlug ?? '', // pageSlug があるなら使う
+                page_slug: pageSlug ?? 'FrontPage', // pageSlug があるなら使う
             }));
 
             const { error } = await supabaseServer
