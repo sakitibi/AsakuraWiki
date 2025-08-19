@@ -117,11 +117,13 @@ function tokenize(src: string): Token[] {
             i += closeM[0].length;
             continue;
         }
-        const exportMatch = src.match(/^#export\((global|local)\)\{(.+?)\};$/);
+        const exportMatch = src.slice(i).match(/^#export\((global|local)\)\{(.+?)\};/);
         if (exportMatch) {
             const scope = exportMatch[1] as 'global' | 'local';
-            const variables = exportMatch[2].split(',').map((v: string) => v.trim());
-            return [{ type: 'export', scope, variables }];
+            const variables = exportMatch[2].split(',').map(v => v.trim());
+            tokens.push({ type: 'export', scope, variables });
+            i += exportMatch[0].length;
+            continue;
         }
 
         const importMatch = src.slice(i).match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};/);
