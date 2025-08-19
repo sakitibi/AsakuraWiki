@@ -37,32 +37,37 @@ export default function ExportBlock({
     variables,
 }: ExportBlockProps) {
     const router = useRouter();
-    const wikiSlug = router.query.wikiSlug as string;
-    const pageSlug = router.query.pageSlug as string; // もし2階層なら
-
     useEffect(() => {
+        const wikiSlug = router.query.wikiSlug as string;
+        const pageSlug = router.query.pageSlug as string; // もし2階層なら
         async function saveVariables() {
-            if (!wikiSlug || !variables.length) return;
+            console.log('Exporting:', { scope, variables });
+            if (!wikiSlug || !pageSlug || variables.length === 0) {
+                console.warn('Missing export context:', { wikiSlug, pageSlug, variables });
+                return;
+            }
 
             const payload = variables.map(name => ({
                 wiki_slug: wikiSlug,
                 name,
                 value: `{${name}}`,
                 scope,
-                page_slug: pageSlug ?? 'FrontPage', // pageSlug があるなら使う
+                page_slug: pageSlug,
             }));
 
             const { error } = await supabaseServer
                 .from('wiki_variables')
-                .upsert(payload, { onConflict: 'wiki_slug_name_unique' });
+                .upsert(payload, { onConflict: 'name' }); // ←制約名に変更するならここ
 
             if (error) {
                 console.error('Export failed:', error.message);
+            } else {
+                console.log('Export success:', payload);
             }
         }
 
         saveVariables();
-    }, [wikiSlug, pageSlug, scope, variables]);
+    }, [scope, variables]);
 
     return (
         <div style={{ border: '1px dashed #aaa', padding: '0.5em', marginBottom: '1em', display: 'none' }}>
