@@ -177,10 +177,8 @@ function buildAST(src: string): ASTNode[] {
                 type: 'export',
                 scope: tk.scope,
                 variables: tk.variables,
-                children: [],
             };
             curr.push(node);
-            stack.push(node.children);
         }
         else if (tk.type === 'import') {
             const node: ASTNode = {
@@ -188,10 +186,8 @@ function buildAST(src: string): ASTNode[] {
                 slug: tk.slug,
                 page: tk.page,
                 variables: tk.variables,
-                children: [],
             };
             curr.push(node);
-            stack.push(node.children);
         }
     }
 
@@ -230,7 +226,6 @@ function renderAST(
                     scope={node.scope}
                     variables={node.variables}
                 >
-                {renderAST(node.children, context)}
                 </ExportBlock>
             );
         }
@@ -243,7 +238,6 @@ function renderAST(
                     page={node.page}
                     variables={node.variables}
                 >
-                {renderAST(node.children, context)}
                 </ImportBlock>
             );
         }

@@ -31,7 +31,6 @@ export interface ImportBlockProps{
     slug: string;
     page: string;
     variables: string[];
-    children?: React.ReactNode;
 }
 
 export type Token =
@@ -43,5 +42,5 @@ export type Token =
 export type ASTNode =
     | { type: 'text'; content: string }
     | { type: 'accordion'; title: string; level: '*' | '**' | '***'; isOpen: boolean; children: ASTNode[] }
-    | { type: 'export'; scope: 'global' | 'local'; variables: string[]; children: ASTNode[] }
-    | { type: 'import'; slug: string; page: string; variables: string[]; children: ASTNode[] };
+    | { type: 'export'; scope: 'global' | 'local'; variables: string[]; }
+    | { type: 'import'; slug: string; page: string; variables: string[]; };
