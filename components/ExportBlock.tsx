@@ -54,11 +54,11 @@ export default function ExportBlock({
                 scope,
                 page_slug: pageSlug,
             }));
-
+            console.log("payload: ", payload);
             const { error } = await supabaseServer
                 .from('wiki_variables')
                 .upsert(payload, {
-                    onConflict: 'wiki_slug_name_unique', // ← 複合ユニーク制約を使うならこれ
+                    onConflict: 'wiki_slug_name_unique', // ← これでOK
                 });
 
             if (error) {
