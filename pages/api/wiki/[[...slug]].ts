@@ -60,7 +60,7 @@ export default async function handler(
 
                 const { data: wiki, error: wikiErr } = await supabaseServer
                     .from('wikis')
-                    .select('cli_used, title')
+                    .select('cli_used, name')
                     .eq('slug', wikiSlug)
                     .maybeSingle()
 
@@ -68,7 +68,7 @@ export default async function handler(
 
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
-                    title: wiki?.title,
+                    title: wiki?.name,
                     page_slugs: pages.map(p => p.slug),
                     cli_used: wiki?.cli_used ?? false
                 })
