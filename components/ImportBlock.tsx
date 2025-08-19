@@ -11,7 +11,7 @@ export const parseImport = (line: string) => {
     return { wikiSlug, pageSlug, variables };
 };
 
-export const injectVariables = (variables: Record<string, string>) => {
+const injectVariables = (variables: Record<string, string>) => {
     return Object.entries(variables)
         .map(([name, value]) => `#const ${name} = ${value}`)
         .join('\n');
@@ -67,7 +67,7 @@ export async function resolveImports(content: string, context: Context) {
         if (!varData) continue;
 
         for (const { name, value } of varData) {
-            context.variables[name] = value;
+            injectVariables(context.variables[name] = value);
         }
     }
 }
