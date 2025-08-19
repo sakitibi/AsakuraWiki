@@ -92,48 +92,60 @@ function extractSelContainersSafe(content: string, excludeRanges: { start: numbe
 
 function tokenize(src: string): Token[] {
     const tokens: Token[] = [];
-    let i = 0;
+    const lines = src.split('\n');
 
-    while (i < src.length) {
-        // #accordion（開き）
-        const openRe = /^#accordion\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
-        const openM = src.slice(i).match(openRe);
-        if (openM) {
-            const argsRaw = (openM[1] || openM[2] || '').trim().split(',').map(s => s.trim());
-            tokens.push({
-                type: 'open',
-                title: argsRaw[0] || '',
-                level: (argsRaw.find(a => /^\*{1,3}$/.test(a)) as '*'|'**'|'***') ?? '*',
-                isOpen: argsRaw.includes('open'),
-            });
-            i += openM[0].length;
-            continue;
-        }
+    for (const line of lines) {
+        const trimmed = line.trim();
 
-        // 閉じ braces
-        const closeM = src.slice(i).match(/^\}{2,}/);
-        if (closeM) {
-            tokens.push({ type: 'close' });
-            i += closeM[0].length;
-            continue;
-        }
-        const exportMatch = src.match(/^#export\((global|local)\)\{(.+?)\};$/);
+        // #export(global|local){...};
+        const exportMatch = trimmed.match(/^#export\((global|local)\)\{(.+?)\};$/);
         if (exportMatch) {
             const scope = exportMatch[1] as 'global' | 'local';
             const variables = exportMatch[2].split(',').map((v: string) => v.trim());
-            return [{ type: 'export', scope, variables }];
+            tokens.push({ type: 'export', scope, variables });
+            continue;
         }
 
-        const importMatch = src.match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};$/);
+        // #import(wikiSlug:pageSlug){...};
+        const importMatch = trimmed.match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};$/);
         if (importMatch) {
             const slug = importMatch[1];
             const page = importMatch[2];
             const variables = importMatch[3].split(',').map((v: string) => v.trim());
-            return [{ type: 'import', slug, page, variables }];
+            tokens.push({ type: 'import', slug, page, variables });
+            continue;
         }
 
-        // それ以外はテキスト１文字ずつ
-        tokens.push({ type: 'text', content: src[i++] });
+        // 行内の構文解析（#accordion など）
+        let i = 0;
+        while (i < line.length) {
+            const openRe = /^#accordion\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
+            const openM = line.slice(i).match(openRe);
+            if (openM) {
+                const argsRaw = (openM[1] || openM[2] || '').trim().split(',').map(s => s.trim());
+                tokens.push({
+                    type: 'open',
+                    title: argsRaw[0] || '',
+                    level: (argsRaw.find(a => /^\*{1,3}$/.test(a)) as '*' | '**' | '***') ?? '*',
+                    isOpen: argsRaw.includes('open'),
+                });
+                i += openM[0].length;
+                continue;
+            }
+
+            const closeM = line.slice(i).match(/^\}{2,}/);
+            if (closeM) {
+                tokens.push({ type: 'close' });
+                i += closeM[0].length;
+                continue;
+            }
+
+            // テキスト1文字ずつ
+            tokens.push({ type: 'text', content: line[i++] });
+        }
+
+        // 改行もトークン化（必要なら）
+        tokens.push({ type: 'text', content: '\n' });
     }
 
     return tokens;

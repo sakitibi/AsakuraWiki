@@ -2,11 +2,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import BKMT_Front from '@/utils/pageParts/maitetsu-bkmtFront';
 
-type Page = {
-    title: string
-    content: string
-}
-
 export default function WikiPage() {
     const router = useRouter()
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
@@ -22,8 +17,6 @@ export default function WikiPage() {
             : pageSlug ?? 'FrontPage';
 
     // state
-    const [page]       = useState<Page | null>(null)
-    const [loading] = useState(false)
     const [error]     = useState<string | null>(null)
     const [urlObj]   = useState<URL | null>(null)
     const designColor = "default";
