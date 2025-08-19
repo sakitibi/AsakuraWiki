@@ -1,5 +1,5 @@
-import React from 'react';
 import { supabaseServer } from '@/lib/supabaseClientBrowser';
+import { useEffect } from 'react';
 
 interface ExportBlockProps{
     scope: 'global' | 'local';
@@ -31,10 +31,40 @@ export const getVariableValues = async (wikiSlug: string, variables: string[]) =
     return Object.fromEntries(data!.map(({ name, value }) => [name, value]));
 };
 
+import { useRouter } from 'next/router';
+
 export default function ExportBlock({
     scope,
     variables,
 }: ExportBlockProps) {
+    const router = useRouter();
+    const wikiSlug = router.query.wikiSlug as string;
+    const pageSlug = router.query.pageSlug as string; // もし2階層なら
+
+    useEffect(() => {
+        async function saveVariables() {
+            if (!wikiSlug || !variables.length) return;
+
+            const payload = variables.map(name => ({
+                wiki_slug: wikiSlug,
+                name,
+                value: `{${name}}`,
+                scope,
+                page_slug: pageSlug ?? '', // pageSlug があるなら使う
+            }));
+
+            const { error } = await supabaseServer
+                .from('wiki_variables')
+                .upsert(payload, { onConflict: 'name' });
+
+            if (error) {
+                console.error('Export failed:', error.message);
+            }
+        }
+
+        saveVariables();
+    }, [wikiSlug, pageSlug, scope, variables]);
+
     return (
         <div style={{ border: '1px dashed #aaa', padding: '0.5em', marginBottom: '1em', display: 'none' }}>
             <strong>Export ({scope}):</strong> {variables.join(', ')}
