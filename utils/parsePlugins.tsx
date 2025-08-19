@@ -124,12 +124,14 @@ function tokenize(src: string): Token[] {
             return [{ type: 'export', scope, variables }];
         }
 
-        const importMatch = src.match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};$/);
+        const importMatch = src.slice(i).match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};/);
         if (importMatch) {
             const slug = importMatch[1];
             const page = importMatch[2];
-            const variables = importMatch[3].split(',').map((v: string) => v.trim());
-            return [{ type: 'import', slug, page, variables }];
+            const variables = importMatch[3].split(',').map(v => v.trim());
+            tokens.push({ type: 'import', slug, page, variables });
+            i += importMatch[0].length;
+            continue;
         }
 
         // それ以外はテキスト１文字ずつ
