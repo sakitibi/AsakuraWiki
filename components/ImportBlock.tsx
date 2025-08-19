@@ -61,7 +61,7 @@ export async function resolveImports(content: string, context: Context) {
             .select('name, value')
             .eq('wiki_slug', wikiSlug)
             .in('name', validVars);
-        console.log(varData);
+        console.log("varData: ", varData);
         if (!varData) continue;
 
         for (const { name, value } of varData) {
