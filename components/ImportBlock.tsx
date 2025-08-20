@@ -37,9 +37,13 @@ export async function resolveImports(content: string, context: Context): Promise
 
         const exportMatch = pageData.content.match(/#export\((global|local)\)\{(.+?)\};/);
         if (!exportMatch) continue;
-
+        const exportScope = exportMatch[1]; // ← global or local
         const exportedVars = exportMatch[2].split(',').map((v: string) => v.trim());
         const validVars = requestedVars.filter(v => exportedVars.includes(v));
+        if (exportScope === 'local' && wikiSlug !== context.wikiSlug) {
+            continue; // スコープ外なのでスキップ
+        }
+        // ✅ local の場合は wikiSlug が一致しているか確認
         if (validVars.length === 0) continue;
 
         const { data: varData } = await supabaseServer
