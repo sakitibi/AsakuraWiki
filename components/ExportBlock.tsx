@@ -80,12 +80,12 @@ export const getExportedVariablesWithDefaults = async (
             kinds[name] = 'const';
         }
     }
-
-    return variableNames.map((name:string) => ({
+    return variableNames.map((name: string) => ({
         name,
         value: defaults[name],
         scope,
         kind: kinds[name],
+        type: types[name],
     }));
 };
 
@@ -102,12 +102,13 @@ export default function ExportBlock({
 
         async function saveVariables() {
             const exported = await getExportedVariablesWithDefaults(wikiSlug, pageSlug);
-            const payload = exported.map(({ name, value, kind, scope }) => ({
+            const payload = exported.map(({ name, value, kind, scope, type }) => ({
                 wiki_slug: wikiSlug,
                 name,
                 value,
                 scope,
                 kind,
+                type,
                 page_slug: pageSlug,
             }));
 
