@@ -11,28 +11,11 @@ export const parseImport = (line: string) => {
     return { wikiSlug, pageSlug, variables };
 };
 
-const injectVariables = (variables: Record<string, string>) => {
-    return Object.entries(variables)
-        .map(([name, value]) => `#const ${name} = ${value}`)
-        .join('\n');
-};
-
 function injectConstBlocks(variables: { name: string; value: string; type: string; kind: string }[]): string {
     return variables
         .map(({ name, value, type, kind }) => `#${kind}(${name}:${type}){${value}};`)
         .join('\n');
 }
-
-export const processImport = async (line: string) => {
-    const parsed = parseImport(line);
-    if (!parsed) return '';
-
-    const exported = await getExportedVariables(parsed.wikiSlug, parsed.pageSlug);
-    const validVars = parsed.variables.filter(v => exported.includes(v));
-    const values = await getVariableValues(parsed.wikiSlug, validVars);
-
-    return injectVariables(values); // ← #const で挿入
-};
 
 export async function resolveImports(content: string, context: Context): Promise<string> {
     console.log("resolveImports called");
