@@ -44,7 +44,7 @@ export const getExportedVariablesWithDefaults = async (
     pageSlug: string
 ): Promise<ExportedVariable[]> => {
     const { data } = await supabaseServer
-        .from('wikis')
+        .from('wiki_pages')
         .select('content')
         .eq('wiki_slug', wikiSlug)
         .eq('slug', pageSlug)
