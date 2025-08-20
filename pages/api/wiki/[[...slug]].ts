@@ -43,8 +43,18 @@ export default async function handler(
                 .maybeSingle()
 
             if (error) throw new Error('Failed to fetch wiki cli_used: ' + error.message)
-            if (!wiki) throw { status: 404, message: 'Wiki not found' }
-            if (!wiki.cli_used && userId !== wiki.owner_id && !adminer_user_list_found) throw { status: 403, message: 'CLI operations not allowed for this wiki' }
+            if (!wiki) throw {
+                status: 404,
+                message: 'Wiki not found'
+            }
+            if (
+                !wiki.cli_used &&
+                userId !== wiki.owner_id &&
+                !adminer_user_list_found
+            ) throw {
+                status: 403,
+                message: 'CLI operations not allowed for this wiki'
+            }
             return wiki
         }
 
