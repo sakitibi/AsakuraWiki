@@ -88,12 +88,13 @@ export default function ExportBlock({
     variables,
 }: ExportBlockProps) {
     const router = useRouter();
-
     useEffect(() => {
-        async function saveVariables() {
-            const wikiSlug = router.query.wikiSlug as string;
-            const pageSlug = router.query.pageSlug as string;
+        const wikiSlug = router.query.wikiSlug as string;
+        const pageSlug = router.query.pageSlug as string;
 
+        if (!wikiSlug || !pageSlug) return;
+
+        async function saveVariables() {
             const exported = await getExportedVariablesWithDefaults(wikiSlug, pageSlug);
             const payload = exported.map(({ name, value, kind, scope }) => ({
                 wiki_slug: wikiSlug,
@@ -118,7 +119,7 @@ export default function ExportBlock({
         }
 
         saveVariables();
-    }, []);
+    }, [router.query.wikiSlug, router.query.pageSlug]);
 
     return (
         <div style={{ border: '1px dashed #aaa', padding: '0.5em', marginBottom: '1em', display: 'none' }}>
