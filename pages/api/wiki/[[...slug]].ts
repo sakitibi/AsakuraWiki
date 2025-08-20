@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
+import { adminerUserId } from '@/utils/user_list';
 
 export default async function handler(
     req: NextApiRequest,
@@ -19,6 +20,7 @@ export default async function handler(
 
         const wikiSlug: string = parts[0]
         const pageSlug: string = parts.slice(1).join('/') || 'FrontPage'
+        const adminer_user_list_found = adminerUserId.find(value => value === userId);
 
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
@@ -36,13 +38,13 @@ export default async function handler(
         const checkCLIAllowed = async () => {
             const { data: wiki, error } = await supabaseServer
                 .from('wikis')
-                .select('cli_used')
+                .select('cli_used, owner_id')
                 .eq('slug', wikiSlug)
                 .maybeSingle()
 
             if (error) throw new Error('Failed to fetch wiki cli_used: ' + error.message)
             if (!wiki) throw { status: 404, message: 'Wiki not found' }
-            if (!wiki.cli_used) throw { status: 403, message: 'CLI operations not allowed for this wiki' }
+            if (!wiki.cli_used && userId !== wiki.owner_id && !adminer_user_list_found) throw { status: 403, message: 'CLI operations not allowed for this wiki' }
             return wiki
         }
 
