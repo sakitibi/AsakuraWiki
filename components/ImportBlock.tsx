@@ -1,4 +1,3 @@
-import { getVariableValues, getExportedVariables } from '@/components/ExportBlock';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { Context, ImportBlockProps } from '@/components/parsePluginTypes';
 
