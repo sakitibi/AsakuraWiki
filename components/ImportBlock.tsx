@@ -17,6 +17,12 @@ const injectVariables = (variables: Record<string, string>) => {
         .join('\n');
 };
 
+function injectConstBlocks(variables: { name: string; value: string; type: string; kind: string }[]): string {
+    return variables
+        .map(({ name, value, type, kind }) => `#${kind}(${name}:${type}){${value}};`)
+        .join('\n');
+}
+
 export const processImport = async (line: string) => {
     const parsed = parseImport(line);
     if (!parsed) return '';
@@ -28,7 +34,7 @@ export const processImport = async (line: string) => {
     return injectVariables(values); // ← #const で挿入
 };
 
-export async function resolveImports(content: string, context: Context) {
+export async function resolveImports(content: string, context: Context): Promise<string> {
     console.log("resolveImports called");
     const importRe = /#import\(([^:]+):([^)]+)\)\{(.+?)\};/g;
     let match: RegExpExecArray | null;
@@ -37,39 +43,41 @@ export async function resolveImports(content: string, context: Context) {
         const [, wikiSlug, pageSlug, rawVars] = match;
         const requestedVars = rawVars.split(',').map((v: string) => v.trim());
 
-        // 対象ページの content を取得
         const { data: pageData, error: pageError } = await supabaseServer
             .from('wiki_pages')
             .select('content')
             .eq('wiki_slug', wikiSlug)
             .eq('slug', pageSlug)
             .single();
-        
-        console.log("pageData content: ", pageData?.content);
+
         if (pageError || !pageData?.content) continue;
 
-        // 対象ページの #export を抽出
         const exportMatch = pageData.content.match(/#export\((global|local)\)\{(.+?)\};/);
         if (!exportMatch) continue;
 
         const exportedVars = exportMatch[2].split(',').map((v: string) => v.trim());
         const validVars = requestedVars.filter(v => exportedVars.includes(v));
-
         if (validVars.length === 0) continue;
 
-        // wiki_variables テーブルから値を取得
         const { data: varData } = await supabaseServer
             .from('wiki_variables')
-            .select('name, value')
+            .select('name, value, type, kind')
             .eq('wiki_slug', wikiSlug)
             .in('name', validVars);
-        console.log("varData: ", varData);
+
         if (!varData) continue;
 
+        // context に代入
         for (const { name, value } of varData) {
-            injectVariables(context.variables[name] = value);
+            context.variables[name] = value;
         }
+
+        // content に挿入
+        const injectedBlock = injectConstBlocks(varData);
+        content = `${injectedBlock}\n\n${content}`;
     }
+
+    return content;
 }
 
 export default function ImportBlock({
