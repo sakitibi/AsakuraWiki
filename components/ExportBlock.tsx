@@ -10,6 +10,7 @@ interface ExportBlockProps{
 interface ExportedVariable {
     name: string;
     value: string;
+    kind: 'const' | 'let';
     scope: 'global' | 'local';
 }
 
@@ -94,11 +95,12 @@ export default function ExportBlock({
             const pageSlug = router.query.pageSlug as string;
 
             const exported = await getExportedVariablesWithDefaults(wikiSlug, pageSlug);
-            const payload = exported.map(({ name, value, scope }) => ({
+            const payload = exported.map(({ name, value, kind, scope }) => ({
                 wiki_slug: wikiSlug,
                 name,
                 value,
                 scope,
+                kind,
                 page_slug: pageSlug,
             }));
 
