@@ -16,7 +16,7 @@ interface ExportedVariable {
 
 export const getExportedVariables = async (wikiSlug: string, pageSlug: string) => {
     const { data } = await supabaseServer
-        .from('wikis')
+        .from('wiki_pages')
         .select('content')
         .eq('wiki_slug', wikiSlug)
         .eq('slug', pageSlug)
