@@ -12,6 +12,7 @@ interface ExportedVariable {
     value: string;
     kind: 'const' | 'let';
     scope: 'global' | 'local';
+    type: string;
 }
 
 export const getExportedVariables = async (wikiSlug: string, pageSlug: string) => {
@@ -59,19 +60,24 @@ export const getExportedVariablesWithDefaults = async (
 
     const defaults: Record<string, string> = {};
     const kinds: Record<string, 'const' | 'let'> = {};
+    const types: Record<string, string> = {};
 
     for (const name of variableNames) {
-        const constMatch = content.match(new RegExp(`#const\\(${name}:[^)]+\\)\\{([^}]+)\\}`));
-        const letMatch = content.match(new RegExp(`#let\\(${name}:[^)]+\\)\\{([^}]+)\\}`));
+        const constMatch = content.match(new RegExp(`#const\\(${name}:([^)]+)\\)\\{([^}]+)\\}`));
+        const letMatch = content.match(new RegExp(`#let\\(${name}:([^)]+)\\)\\{([^}]+)\\}`));
+
         if (constMatch) {
-            defaults[name] = constMatch[1];
+            types[name] = constMatch[1] ?? 'string';         // ← 型情報
+            defaults[name] = constMatch[2];      // ← 値
             kinds[name] = 'const';
         } else if (letMatch) {
-            defaults[name] = letMatch[1];
+            types[name] = letMatch[1] ?? 'string';
+            defaults[name] = letMatch[2];
             kinds[name] = 'let';
         } else {
+            types[name] = constMatch[1] ?? 'string';              // ← デフォルト型
             defaults[name] = '';
-            kinds[name] = 'const'; // デフォルトは const 扱い（必要なら null にしてもOK）
+            kinds[name] = 'const';
         }
     }
 
