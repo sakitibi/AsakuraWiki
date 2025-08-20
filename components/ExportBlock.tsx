@@ -61,8 +61,8 @@ export const getExportedVariablesWithDefaults = async (
     const kinds: Record<string, 'const' | 'let'> = {};
 
     for (const name of variableNames) {
-        const constMatch = content.match(new RegExp(`#const\\(${name}:\\w+\\)\\{([^}]+)\\}`));
-        const letMatch = content.match(new RegExp(`#let\\(${name}:\\w+\\)\\{([^}]+)\\}`));
+        const constMatch = content.match(new RegExp(`#const\\(${name}:[^)]+\\)\\{([^}]+)\\}`));
+        const letMatch = content.match(new RegExp(`#let\\(${name}:[^)]+\\)\\{([^}]+)\\}`));
         if (constMatch) {
             defaults[name] = constMatch[1];
             kinds[name] = 'const';
