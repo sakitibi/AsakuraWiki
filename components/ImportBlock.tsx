@@ -67,9 +67,20 @@ export async function resolveImports(content: string, context: Context): Promise
 
         if (!varData) continue;
 
-        // context に代入
-        for (const { name, value } of varData) {
+        // context に代入（const と let 両対応）
+        context.constContext = context.constContext ?? {};
+        context.letContext = context.letContext ?? {};
+
+        for (const { name, value, kind } of varData) {
             context.variables[name] = value;
+
+            if (kind === 'const') {
+                if (!(name in context.constContext)) {
+                    context.constContext[name] = value;
+                }
+            } else if (kind === 'let') {
+                context.letContext[name] = value; // ← 再代入OK
+            }
         }
 
         // content に挿入

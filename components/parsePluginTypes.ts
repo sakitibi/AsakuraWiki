@@ -1,9 +1,10 @@
-export interface Context {
+export type Context = {
     wikiSlug: string;
     pageSlug: string;
-    letContext?: Record<string, string>;
     variables: Record<string, string>;
-}
+    constContext?: Record<string, string>; // ← 追加
+    letContext?: Record<string, string>;   // ← 追加
+};
 
 export interface AccordionBlock {
     prefix?: string;
