@@ -108,7 +108,7 @@ export default function ExportBlock({
             const { error } = await supabaseServer
                 .from('wiki_variables')
                 .upsert(payload, {
-                    onConflict: 'wiki_slug,name',
+                    onConflict: 'wiki_slug,name,page_slug'
                 });
 
             if (error) {
