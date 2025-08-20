@@ -1,5 +1,5 @@
 import { getVariableValues, getExportedVariables } from '@/components/ExportBlock';
-import { supabaseServer } from '@/lib/supabaseClientBrowser';
+import { supabaseServer } from '@/lib/supabaseClientServer';
 import { Context, ImportBlockProps } from '@/components/parsePluginTypes';
 
 // 例: #import(13ninstudio:module){ninki,kitikura-world}

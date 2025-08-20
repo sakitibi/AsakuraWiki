@@ -1,4 +1,4 @@
-import { supabaseServer } from '@/lib/supabaseClientBrowser';
+import { supabaseServer } from '@/lib/supabaseClientServer';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
