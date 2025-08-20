@@ -74,7 +74,7 @@ export async function resolveImports(content: string, context: Context): Promise
 
         // content に挿入
         const injectedBlock = injectConstBlocks(varData);
-        content = `${injectedBlock}\n\n${content}`;
+        content = content.replace(match[0], injectedBlock);
     }
 
     return content;
