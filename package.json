@@ -73,6 +73,10 @@
         }
       ]
     },
-    "asarUnpack": "node_modules/**/*"
+    "asarUnpack": [
+      "node_modules/express/**",
+      "node_modules/qs/**",
+      "node_modules/side-channel/**"
+    ]
   }
 }
