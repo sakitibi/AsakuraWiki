@@ -64,6 +64,7 @@
           "path": "/Applications"
         }
       ]
-    }
+    },
+    "asarUnpack": "node_modules/**/*"
   }
 }
