@@ -11,7 +11,7 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 
 export default async function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [users, setUsers] = useState<any>(null);
+    const [userlists, setUsers] = useState<any>(null);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -24,10 +24,11 @@ export default async function MinecraftVS(){
         const { data: users } = await supabaseServer
             .from('minecraft_vs')
             .select('user_name, team')
+            .eq('user_name', userlists);
         users?.map(p => p.user_name)
     }
     setUsers(await usersFetch());
-    console.log(users);
+    console.log(userlists);
     return(
         <>
             <Head>
