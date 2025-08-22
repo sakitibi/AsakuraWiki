@@ -45,28 +45,31 @@ export default function MinecraftVSAdminer(){
         e.preventDefault();
         setLoading(true);
         if(EditMode === "add"){
-            console.log("Insert payload:", {
-                user_name: UserName,
-                user_id: UserId,
-                team: Teams,
-                score: Score,
-                team_total: TeamScore ?? Score
-            });
-            const { error } = await supabaseServer
-            .from('minecraft_vs')
-            .insert([{
-                user_name: UserName,
-                user_id: UserId,
-                team: Teams,
-                score: Score,
-                team_total: TeamScore ?? Score
-            }])
-            .select()
-            if (error) {
-                alert('更新に失敗しました: ' + error.message);
-            } else {
-                alert('設定を保存しました');
+            // まずチーム合計を取得
+            let newTeamScore = Score;
+            if (Teams) {
+                const { data, error } = await supabaseServer
+                    .from("minecraft_vs")
+                    .select("team_total")
+                    .eq("team", Teams);
+                if (!error && data) {
+                    // 現在の合計を計算
+                    const sum = data.reduce((acc, item) => acc + (item.team_total ?? 0), 0);
+                    newTeamScore += sum;
+                }
             }
+
+            const { data, error } = await supabaseServer
+                .from('minecraft_vs')
+                .insert([{
+                    user_name: UserName,
+                    user_id: UserId,
+                    team: Teams,
+                    score: Score,
+                    team_total: newTeamScore
+                }])
+                .select();
+            console.log("Insert result:", { data, error });
         } else {
             const { error } = await supabaseServer
                 .from('minecraft_vs')
