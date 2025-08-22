@@ -85,6 +85,20 @@ export default function MinecraftVS(){
                         <h1>マイクラバーサス ハッピーガスト スカイバトル!</h1>
                         <p>開催期間 2025年9月2日 12:30~16:30<br/>(主催者が急遽北海道へ出張の用事が出来た為、8月23日18:00から延期)</p>
                         <p>ロシア語ページ無くてごめんなさい、</p>
+                            {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string}[]]) => (
+                                <>
+                                    {users.slice(0,5).map(vsuser => (
+                                        <>
+                                            {user?.id === vsuser.user_id ? (
+                                                <p>あなたはマイクラバーサス ハッピーガスト スカイバトル!の参加者です!</p>
+                                            ) : (
+                                                <p>あなたもマイクラバーサス ハッピーガスト スカイバトル!に参加しますか?</p>
+                                            )
+                                            }
+                                        </>
+                                    ))}
+                                </>
+                            ))}
                         <p>参加者:</p>
                         <ul>
                             {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string}[]]) => (
