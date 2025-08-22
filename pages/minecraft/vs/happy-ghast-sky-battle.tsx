@@ -34,16 +34,22 @@ export default function MinecraftVS(){
     useEffect(() => {
         const fetchUsers = async () => {
             const { data, error } = await supabaseServer
-                .from("minecraft_vs")
-                .select("user_name, team")
+            .from("minecraft_vs")
+            .select("user_name, team");
             if (error) return console.error(error);
+
             if (data) {
-                setUsers(
-                    data.map(user => ({
-                        user_name: user.user_name,
-                        team: user.team
-                    }))
-                );
+            // チームごとに user_name をまとめる
+            const grouped = data.reduce((acc: any, user) => {
+                if (!acc[user.team]) {
+                    acc[user.team] = [];
+                }
+                acc[user.team].push(user.user_name);
+                return acc;
+            }, {});
+
+            // [{ team1: [...], team2: [...] }] という形にする
+            setUsers([grouped]);
             }
         };
 
