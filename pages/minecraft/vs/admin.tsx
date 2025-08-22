@@ -41,22 +41,27 @@ export default function MinecraftVSAdminer(){
         };
         fetchData();
     }, [Teams]);
-    const AddUsers = async(e: React.FormEvent) => {
+    const AddUsers = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        if(EditMode === "add"){
-            // まずチーム合計を取得
-            let newTeamScore = Score;
-            if (Teams) {
-                const { data, error } = await supabaseServer
-                    .from("minecraft_vs")
-                    .select("team_total")
-                    .eq("team", Teams);
-                if (!error && data) {
-                    // 現在の合計を計算
-                    const sum = data.reduce((acc, item) => acc + (item.team_total ?? 0), 0);
-                    newTeamScore += sum;
-                }
+
+        if (!UserId || !UserName || !Teams) {
+            console.error("UserId, UserName, Teams must be set");
+            setLoading(false);
+            return;
+        }
+
+        if (EditMode === "add") {
+            // チーム合計を取得
+            let newTeamScore = Score ?? 0;
+            const { data: teamData, error: teamError } = await supabaseServer
+                .from("minecraft_vs")
+                .select("team_total")
+                .eq("team", Teams);
+
+            if (!teamError && teamData) {
+                const sum = teamData.reduce((acc, item) => acc + (item.team_total ?? 0), 0);
+                newTeamScore += sum;
             }
 
             const { data, error } = await supabaseServer
@@ -66,41 +71,44 @@ export default function MinecraftVSAdminer(){
                     user_id: UserId,
                     team: Teams,
                     score: Score,
-                    team_total: newTeamScore
+                    team_total: newTeamScore,
                 }])
                 .select();
-            console.log("Insert result:", { data, error });
-        } else {
-            // 現在のチームの合計から対象ユーザーの古い score を引いて、新しい score を足す
-            let newTeamScore = Score;
-            if (Teams && UserId) {
-                const { data, error } = await supabaseServer
-                    .from("minecraft_vs")
-                    .select("user_id, score, team_total")
-                    .eq("team", Teams);
-                if (!error && data) {
-                    const sum = data.reduce((acc, item) => acc + (item.score ?? 0), 0);
-                    newTeamScore = sum; // チーム合計の合計値
-                }
+
+            if (error) console.error("Insert error:", error);
+            else console.log("Insert result:", data);
+
+        } else { // edit モード
+            // 現在のチームの合計から対象ユーザーのスコアを計算
+            let newTeamScore = Score ?? 0;
+            const { data: teamData, error: teamError } = await supabaseServer
+                .from("minecraft_vs")
+                .select("user_id, score, team_total")
+                .eq("team", Teams);
+
+            if (!teamError && teamData) {
+                // 自分の古い score を除いたチーム合計
+                const sum = teamData
+                    .filter(item => item.user_id !== UserId)
+                    .reduce((acc, item) => acc + (item.score ?? 0), 0);
+                newTeamScore += sum;
             }
 
             const { error } = await supabaseServer
                 .from('minecraft_vs')
                 .update({
                     user_name: UserName,
-                    user_id: UserId,
                     team: Teams,
                     score: Score,
                     team_total: newTeamScore
                 })
-                .eq('user_id', UserId)
-                .eq('team', Teams);
-            if(error!){
-                console.error(error.message);
-            }
+                .eq('user_id', UserId); // id カラムがあれば .eq('id', id) でもOK
+
+            if (error) console.error("Update error:", error);
         }
+
         setLoading(false);
-    }
+    };
     if (loading) return <p>読み込み中...</p>;
     return(
         <>
