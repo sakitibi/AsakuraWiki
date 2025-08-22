@@ -4,6 +4,7 @@
 @use 'pForBeginner';
 @use 'media';
 @use 'mixin';
+@use 'minecraft/vs';
 
 .pHotWiki__title{
     @include mixin.pLikedWiki;
