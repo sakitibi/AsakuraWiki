@@ -12,7 +12,6 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<any[]>([]);
-    const [teamlists, setTeams] = useState<any[]>([]);
     const [ruleBookImg, setRuleBookImg] = useState<number>(0);
     const RuleBookSrcArray:string[] = [
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png",
@@ -35,15 +34,13 @@ export default function MinecraftVS(){
                 .select("user_name, team")
             if (error) return console.error(error);
             if (data) {
-                setUsers(data.map(user => user.user_name));
-                setTeams(data.map(team => team.team));
+                setUsers(data.map(user => (user.user_name, user.team)));
             }
         };
 
         fetchUsers();
     }, []);
     console.log("Current userlists:", userlists);
-    console.log("Current teamlists:", teamlists);
     const RuleImgChanges = () => {
         const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
