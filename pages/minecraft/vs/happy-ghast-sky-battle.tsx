@@ -90,12 +90,12 @@ export default function MinecraftVS(){
                         <ul>
                             {Object.entries(userlists).map(([team, users]: [string, string[]]) => (
                                 <li key={team}>
-                                {team}チーム
-                                <ul>
-                                    {users.slice(0, 5).map((userName, index) => (
-                                        <li key={index}>{userName}</li>
-                                    ))}
-                                </ul>
+                                    {team}チーム
+                                    <ul>
+                                        {users.slice(0, 5).map((userName, index) => (
+                                            <li key={index}>{userName}</li>
+                                        ))}
+                                    </ul>
                                 </li>
                             ))}
                         </ul>
