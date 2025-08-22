@@ -42,9 +42,17 @@ export default function MinecraftVS(){
     console.log("Current userlists:", userlists);
     const RuleImgChanges = (type: string) => {
         if(type === "plus"){
-            setRuleBookImg(ruleBookImg + 1);
+            if(ruleBookImg < 3){
+                setRuleBookImg(ruleBookImg + 1);
+            } else {
+                setRuleBookImg(0);
+            }
         } else if(type === "minus") {
-            setRuleBookImg(ruleBookImg - 1);
+            if(ruleBookImg > 0){
+                setRuleBookImg(ruleBookImg - 1);
+            } else {
+                setRuleBookImg(3);
+            }
         } else {
             console.error("property error:", type);
             return;
