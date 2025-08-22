@@ -21,24 +21,16 @@ export default async function MinecraftVS(){
     };
     const user = useUser();
     useEffect(() => {
-        const usersFetch = async () => {
-            console.log("Fetching from supabase...");
+        const fetchUsers = async () => {
             const { data: users, error } = await supabaseServer
-            .from("minecraft_vs")
-            .select("user_name, team");
+                .from("minecraft_vs")
+                .select("user_name, team");
 
-            if (error) {
-                console.error("Supabase error:", error);
-                return;
-            }
-
-            if (users) {
-                console.log("Fetched users:", users);
-                setUsers(users);
-            }
+            if (error) return console.error(error);
+            if (users) setUsers(users);
         };
 
-        usersFetch();
+        fetchUsers();
     }, []);
     console.log("Current userlists:", userlists);
     return(
