@@ -56,6 +56,7 @@ export default function MinecraftVS(){
         }
         const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
+        console.log("RuleImgChangesData: ", ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
     }
     return(
         <>
