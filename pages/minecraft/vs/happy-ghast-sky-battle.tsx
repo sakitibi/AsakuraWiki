@@ -19,6 +19,9 @@ export default function MinecraftVS(){
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule5_6.png",
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule9_10.png"
     ];
+    if(typeof ruleBookImg === 'undefined'){
+        setRuleBookImg(0);
+    }
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
