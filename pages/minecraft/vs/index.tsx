@@ -12,6 +12,7 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 export default async function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<any[]>([]);
+    const [userName, setUserName] = useState<string>("");  // ← 検索条件
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -20,19 +21,21 @@ export default async function MinecraftVS(){
         });
     };
     const user = useUser();
+
     useEffect(() => {
+        if (!userName) return;  // ← 空なら何もしない
+
         const usersFetch = async () => {
             const { data: users } = await supabaseServer
-            .from('sample')
-            .select('user_name, team');
-
-            // supabaseのデータをstateに保存
+            .from("minecraft_vs")
+            .select("user_name, team")
             if (users) {
-                setUsers(users);
+                setUsers(users); // ← 結果を保存
             }
         };
+
         usersFetch();
-    }, []); // ← 初回マウント時のみ
+    }, [userName]); // ← 検索条件が変わったときだけ動く
     console.log(userlists);
     return(
         <>
