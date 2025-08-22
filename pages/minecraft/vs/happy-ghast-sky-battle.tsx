@@ -43,7 +43,11 @@ export default function MinecraftVS(){
                 // チームごとに { user_name, user_id } をまとめる
                 const grouped = data.reduce((acc: any, user) => {
                     if (!acc[user.team]) acc[user.team] = [];
-                    acc[user.team].push({ user_name: user.user_name, user_id: user.user_id, user_link: user.live_link });
+                    acc[user.team].push({
+                        user_name: user.user_name,
+                        user_id: user.user_id,
+                        user_link: user.live_link
+                    });
                     return acc;
                 }, {});
 
@@ -107,7 +111,7 @@ export default function MinecraftVS(){
                         <p>参加者:</p>
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <ul>
-                                {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string, live_link:string}[]]) => (
+                                {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string, user_link:string}[]]) => (
                                     <>
                                         <li key={team}>
                                         {team}チーム
@@ -121,7 +125,7 @@ export default function MinecraftVS(){
                                                         {users.slice(0,5).map(vsuser => (
                                                             <tr style={{height: '21.0px'}}>
                                                                 <td style={TdStyles} key={vsuser.user_id}>
-                                                                    <a href={String(vsuser.live_link)}>{vsuser.user_name}</a>
+                                                                    <a href={String(vsuser.user_link)}>{vsuser.user_name}</a>
                                                                 </td>
                                                             </tr>
                                                         ))}
