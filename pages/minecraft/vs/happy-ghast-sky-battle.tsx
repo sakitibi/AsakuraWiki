@@ -60,48 +60,25 @@ export default function MinecraftVS(){
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
         console.log("RuleImgChangesData: ", ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
     }
-    const RuleImgAdds = (ruleBookImgState: number) => {
-        console.log("typeはplusです");
-        if(ruleBookChangeButtonState !== 0){
-            setRuleBookChangeButtonState(0);
-            RuleImgAdds(ruleBookImg);
-            return;
-        }
-        if(ruleBookImgState < 3){
-            setRuleBookImg(ruleBookImgState + 1);
-            if(ruleBookChangeButtonState !== 0 && ruleBookImgState + 1 !== ruleBookImg){
-                setRuleBookImg(ruleBookImgState + 1);
-            }
-        } else {
-            setRuleBookImg(0);
-            if(ruleBookImg !== 0){
-                setRuleBookImg(0);
-            }
-        }
+    // 次の画像へ
+    const RuleImgAdds = () => {
+        setRuleBookImg((prev) => {
+            const next = prev + 1;
+            return next > 3 ? 0 : next;
+        });
         setRuleBookChangeButtonState(0);
         RuleImgChanges();
-    }
-    const RuleImgRemoves = (ruleBookImgState: number) => {
-        console.log("typeはminusです");
-        if(ruleBookChangeButtonState !== 1){
-            setRuleBookChangeButtonState(1);
-            RuleImgRemoves(ruleBookImg);
-            return;
-        }
-        if(ruleBookImgState > 0){
-            setRuleBookImg(ruleBookImgState - 1);
-            if(ruleBookImgState - 1 !== ruleBookImg){
-                setRuleBookImg(ruleBookImgState - 1);
-            }
-        } else {
-            setRuleBookImg(3);
-            if(ruleBookImg !== 3){
-                setRuleBookImg(3);
-            }
-        }
+    };
+
+    // 前の画像へ
+    const RuleImgRemoves = () => {
+        setRuleBookImg((prev) => {
+            const next = prev - 1;
+            return next < 0 ? 3 : next;
+        });
         setRuleBookChangeButtonState(1);
         RuleImgChanges();
-    }
+    };
     return(
         <>
             <Head>
@@ -166,8 +143,8 @@ export default function MinecraftVS(){
                                     <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img" className={styles.MC_Carousel_track_slide_media_img}/>
                                 </picture>
                                 <div style={{ display: 'flex' }}>
-                                    <button onClick={() => RuleImgRemoves(ruleBookImg)}><span>前へ</span></button>
-                                    <button onClick={() => RuleImgAdds(ruleBookImg)}><span>次へ</span></button>
+                                    <button onClick={RuleImgRemoves}><span>前へ</span></button>
+                                    <button onClick={RuleImgAdds}><span>次へ</span></button>
                                 </div>
                             </div>
                         </div>
