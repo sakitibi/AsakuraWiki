@@ -49,7 +49,7 @@ export default function MinecraftVS(){
                         <p>次回のマイクラバーサスは</p>
                         <p><strong>マイクラバーサス 〜 ハッピーガスト スカイバトル！</strong></p>
                         <p>に決定!</p>
-                        <p><a href="./happy-ghast-sky-battle">詳しくはこちらで</a></p>
+                        <p><a href="./vs/happy-ghast-sky-battle">詳しくはこちらで</a></p>
                         <div id="history">
                             <h2>マイクラバーサスの歴史</h2>
                             <ul>
@@ -59,7 +59,7 @@ export default function MinecraftVS(){
                                 <li>2023年3月22日 ついに同年1月26日に旧さきくらが現在のあさクラになったのに合わせて<br/>さきちび学園は廃止された</li>
                                 <li>2023年12月10日 マイクラバーサスは第4回を配信した</li>
                                 <li>2024年9月3日 第5回のマイクラバーサス 〜 サマーバトル！が開催された</li>
-                                <li>2025年9月2日 第6回の<a href="./happy-ghast-sky-battle">マイクラバーサス 〜 ハッピーガスト スカイバトル！</a>が開催される</li>
+                                <li>2025年9月2日 第6回の<a href="./vs/happy-ghast-sky-battle">マイクラバーサス 〜 ハッピーガスト スカイバトル！</a>が開催される</li>
                             </ul>
                         </div>
                         <p>一部の人は「Minecraft公式だ!」とか言っていますが<br/>歴史を見れば「さきちび学園」が発祥だと分かります、</p>
