@@ -24,7 +24,7 @@ export default async function MinecraftVS(){
         const { data: users } = await supabaseServer
             .from('minecraft_vs')
             .select('user_name')
-            .eq('user_id', user!.id)
+            .eq('user_id', user?.id)
         return users?.map(p => p.user_name)
     }
     setUsers(await usersFetch());
