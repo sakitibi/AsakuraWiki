@@ -14,11 +14,12 @@ export default function MinecraftVS(){
     const [userlists, setUsers] = useState<Object>([]);
     const [ruleBookImg, setRuleBookImg] = useState<number>(0);
     const MAX_INDEX = 3;
+    const imgURITemp = "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule";
     const RuleBookSrcArray:string[] = [
-        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png",
-        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule3_4.png",
-        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule5_6.png",
-        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule9_10.png"
+        `${imgURITemp}1_2.png`,
+        `${imgURITemp}3_4.png`,
+        `${imgURITemp}5_6.png`,
+        `${imgURITemp}9_10.png`
     ];
     if(typeof ruleBookImg === 'undefined'){
         setRuleBookImg(0);
