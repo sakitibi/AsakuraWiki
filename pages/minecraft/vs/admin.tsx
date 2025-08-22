@@ -19,6 +19,7 @@ export default function MinecraftVSAdminer(){
     const [Score, setScore] = useState<number>(0);
     const [TeamScore, setTeamScore] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
+    const [liveLink, setLiveLink] = useState<string | null>(null);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -76,6 +77,7 @@ export default function MinecraftVSAdminer(){
                         team: Teams,
                         score: Score ?? 0,
                         team_total: newTeamScore,
+                        live_link: liveLink
                     }])
                     .select();
 
@@ -169,6 +171,15 @@ export default function MinecraftVSAdminer(){
                                             type="number"
                                             required
                                             onChange={(e) => setScore(Number(e.target.value))}
+                                        />
+                                    </label>
+                                    <label>
+                                        配信リンク
+                                        <input
+                                            type="text"
+                                            required
+                                            onChange={(e) => setLiveLink(e.target.value)}
+                                            disabled={EditMode === "edit"}
                                         />
                                     </label>
                                     <label>
