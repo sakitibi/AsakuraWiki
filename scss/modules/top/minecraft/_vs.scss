@@ -17,6 +17,22 @@
 .MC_Bg_Inherit {
     color: #fff, #000;
 }
+.MC_Theme_Vanilla .MC_Link_Style_RichText{
+    $mc-vanilla-green-link-color: #6cc349;
+    $mc-core-green-6: #2a641c;
+    & a:not(.MC_Button,.MC_Link_Accent) {
+        color: $mc-vanilla-green-link-color, $mc-core-green-6;
+    }
+    & a, & a:hover {
+        color: $mc-vanilla-green-link-color, $mc-core-green-6;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+}
+.MC_Theme_Core a:not(.MC_Button,.MC_Link_Accent), .MC_Theme_Vanilla a:not(.MC_Button,.MC_Link_Accent) {
+    color: var(--mc-vanilla-green-link-color, var(--mc-core-green-6));
+    text-decoration: underline;
+}
 .MC_Layout_Article{
     & .MC_CarouselD {
         padding: 16px 0 !important;

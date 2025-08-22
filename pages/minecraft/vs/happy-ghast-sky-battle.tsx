@@ -36,14 +36,14 @@ export default function MinecraftVS(){
         const fetchUsers = async () => {
             const { data, error } = await supabaseServer
                 .from("minecraft_vs")
-                .select("user_name, team, user_id");
+                .select("user_name, team, user_id, live_link");
             if (error) return console.error(error);
 
             if (data) {
                 // チームごとに { user_name, user_id } をまとめる
                 const grouped = data.reduce((acc: any, user) => {
                     if (!acc[user.team]) acc[user.team] = [];
-                    acc[user.team].push({ user_name: user.user_name, user_id: user.user_id });
+                    acc[user.team].push({ user_name: user.user_name, user_id: user.user_id, user_link: user.live_link });
                     return acc;
                 }, {});
 
@@ -105,30 +105,34 @@ export default function MinecraftVS(){
                         <p>開催期間 2025年9月2日 12:30~16:30<br/>(主催者が急遽北海道へ出張の用事が出来た為、8月23日18:00から延期)</p>
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>参加者:</p>
-                        <ul>
-                            {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string}[]]) => (
-                                <>
-                                    <li key={team}>
-                                    {team}チーム
-                                        <div className={styles.MC_articleGridA_sectionRef}></div>
-                                        <div className={styles.MC_Link_Style_RichText}>
-                                            <table style={TableStyles}>
-                                                <colgroup>
-                                                    <col width="200"/>
-                                                </colgroup>
-                                                <tbody>
-                                                    {users.slice(0,5).map(vsuser => (
-                                                        <tr style={{height: '21.0px'}}>
-                                                            <td style={TdStyles} key={vsuser.user_id}>{vsuser.user_name}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </li>
-                                </>
-                            ))}
-                        </ul>
+                        <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
+                            <ul>
+                                {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string, live_link:string}[]]) => (
+                                    <>
+                                        <li key={team}>
+                                        {team}チーム
+                                            <div className={styles.MC_articleGridA_sectionRef}></div>
+                                            <div className={styles.MC_Link_Style_RichText}>
+                                                <table style={TableStyles}>
+                                                    <colgroup>
+                                                        <col width="200"/>
+                                                    </colgroup>
+                                                    <tbody>
+                                                        {users.slice(0,5).map(vsuser => (
+                                                            <tr style={{height: '21.0px'}}>
+                                                                <td style={TdStyles} key={vsuser.user_id}>
+                                                                    <a href={vsuser.live_link}>{vsuser.user_name}</a>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </li>
+                                    </>
+                                ))}
+                            </ul>
+                        </section>
                         <p>ルールは以下の通り</p>
                         <div className={styles.MC_AEM_Wrapper}>
                             <div className={styles.MC_CarouselD}>
