@@ -55,7 +55,7 @@ export default function MinecraftVSAdminer(){
                 team_total: TeamScore ?? Score
             }])
             .select()
-            .single();
+            .maybeSingle();
             if (error) {
                 alert('更新に失敗しました: ' + error.message);
             } else {
@@ -112,6 +112,7 @@ export default function MinecraftVSAdminer(){
                                         チーム
                                         <select
                                             onChange={(e) => setTeams(e.target.value as '赤' | '青' | '緑' | '黄')}
+                                            required
                                         >
                                             <option value="赤">赤チーム</option>
                                             <option value="青">青チーム</option>
@@ -131,6 +132,7 @@ export default function MinecraftVSAdminer(){
                                         追加または編集
                                         <select
                                             onChange={(e) => setEditMode(e.target.value as 'add' | 'edit')}
+                                            required
                                         >
                                             <option value="add">追加</option>
                                             <option value="edit">編集</option>
