@@ -8,6 +8,7 @@ import MenuJp from '@/utils/pageParts/MenuJp';
 import { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
+import Script from "next/script";
 
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -91,6 +92,7 @@ export default function MinecraftVS(){
                             </li>
                         </ul>
                         <p>ルールは以下の通り</p>
+                        
                         {!user ? (
                             null
                         ) : (
@@ -103,6 +105,9 @@ export default function MinecraftVS(){
                 </div>
                 <FooterJp/>
             </div>
+            <Script
+                src="https://www.minecraft.net/webui/mc-components.min.js"
+            />
         </>
     )
 }
