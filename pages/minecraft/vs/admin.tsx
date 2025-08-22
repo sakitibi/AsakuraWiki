@@ -5,7 +5,7 @@ import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import FooterJp from '@/utils/pageParts/FooterJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import { adminerUserId } from "@/utils/user_list";
@@ -17,6 +17,7 @@ export default function MinecraftVSAdminer(){
     const [Teams, setTeams] = useState<'赤' | '青' | '緑' | '黄' | null>(null);
     const [EditMode, setEditMode] = useState<'add' | 'edit'>('edit');
     const [Score, setScore] = useState<number>(0);
+    const [TeamScore, setTeamScore] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -27,6 +28,18 @@ export default function MinecraftVSAdminer(){
     };
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
+    useEffect(() => {
+        const fetchData = async () => {
+            const { data, error } = await supabaseServer
+                .from("minecraft_vs")
+                .select("team_total")
+                .eq("team", Teams)
+                .maybeSingle()
+            if (error) return console.error(error);
+            if (data) setTeamScore(data.team_total);
+        };
+        fetchData();
+    }, []);
     const AddUsers = async(e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -38,7 +51,7 @@ export default function MinecraftVSAdminer(){
                 user_id: UserId,
                 team: Teams,
                 score: Score,
-                team_total: Score
+                team_total: TeamScore ?? Score
             }])
             .select()
             .single();
@@ -50,8 +63,9 @@ export default function MinecraftVSAdminer(){
         } else {
             const { error } = await supabaseServer
                 .from('minecraft_vs')
-                .update({ user_name: UserName, user_id: UserId, team: Teams, score: Score})
-                .eq('user_id', UserId);
+                .update({ user_name: UserName, user_id: UserId, team: Teams, score: Score, team_total: TeamScore! + Score})
+                .eq('user_id', UserId)
+                .eq('team', Teams)
             if (error) {
                 alert('更新に失敗しました: ' + error.message);
             } else {
