@@ -20,26 +20,27 @@ export default async function MinecraftVS(){
         });
     };
     const user = useUser();
-
     useEffect(() => {
         const usersFetch = async () => {
+            console.log("Fetching from supabase...");
             const { data: users, error } = await supabaseServer
-            .from("minecraft_vs")
+            .from("sample")
             .select("user_name, team");
 
             if (error) {
-                console.error(error);
+                console.error("Supabase error:", error);
                 return;
             }
 
             if (users) {
-                setUsers(users); // ← 結果をstateに保存
+                console.log("Fetched users:", users);
+                setUsers(users);
             }
         };
 
         usersFetch();
-    }, []); // ← 初回マウント時のみ実行（依存を空配列にする）
-    console.log(userlists);
+    }, []);
+    console.log("Current userlists:", userlists);
     return(
         <>
             <Head>
