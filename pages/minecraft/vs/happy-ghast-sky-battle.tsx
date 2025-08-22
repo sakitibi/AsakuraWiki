@@ -34,19 +34,18 @@ export default function MinecraftVS(){
     useEffect(() => {
         const fetchUsers = async () => {
             const { data, error } = await supabaseServer
-            .from("minecraft_vs")
-            .select("user_name, team");
+                .from("minecraft_vs")
+                .select("user_name, team, user_id");
             if (error) return console.error(error);
+
             if (data) {
-                // チームごとに user_name をまとめる
+                // チームごとに { user_name, user_id } をまとめる
                 const grouped = data.reduce((acc: any, user) => {
-                    if (!acc[user.team]) {
-                        acc[user.team] = [];
-                    }
-                    acc[user.team].push(user.user_name);
+                    if (!acc[user.team]) acc[user.team] = [];
+                    acc[user.team].push({ user_name: user.user_name, user_id: user.user_id });
                     return acc;
                 }, {});
-                // 配列の中にオブジェクト1個を入れる
+
                 setUsers(grouped);
             }
         };
@@ -88,15 +87,25 @@ export default function MinecraftVS(){
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>参加者:</p>
                         <ul>
-                            {Object.entries(userlists).map(([team, users]: [string, string[]]) => (
-                                <li key={team}>
-                                    {team}チーム
-                                    <ul>
-                                        {users.slice(0, 5).map((userName, index) => (
-                                            <li key={index}>{userName}</li>
-                                        ))}
-                                    </ul>
-                                </li>
+                            {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string}[]]) => (
+                                <>
+                                    {users.slice(0,5).map(vsuser => (
+                                        <>
+                                            {user?.id === vsuser.user_id ? (
+                                                <p>あなたはマイクラバーサス ハッピーガスト スカイバトル!の参加者です!</p>
+                                            ) : (
+                                                <p>あなたもマイクラバーサス ハッピーガスト スカイバトル!に参加しますか?</p>
+                                            )
+                                            }
+                                            <li key={team}>
+                                            {team}チーム
+                                                <ul>
+                                                    <li key={vsuser.user_id}>{vsuser.user_name}</li>
+                                                </ul>
+                                            </li>
+                                        </>
+                                    ))}
+                                </>
                             ))}
                         </ul>
                         <p>ルールは以下の通り</p>
