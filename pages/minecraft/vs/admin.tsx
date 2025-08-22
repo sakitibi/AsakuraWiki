@@ -55,7 +55,6 @@ export default function MinecraftVSAdminer(){
                 team_total: TeamScore ?? Score
             }])
             .select()
-            .maybeSingle();
             if (error) {
                 alert('更新に失敗しました: ' + error.message);
             } else {
