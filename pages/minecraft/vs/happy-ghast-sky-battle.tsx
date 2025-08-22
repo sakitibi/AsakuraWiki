@@ -13,7 +13,7 @@ export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<Object[]>([]);
     const [ruleBookImg, setRuleBookImg] = useState<number>(0);
-    const [ruleBookChangeButtonState, setRuleBookChangeButtonState] = useState<number>(0);
+    const MAX_INDEX = 3;
     const RuleBookSrcArray:string[] = [
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png",
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule3_4.png",
@@ -61,23 +61,17 @@ export default function MinecraftVS(){
         console.log("RuleImgChangesData: ", ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
     }
     // 次の画像へ
-    const RuleImgAdds = () => {
-        setRuleBookImg((prev) => {
-            const next = prev + 1;
-            return next > 3 ? 0 : next;
-        });
-        setRuleBookChangeButtonState(0);
+    // ruleBookImg が変わったら必ず呼ばれる
+    useEffect(() => {
         RuleImgChanges();
+    }, [ruleBookImg]);
+
+    const RuleImgAdds = () => {
+        setRuleBookImg((prev) => (prev + 1) > MAX_INDEX ? 0 : prev + 1);
     };
 
-    // 前の画像へ
     const RuleImgRemoves = () => {
-        setRuleBookImg((prev) => {
-            const next = prev - 1;
-            return next < 0 ? 3 : next;
-        });
-        setRuleBookChangeButtonState(1);
-        RuleImgChanges();
+        setRuleBookImg((prev) => (prev - 1) < 0 ? MAX_INDEX : prev - 1);
     };
     return(
         <>
