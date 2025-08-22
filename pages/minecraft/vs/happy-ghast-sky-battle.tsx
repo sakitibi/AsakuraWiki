@@ -125,12 +125,14 @@ export default function MinecraftVS(){
                         </ul>
                         <p>ルールは以下の通り</p>
                         <div className={styles.MC_AEM_Wrapper}>
-                            <picture>
-                                <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img"/>
-                            </picture>
-                            <div style={{ display: 'flex' }}>
-                                <button onClick={() => RuleImgChanges("minus")}><span>前へ</span></button>
-                                <button onClick={() => RuleImgChanges("plus")}><span>次へ</span></button>
+                            <div className={styles.MC_CarouselD}>
+                                <picture>
+                                    <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img" className={styles.MC_Carousel_track_slide_media_img}/>
+                                </picture>
+                                <div style={{ display: 'flex' }}>
+                                    <button onClick={() => RuleImgChanges("minus")}><span>前へ</span></button>
+                                    <button onClick={() => RuleImgChanges("plus")}><span>次へ</span></button>
+                                </div>
                             </div>
                         </div>
                         {!user ? (
