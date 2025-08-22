@@ -175,6 +175,7 @@ export default function MinecraftVSAdminer(){
                                                 <option value="黄">黄チーム</option>
                                             </select>
                                         </label>
+                                        <br/>
                                         <label>
                                             スコア追加(マイナスで減点)
                                             <input
