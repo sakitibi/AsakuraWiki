@@ -28,7 +28,8 @@ export default async function MinecraftVS(){
                 .eq('user_name', userlists);
             users?.map(p => p.user_name)
         }
-        setUsers(usersFetch());
+        usersFetch();
+        setUsers(userlists);
     }, [userlists])
     console.log(userlists);
     return(
