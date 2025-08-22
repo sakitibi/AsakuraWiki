@@ -94,6 +94,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                     </div>
                 </noscript>
                 <div style={{textAlign: 'center'}}>
+                    <p>マイクラバーサス ハッピーガスト スカイバトル!</p>
+                    <p>開催期間 2025年9月2日 12:30~16:30</p>
+                    <p><a href="/minecraft/vs/happy-ghast-sky-battle">詳しくはこちら</a></p>
                 </div>
                 <Component {...pageProps} />
             </SessionContextProvider>

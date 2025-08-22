@@ -1,5 +1,5 @@
 .MC_Core_HeadingStyle {
-    .MC_Layout_Article .MC_Theme_Vanilla .MC_Heading_1, .MC_Link_Style_RichText h1, .MC_Theme_Vanilla .MC_Link_Style_RichText h1, &[class*=MC_Theme_] .MC_Heading_1 {
+    .MC_Layout_Article .MC_Theme_Vanilla .MC_Heading_1, .MC_Link_Style_RichText h1, .MC_Theme_Vanilla .MC_Link_Style_RichText h1, .MC_Heading_1 {
         font-size: 2.25rem;
         letter-spacing: -.54px;
         line-height: 2.25rem;
@@ -27,30 +27,15 @@
     line-height: 4.5rem;
 }
 
-.MC_Theme_Dungeons .MC_Theme_Vanilla [class*=MC_Heading], .MC_Theme_Legends .MC_Theme_Vanilla [class*=MC_Heading], .MC_Theme_Realms .MC_Theme_Vanilla [class*=MC_Heading], .MC_Theme_Vanilla [class*=MC_Heading] {
+.MC_Theme_Dungeons .MC_Theme_Vanilla, .MC_Theme_Legends .MC_Theme_Vanilla, .MC_Theme_Realms .MC_Theme_Vanilla, .MC_Theme_Vanilla {
     font-family: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
 }
 
 .MC_articleHeroA_header_container > * {
     flex-basis: 100%;
 }
-
-[class*=MC_Heading] {
-    font-weight: 400;
-    margin: 0;
-    text-transform: none !important;
-    font-family: "Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
-}
-
-[class*=MC_Heading], [class*=MC_]:not(html,body) p {
-    font-family: var(--mc-default--fontlist);
-}
 .MC_articleHeroA_header_subheadline {
     margin-top: 8px;
-}
-
-[class*=MC_]:not(html, body) p {
-    font-family: "Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
 }
 .MC_AEM_Wrapper {
     position: relative;
