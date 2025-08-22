@@ -53,20 +53,10 @@ export default function MinecraftVS(){
         } else {
             setRuleBookImg(0);
         }
-        if(ruleBookImg > 0){
-            setRuleBookImg(ruleBookImg - 1);
-        } else {
-            setRuleBookImg(3);
-        }
         RuleImgChanges();
     }
     const RuleImgRemoves = () => {
         console.log("typeはminusです");
-        if(ruleBookImg < 3){
-            setRuleBookImg(ruleBookImg + 1);
-        } else {
-            setRuleBookImg(0);
-        }
         if(ruleBookImg > 0){
             setRuleBookImg(ruleBookImg - 1);
         } else {
