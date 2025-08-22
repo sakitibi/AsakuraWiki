@@ -54,7 +54,7 @@ export default function MinecraftVS(){
         } else if(ruleBookImg < 0){
             setRuleBookImg(3);
         }
-        const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[0]!
+        const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
     }
     return(
