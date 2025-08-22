@@ -205,6 +205,7 @@ export default function MinecraftVSAdminer(){
                                                 <option value="edit">編集</option>
                                             </select>
                                         </label>
+                                        <br/>
                                         <button type="submit">
                                             <span>ユーザーを{EditMode === "edit" ? (
                                                 <span>編集</span>
