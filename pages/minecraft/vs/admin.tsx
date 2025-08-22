@@ -121,9 +121,6 @@ export default function MinecraftVSAdminer(){
         setLoading(false);
     };
     if (loading) return <p>読み込み中...</p>;
-    if(!adminer_user_id_list){
-        console.error("GET https://asakura-wiki.vercel.app/minecraft/vs/admin 403 (Forbidden)");
-    }
     return(
         <>
             <Head>
@@ -170,7 +167,7 @@ export default function MinecraftVSAdminer(){
                                                 onChange={(e) => setTeams(e.target.value as '赤' | '青' | '緑' | '黄')}
                                                 required
                                             >
-                                                <option value="赤">赤チーム</option>
+                                                <option value="赤" selected>赤チーム</option>
                                                 <option value="青">青チーム</option>
                                                 <option value="緑">緑チーム</option>
                                                 <option value="黄">黄チーム</option>
