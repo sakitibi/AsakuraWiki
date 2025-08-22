@@ -5,7 +5,7 @@ import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import FooterJp from '@/utils/pageParts/FooterJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 
@@ -72,6 +72,24 @@ export default function MinecraftVS(){
     const RuleImgRemoves = () => {
         setRuleBookImg((prev) => (prev - 1) < 0 ? MAX_INDEX : prev - 1);
     };
+    const TableStyles: React.CSSProperties = {
+        borderStyle: 'none',
+        tableLayout: 'fixed',
+        fontSize: '10.0pt',
+        fontFamily: 'Arial',
+        width: '0.0px'
+    }
+    const TdStyles: React.CSSProperties = {
+        paddingRight: '3.0px',
+        paddingLeft: '3.0px',
+        borderWidth: '1.0px',
+        borderStyle: 'solid',
+        borderColor: '#000 #000 #ccc',
+        overflow: 'hidden',
+        verticalAlign: 'bottom',
+        color: '#15c',
+        textAlign: 'center'
+    }
     return(
         <>
             <Head>
@@ -94,30 +112,14 @@ export default function MinecraftVS(){
                                     {team}チーム
                                         <div className={styles.MC_articleGridA_sectionRef}></div>
                                         <div className={styles.MC_Link_Style_RichText}>
-                                            <table style={{
-                                                borderStyle: 'none',
-                                                tableLayout: 'fixed',
-                                                fontSize: '10.0pt',
-                                                fontFamily: 'Arial',
-                                                width: '0.0px'
-                                            }}>
+                                            <table style={TableStyles}>
                                                 <colgroup>
                                                     <col width="200"/>
                                                 </colgroup>
                                                 <tbody>
                                                     {users.slice(0,5).map(vsuser => (
                                                         <tr style={{height: '21.0px'}}>
-                                                            <td style={{
-                                                                paddingRight: '3.0px',
-                                                                paddingLeft: '3.0px',
-                                                                borderWidth: '1.0px',
-                                                                borderStyle: 'solid',
-                                                                borderColor: '#000 #000 #ccc',
-                                                                overflow: 'hidden',
-                                                                verticalAlign: 'bottom',
-                                                                color: '#15c',
-                                                                textAlign: 'center'
-                                                            }} key={vsuser.user_id}>{vsuser.user_name}</td>
+                                                            <td style={TdStyles} key={vsuser.user_id}>{vsuser.user_name}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
