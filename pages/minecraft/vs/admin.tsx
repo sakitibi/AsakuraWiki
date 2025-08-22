@@ -37,7 +37,8 @@ export default function MinecraftVSAdminer(){
                 user_name: UserName,
                 user_id: UserId,
                 team: Teams,
-                score: Score
+                score: Score,
+                team_total: Score
             }])
             .select()
             .single();
