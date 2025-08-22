@@ -24,7 +24,7 @@ export default async function MinecraftVS(){
         const usersFetch = async () => {
             console.log("Fetching from supabase...");
             const { data: users, error } = await supabaseServer
-            .from("sample")
+            .from("minecraft_vs")
             .select("user_name, team");
 
             if (error) {
