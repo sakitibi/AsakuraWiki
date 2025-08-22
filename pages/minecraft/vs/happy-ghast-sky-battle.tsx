@@ -60,6 +60,7 @@ export default function MinecraftVS(){
         if(ruleBookChangeButtonState !== 0){
             setRuleBookChangeButtonState(0);
             RuleImgAdds(ruleBookImg);
+            return;
         }
         if(ruleBookImgState < 3){
             setRuleBookImg(ruleBookImgState + 1);
@@ -80,6 +81,7 @@ export default function MinecraftVS(){
         if(ruleBookChangeButtonState !== 1){
             setRuleBookChangeButtonState(1);
             RuleImgRemoves(ruleBookImg);
+            return;
         }
         if(ruleBookImgState > 0){
             setRuleBookImg(ruleBookImgState - 1);
