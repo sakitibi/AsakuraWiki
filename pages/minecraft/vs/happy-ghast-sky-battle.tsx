@@ -45,6 +45,7 @@ export default function MinecraftVS(){
     console.log("Current userlists:", userlists);
     console.log("Current teamlists:", teamlists);
     const RuleImgChanges = (type: string) => {
+        console.log(`typeは${type}です`);
         if(type === "plus"){
             if(ruleBookImg < 3){
                 setRuleBookImg(ruleBookImg + 1);
@@ -69,7 +70,6 @@ export default function MinecraftVS(){
         const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
         console.log("RuleImgChangesData: ", type, ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
-    }
     return(
         <>
             <Head>
