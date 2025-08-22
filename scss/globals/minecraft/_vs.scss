@@ -1,0 +1,72 @@
+.MC_AEM_Wrapper {
+    position: relative;
+    z-index: 20;
+}
+.MC_Bg_Inherit {
+    color: #fff, #000;
+}
+.MC_Layout_Article .MC_CarouselD {
+    padding: 16px 0 !important;
+}
+@media screen and (min-width: 768px) {
+    .MC_CarouselD {
+        padding: 80px 0 86px;
+    }
+}
+
+.MC_Carousel {
+    margin: 0 auto;
+    overflow: hidden;
+    width: 100%;
+    & .MC_Carousel_thumbs_wrapper,& .MC_Carousel_track_wrapper, .MC_Carousel_track_slide_media {
+        position: relative;
+    }
+}
+.MC_CarouselD{
+    max-width: 1920px;
+    padding: 48px 0 54px;
+    & .MC_Carousel_header {
+        margin: 0 auto 48px;
+        max-width: 1040px;
+        padding: 0 10px;
+        text-align: center;
+    }
+    & .MC_Carousel_track {
+        left: 50%;
+        position: relative;
+        transform-origin: center;
+        width: max-content;
+    }
+    & .MC_Carousel_track_slide_media_img {
+        aspect-ratio: 280 / 168;
+        display: block;
+        position: relative;
+        width: 100%;
+    }
+    & .MC_Carousel_track_slide.MC_Carousel_track_slide__active {
+        opacity: 1;
+    }
+    & .MC_Carousel_track_slide {
+        margin: 0 8px;
+        opacity: .75;
+        transition: opacity 1s;
+        width: 280px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .MC_CarouselD{
+        & .MC_Carousel_track_slide_media_img {
+            aspect-ratio: 640 / 384;
+        }
+
+        & .MC_Carousel_track_slide {
+            margin: 0 12px;
+            width: 640px;
+        }
+    }
+}
+
+.MC_Carousel_thumbs_slide, .MC_Carousel_track_slide {
+    flex: 0 0 auto;
+}

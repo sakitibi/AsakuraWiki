@@ -54,8 +54,8 @@ export default function MinecraftVS(){
         } else if(ruleBookImg < 0){
             setRuleBookImg(3);
         }
-        const RuleBookImgSource:HTMLSourceElement = document.getElementById("rule-book-img")! && document.querySelectorAll("source")[0]!
-        RuleBookImgSource.src = RuleBookSrcArray[ruleBookImg];
+        const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[0]!
+        RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
     }
     return(
         <>
@@ -117,7 +117,7 @@ export default function MinecraftVS(){
                         <p>ルールは以下の通り</p>
                         <div>
                             <picture>
-                                <source src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img"></source>
+                                <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img"/>
                             </picture>
                             <div style={{ display: 'flex' }}>
                                 <button onClick={() => RuleImgChanges("minus")}><span>前へ</span></button>
