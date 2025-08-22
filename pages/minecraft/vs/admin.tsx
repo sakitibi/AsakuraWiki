@@ -15,7 +15,7 @@ export default function MinecraftVSAdminer(){
     const [UserId, setUserId] = useState<any>(null);
     const [UserName, setUserName] = useState<string | null>(null);
     const [Teams, setTeams] = useState<'赤' | '青' | '緑' | '黄' | null>(null);
-    const [EditMode, setEditMode] = useState<'add' | 'edit'>('edit');
+    const [EditMode, setEditMode] = useState<'add' | 'edit'>('add');
     const [Score, setScore] = useState<number>(0);
     const [TeamScore, setTeamScore] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
@@ -45,6 +45,13 @@ export default function MinecraftVSAdminer(){
         e.preventDefault();
         setLoading(true);
         if(EditMode === "add"){
+            console.log("Insert payload:", {
+                user_name: UserName,
+                user_id: UserId,
+                team: Teams,
+                score: Score,
+                team_total: TeamScore ?? Score
+            });
             const { error } = await supabaseServer
             .from('minecraft_vs')
             .insert([{
