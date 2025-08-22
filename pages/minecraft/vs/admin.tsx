@@ -89,13 +89,13 @@ export default function MinecraftVSAdminer(){
                 let newTeamScore = Score ?? 0;
                 const { data: teamData, error: teamError } = await supabaseServer
                     .from("minecraft_vs")
-                    .select("user_id, score, team_total")
+                    .select("user_name, score, team_total")
                     .eq("team", Teams);
 
                 if (teamError) throw teamError;
                 if (teamData) {
                     const sum = teamData
-                        .filter(item => item.user_id !== UserId)
+                        .filter(item => item.user_name !== UserName)
                         .reduce((acc, item) => acc + (item.score ?? 0), 0);
                     newTeamScore += sum;
                 }
@@ -109,10 +109,10 @@ export default function MinecraftVSAdminer(){
                         score: Score ?? 0,
                         team_total: newTeamScore
                     })
-                    .eq('user_id', UserId); // UUID を条件に更新
+                    .eq('user_name', UserName); // ユーザー名 を条件に更新
 
                 if (error) throw error;
-                console.log(`User ${UserId} updated`);
+                console.log(`User ${UserName} updated`);
             }
         } catch (err: any) {
             console.error("Error in AddUsers:", err.message || err);
@@ -143,6 +143,7 @@ export default function MinecraftVSAdminer(){
                                             type="text"
                                             required
                                             onChange={(e) => setUserId(e.target.value)}
+                                            disabled={EditMode === "edit"}
                                         />
                                     </label>
                                     <label>
