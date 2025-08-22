@@ -7,9 +7,11 @@ import FooterJp from '@/utils/pageParts/FooterJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
 import { useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
+import { supabaseServer } from "@/lib/supabaseClientServer";
 
-export default function MinecraftVS(){
+export default async function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const [users, setUsers] = useState<any>(null);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -18,6 +20,15 @@ export default function MinecraftVS(){
         });
     };
     const user = useUser();
+    async function usersFetch(){
+        const { data: users } = await supabaseServer
+            .from('minecraft_vs')
+            .select('user_name')
+            .eq('user_id', user!.id)
+        return users?.map(p => p.user_name)
+    }
+    setUsers(await usersFetch());
+    console.log(users);
     return(
         <>
             <Head>
