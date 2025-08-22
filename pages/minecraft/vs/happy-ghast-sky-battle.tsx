@@ -37,12 +37,12 @@ export default function MinecraftVS(){
                 .select("user_name, team")
             if (error) return console.error(error);
             if (data) {
-                setUsers(data.map(
-                    user => (
-                        user.user_name,
-                        user.team
-                    )
-                ));
+                setUsers(
+                    data.map(user => ({
+                        user_name: user.user_name,
+                        team: user.team
+                    }))
+                );
             }
         };
 
