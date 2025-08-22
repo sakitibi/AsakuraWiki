@@ -11,7 +11,7 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 
 export default async function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userlists, setUsers] = useState<any>(null);
+    const [userlists, setUsers] = useState<any[]>([]);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -21,16 +21,18 @@ export default async function MinecraftVS(){
     };
     const user = useUser();
     useEffect(() => {
-        async function usersFetch(){
+        const usersFetch = async () => {
             const { data: users } = await supabaseServer
-                .from('minecraft_vs')
-                .select('user_name, team')
-                .eq('user_name', userlists);
-            users?.map(p => p.user_name)
-        }
+            .from('sample')
+            .select('user_name, team');
+
+            // supabaseのデータをstateに保存
+            if (users) {
+                setUsers(users);
+            }
+        };
         usersFetch();
-        setUsers(userlists);
-    }, [userlists])
+    }, []); // ← 初回マウント時のみ
     console.log(userlists);
     return(
         <>
