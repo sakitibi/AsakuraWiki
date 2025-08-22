@@ -16,7 +16,7 @@ export default function MinecraftVSAdminer(){
     const [UserName, setUserName] = useState<string | null>(null);
     const [Teams, setTeams] = useState<'赤' | '青' | '緑' | '黄' | null>(null);
     const [Score, setScore] = useState<number>(0);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
