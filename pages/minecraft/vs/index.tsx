@@ -36,7 +36,7 @@ export default function MinecraftVS(){
     return(
         <>
             <Head>
-                <title>マイクラバーサス ハッピーガスト スカイバトル! 公式</title>
+                <title>マイクラバーサス 公式</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -44,59 +44,12 @@ export default function MinecraftVS(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/minecraft/vs"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>マイクラバーサス ハッピーガスト スカイバトル!</h1>
-                        <p>開催期間 2025年9月2日 12:30~16:30<br/>(主催者が急遽北海道へ出張の用事が出来た為、8月23日18:00から延期)</p>
+                        <h1>マイクラバーサス</h1>
                         <p>ロシア語ページ無くてごめんなさい、</p>
-                        <p>参加者:</p>
-                        <ul>
-                            <li>
-                                青チーム
-                                <ul>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                </ul>
-                            </li>
-                            <li>
-                                赤チーム
-                                <ul>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                </ul>
-                            </li>
-                            <li>
-                                緑チーム
-                                <ul>
-                                    <li>さきちび</li>
-                                    <li>つばきちゃん</li>
-                                    <li>つばきくん</li>
-                                    <li>ちびちゃん</li>
-                                    <li>あげるくん</li>
-                                </ul>
-                            </li>
-                            <li>
-                                黄チーム
-                                <ul>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                </ul>
-                            </li>
-                        </ul>
-                        {!user ? (
-                            null
-                        ) : (
-                            <a href="https://sakitibi-com9.webnode.jp/page/5">
-                                ここから参加申請(13ninアカウント必須)
-                            </a>
-                        )}
+                        <p>次回のマイクラバーサスは</p>
+                        <p><strong>マイクラバーサス 〜 ハッピーガスト スカイバトル！</strong></p>
+                        <p>に決定!</p>
+                        <p><a href="./happy-ghast-sky-battle">詳しくはこちらで</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>
