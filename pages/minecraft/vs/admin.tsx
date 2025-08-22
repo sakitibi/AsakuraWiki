@@ -135,68 +135,80 @@ export default function MinecraftVSAdminer(){
                         {adminer_user_id_list ? (
                             <>
                                 <h1>マイクラバーサス ハッピーガスト スカイバトル! 管理画面</h1>
-                                <p>ユーザー追加</p>
-                                <form onSubmit={AddUsers}>
-                                    <label>
-                                        ユーザーid(uuid)
-                                        <input
-                                            type="text"
-                                            required
-                                            onChange={(e) => setUserId(e.target.value)}
-                                            disabled={EditMode === "edit"}
-                                        />
-                                    </label>
-                                    <label>
-                                        ユーザー名
-                                        <input
-                                            type="text"
-                                            required
-                                            onChange={(e) => setUserName(e.target.value)}
-                                        />
-                                    </label>
-                                    <label>
-                                        チーム
-                                        <select
-                                            onChange={(e) => setTeams(e.target.value as '赤' | '青' | '緑' | '黄')}
-                                            required
-                                        >
-                                            <option value="赤">赤チーム</option>
-                                            <option value="青">青チーム</option>
-                                            <option value="緑">緑チーム</option>
-                                            <option value="黄">黄チーム</option>
-                                        </select>
-                                    </label>
-                                    <label>
-                                        スコア追加(マイナスで減点)
-                                        <input
-                                            type="number"
-                                            required
-                                            onChange={(e) => setScore(Number(e.target.value))}
-                                        />
-                                    </label>
-                                    <label>
-                                        配信リンク
-                                        <input
-                                            type="text"
-                                            required
-                                            onChange={(e) => setLiveLink(e.target.value)}
-                                            disabled={EditMode === "edit"}
-                                        />
-                                    </label>
-                                    <label>
-                                        追加または編集
-                                        <select
-                                            onChange={(e) => setEditMode(e.target.value as 'add' | 'edit')}
-                                            required
-                                        >
-                                            <option value="add">追加</option>
-                                            <option value="edit">編集</option>
-                                        </select>
-                                    </label>
-                                    <button type="submit">
-                                        <span>ユーザーを追加 編集</span>
-                                    </button>
-                                </form>
+                                <div id="user_adds">
+                                    <h2>ユーザー{EditMode === "edit" ? (
+                                        <span>編集</span>
+                                    ) : (
+                                        <span>追加</span>
+                                    )}
+                                    </h2>
+                                    <form onSubmit={AddUsers}>
+                                        <label>
+                                            ユーザーid(uuid)
+                                            <input
+                                                type="text"
+                                                required
+                                                onChange={(e) => setUserId(e.target.value)}
+                                                disabled={EditMode === "edit"}
+                                            />
+                                        </label>
+                                        <label>
+                                            ユーザー名
+                                            <input
+                                                type="text"
+                                                required
+                                                onChange={(e) => setUserName(e.target.value)}
+                                            />
+                                        </label>
+                                        <label>
+                                            チーム
+                                            <select
+                                                onChange={(e) => setTeams(e.target.value as '赤' | '青' | '緑' | '黄')}
+                                                required
+                                            >
+                                                <option value="赤">赤チーム</option>
+                                                <option value="青">青チーム</option>
+                                                <option value="緑">緑チーム</option>
+                                                <option value="黄">黄チーム</option>
+                                            </select>
+                                        </label>
+                                        <label>
+                                            スコア追加(マイナスで減点)
+                                            <input
+                                                type="number"
+                                                required
+                                                onChange={(e) => setScore(Number(e.target.value))}
+                                            />
+                                        </label>
+                                        <label>
+                                            配信リンク
+                                            <input
+                                                type="text"
+                                                required
+                                                onChange={(e) => setLiveLink(e.target.value)}
+                                                disabled={EditMode === "edit"}
+                                            />
+                                        </label>
+                                        <label>
+                                            追加または編集
+                                            <select
+                                                onChange={(e) => setEditMode(e.target.value as 'add' | 'edit')}
+                                                required
+                                            >
+                                                <option value="add">追加</option>
+                                                <option value="edit">編集</option>
+                                            </select>
+                                        </label>
+                                        <button type="submit">
+                                            <span>ユーザーを{EditMode === "edit" ? (
+                                                <span>編集</span>
+                                            ) : (
+                                                <span>追加</span>
+                                            )}
+                                            </span>
+                                        </button>
+                                    </form>
+                                </div>
                             </>
                         ) : (
                             <>
