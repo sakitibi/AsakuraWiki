@@ -88,46 +88,16 @@ export default function MinecraftVS(){
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>参加者:</p>
                         <ul>
-                            <li>
-                                青チーム
+                            {Object.entries(userlists).map(([team, users]: [string, string[]]) => (
+                                <li key={team}>
+                                {team}チーム
                                 <ul>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
+                                    {users.slice(0, 5).map((userName, index) => (
+                                        <li key={index}>{userName}</li>
+                                    ))}
                                 </ul>
-                            </li>
-                            <li>
-                                赤チーム
-                                <ul>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                </ul>
-                            </li>
-                            <li>
-                                緑チーム
-                                <ul>
-                                    <li>さきちび</li>
-                                    <li>つばきちゃん</li>
-                                    <li>つばきくん</li>
-                                    <li>ちびちゃん</li>
-                                    <li>あげるくん</li>
-                                </ul>
-                            </li>
-                            <li>
-                                黄チーム
-                                <ul>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
-                                </ul>
-                            </li>
+                                </li>
+                            ))}
                         </ul>
                         <p>ルールは以下の通り</p>
                         <div className={styles.MC_AEM_Wrapper}>
