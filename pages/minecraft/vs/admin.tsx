@@ -165,6 +165,7 @@ export default function MinecraftVSAdminer(){
                                         </label>
                                         <label>
                                             チーム
+                                            <br/>
                                             <select
                                                 onChange={(e) => setTeams(e.target.value as '赤' | '青' | '緑' | '黄')}
                                                 required
@@ -195,6 +196,7 @@ export default function MinecraftVSAdminer(){
                                         </label>
                                         <label>
                                             追加または編集
+                                            <br/>
                                             <select
                                                 onChange={(e) => setEditMode(e.target.value as 'add' | 'edit')}
                                                 required
