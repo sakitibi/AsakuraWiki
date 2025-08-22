@@ -49,9 +49,9 @@ export default function MinecraftVS(){
             console.error("property error:", type);
             return;
         }
-        if(ruleBookImg > 3){
+        if(ruleBookImg > 2){
             setRuleBookImg(0);
-        } else if(ruleBookImg < 0){
+        } else if(ruleBookImg < 1){
             setRuleBookImg(3);
         }
         const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
