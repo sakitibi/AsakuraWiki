@@ -47,8 +47,7 @@ export default function MinecraftVS(){
                 acc[user.team].push(user.user_name);
                 return acc;
             }, {});
-
-            // [{ team1: [...], team2: [...] }] という形にする
+            // 配列の中にオブジェクト1個を入れる
             setUsers([grouped]);
             }
         };
