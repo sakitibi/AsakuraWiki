@@ -5,7 +5,7 @@ import LeftMenuJp from '@/utils/pageParts/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/RightMenuJp';
 import FooterJp from '@/utils/pageParts/FooterJp';
 import MenuJp from '@/utils/pageParts/MenuJp';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 
@@ -20,14 +20,16 @@ export default async function MinecraftVS(){
         });
     };
     const user = useUser();
-    async function usersFetch(){
-        const { data: users } = await supabaseServer
-            .from('minecraft_vs')
-            .select('user_name, team')
-            .eq('user_name', userlists);
-        users?.map(p => p.user_name)
-    }
-    setUsers(await usersFetch());
+    useEffect(() => {
+        async function usersFetch(){
+            const { data: users } = await supabaseServer
+                .from('minecraft_vs')
+                .select('user_name, team')
+                .eq('user_name', userlists);
+            users?.map(p => p.user_name)
+        }
+        setUsers(usersFetch());
+    }, [userlists])
     console.log(userlists);
     return(
         <>
