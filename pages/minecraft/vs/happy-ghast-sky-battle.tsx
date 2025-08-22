@@ -148,7 +148,7 @@ export default function MinecraftVS(){
                                     <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img" className={styles.MC_Carousel_track_slide_media_img}/>
                                 </picture>
                                 <div style={{ display: 'flex' }}>
-                                    <button onClick={RuleImgRemoves}><span>前へ</span></button>
+                                    <button onClick={() => RuleImgRemoves(ruleBookImg)}><span>前へ</span></button>
                                     <button onClick={() => RuleImgAdds(ruleBookImg)}><span>次へ</span></button>
                                 </div>
                             </div>
