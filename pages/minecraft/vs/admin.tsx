@@ -15,6 +15,7 @@ export default function MinecraftVSAdminer(){
     const [UserId, setUserId] = useState<any>(null);
     const [UserName, setUserName] = useState<string | null>(null);
     const [Teams, setTeams] = useState<'赤' | '青' | '緑' | '黄' | null>(null);
+    const [EditMode, setEditMode] = useState<'add' | 'edit'>('edit');
     const [Score, setScore] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const handleClick = () => {
@@ -29,19 +30,34 @@ export default function MinecraftVSAdminer(){
     const AddUsers = async(e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
-        const { error } = await supabaseServer
-        .from('minecraft_vs')
-        .update({ user_name: UserName, user_id: UserId, team: Teams, score: Score})
-        .eq('user_id', UserId);
-
-        setLoading(false);
-
-        if (error) {
-            alert('更新に失敗しました: ' + error.message);
+        if(EditMode === "add"){
+            const { error } = await supabaseServer
+            .from('minecraft_vs')
+            .insert([{
+                user_name: UserName,
+                user_id: UserId,
+                team: Teams,
+                score: Score
+            }])
+            .select()
+            .single();
+            if (error) {
+                alert('更新に失敗しました: ' + error.message);
+            } else {
+                alert('設定を保存しました');
+            }
         } else {
-            alert('設定を保存しました');
+            const { error } = await supabaseServer
+                .from('minecraft_vs')
+                .update({ user_name: UserName, user_id: UserId, team: Teams, score: Score})
+                .eq('user_id', UserId);
+            if (error) {
+                alert('更新に失敗しました: ' + error.message);
+            } else {
+                alert('設定を保存しました');
+            }
         }
+        setLoading(false);
     }
     if (loading) return <p>読み込み中...</p>;
     return(
@@ -94,6 +110,15 @@ export default function MinecraftVSAdminer(){
                                             required
                                             onChange={(e) => setScore(Number(e.target.value))}
                                         />
+                                    </label>
+                                    <label>
+                                        追加または編集
+                                        <select
+                                            onChange={(e) => setEditMode(e.target.value as 'add' | 'edit')}
+                                        >
+                                            <option value="add">追加</option>
+                                            <option value="edit">編集</option>
+                                        </select>
                                     </label>
                                     <button type="submit">
                                         <span>ユーザーを追加 編集</span>
