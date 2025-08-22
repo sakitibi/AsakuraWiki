@@ -64,15 +64,15 @@
         margin: 0;
     }
     & a:not(.MC_Button,.MC_Link_Accent) {
-        color: $mc-vanilla-green-link-color, $mc-core-green-6;
+        color: $mc-vanilla-green-link-color, $mc-core-green-6 !important;
     }
     & a, & a:hover {
-        color: $mc-vanilla-green-link-color, $mc-core-green-6;
+        color: $mc-vanilla-green-link-color, $mc-core-green-6 !important;
         font-weight: 700;
         text-decoration: underline;
     }
     & h1, & h2, & h3, & h4 {
-        font-family: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif"
+        font-family: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif" !important;
     }
     & h2 {
         font-size: 3.5rem;
@@ -81,8 +81,10 @@
     }
 }
 .MC_Theme_Core a:not(.MC_Button,.MC_Link_Accent), .MC_Theme_Vanilla a:not(.MC_Button,.MC_Link_Accent) {
-    color: var(--mc-vanilla-green-link-color, var(--mc-core-green-6));
-    text-decoration: underline;
+    $mc-vanilla-green-link-color: #6cc349;
+    $mc-core-green-6: #2a641c;
+    color: $mc-vanilla-green-link-color, $mc-core-green-6 !important;
+    text-decoration: underline !important;
 }
 .MC_Layout_Article{
     & .MC_CarouselD {
