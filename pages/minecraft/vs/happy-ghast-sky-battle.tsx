@@ -54,25 +54,36 @@ export default function MinecraftVS(){
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
         console.log("RuleImgChangesData: ", ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
     }
-    const RuleImgAdds = () => {
+    const RuleImgAdds = (ruleBookImgState: number) => {
         console.log("typeはplusです");
-        if(ruleBookImg < 3){
-            setRuleBookImg(ruleBookImg + 1);
+        if(ruleBookImgState < 3){
+            setRuleBookImg(ruleBookImgState + 1);
+            if(ruleBookImgState + 1 !== ruleBookImg){
+                setRuleBookImg(ruleBookImgState + 1);
+            }
         } else {
             setRuleBookImg(0);
+            if(ruleBookImg !== 0){
+                setRuleBookImg(0);
+            }
         }
         RuleImgChanges();
     }
-    const RuleImgRemoves = () => {
+    const RuleImgRemoves = (ruleBookImgState: number) => {
         console.log("typeはminusです");
-        if(ruleBookImg > 0){
-            setRuleBookImg(ruleBookImg - 1);
+        if(ruleBookImgState > 0){
+            setRuleBookImg(ruleBookImgState - 1);
+            if(ruleBookImgState - 1 !== ruleBookImg){
+                setRuleBookImg(ruleBookImgState - 1);
+            }
         } else {
             setRuleBookImg(3);
+            if(ruleBookImg !== 3){
+                setRuleBookImg(3);
+            }
         }
         RuleImgChanges();
     }
-    
     return(
         <>
             <Head>
@@ -138,7 +149,7 @@ export default function MinecraftVS(){
                                 </picture>
                                 <div style={{ display: 'flex' }}>
                                     <button onClick={RuleImgRemoves}><span>前へ</span></button>
-                                    <button onClick={RuleImgAdds}><span>次へ</span></button>
+                                    <button onClick={() => RuleImgAdds(ruleBookImg)}><span>次へ</span></button>
                                 </div>
                             </div>
                         </div>
