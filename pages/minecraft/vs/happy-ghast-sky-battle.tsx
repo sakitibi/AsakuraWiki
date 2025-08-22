@@ -44,32 +44,38 @@ export default function MinecraftVS(){
     }, []);
     console.log("Current userlists:", userlists);
     console.log("Current teamlists:", teamlists);
-    const RuleImgChanges = (type: string) => {
-        console.log(`typeは${type}です`);
-        if(type === "plus"){
-            if(ruleBookImg < 3){
-                setRuleBookImg(ruleBookImg + 1);
-            } else {
-                setRuleBookImg(0);
-            }
-        } else if(type === "minus") {
-            if(ruleBookImg > 0){
-                setRuleBookImg(ruleBookImg - 1);
-            } else {
-                setRuleBookImg(3);
-            }
-        } else {
-            console.error("property error:", type);
-            return;
-        }
-        if(ruleBookImg > 3){
-            setRuleBookImg(0);
-        } else if(ruleBookImg < 0){
-            setRuleBookImg(3);
-        }
+    const RuleImgChanges = () => {
         const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
-        console.log("RuleImgChangesData: ", type, ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
+        console.log("RuleImgChangesData: ", ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
+    }
+    const RuleImgAdds = () => {
+        console.log("typeはplusです");
+        if(ruleBookImg < 3){
+            setRuleBookImg(ruleBookImg + 1);
+        } else {
+            setRuleBookImg(0);
+        }
+        if(ruleBookImg > 0){
+            setRuleBookImg(ruleBookImg - 1);
+        } else {
+            setRuleBookImg(3);
+        }
+        RuleImgChanges();
+    }
+    const RuleImgRemoves = () => {
+        console.log("typeはminusです");
+        if(ruleBookImg < 3){
+            setRuleBookImg(ruleBookImg + 1);
+        } else {
+            setRuleBookImg(0);
+        }
+        if(ruleBookImg > 0){
+            setRuleBookImg(ruleBookImg - 1);
+        } else {
+            setRuleBookImg(3);
+        }
+        RuleImgChanges();
     }
     return(
         <>
@@ -135,8 +141,8 @@ export default function MinecraftVS(){
                                     <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img" className={styles.MC_Carousel_track_slide_media_img}/>
                                 </picture>
                                 <div style={{ display: 'flex' }}>
-                                    <button onClick={() => RuleImgChanges("minus")}><span>前へ</span></button>
-                                    <button onClick={() => RuleImgChanges("plus")}><span>次へ</span></button>
+                                    <button onClick={RuleImgRemoves}><span>前へ</span></button>
+                                    <button onClick={RuleImgAdds}><span>次へ</span></button>
                                 </div>
                             </div>
                         </div>
