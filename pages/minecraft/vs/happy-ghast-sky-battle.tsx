@@ -105,16 +105,27 @@ export default function MinecraftVS(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/minecraft/vs/happy-ghast-sky-battle"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>マイクラバーサス ハッピーガスト スカイバトル!</h1>
-                        <p>開催期間 2025年9月2日 12:30~16:30<br/>(主催者が急遽北海道へ出張の用事が出来た為、8月23日18:00から延期)</p>
+                        <h1 className={styles.MC_Heading_1}>マイクラバーサス ハッピーガスト スカイバトル!</h1>
+                        <p className={styles.MC_articleHeroA_header_subheadline}>開催期間 2025年9月2日 12:30~16:30<br/>(主催者が急遽北海道へ出張の用事が出来た為、8月23日18:00から延期)</p>
                         <p>ロシア語ページ無くてごめんなさい、</p>
+                        <div className={styles.MC_Link_Style_RichText}>
+                            <p>みなさん！夏はいかがお過ごしですか？<br/>どこか遠くへ旅立ちたくなるような青い空、ミーンミーンと鳴り止まないセミたち、冷たい麦茶、溶けかけたアイスの棒、うっかり日焼けした腕。まぶしい日差しに目を細めながら、「どこか遠くへ行きたいなあ」と思うこと、ありませんか？</p>
+                            <p>正直著者は猛暑の中、外出するより部屋でゴロゴロを選ぶ方ですので、「旅はしたいが、荷造りも暑さも虫もイヤ！」というインドア派にとって、家で理想の「旅」はやっぱりマインクラフトの世界です。</p>
+                            <p>そんな中、この夏も<b>あのイベント</b>が帰ってきます…。</p>
+                            <p><b>「マイクラバーサス 〜ハッピーガスト スカイバトル！」が 9 月 2 日 (火) に開催決定</b>！&nbsp;</p>
+                            <p>今回で<b>第 6 回目</b>となるマイクラバーサスのテーマは、ずばり<b>「トラベル」</b>。&nbsp;</p>
+                            <p>もちろん、20 名のマインクラフトクリエイターが 4 チームに分かれて、PvP でポイントを競い合うというお馴染みのルールはそのままですが、「トラベル」をテーマにしたモブやマップで今回の戦いが繰り広げられます。</p>
+                            <p>ちなみに沿線の鉄道は全て<b>運転取り止め</b>になります</p>
+                            <p>さて、今回のマイクラバーサスはどんな旅になるでしょうか？</p>
+                            <p>早速、4 チームのメンバーをご紹介しましょう！</p>
+                        </div>
                         <p>参加者:</p>
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <ul>
                                 {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string, user_link:string}[]]) => (
                                     <>
                                         <li key={team}>
-                                        {team}チーム
+                                        <h2 style={{ textAlign: 'center' }}>&nbsp;【{team}チーム】</h2>
                                             <div className={styles.MC_articleGridA_sectionRef}></div>
                                             <div className={styles.MC_Link_Style_RichText}>
                                                 <table style={TableStyles}>
