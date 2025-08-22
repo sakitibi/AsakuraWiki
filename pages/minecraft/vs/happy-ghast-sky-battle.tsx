@@ -8,11 +8,17 @@ import MenuJp from '@/utils/pageParts/MenuJp';
 import { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
-import Script from "next/script";
 
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<any[]>([]);
+    const [ruleBookImg, setRuleBookImg] = useState<number>(0);
+    const RuleBookSrcArray:string[] = [
+        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png",
+        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule3_4.png",
+        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule5_6.png",
+        "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule9_10.png"
+    ];
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -34,6 +40,23 @@ export default function MinecraftVS(){
         fetchUsers();
     }, []);
     console.log("Current userlists:", userlists);
+    const RuleImgChanges = (type: string) => {
+        if(type === "plus"){
+            setRuleBookImg(ruleBookImg + 1);
+        } else if(type === "minus") {
+            setRuleBookImg(ruleBookImg - 1);
+        } else {
+            console.error("property error:", type);
+            return;
+        }
+        if(ruleBookImg > 3){
+            setRuleBookImg(0);
+        } else if(ruleBookImg < 0){
+            setRuleBookImg(3);
+        }
+        const RuleBookImgSource:HTMLSourceElement = document.getElementById("rule-book-img")! && document.querySelectorAll("source")[0]!
+        RuleBookImgSource.src = RuleBookSrcArray[ruleBookImg];
+    }
     return(
         <>
             <Head>
@@ -92,7 +115,15 @@ export default function MinecraftVS(){
                             </li>
                         </ul>
                         <p>ルールは以下の通り</p>
-                        
+                        <div>
+                            <picture>
+                                <source src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img"></source>
+                            </picture>
+                            <div style={{ display: 'flex' }}>
+                                <button onClick={() => RuleImgChanges("minus")}><span>前へ</span></button>
+                                <button onClick={() => RuleImgChanges("plus")}><span>次へ</span></button>
+                            </div>
+                        </div>
                         {!user ? (
                             null
                         ) : (
@@ -105,9 +136,6 @@ export default function MinecraftVS(){
                 </div>
                 <FooterJp/>
             </div>
-            <Script
-                src="https://www.minecraft.net/webui/mc-components.min.js"
-            />
         </>
     )
 }
