@@ -90,22 +90,22 @@ export default function MinecraftVS(){
                         <ul>
                             {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string}[]]) => (
                                 <>
-                                    {users.slice(0,5).map(vsuser => (
-                                        <li key={team}>
-                                        {team}チーム
-                                            <div className={styles.MC_articleGridA_sectionRef}></div>
-                                            <div className={styles.MC_Link_Style_RichText}>
-                                                <table style={{
-                                                    borderStyle: 'none',
-                                                    tableLayout: 'fixed',
-                                                    fontSize: '10.0pt',
-                                                    fontFamily: 'Arial',
-                                                    width: '0.0px'
-                                                }}>
-                                                    <colgroup>
-                                                        <col width="200"/>
-                                                    </colgroup>
-                                                    <tbody>
+                                    <li key={team}>
+                                    {team}チーム
+                                        <div className={styles.MC_articleGridA_sectionRef}></div>
+                                        <div className={styles.MC_Link_Style_RichText}>
+                                            <table style={{
+                                                borderStyle: 'none',
+                                                tableLayout: 'fixed',
+                                                fontSize: '10.0pt',
+                                                fontFamily: 'Arial',
+                                                width: '0.0px'
+                                            }}>
+                                                <colgroup>
+                                                    <col width="200"/>
+                                                </colgroup>
+                                                <tbody>
+                                                    {users.slice(0,5).map(vsuser => (
                                                         <tr style={{height: '21.0px'}}>
                                                             <td style={{
                                                                 paddingRight: '3.0px',
@@ -119,11 +119,11 @@ export default function MinecraftVS(){
                                                                 textAlign: 'center'
                                                             }} key={vsuser.user_id}>{vsuser.user_name}</td>
                                                         </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </li>
-                                    ))}
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </li>
                                 </>
                             ))}
                         </ul>
