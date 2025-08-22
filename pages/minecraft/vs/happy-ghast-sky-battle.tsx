@@ -13,6 +13,7 @@ export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<Object[]>([]);
     const [ruleBookImg, setRuleBookImg] = useState<number>(0);
+    const [ruleBookChangeButtonState, setRuleBookChangeButtonState] = useState<number>(0);
     const RuleBookSrcArray:string[] = [
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png",
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule3_4.png",
@@ -56,9 +57,13 @@ export default function MinecraftVS(){
     }
     const RuleImgAdds = (ruleBookImgState: number) => {
         console.log("typeはplusです");
+        if(ruleBookChangeButtonState !== 0){
+            setRuleBookChangeButtonState(0);
+            RuleImgAdds(ruleBookImg);
+        }
         if(ruleBookImgState < 3){
             setRuleBookImg(ruleBookImgState + 1);
-            if(ruleBookImgState + 1 !== ruleBookImg){
+            if(ruleBookChangeButtonState !== 0 && ruleBookImgState + 1 !== ruleBookImg){
                 setRuleBookImg(ruleBookImgState + 1);
             }
         } else {
@@ -67,10 +72,15 @@ export default function MinecraftVS(){
                 setRuleBookImg(0);
             }
         }
+        setRuleBookChangeButtonState(0);
         RuleImgChanges();
     }
     const RuleImgRemoves = (ruleBookImgState: number) => {
         console.log("typeはminusです");
+        if(ruleBookChangeButtonState !== 1){
+            setRuleBookChangeButtonState(1);
+            RuleImgRemoves(ruleBookImg);
+        }
         if(ruleBookImgState > 0){
             setRuleBookImg(ruleBookImgState - 1);
             if(ruleBookImgState - 1 !== ruleBookImg){
@@ -82,6 +92,7 @@ export default function MinecraftVS(){
                 setRuleBookImg(3);
             }
         }
+        setRuleBookChangeButtonState(1);
         RuleImgChanges();
     }
     return(
