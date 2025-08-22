@@ -49,9 +49,9 @@ export default function MinecraftVS(){
             console.error("property error:", type);
             return;
         }
-        if(ruleBookImg > 2){ // 多少のずれがあるため、> 3じゃなくて> 2にする
+        if(ruleBookImg > 3){
             setRuleBookImg(0);
-        } else if(ruleBookImg < 1){ // 多少のずれがあるため、< 0じゃなくて< 1にする
+        } else if(ruleBookImg < 0){
             setRuleBookImg(3);
         }
         const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
