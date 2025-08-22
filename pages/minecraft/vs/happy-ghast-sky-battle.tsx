@@ -11,7 +11,7 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userlists, setUsers] = useState<Object[]>([]);
+    const [userlists, setUsers] = useState<Object>([]);
     const [ruleBookImg, setRuleBookImg] = useState<number>(0);
     const MAX_INDEX = 3;
     const RuleBookSrcArray:string[] = [
@@ -37,18 +37,17 @@ export default function MinecraftVS(){
             .from("minecraft_vs")
             .select("user_name, team");
             if (error) return console.error(error);
-
             if (data) {
-            // チームごとに user_name をまとめる
-            const grouped = data.reduce((acc: any, user) => {
-                if (!acc[user.team]) {
-                    acc[user.team] = [];
-                }
-                acc[user.team].push(user.user_name);
-                return acc;
-            }, {});
-            // 配列の中にオブジェクト1個を入れる
-            setUsers([grouped]);
+                // チームごとに user_name をまとめる
+                const grouped = data.reduce((acc: any, user) => {
+                    if (!acc[user.team]) {
+                        acc[user.team] = [];
+                    }
+                    acc[user.team].push(user.user_name);
+                    return acc;
+                }, {});
+                // 配列の中にオブジェクト1個を入れる
+                setUsers(grouped);
             }
         };
 
