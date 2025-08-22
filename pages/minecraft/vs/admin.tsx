@@ -29,17 +29,18 @@ export default function MinecraftVSAdminer(){
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
     useEffect(() => {
+        if (!Teams) return; // null のときは fetch しない
         const fetchData = async () => {
             const { data, error } = await supabaseServer
                 .from("minecraft_vs")
                 .select("team_total")
                 .eq("team", Teams)
-                .maybeSingle()
+                .maybeSingle();
             if (error) return console.error(error);
             if (data) setTeamScore(data.team_total);
         };
         fetchData();
-    }, []);
+    }, [Teams]);
     const AddUsers = async(e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
