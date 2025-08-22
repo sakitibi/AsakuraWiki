@@ -90,46 +90,38 @@ export default function MinecraftVS(){
                             {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string}[]]) => (
                                 <>
                                     {users.slice(0,5).map(vsuser => (
-                                        <>
-                                            {user?.id === vsuser.user_id ? (
-                                                <p>あなたはマイクラバーサス ハッピーガスト スカイバトル!の参加者です!</p>
-                                            ) : (
-                                                <p>あなたもマイクラバーサス ハッピーガスト スカイバトル!に参加しますか?</p>
-                                            )
-                                            }
-                                            <li key={team}>
-                                            {team}チーム
-                                                <div className={styles.MC_articleGridA_sectionRef}></div>
-                                                <div className={styles.MC_Link_Style_RichText}>
-                                                    <table style={{
-                                                        borderStyle: 'none',
-                                                        tableLayout: 'fixed',
-                                                        fontSize: '10.0pt',
-                                                        fontFamily: 'Arial',
-                                                        width: '0.0px'
-                                                    }}>
-                                                        <colgroup>
-                                                            <col width="200"/>
-                                                        </colgroup>
-                                                        <tbody>
-                                                            <tr style={{height: '21.0px'}}>
-                                                                <td style={{
-                                                                    paddingRight: '3.0px',
-                                                                    paddingLeft: '3.0px',
-                                                                    borderWidth: '1.0px',
-                                                                    borderStyle: 'solid',
-                                                                    borderColor: '#000 #000 #ccc',
-                                                                    overflow: 'hidden',
-                                                                    verticalAlign: 'bottom',
-                                                                    color: '#15c',
-                                                                    textAlign: 'center'
-                                                                }} key={vsuser.user_id}>{vsuser.user_name}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </li>
-                                        </>
+                                        <li key={team}>
+                                        {team}チーム
+                                            <div className={styles.MC_articleGridA_sectionRef}></div>
+                                            <div className={styles.MC_Link_Style_RichText}>
+                                                <table style={{
+                                                    borderStyle: 'none',
+                                                    tableLayout: 'fixed',
+                                                    fontSize: '10.0pt',
+                                                    fontFamily: 'Arial',
+                                                    width: '0.0px'
+                                                }}>
+                                                    <colgroup>
+                                                        <col width="200"/>
+                                                    </colgroup>
+                                                    <tbody>
+                                                        <tr style={{height: '21.0px'}}>
+                                                            <td style={{
+                                                                paddingRight: '3.0px',
+                                                                paddingLeft: '3.0px',
+                                                                borderWidth: '1.0px',
+                                                                borderStyle: 'solid',
+                                                                borderColor: '#000 #000 #ccc',
+                                                                overflow: 'hidden',
+                                                                verticalAlign: 'bottom',
+                                                                color: '#15c',
+                                                                textAlign: 'center'
+                                                            }} key={vsuser.user_id}>{vsuser.user_name}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </li>
                                     ))}
                                 </>
                             ))}
