@@ -23,19 +23,23 @@ export default async function MinecraftVS(){
     const user = useUser();
 
     useEffect(() => {
-        if (!userName) return;  // ← 空なら何もしない
-
         const usersFetch = async () => {
-            const { data: users } = await supabaseServer
+            const { data: users, error } = await supabaseServer
             .from("minecraft_vs")
-            .select("user_name, team")
+            .select("user_name, team");
+
+            if (error) {
+                console.error(error);
+                return;
+            }
+
             if (users) {
-                setUsers(users); // ← 結果を保存
+                setUsers(users); // ← 結果をstateに保存
             }
         };
 
         usersFetch();
-    }, [userName]); // ← 検索条件が変わったときだけ動く
+    }, []); // ← 初回マウント時のみ実行（依存を空配列にする）
     console.log(userlists);
     return(
         <>
