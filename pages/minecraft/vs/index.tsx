@@ -21,7 +21,7 @@ export default function MinecraftVS(){
     return(
         <>
             <Head>
-                <title>マイクラバーサス 公式</title>
+                <title>マイクラバーサス ハッピーガスト スカイバトル! 公式</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -29,8 +29,8 @@ export default function MinecraftVS(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/minecraft/vs"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>マイクラバーサス</h1>
-                        <p>開催期間 2025年9月2日 12:30~16:30</p>
+                        <h1>マイクラバーサス ハッピーガスト スカイバトル!</h1>
+                        <p>開催期間 2025年9月2日 12:30~16:30<br/>(主催者が急遽北海道へ出張の用事が出来た為、8月23日18:00から延期)</p>
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>参加者:</p>
                         <ul>
