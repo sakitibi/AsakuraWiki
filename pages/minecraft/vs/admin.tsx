@@ -122,7 +122,7 @@ export default function MinecraftVSAdminer(){
     };
     if (loading) return <p>読み込み中...</p>;
     if(!adminer_user_id_list){
-        console.log(`GET ${window.location.href} 403 (Forbidden)`);
+        console.log("GET https://asakura-wiki.vercel.app/minecraft/vs/admin 403 (Forbidden)");
     }
     return(
         <>
