@@ -11,7 +11,7 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userlists, setUsers] = useState<any[]>([]);
+    const [userlists, setUsers] = useState<Object[]>([]);
     const [ruleBookImg, setRuleBookImg] = useState<number>(0);
     const RuleBookSrcArray:string[] = [
         "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png",
