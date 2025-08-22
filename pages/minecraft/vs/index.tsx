@@ -12,7 +12,6 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 export default async function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<any[]>([]);
-    const [userName, setUserName] = useState<string>("");  // ← 検索条件
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
