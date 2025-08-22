@@ -121,7 +121,7 @@ export default function MinecraftVS(){
                                                         {users.slice(0,5).map(vsuser => (
                                                             <tr style={{height: '21.0px'}}>
                                                                 <td style={TdStyles} key={vsuser.user_id}>
-                                                                    <a href={vsuser.live_link}>{vsuser.user_name}</a>
+                                                                    <a href={String(vsuser.live_link)}>{vsuser.user_name}</a>
                                                                 </td>
                                                             </tr>
                                                         ))}
