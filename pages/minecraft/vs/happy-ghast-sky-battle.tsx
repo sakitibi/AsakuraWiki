@@ -116,7 +116,7 @@ export default function MinecraftVS(){
                             </li>
                         </ul>
                         <p>ルールは以下の通り</p>
-                        <div>
+                        <div className={styles.MC_AEM_Wrapper}>
                             <picture>
                                 <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img"/>
                             </picture>
