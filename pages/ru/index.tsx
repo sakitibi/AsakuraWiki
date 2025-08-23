@@ -48,13 +48,13 @@ export default function Home() {
                 wiki_slug,
                 slug,
                 updated_at,
-                wikis!fk_wiki_slug (
+                wikis!inner (
                     name,
                     slug,
                     type
                 )
             `)
-            .eq('wikis.type', 'wiki')   // ← これで効く
+            .eq('wikis.type', 'wiki') // inner join に対して効く
             .order('updated_at', { ascending: false })
 
             if (error || !data) {
