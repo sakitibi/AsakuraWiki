@@ -54,7 +54,7 @@ export default function Home() {
                 type
                 )
             `)
-            .eq('wikis!fk_wiki_slug.type', 'wiki')  // ← リレーション名を明示
+            .eq('wikis!fk_wiki_slug.type', 'wiki')  // ← リレーション名を指定
             .order('updated_at', { ascending: false })
 
             if (error || !data) {
