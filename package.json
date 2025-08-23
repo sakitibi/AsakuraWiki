@@ -77,6 +77,20 @@
       "node_modules/express/**",
       "node_modules/qs/**",
       "node_modules/side-channel/**"
+    ],
+    "extraResources": [
+      {
+        "from": ".next/standalone",
+        "to": "standalone"
+      },
+      {
+        "from": ".next/static",
+        "to": "standalone/.next/static"
+      },
+      {
+        "from": "public",
+        "to": "standalone/public"
+      }
     ]
   }
 }
