@@ -42,19 +42,20 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchRecentPages() {
-            const { data, error } = await supabaseServer
-                .from('wiki_pages')
-                .select(`
-                    wiki_slug,
+        const { data, error } = await supabaseServer
+            .from('wiki_pages')
+            .select(`
+                wiki_slug,
+                slug,
+                updated_at,
+                wikis!fk_wiki_slug (
+                    name,
                     slug,
-                    updated_at,
-                    wikis!fk_wiki_slug (
-                        name,
-                        slug
-                    )
-                `)
-                .eq('wikis.type', 'wiki') // ← wikisテーブルのtype='wiki' に絞る
-                .order('updated_at', { ascending: false })
+                    type
+                )
+            `)
+            .eq('wikis.type', 'wiki')   // ← これで効く
+            .order('updated_at', { ascending: false })
 
             if (error || !data) {
                 console.error('fetchRecentPages error:', error)
