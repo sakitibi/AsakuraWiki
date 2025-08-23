@@ -47,13 +47,13 @@ export default function Home() {
                 wiki_slug,
                 slug,
                 updated_at,
-                wikis!inner (
-                    name,
-                    slug,
-                    type
+                wikis!fk_wiki_slug (
+                name,
+                slug,
+                type
                 )
             `)
-            .eq('wikis.type', 'wiki') // inner join に対して効く
+            .eq('wikis!fk_wiki_slug.type', 'wiki')  // ← リレーション名を明示
             .order('updated_at', { ascending: false })
 
             if (error || !data) {
