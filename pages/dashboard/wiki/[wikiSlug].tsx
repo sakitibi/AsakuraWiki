@@ -11,12 +11,12 @@ export default function WikiSettingsPage() {
 
     // slug を文字列に正規化
     const slugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const [wiki, setWiki] = useState<{ name: string; description: string; edit_mode: string; owner_id: string } | null>(null);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [editMode, setEditMode] = useState<'public' | 'private'>('public');
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
+    const [type, setType] = useState<'wiki' | 'package'>('wiki');
     const [designColor, setdesignColor] = useState<'pink' | 'blue' | 'yellow' |'default'>('default');
     const [isCLI, setIsCLI] = useState<boolean>(true);
 
@@ -27,7 +27,7 @@ export default function WikiSettingsPage() {
             setLoading(true);
             const { data, error } = await supabaseServer
             .from('wikis')
-            .select('name, description, owner_id, edit_mode, design_color, cli_used')
+            .select('name, description, owner_id, edit_mode, design_color, cli_used, type')
             .eq('slug', slugStr)
             .maybeSingle();
 
@@ -48,7 +48,6 @@ export default function WikiSettingsPage() {
                 return;
             }
 
-            setWiki(data);
             setName(data.name);
             setDescription(data.description);
             setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
@@ -59,6 +58,7 @@ export default function WikiSettingsPage() {
                 data.design_color === 'yellow' ? 'yellow': 
                 'default'
             );
+            setType(data.type);
             setLoading(false);
         };
 
@@ -71,7 +71,15 @@ export default function WikiSettingsPage() {
 
         const { error } = await supabaseServer
         .from('wikis')
-        .update({ name, description, edit_mode: editMode, updated_at: new Date(), design_color: designColor, cli_used: isCLI })
+        .update({
+            name,
+            description,
+            edit_mode: editMode,
+            updated_at: new Date(),
+            design_color: designColor,
+            cli_used: isCLI,
+            type: type
+        })
         .eq('slug', slugStr);
 
         setLoading(false);
@@ -219,6 +227,27 @@ export default function WikiSettingsPage() {
                                     value="true"
                                     onChange={() => isCLIChanges()}
                                     checked={isCLI}
+                                />
+                            </label>
+                            <br /><br />
+                            <p>プロジェクトタイプ:</p>
+                            <label>
+                                wiki
+                                <input
+                                    type="radio"
+                                    name="project_type"
+                                    value="wiki"
+                                    onChange={(e) => setType(e.target.value as 'wiki' || 'project')}
+                                />
+                            </label>
+                            <br/><br/>
+                            <label>
+                                package
+                                <input
+                                    type="radio"
+                                    name="project_type"
+                                    value="package"
+                                    onChange={(e) => setType(e.target.value as 'wiki' || 'project')}
                                 />
                             </label>
                             <br /><br />
