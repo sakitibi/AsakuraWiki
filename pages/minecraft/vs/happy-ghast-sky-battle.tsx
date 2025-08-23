@@ -36,7 +36,7 @@ export default function MinecraftVS(){
         const fetchUsers = async () => {
             const { data, error } = await supabaseServer
                 .from("minecraft_vs")
-                .select("user_name, team, user_id, live_link");
+                .select("user_name, team, user_id, live_link, score");
             if (error) return console.error(error);
 
             if (data) {
@@ -46,7 +46,8 @@ export default function MinecraftVS(){
                     acc[user.team].push({
                         user_name: user.user_name,
                         user_id: user.user_id,
-                        user_link: user.live_link
+                        user_link: user.live_link,
+                        score: user.score
                     });
                     return acc;
                 }, {});
@@ -122,7 +123,7 @@ export default function MinecraftVS(){
                         <p>参加者:</p>
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <ul>
-                                {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string, user_link:string}[]]) => (
+                                {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string, user_link:string, score: number}[]]) => (
                                     <>
                                         <li key={team}>
                                         <h2 style={{ textAlign: 'center' }}>&nbsp;【{team}チーム】</h2>
@@ -136,7 +137,7 @@ export default function MinecraftVS(){
                                                         {users.slice(0,5).map(vsuser => (
                                                             <tr style={{height: '21.0px'}}>
                                                                 <td style={TdStyles} key={vsuser.user_id}>
-                                                                    <a href={vsuser.user_link}>{vsuser.user_name}</a>
+                                                                    <a href={vsuser.user_link}>{vsuser.user_name}</a>{vsuser.score}
                                                                 </td>
                                                             </tr>
                                                         ))}
