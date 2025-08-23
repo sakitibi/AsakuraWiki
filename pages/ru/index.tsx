@@ -48,9 +48,12 @@ export default function Home() {
                     wiki_slug,
                     slug,
                     updated_at,
-                    wikis!fk_wiki_slug (name, slug, type)
+                    wikis!fk_wiki_slug (
+                        name,
+                        slug
+                    )
                 `)
-                .eq('wikis!fk_wiki_slug (type)', 'wiki')
+                .eq('wikis.type', 'wiki') // ← wikisテーブルのtype='wiki' に絞る
                 .order('updated_at', { ascending: false })
 
             if (error || !data) {
@@ -65,17 +68,20 @@ export default function Home() {
                 name:       d.wikis?.name ?? '(無名Wiki)',
                 updated_at: d.updated_at,
             }))
+
             const unique = flattened.filter(
                 (item, idx, arr) =>
-                arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
+                    arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
             )
+
             setRecentPages(unique)
-            setPages(unique) // ← これを追加！
-            setLoading(false);
-            setLoadingRecent(false);
+            setPages(unique)
+            setLoading(false)
+            setLoadingRecent(false)
         }
+
         fetchRecentPages()
-    }, []);
+    }, [])
 
     useEffect(() => {
         async function fetchLikedWikis() {
