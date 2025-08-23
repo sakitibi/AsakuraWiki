@@ -80,16 +80,19 @@
     ],
     "extraResources": [
       {
-        "from": ".next/standalone",
-        "to": "standalone"
+        "from": ".next/standalone/",
+        "to": "standalone",
+        "filter": ["**/*"]
       },
       {
-        "from": ".next/static",
-        "to": "standalone/.next/static"
+        "from": ".next/static/",
+        "to": "static",
+        "filter": ["**/*"]
       },
       {
-        "from": "public",
-        "to": "standalone/public"
+        "from": "public/",
+        "to": "public",
+        "filter": ["**/*"]
       }
     ]
   }
