@@ -47,8 +47,9 @@ export default function Home() {
                     wiki_slug,
                     slug,
                     updated_at,
-                    wikis!fk_wiki_slug (name, slug)
+                    wikis!fk_wiki_slug (name, slug, type)
                 `)
+                .eq('wikis!fk_wiki_slug (type)', 'wiki')
                 .order('updated_at', { ascending: false })
 
             if (error || !data) {
