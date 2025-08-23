@@ -41,20 +41,20 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchRecentPages() {
-        const { data, error } = await supabaseServer
-            .from('wiki_pages')
-            .select(`
-                wiki_slug,
-                slug,
-                updated_at,
-                wikis!fk_wiki_slug (
-                name,
-                slug,
-                type
-                )
-            `)
-            .eq('wikis!fk_wiki_slug.type', 'wiki')  // ← リレーション名を指定
-            .order('updated_at', { ascending: false })
+            const { data, error } = await supabaseServer
+                .from('wiki_pages')
+                .select(`
+                    wiki_slug,
+                    slug,
+                    updated_at,
+                    wikis!fk_wiki_slug (
+                    name,
+                    slug,
+                    type
+                    )
+                `)
+                .eq('wikis!fk_wiki_slug.type', 'wiki') // ← リレーション名を付ける
+                .order('updated_at', { ascending: false });
 
             if (error || !data) {
                 console.error('fetchRecentPages error:', error)
