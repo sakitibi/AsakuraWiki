@@ -8,7 +8,6 @@ export default function CreateWikiPage() {
     const [wikiId, setWikiId] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [type, setType] = useState<'wiki' | 'package'>('wiki');
     const [agree, setAgree] = useState(false);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -49,7 +48,6 @@ export default function CreateWikiPage() {
                 edit_mode: 'public',      // 初期値を決めておく
                 created_at: new Date(),
                 updated_at: new Date(),
-                type: type,
                 cli_used: true,
             }])
             .select()
@@ -122,28 +120,6 @@ export default function CreateWikiPage() {
                         onChange={(e) => setDescription(e.target.value)}
                         style={{ width: '100%', height: 80 }}
                     />
-                    </label>
-                    <br /><br />
-                    <p>プロジェクトタイプ:</p>
-                    <label>
-                        wiki
-                        <input
-                            type="radio"
-                            name="project_type"
-                            value="wiki"
-                            checked={type === 'wiki'}
-                            onChange={(e) => setType(e.target.value as 'wiki' || 'project')}
-                        />
-                    </label>
-                    <br/><br/>
-                    <label>
-                        package
-                        <input
-                            type="radio"
-                            name="project_type"
-                            value="package"
-                            onChange={(e) => setType(e.target.value as 'wiki' || 'project')}
-                        />
                     </label>
                     <br /><br />
                     <label>

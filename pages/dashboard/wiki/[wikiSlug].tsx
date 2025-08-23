@@ -16,7 +16,6 @@ export default function WikiSettingsPage() {
     const [editMode, setEditMode] = useState<'public' | 'private'>('public');
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
-    const [type, setType] = useState<'wiki' | 'package'>('wiki');
     const [designColor, setdesignColor] = useState<'pink' | 'blue' | 'yellow' |'default'>('default');
     const [isCLI, setIsCLI] = useState<boolean>(true);
 
@@ -27,7 +26,7 @@ export default function WikiSettingsPage() {
             setLoading(true);
             const { data, error } = await supabaseServer
             .from('wikis')
-            .select('name, description, owner_id, edit_mode, design_color, cli_used, type')
+            .select('name, description, owner_id, edit_mode, design_color, cli_used')
             .eq('slug', slugStr)
             .maybeSingle();
 
@@ -58,7 +57,6 @@ export default function WikiSettingsPage() {
                 data.design_color === 'yellow' ? 'yellow': 
                 'default'
             );
-            setType(data.type);
             setLoading(false);
         };
 
@@ -77,8 +75,7 @@ export default function WikiSettingsPage() {
             edit_mode: editMode,
             updated_at: new Date(),
             design_color: designColor,
-            cli_used: isCLI,
-            type: type
+            cli_used: isCLI
         })
         .eq('slug', slugStr);
 
@@ -227,28 +224,6 @@ export default function WikiSettingsPage() {
                                     value="true"
                                     onChange={() => isCLIChanges()}
                                     checked={isCLI}
-                                />
-                            </label>
-                            <br /><br />
-                            <p>プロジェクトタイプ:</p>
-                            <label>
-                                wiki
-                                <input
-                                    type="radio"
-                                    name="project_type"
-                                    value="wiki"
-                                    checked={type === 'wiki'}
-                                    onChange={(e) => setType(e.target.value as 'wiki' || 'project')}
-                                />
-                            </label>
-                            <br/><br/>
-                            <label>
-                                package
-                                <input
-                                    type="radio"
-                                    name="project_type"
-                                    value="package"
-                                    onChange={(e) => setType(e.target.value as 'wiki' || 'project')}
                                 />
                             </label>
                             <br /><br />

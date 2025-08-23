@@ -48,12 +48,10 @@ export default function Home() {
                     slug,
                     updated_at,
                     wikis!fk_wiki_slug (
-                    name,
-                    slug,
-                    type
+                        name,
+                        slug
                     )
                 `)
-                .eq('wikis!fk_wiki_slug.type', 'wiki') // ← リレーション名を付ける
                 .order('updated_at', { ascending: false });
 
             if (error || !data) {
