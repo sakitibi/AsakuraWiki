@@ -237,6 +237,7 @@ export default function WikiSettingsPage() {
                                     type="radio"
                                     name="project_type"
                                     value="wiki"
+                                    checked
                                     onChange={(e) => setType(e.target.value as 'wiki' || 'project')}
                                 />
                             </label>
