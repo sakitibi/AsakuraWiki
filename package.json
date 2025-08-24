@@ -79,21 +79,9 @@
       "node_modules/side-channel/**"
     ],
     "extraResources": [
-      {
-        "from": "node_modules/next/dist/",
-        "to": "node_modules/next/dist/",
-        "filter": ["**/*"]
-      },
-      {
-        "from": ".next/static/",
-        "to": "static",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "public/",
-        "to": "public",
-        "filter": ["**/*"]
-      }
+      { "from": ".next/standalone", "to": "standalone", "filter": ["**/*"] },
+      { "from": ".next/static", "to": "static", "filter": ["**/*"] },
+      { "from": "public", "to": "public", "filter": ["**/*"] }
     ]
   }
 }
