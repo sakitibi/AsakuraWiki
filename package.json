@@ -74,7 +74,8 @@
       ]
     },
     "asarUnpack": [
-      "node_modules/next/**",
+      "node_modules/next/dist/server/**",
+      "node_modules/next/dist/shared/**",
       "node_modules/express/**",
       "node_modules/qs/**",
       "node_modules/side-channel/**"
