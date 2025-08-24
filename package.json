@@ -80,8 +80,8 @@
     ],
     "extraResources": [
       {
-        "from": ".next/standalone/",
-        "to": "standalone",
+        "from": "node_modules/next/dist/",
+        "to": "node_modules/next/dist/",
         "filter": ["**/*"]
       },
       {
