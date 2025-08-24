@@ -1,6 +1,6 @@
 {
   "name": "AsakuraWiki",
-  "version": "2.0.19",
+  "version": "2.0.20",
   "main": "main/.Scripts/index.js",
   "license": "MIT",
   "scripts": {
@@ -74,8 +74,6 @@
       ]
     },
     "asarUnpack": [
-      "node_modules/next/dist/server/**",
-      "node_modules/next/dist/shared/**",
       "node_modules/express/**",
       "node_modules/qs/**",
       "node_modules/side-channel/**"
