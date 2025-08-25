@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: undefined,
+    output: 'standalone',
+    distDir: "standalone/.next",
     webpack(config, { isServer }) {
         if (isServer) {
             config.externals = [...(config.externals || []), 'isows'];
