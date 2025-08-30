@@ -40,6 +40,7 @@ export default function WikiPage() {
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState(false);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
+    const [editContent, setEditContent] = useState<string>("");
 
     const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
@@ -106,6 +107,7 @@ export default function WikiPage() {
                     setPage(pageData);
                     setTitle(pageData.title);
                     setContent(pageData.content);
+                    setEditContent(pageData.content);
                     setError(null);
                 }
             } catch (err) {
@@ -308,6 +310,14 @@ export default function WikiPage() {
 
         fetchParsedPreview();
     }, [previewText, wikiSlugStr, pageSlugStr]);
+
+    useEffect(() => {
+        window.addEventListener('beforeunload', function(){
+            if(content !== editContent){
+                alert("サイトから移動しますか?\n変更内容が保存されない可能性があります。")
+            }
+        });
+    },[]);
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
