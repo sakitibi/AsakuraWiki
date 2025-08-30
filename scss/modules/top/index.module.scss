@@ -1,0 +1,66 @@
+@use 'header';
+@use 'menu';
+@use 'button';
+@use 'pForBeginner';
+@use 'media';
+@use 'mixin';
+@use 'minecraft/vs';
+
+.pHotWiki__title{
+    @include mixin.pLikedWiki;
+    &::before{
+        @include mixin.pLikedMixinBefore("https://yt3.googleusercontent.com/zGfLgzUwOf0wmsIi3yULulr3V3JonJxxP__Clwieqo1Dgdk2A9xgiWSIOCKMBcSvn1Qh5ku5BCU=s160-c-k-c0x00ffffff-no-rj");
+    }
+}
+
+.pRecentWiki__title{
+    @include mixin.pLikedWiki;
+    &::before{
+        @include mixin.pLikedMixinBefore("https://yt3.googleusercontent.com/G9RoM7rcvv3yJm-EwgG_Pq5FoXx0ljCPF0jr-BbViEt1oKsTJ04SQ5FSlvZKPDKF_JPSdNH6=s160-c-k-c0x00ffffff-no-rj");
+    }
+}
+
+.pLikedWiki__title{
+    @include mixin.pLikedWiki;
+    &::before{
+        @include mixin.pLikedMixinBefore("https://yt3.googleusercontent.com/psWk0LSFeKsc2iPtKkcs8_j_vvwUblAoxTZ-TbBJPwkzleNgZEBdAI3EhxAY-STeKYLU7ZJK-w=s160-c-k-c0x00ffffff-no-rj");
+    }
+}
+
+.lFooter {
+    background-color: #cce19b;
+    & .c-copyright {
+        margin-top: 24px;
+    }
+}
+
+.cCopyright {
+    background-color: #b2c780;
+    color: #fff;
+    font-size: 10px;
+    padding: .5em 0;
+    text-align: center;
+}
+
+.pFooterNav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.pFooterNav__item {
+    display: inline-block;
+    font-size: 10px;
+    line-height: 1;
+    margin: 0;
+    padding: 0 1em;
+    &:not(:first-child) {
+        border-left: 1px solid #6c803d;
+    }
+    & a {
+        color: #6c803d !important;
+        -webkit-text-decoration: none;
+        text-decoration: none;
+    }
+}
