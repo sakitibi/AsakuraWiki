@@ -10,7 +10,7 @@ import styles from 'css/wikis.min.module.css';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 
-type Page = {
+interface Page {
     title: string
     content: string
 }
