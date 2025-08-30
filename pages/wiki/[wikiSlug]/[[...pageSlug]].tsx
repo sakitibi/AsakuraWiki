@@ -107,7 +107,6 @@ export default function WikiPage() {
                     setPage(pageData);
                     setTitle(pageData.title);
                     setContent(pageData.content);
-                    setEditContent(pageData.content);
                     setError(null);
                 }
             } catch (err) {
@@ -311,6 +310,7 @@ export default function WikiPage() {
         fetchParsedPreview();
     }, [previewText, wikiSlugStr, pageSlugStr]);
 
+    setEditContent(content);
     useEffect(() => {
         window.addEventListener('beforeunload', function(){
             if(content !== editContent){
