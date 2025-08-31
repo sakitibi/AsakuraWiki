@@ -300,9 +300,9 @@ export default function WikiPage() {
     useEffect(() => {
         const fetchParsedPreview = async () => {
             const result = await parseWikiContent(previewText, {
-            wikiSlug: wikiSlugStr,
-            pageSlug: pageSlugStr,
-            variables: {},
+                wikiSlug: wikiSlugStr,
+                pageSlug: pageSlugStr,
+                variables: {},
             });
             setParsedPreview(result);
         };
@@ -310,7 +310,9 @@ export default function WikiPage() {
         fetchParsedPreview();
     }, [previewText, wikiSlugStr, pageSlugStr]);
 
-    setEditContent(content);
+    useEffect(() => {
+        setEditContent(content);
+    }, [content]);
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (content !== editContent) {
