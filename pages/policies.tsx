@@ -109,17 +109,16 @@ export default function Policies(){
                                 <li>当社ウェブサイト上で掲載する<a href="/rules">本サービスに関する利用のルール</a>に抵触する行為</li>
                                 <li>反社会的勢力等への利益供与</li>
                                 <li>面識のない異性との出会いを目的とした行為</li>
-                                <li>
+                                <li className="danger_list">
                                     <strong>
-                                        <a className="danger_list" href="https://wikiwiki.jp/maitestu-net">マイ鉄ネットワーク</a>、
-                                        <a className="danger_list" href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
+                                        <a href="https://wikiwiki.jp/maitestu-net">マイ鉄ネットワーク</a>、
+                                        <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
                                         などの荒らしを擁護、支援、宣伝などをする行為
                                     </strong>
                                 </li>
-                                <li>
+                                <li className="danger_list">
                                     <strong>
-                                        <a className="danger_list" href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
-                                        の配信の概要欄を勧める行為
+                                        <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>の配信の概要欄を勧める行為
                                     </strong>
                                 </li>
                                 <li><a className="danger_list" href="https://sakitibi-com9.webnode.jp/page/10">13ninstudioの利用規約</a>に反する行為</li>
