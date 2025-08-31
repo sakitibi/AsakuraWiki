@@ -1,6 +1,3 @@
-.btn.btnPrimary {
-    font-size: inherit;
-}
 .btnPrimary {
     padding-left: 30px;
     padding-right: 20px;
@@ -78,4 +75,7 @@
     -moz-user-select: none;
     user-select: none;
     vertical-align: middle;
+    &.btnPrimary {
+        font-size: inherit;
+    }
 }
