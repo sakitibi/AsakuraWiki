@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuRu URL='/news/2025-07-26-1'/>
+                    <LeftMenuRu URL='/news/2025/07/26/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/26 Отличные новости! Minecraft General Transportation (mgtn)<br/>забанен!</h1>
                         <p>Я думаю, что причиной, скорее всего, является вандализм.</p>

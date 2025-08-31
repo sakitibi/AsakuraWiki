@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-07-18-1'/>
+                    <LeftMenuJp URL='/news/2025/07/18/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/18 あさクラ会議がシステム<br/>トラブルで延期に..</h1>
                         <p>その原因は「supabaseのcommentsテーブル<br/>の設定がおかしかったからです」</p>

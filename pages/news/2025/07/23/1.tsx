@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-07-23-1'/>
+                    <LeftMenuJp URL='/news/2025/07/23/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/23 第二都市ニュータウン南西<br/>側の城の外観完成!</h1>
                         <p>中身が何になるかは不明です</p>

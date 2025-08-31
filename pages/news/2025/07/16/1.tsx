@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-07-16-1'/>
+                    <LeftMenuJp URL='/news/2025/07/16/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/16 あさクラ南東部で<br/>強風被害が出ています、ご注意下さい</h1>
                         <p>2025/07/15 16:00ごろ Train Builderワールド近海で<br/>強風が発生いたしました</p>

@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-08-28-1'/>
+                    <LeftMenuJp URL='/news/2025/08/28/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/08/28 マイクラバーサス ハッピーガスト<br/>スカイバトル! が開催されます!</h1>
                         <p><a href="/minecraft/vs/happy-ghast-sky-battle">詳細はこちら</a></p>

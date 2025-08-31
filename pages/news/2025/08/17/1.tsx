@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-08-17-1'/>
+                    <LeftMenuJp URL='/news/2025/08/17/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/08/17 朗報!、おととい〜昨日ごろ、マイ鉄ネットワークに<br/>誰かが攻撃してくれました!</h1>
                         <p>これにはマイ鉄ネット撲滅委員会も嬉しい様子</p>

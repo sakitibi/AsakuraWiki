@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-07-26-1'/>
+                    <LeftMenuJp URL='/news/2025/07/26/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/26 超朗報! Minecraft総合交通(mgtn)<br/>がBANされたあああぁ!</h1>
                         <p>多分理由は荒らし行為だと思います</p>

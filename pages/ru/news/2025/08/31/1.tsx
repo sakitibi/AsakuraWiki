@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuRu URL='/news/2025-08-31-1'/>
+                    <LeftMenuRu URL='/news/2025/08/31/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/08/31 元神 魔王 слишком много нарушений, поэтому он добавляется в уровень <br/>злонамеренных пользователей на уровне отчетности одним выстрелом</h1>
                         <p>Имя пользователя на YouTube: 元神 魔王 сделал<br/>такое злобное заявление</p>

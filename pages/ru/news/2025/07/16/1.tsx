@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuRu URL='/news/2025-07-16-1'/>
+                    <LeftMenuRu URL='/news/2025-07/16/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/16 Сильный ветер нанес ущерб юго-востоку<br/>Асакуры , будьте осторожны.</h1>
                         <p>Около 16:00 15 июля 2025 года в районе Train<br/>Builder World поднялся сильный ветер .</p>

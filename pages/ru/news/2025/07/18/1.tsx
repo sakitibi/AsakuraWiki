@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuRu URL="/news/2025-07-18-1"/>
+                    <LeftMenuRu URL="/news/2025/07/18/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/18 Конференция Асакура<br/>отложена из-за системных неполадок...</h1>
                         <p>Причиной этого<br/>стали неверные настройки таблицы комментариев супербазы.</p>

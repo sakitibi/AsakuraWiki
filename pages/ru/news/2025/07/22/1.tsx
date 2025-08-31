@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuRu URL='/news/2025-07-22-1'/>
+                    <LeftMenuRu URL='/news/2025/07/22/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/07/22 Строится замок на юго-западной стороне <br/>второго города Нового города</h1>
                         <p>В настоящее время строится замок на юго-западной стороне второго города, Нового города</p>
