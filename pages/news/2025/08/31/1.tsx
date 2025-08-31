@@ -25,7 +25,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025-07-18-1'/>
+                    <LeftMenuJp URL='/news/2025-08-31-1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/08/31 元神 魔王を違反点多すぎるので一発で<br/>通報レベルで悪質なユーザーに追加</h1>
                         <p>YouTubeのユーザー名: 元神 魔王 が<br/>このような悪質な発言をしていました</p>
