@@ -312,12 +312,19 @@ export default function WikiPage() {
 
     setEditContent(content);
     useEffect(() => {
-        window.addEventListener('beforeunload', function(){
-            if(content !== editContent){
-                alert("サイトから移動しますか?\n変更内容が保存されない可能性があります。")
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (content !== editContent) {
+                e.preventDefault();
+                e.returnValue = "サイトから移動しますか?\n変更内容が保存されない可能性があります。";
             }
-        });
-    },[]);
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [content, editContent]);
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
