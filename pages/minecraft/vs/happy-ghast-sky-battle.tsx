@@ -137,7 +137,7 @@ export default function MinecraftVS(){
                                                         {users.slice(0,5).map(vsuser => (
                                                             <tr style={{height: '21.0px'}}>
                                                                 <td style={TdStyles} key={vsuser.user_id}>
-                                                                    <a href={vsuser.user_link}>{vsuser.user_name}</a>{vsuser.score} 点
+                                                                    <a href={vsuser.user_link}>{vsuser.user_name}</a> 点
                                                                 </td>
                                                             </tr>
                                                         ))}
