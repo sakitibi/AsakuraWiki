@@ -74,7 +74,15 @@ export default function SignUpPage() {
                 />
                 <br /><br />
                 <label>
-                    <a href="https://sakitibi-com9.webnode.jp/page/9">利用規約</a>に同意
+                    <a href="/policies">あさクラWiki利用規約</a>に同意
+                    <input 
+                        type="checkbox"
+                        required
+                    />
+                </label>
+                <br /><br />
+                <label>
+                    <a href="https://sakitibi-com9.webnode.jp/page/10">13nin利用規約</a>に同意
                     <input 
                         type="checkbox"
                         required
