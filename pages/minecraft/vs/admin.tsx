@@ -33,7 +33,7 @@ export default function MinecraftVSAdminer(){
         if (!Teams) return; // null のときは fetch しない
         const fetchData = async () => {
             const { data, error } = await supabaseServer
-                .from("minecraft_vs")
+                .from("minecraft_vs_happy-ghast-sky-battle")
                 .select("team_total")
                 .eq("team", Teams)
                 .maybeSingle();
@@ -58,7 +58,7 @@ export default function MinecraftVSAdminer(){
                 // チーム合計を取得（既存ユーザー分）
                 let newTeamScore = Score ?? 0;
                 const { data: teamData, error: teamError } = await supabaseServer
-                    .from("minecraft_vs")
+                    .from("minecraft_vs_happy-ghast-sky-battle")
                     .select("team_total")
                     .eq("team", Teams);
 
@@ -70,7 +70,7 @@ export default function MinecraftVSAdminer(){
 
                 // 新規ユーザー追加
                 const { data, error } = await supabaseServer
-                    .from("minecraft_vs")
+                    .from("minecraft_vs_happy-ghast-sky-battle")
                     .insert([{
                         user_name: UserName,
                         user_id: UserId,
@@ -88,7 +88,7 @@ export default function MinecraftVSAdminer(){
                 // 現在のチーム合計から対象ユーザーの古い score を除く
                 let newTeamScore = Score ?? 0;
                 const { data: teamData, error: teamError } = await supabaseServer
-                    .from("minecraft_vs")
+                    .from("minecraft_vs_happy-ghast-sky-battle")
                     .select("user_name, score, team_total")
                     .eq("team", Teams);
 
@@ -102,7 +102,7 @@ export default function MinecraftVSAdminer(){
 
                 // ユーザー更新
                 const { error } = await supabaseServer
-                    .from("minecraft_vs")
+                    .from("minecraft_vs_happy-ghast-sky-battle")
                     .update({
                         user_name: UserName,
                         team: Teams,

@@ -35,7 +35,7 @@ export default function MinecraftVS(){
     useEffect(() => {
         const fetchUsers = async () => {
             const { data, error } = await supabaseServer
-                .from("minecraft_vs")
+                .from("minecraft_vs_happy-ghast-sky-battle")
                 .select("user_name, team, user_id, live_link, score");
             if (error) return console.error(error);
 
@@ -137,7 +137,7 @@ export default function MinecraftVS(){
                                                         {users.slice(0,5).map(vsuser => (
                                                             <tr style={{height: '21.0px'}}>
                                                                 <td style={TdStyles} key={vsuser.user_id}>
-                                                                    <a href={vsuser.user_link}>{vsuser.user_name}</a> 点
+                                                                    <a href={vsuser.user_link}>{vsuser.user_name}</a>{vsuser.score} 点
                                                                 </td>
                                                             </tr>
                                                         ))}
@@ -161,13 +161,11 @@ export default function MinecraftVS(){
                                 </div>
                             </div>
                         </div>
-                        {!user ? (
-                            null
-                        ) : (
-                            <a href="https://sakitibi-com9.webnode.jp/page/5">
-                                ここから参加申請(13ninアカウント必須)
-                            </a>
-                        )}
+                        <h2>結果</h2>
+                        <p>1位 緑チーム 25395点</p>
+                        <p>2位 黄チーム 22920点</p>
+                        <p>3位 青チーム 22215点</p>
+                        <p>4位 赤チーム 21885点</p>
                     </main>
                     <RightMenuJp/>
                 </div>

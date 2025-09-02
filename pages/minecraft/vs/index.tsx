@@ -23,7 +23,7 @@ export default function MinecraftVS(){
     useEffect(() => {
         const fetchUsers = async () => {
             const { data: users, error } = await supabaseServer
-                .from("minecraft_vs")
+                .from("minecraft_vs_happy-ghast-sky-battle")
                 .select("user_name, team");
 
             if (error) return console.error(error);
