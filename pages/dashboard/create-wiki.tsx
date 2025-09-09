@@ -8,13 +8,14 @@ export default function CreateWikiPage() {
     const [wikiId, setWikiId] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [agree, setAgree] = useState(false);
+    const [agreeASKR, setAgreeASKR] = useState(false);
+    const [agree13nin, setAgree13nin] = useState(false);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!agree) {
+        if (!agreeASKR || !agree13nin) {
             alert('利用規約に同意してください。');
             return;
         }
@@ -125,11 +126,21 @@ export default function CreateWikiPage() {
                     <label>
                     <input
                         type="checkbox"
-                        checked={agree}
-                        onChange={(e) => setAgree(e.target.checked)}
+                        checked={agreeASKR}
+                        onChange={(e) => setAgreeASKR(e.target.checked)}
                         required
                     />
-                    <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>利用規約</a>に同意します
+                    <a href='/policies' target='_blank'>あさクラWiki利用規約</a>に同意します
+                    </label>
+                    <br/><br/>
+                    <label>
+                    <input
+                        type="checkbox"
+                        checked={agree13nin}
+                        onChange={(e) => setAgree13nin(e.target.checked)}
+                        required
+                    />
+                    <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>13nin利用規約</a>に同意します
                     </label>
                     <br/><br/>
                     <button type="submit" disabled={loading}>

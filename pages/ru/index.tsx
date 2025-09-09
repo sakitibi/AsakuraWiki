@@ -9,28 +9,14 @@ import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
 import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
 import FooterRu from '@/utils/pageParts/top/FooterRu';
 import versions from '@/utils/version';
-
-type WikiPage = {
-    wikiSlug?: string
-    pageSlug?: string
-    name: string
-    updated_at: string
-}
-
-type LikedWiki = {
-    wikiSlug: string;
-    name: string;
-    like_count: number;
-}
+import { WikiPage, LikedWiki } from '@/pages/index';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
     const [loading, setLoading] = useState(true)
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
-    const [recentPages, setRecentPages] = useState<WikiPage[]>([])
     const [loadingLiked, setLoadingLiked] = useState(true)
-    const [loadingRecent, setLoadingRecent] = useState(true)
 
     const H2Styles:React.CSSProperties = {
         marginBlockStart: '0.83em',
@@ -57,7 +43,6 @@ export default function Home() {
                 .order('updated_at', { ascending: false });
             if (error || !data) {
                 console.error('fetchRecentPages error:', error)
-                setLoadingRecent(false)
                 return
             }
 
@@ -73,10 +58,8 @@ export default function Home() {
                     arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
             )
 
-            setRecentPages(unique)
             setPages(unique)
             setLoading(false)
-            setLoadingRecent(false)
         }
 
         fetchRecentPages()

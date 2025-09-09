@@ -10,14 +10,14 @@ import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import versions from '@/utils/version';
 
-interface WikiPage {
+export interface WikiPage {
     wikiSlug: string;
     pageSlug: string;
     name: string;
     updated_at: string;
 }
 
-interface LikedWiki {
+export interface LikedWiki {
     wikiSlug: string;
     name: string;
     like_count: number;
