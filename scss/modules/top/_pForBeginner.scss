@@ -1,7 +1,7 @@
 /* pForBeginner系統 */
 
 .pForBeginner {
-    background-color: #fde6e7;
+    background-color: #abf1b6/*#fde6e7*/;
     background-image: url("https://wikiwiki.jp/pa/assets/e607c1a8a5c8a27728d3.png");
     border-radius: 10px;
     padding: 18px;
@@ -39,7 +39,7 @@
 }
 
 .pForBeginner__list {
-    list-style: none;
+    list-style: none !important;
     margin: 0;
     padding: 0;
 }
