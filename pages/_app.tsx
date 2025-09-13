@@ -93,7 +93,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-                <div style={{ color: 'red' }}>
+                <div style={{ color: 'red', textAlign: 'center' }}>
                     <p><strong>緊急 2025年9月13日</strong></p>
                     <p>の名前は長い方が有利の配信にて</p>
                     <p>名前は長い方が有利と視聴者が</p>
