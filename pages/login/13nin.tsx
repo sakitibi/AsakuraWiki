@@ -18,9 +18,14 @@ export default function LoginPage() {
             });
 
             if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Login failed");
+                // JSON が返ってこない場合もあるので text() で確認
+                const text = await res.text();
+                console.error("Login failed:", text);
+                throw new Error("Login failed");
             }
+
+            const data = await res.json(); // ここでパース
+            console.log(data);
 
             const { token } = await res.json();
             localStorage.setItem("auth_token", token);
@@ -59,7 +64,9 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     />
-                    <button type="submit">ログイン</button>
+                    <button type="submit">
+                        <span>ログイン</span>
+                    </button>
                 </form>
                 {error && <p style={{ color: "red" }}>{error}</p>}
             </main>
