@@ -99,7 +99,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                     <p>名前は長い方が有利と視聴者が</p>
                     <p>Amongus TOH-Kサーバーで</p>
                     <p>非常に悪質な荒らし行為が行われました、</p>
-                    <p>被害者は4人です、</p>
+                    <p>被害者は5人です、</p>
                     <p><a href="/news/2025/09/13/1">詳しい情報はこちらで</a></p>
                 </div>
                 <Component {...pageProps} />
