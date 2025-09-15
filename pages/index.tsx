@@ -111,7 +111,7 @@ export default function Home() {
             const userData = await response.json();
             return userData;
         }
-        setWiki13ninstudioCounter(fetched13ninstudioCounter());
+        setWiki13ninstudioCounter(async() => await fetched13ninstudioCounter());
         console.log(wiki13ninstudioCounter);
     }, [wiki13ninstudioCounter]);
 
