@@ -113,7 +113,6 @@ export default function Home() {
                 );
                 const userData = await response.json();
                 setWiki13ninstudioCounter(userData); // Promiseじゃなくて中身をset
-                console.log(wiki13ninstudioCounter);
             } catch (error) {
                 console.error("fetch error:", error);
             }
@@ -124,6 +123,10 @@ export default function Home() {
     useEffect(() => {
         console.log('likedWikis updated:', likedWikis);
     }, [likedWikis]);
+
+    useEffect(() => {
+        console.log(wiki13ninstudioCounter);
+    }, [wiki13ninstudioCounter]);
 
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
