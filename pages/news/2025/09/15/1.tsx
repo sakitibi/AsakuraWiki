@@ -26,7 +26,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025/09/13/1'/>
+                    <LeftMenuJp URL='/news/2025/09/15/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/09/15 ついに明日であさクラパート500!</h1>
                         <p>あさクラパート500を記念して以下の様なライブをやります!</p>
