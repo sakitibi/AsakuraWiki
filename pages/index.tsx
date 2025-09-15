@@ -23,6 +23,13 @@ export interface LikedWiki {
     like_count: number;
 }
 
+interface WikiCounter {
+    online: number;
+    today: number;
+    total: number;
+    yesterday: number;
+};
+
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
     const [loading, setLoading] = useState<boolean>(true)
@@ -31,7 +38,7 @@ export default function Home() {
     const [recentPages, setRecentPages] = useState<WikiPage[]>([])
     const [loadingLiked, setLoadingLiked] = useState(true)
     const [loadingRecent, setLoadingRecent] = useState(true)
-    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<Object>({});
+    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
 
     const H2Styles:React.CSSProperties = {
         marginBlockStart: '0.83em',
@@ -163,6 +170,12 @@ export default function Home() {
                         <LeftMenuJp URL='/'/>
                         <main style={{ padding: '2rem', flex: 1 }}>
                             <h1>あさクラWiki</h1>
+                                <div id="view-counter">
+                                    <p>今日の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.today ?? 0)}</p>
+                                    <p>合計の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.total ?? 0)}</p>
+                                    <p>昨日の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.yesterday ?? 0)}</p>
+                                    <p>現在の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.online ?? 0)}</p>
+                                </div>
                                 <div id="liked-wiki">
                                     <h2 className={styles.pLikedWiki__title}>みんなが評価しているWiki</h2>
                                     {loadingLiked ? <p>Loading...</p> : (
