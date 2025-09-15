@@ -38,7 +38,6 @@ export default function Home() {
     const [recentPages, setRecentPages] = useState<WikiPage[]>([])
     const [loadingLiked, setLoadingLiked] = useState(true)
     const [loadingRecent, setLoadingRecent] = useState(true)
-    const [wikioldicCounter, setWikioldicCounter] = useState<WikiCounter | null>(null);
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
 
     const H2Styles:React.CSSProperties = {
@@ -114,41 +113,29 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        async function fetchCounters() {
+        async function fetched13ninstudioCounter() {
             try {
-                const [res12, res13] = await Promise.all([
-                    fetch("https://counter.wikiwiki.jp/c/12ninstudio/pv/FrontPage"), // こっちは古いデータ(一応表示されるカウンターがリセットされ無い様に)
-                    fetch("https://counter.wikiwiki.jp/c/13ninstudio/pv/index"), // こっちが新しいデータ
-                ]);
-
-                const data12: WikiCounter = await res12.json();
-                const data13: WikiCounter = await res13.json();
-
-                setWikioldicCounter(data12);
-                setWiki13ninstudioCounter(data13);
+                const response = await fetch(
+                    "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html"
+                );
+                const userData = await response.json();
+                setWiki13ninstudioCounter(userData); // Promiseじゃなくて中身をset
             } catch (error) {
                 console.error("fetch error:", error);
             }
         }
-        fetchCounters();
-    }, []);
+        fetched13ninstudioCounter();
+    }, []); // ← 初回だけ実行
 
     useEffect(() => {
         console.log('likedWikis updated:', likedWikis);
     }, [likedWikis]);
 
-    const totalCounter: WikiCounter | null =
-    wikioldicCounter && wiki13ninstudioCounter
-        ? {
-            online: wikioldicCounter.online + wiki13ninstudioCounter.online,
-            today: wikioldicCounter.today + wiki13ninstudioCounter.today,
-            yesterday: wikioldicCounter.yesterday + wiki13ninstudioCounter.yesterday,
-            total: wikioldicCounter.total + wiki13ninstudioCounter.total,
-            }
-        : null;
     useEffect(() => {
         console.log(wiki13ninstudioCounter);
     }, [wiki13ninstudioCounter]);
+
+    const wiki13ninstudioCounterTotal = wiki13ninstudioCounter!.total + 1391 | 0;
 
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
@@ -186,10 +173,10 @@ export default function Home() {
                         <main style={{ padding: '2rem', flex: 1 }}>
                             <h1>あさクラWiki</h1>
                                 <div id="view-counter">
-                                    <p>今日の閲覧数: {JSON.stringify(totalCounter?.today ?? 0)}</p>
-                                    <p>合計の閲覧数: {JSON.stringify(totalCounter?.total ?? 0)}</p>
-                                    <p>昨日の閲覧数: {JSON.stringify(totalCounter?.yesterday ?? 0)}</p>
-                                    <p>現在の閲覧数: {JSON.stringify(totalCounter?.online ?? 0)}</p>
+                                    <p>今日の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.today ?? 0)}</p>
+                                    <p>合計の閲覧数: {JSON.stringify(wiki13ninstudioCounterTotal ?? 0)}</p>
+                                    <p>昨日の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.yesterday ?? 0)}</p>
+                                    <p>現在の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.online ?? 0)}</p>
                                 </div>
                                 <div id="liked-wiki">
                                     <h2 className={styles.pLikedWiki__title}>みんなが評価しているWiki</h2>
