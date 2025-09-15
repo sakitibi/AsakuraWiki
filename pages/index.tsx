@@ -135,7 +135,7 @@ export default function Home() {
         console.log(wiki13ninstudioCounter);
     }, [wiki13ninstudioCounter]);
 
-    const wiki13ninstudioCounterTotal = wiki13ninstudioCounter!.total + 1391 | 0;
+    const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
 
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
