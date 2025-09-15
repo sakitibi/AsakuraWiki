@@ -3,16 +3,18 @@ import type { AppProps } from 'next/app';
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import '@/css/index.min.globals.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
 import { Analytics } from "@vercel/analytics/next"
+import type { WikiCounter } from '@/pages/index';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     const router = useRouter();
+    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
 
     // ✅ ここに .askr リダイレクト処理を追加
     useEffect(() => {
@@ -52,6 +54,28 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             event.preventDefault();
         })
     }, []);
+
+    useEffect(() => {
+        async function fetched13ninstudioCounter() {
+            try {
+                const response = await fetch(
+                    "https://counter.wikiwiki.jp/c/13ninstudio/pv/_app"
+                );
+                const userData = await response.json();
+                setWiki13ninstudioCounter(userData); // Promiseじゃなくて中身をset
+            } catch (error) {
+                console.error("fetch error:", error);
+            }
+        }
+        fetched13ninstudioCounter();
+    }, []); // ← 初回だけ実行
+
+    useEffect(() => {
+        console.log(wiki13ninstudioCounter);
+    }, [wiki13ninstudioCounter]);
+
+    const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
+    console.log("ApplicationAllViewedCounter: ", wiki13ninstudioCounterTotal ?? null);
 
     return (
         <>

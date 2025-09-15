@@ -23,7 +23,7 @@ export interface LikedWiki {
     like_count: number;
 }
 
-interface WikiCounter {
+export interface WikiCounter {
     online: number;
     today: number;
     total: number;
@@ -132,7 +132,7 @@ export default function Home() {
     }, [likedWikis]);
 
     useEffect(() => {
-        console.log(wiki13ninstudioCounter);
+        console.log("index: ", wiki13ninstudioCounter);
     }, [wiki13ninstudioCounter]);
 
     const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
