@@ -31,6 +31,7 @@ export default function Home() {
     const [recentPages, setRecentPages] = useState<WikiPage[]>([])
     const [loadingLiked, setLoadingLiked] = useState(true)
     const [loadingRecent, setLoadingRecent] = useState(true)
+    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<Object>({});
 
     const H2Styles:React.CSSProperties = {
         marginBlockStart: '0.83em',
@@ -103,6 +104,16 @@ export default function Home() {
 
         fetchLikedWikis();
     }, []);
+
+    useEffect(() => {
+        async function fetched13ninstudioCounter(){
+            const response = await fetch('https://counter.wikiwiki.jp/c/12ninstudio/pv/FrontPage');
+            const userData = await response.json();
+            return userData;
+        }
+        setWiki13ninstudioCounter(fetched13ninstudioCounter());
+        console.log(wiki13ninstudioCounter);
+    }, [wiki13ninstudioCounter]);
 
     useEffect(() => {
         console.log('likedWikis updated:', likedWikis);
