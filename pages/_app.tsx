@@ -93,7 +93,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-                <div style={{ color: 'red', textAlign: 'center' }}>
+                <div style={{ color: 'blue', textAlign: 'center' }}>
                     <p><strong>朗報! 2025年9月16日</strong></p>
                     <p>にあさクラがなんとパート500ライブを開始します!</p>
                     <p>ライブの内容等は以下リンクで</p>
