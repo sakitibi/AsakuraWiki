@@ -106,14 +106,20 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        async function fetched13ninstudioCounter(){
-            const response = await fetch('https://counter.wikiwiki.jp/c/12ninstudio/pv/FrontPage');
-            const userData = await response.json();
-            return userData;
+        async function fetched13ninstudioCounter() {
+            try {
+                const response = await fetch(
+                    "https://counter.wikiwiki.jp/c/12ninstudio/pv/FrontPage"
+                );
+                const userData = await response.json();
+                setWiki13ninstudioCounter(userData); // Promiseじゃなくて中身をset
+                console.log(wiki13ninstudioCounter);
+            } catch (error) {
+                console.error("fetch error:", error);
+            }
         }
-        setWiki13ninstudioCounter(async() => await fetched13ninstudioCounter());
-        console.log(wiki13ninstudioCounter);
-    }, [wiki13ninstudioCounter]);
+        fetched13ninstudioCounter();
+    }, []); // ← 初回だけ実行
 
     useEffect(() => {
         console.log('likedWikis updated:', likedWikis);
