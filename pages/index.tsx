@@ -173,10 +173,10 @@ export default function Home() {
                         <main style={{ padding: '2rem', flex: 1 }}>
                             <h1>あさクラWiki</h1>
                                 <div id="view-counter">
-                                    <p>今日の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.today ?? 0)}</p>
-                                    <p>合計の閲覧数: {JSON.stringify(wiki13ninstudioCounterTotal ?? 0)}</p>
-                                    <p>昨日の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.yesterday ?? 0)}</p>
-                                    <p>現在の閲覧数: {JSON.stringify(wiki13ninstudioCounter?.online ?? 0)}</p>
+                                    <p>今日の閲覧数: {wiki13ninstudioCounter?.today ?? 0}</p>
+                                    <p>合計の閲覧数: {wiki13ninstudioCounterTotal ?? 0}</p>
+                                    <p>昨日の閲覧数: {wiki13ninstudioCounter?.yesterday ?? 0}</p>
+                                    <p>現在の閲覧数: {wiki13ninstudioCounter?.online ?? 0}</p>
                                 </div>
                                 <div id="liked-wiki">
                                     <h2 className={styles.pLikedWiki__title}>みんなが評価しているWiki</h2>
