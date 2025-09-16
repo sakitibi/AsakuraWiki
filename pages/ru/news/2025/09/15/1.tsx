@@ -32,7 +32,7 @@ export default function NewsPage() {
                         <ol>
                             <li><s>13:00~15:30 Онлайн-чат был отменен.</s></li>
                             <li><s>13:00~15:30 Тур по миру Асакура завершился.</s></li>
-                            <li>Программирование в прямом эфире с 22:00 ~ 23:30!</li>
+                            <li><s>Программирование в прямом эфире с 22:00 ~ 23:30!</s>Законченный</li>
                         </ol>
                         <p><a href='https://youtube.com/playlist?list=PLDsY7IAMYhhhfOs5lUUSTs2YRy0crDNAj'>Подробнее о плейлистах</a></p>
                     </main>
