@@ -31,8 +31,8 @@ export default function NewsPage() {
                         <h1>2025/09/15 ついに明日であさクラパート500!</h1>
                         <p>あさクラパート500を記念して以下の様なライブをやります!</p>
                         <ol>
-                            <li>13:30~15:30までオンラインチャット解禁 URL(まだ無いよ)</li>
-                            <li>13:30~15:30まであさクラワールドを回わる</li>
+                            <li>13:00~15:30までオンラインチャット解禁 URL(まだ無いよ)</li>
+                            <li>13:00~15:30まであさクラワールドを回わる</li>
                             <li>22:00~23:30までプログラミングライブ!</li>
                         </ol>
                         <p><a href="https://youtube.com/playlist?list=PLDsY7IAMYhhhfOs5lUUSTs2YRy0crDNAj">再生リストの詳細はこちら</a></p>
