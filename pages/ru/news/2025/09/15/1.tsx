@@ -30,8 +30,8 @@ export default function NewsPage() {
                         <h1>2025/09/15 Наконец, завтра Асакура Part 500!</h1>
                         <p>В честь Asakura Part 500 мы проведем следующее живое выступление!</p>
                         <ol>
-                            <li>13:00~15:30 <a href="/wiki/asakura-meeting/part500">URL блокировки онлайн-чата (https://asakura-wiki.vercel.app/wiki/asakura-meeting/part500)</a></li>
-                            <li>13:00~15:30 Тур по миру Асакура</li>
+                            <li><s>13:00~15:30 Онлайн-чат был отменен.</s></li>
+                            <li><s>13:00~15:30 Тур по миру Асакура завершился.</s></li>
                             <li>Программирование в прямом эфире с 22:00 ~ 23:30!</li>
                         </ol>
                         <p><a href='https://youtube.com/playlist?list=PLDsY7IAMYhhhfOs5lUUSTs2YRy0crDNAj'>Подробнее о плейлистах</a></p>
