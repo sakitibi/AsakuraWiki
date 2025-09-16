@@ -30,7 +30,7 @@ export default function NewsPage() {
                         <h1>2025/09/15 Наконец, завтра Асакура Part 500!</h1>
                         <p>В честь Asakura Part 500 мы проведем следующее живое выступление!</p>
                         <ol>
-                            <li>13:00~15:30 URL блокировки онлайн-чата (пока нет)</li>
+                            <li>13:00~15:30 <a href="/asakura-meeting/part500">URL блокировки онлайн-чата (https://asakura-wiki.vercel.app/asakura-meeting/part500)</a></li>
                             <li>13:00~15:30 Тур по миру Асакура</li>
                             <li>Программирование в прямом эфире с 22:00 ~ 23:30!</li>
                         </ol>

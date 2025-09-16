@@ -31,7 +31,7 @@ export default function NewsPage() {
                         <h1>2025/09/15 ついに明日であさクラパート500!</h1>
                         <p>あさクラパート500を記念して以下の様なライブをやります!</p>
                         <ol>
-                            <li>13:00~15:30までオンラインチャット解禁 URL(まだ無いよ)</li>
+                            <li>13:00~15:30までオンラインチャット解禁 <a href="/asakura-meeting/part500">URL(https://asakura-wiki.vercel.app/asakura-meeting/part500)</a></li>
                             <li>13:00~15:30まであさクラワールドを回わる</li>
                             <li>22:00~23:30までプログラミングライブ!</li>
                         </ol>
