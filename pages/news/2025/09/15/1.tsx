@@ -33,7 +33,7 @@ export default function NewsPage() {
                         <ol>
                             <li><s>13:00~15:30までオンラインチャット解禁</s>終了しました</li>
                             <li><s>13:00~15:30まであさクラワールドを回わる</s>終了しました</li>
-                            <li>22:00~23:30までプログラミングライブ!</li>
+                            <li><s>22:00~23:30までプログラミングライブ!</s>終了しました</li>
                         </ol>
                         <p><a href="https://youtube.com/playlist?list=PLDsY7IAMYhhhfOs5lUUSTs2YRy0crDNAj">再生リストの詳細はこちら</a></p>
                     </main>
