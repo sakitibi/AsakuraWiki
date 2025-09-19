@@ -9,6 +9,7 @@ import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
 import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import versions from '@/utils/version';
+import { opendns } from '@/utils/blockredirects';
 
 export interface WikiPage {
     wikiSlug: string;
@@ -121,7 +122,7 @@ export default function Home() {
                 // OpenDNS のブロックページに飛ばされたか確認
                 if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {
                     alert("このアプリのカウンター機能がOpenDNS にブロックされています。\n正常にカウンターが機能しません");
-                    opendns();
+                    opendns("ja");
                     return;
                 }
 
