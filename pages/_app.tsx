@@ -106,7 +106,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     }, []); // ← 初回だけ実行
 
     useEffect(() => {
-        if(!notuseIp_list_found){
+        if(notuseIp_list_found){
             document.getElementById("__next")!.innerHTML = (`
                 <h1>403 forbidden</h1>
                 <p>あなたには閲覧する権限がありません</p>
