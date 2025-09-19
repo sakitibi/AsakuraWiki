@@ -11,6 +11,7 @@ import FooterJp from '@/utils/pageParts/top/FooterJp';
 import versions from '@/utils/version';
 import { opendns } from '@/utils/blockredirects';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/indexInterfaces';
+import { fetchRecentPages } from '@/utils/indexfetchs';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -31,7 +32,7 @@ export default function Home() {
     }
 
     useEffect(() => {
-        async function fetchRecentPages() {
+        /*async function fetchRecentPages(): Promise<void> {
             const { data, error } = await supabaseServer
                 .from('wiki_pages')
                 .select(`
@@ -67,9 +68,9 @@ export default function Home() {
             setPages(unique)
             setLoading(false)
             setLoadingRecent(false)
-        }
+        }*/
 
-        fetchRecentPages()
+        fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
     }, [])
 
     useEffect(() => {
