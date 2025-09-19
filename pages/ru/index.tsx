@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import { supabaseServer } from 'lib/supabaseClientServer';
 import HeaderRu from '@/utils/pageParts/top/HeaderRu';
 import MenuRu from '@/utils/pageParts/top/MenuRu';
 import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
 import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
 import FooterRu from '@/utils/pageParts/top/FooterRu';
 import versions from '@/utils/version';
-import type { WikiPage, LikedWiki, WikiCounter } from '@/utils/indexInterfaces';
-import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/indexfetchsRu';
+import type { WikiPage, LikedWiki, WikiCounter } from '@/utils/pageParts/top/indexInterfaces';
+import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/indexfetchsRu';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -32,9 +31,6 @@ export default function Home() {
     useEffect(() => {
         fetchRecentPages(setPages, setLoading);
         fetchLikedWikis(setLoadingLiked, setLikedWikis);
-    }, []);
-
-    useEffect(() => {
         fetched13ninstudioCounter(setWiki13ninstudioCounter);
     }, []);
 

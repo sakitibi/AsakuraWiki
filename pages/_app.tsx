@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
 import { Analytics } from "@vercel/analytics/next"
-import type { WikiCounter, IPAddress } from '@/utils/indexInterfaces';
+import type { WikiCounter, IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { opendns } from '@/utils/blockredirects';
 import { adminerUserId, notuseIP } from '@/utils/user_list';
 

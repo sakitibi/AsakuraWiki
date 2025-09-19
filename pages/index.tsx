@@ -8,8 +8,8 @@ import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
 import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import versions from '@/utils/version';
-import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/indexInterfaces';
-import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/indexfetchsJp';
+import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
+import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/indexfetchsJp';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -32,9 +32,6 @@ export default function Home() {
     useEffect(() => {
         fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
         fetchLikedWikis(setLoadingLiked, setLikedWikis);
-    }, []);
-
-    useEffect(() => {
         fetched13ninstudioCounter(setWiki13ninstudioCounter);
     }, []); // ← 初回だけ実行
 

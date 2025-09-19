@@ -1,6 +1,6 @@
 import { supabaseServer } from "@/lib/supabaseClientServer";
-import type { WikiPage, LikedWiki, WikiCounter } from "./indexInterfaces";
-import { opendns } from "./blockredirects";
+import type { WikiPage, LikedWiki, WikiCounter } from "@/utils/pageParts/top/indexInterfaces";
+import { opendns } from "@/utils/blockredirects";
 
 export async function fetchRecentPages(
     setLoadingRecent: React.Dispatch<React.SetStateAction<boolean>>,
