@@ -1,6 +1,6 @@
 import { LenisProvider } from 'utils/LenisProvider';
 import type { AppProps } from 'next/app';
-import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import { SessionContextProvider, useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import '@/css/index.min.globals.css';
 import { useEffect, useState } from 'react';
@@ -10,15 +10,17 @@ import Head from 'next/head';
 import { Analytics } from "@vercel/analytics/next"
 import type { WikiCounter, IPAddress } from '@/utils/indexInterfaces';
 import { opendns } from '@/utils/blockredirects';
-import { notuseIP } from '@/utils/user_list';
+import { adminerUserId, notuseIP } from '@/utils/user_list';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     const router = useRouter();
+    const user = useUser();
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
     const [ipaddress, setIpaddress] = useState<IPAddress | null>(null);
     const notuseIp_list_found = notuseIP.find(value => ipaddress?.ip.match(value));
+    const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
 
     // ✅ ここに .askr リダイレクト処理を追加
     useEffect(() => {
@@ -106,7 +108,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     }, []); // ← 初回だけ実行
 
     useEffect(() => {
-        if(notuseIp_list_found){
+        if(!adminer_user_id_list && notuseIp_list_found){
             document.getElementById("__next")!.innerHTML = (`
                 <h1>403 forbidden</h1>
                 <p>あなたには閲覧する権限がありません</p>

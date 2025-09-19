@@ -64,5 +64,6 @@ export const notuseIP:RegExp[] = [
 
 export const adminerUserId:string[] = [ // 管理者のuser_idリスト
     "9d2347a2-6322-4d55-93f1-71d8440e5f32",
-    "f2ee27d8-5a46-4539-be74-b02eb6a789c3"
+    "f2ee27d8-5a46-4539-be74-b02eb6a789c3",
+    "0e7e8c35-8fb7-4c17-b154-4fe397a84d37"
 ];
