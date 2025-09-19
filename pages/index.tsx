@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { supabaseServer } from 'lib/supabaseClientServer';
 import HeaderJp from '@/utils/pageParts/top/HeaderJp';
 import MenuJp from '@/utils/pageParts/top/MenuJp';
 import LeftMenuJp from '@/utils/pageParts/top/LeftMenuJp';
@@ -9,9 +8,8 @@ import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
 import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import versions from '@/utils/version';
-import { opendns } from '@/utils/blockredirects';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/indexInterfaces';
-import { fetchRecentPages } from '@/utils/indexfetchs';
+import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/indexfetchsJp';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -32,92 +30,12 @@ export default function Home() {
     }
 
     useEffect(() => {
-        /*async function fetchRecentPages(): Promise<void> {
-            const { data, error } = await supabaseServer
-                .from('wiki_pages')
-                .select(`
-                    wiki_slug,
-                    slug,
-                    updated_at,
-                    wikis!fk_wiki_slug (
-                        name,
-                        slug
-                    )
-                `)
-                .order('updated_at', { ascending: false });
-
-            if (error || !data) {
-                console.error('fetchRecentPages error:', error)
-                setLoadingRecent(false)
-                return
-            }
-
-            const flattened = data.map((d: any) => ({
-                wikiSlug:   d.wiki_slug,
-                pageSlug:   d.slug,
-                name:       d.wikis?.name ?? '(無名Wiki)',
-                updated_at: d.updated_at,
-            }))
-
-            const unique = flattened.filter(
-                (item, idx, arr) =>
-                    arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
-            )
-
-            setRecentPages(unique)
-            setPages(unique)
-            setLoading(false)
-            setLoadingRecent(false)
-        }*/
-
         fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
-    }, [])
-
-    useEffect(() => {
-        async function fetchLikedWikis() {
-            const { data, error } = await supabaseServer.rpc('get_top_wikis_by_like_count')
-
-            if (error || !data) {
-                console.error('fetchLikedWikis error:', error)
-                setLoadingLiked(false)
-                return
-            }
-
-            const topLikedWikis = data.map((row: any) => ({
-                wikiSlug: row.wiki_slug,
-                name: row.name,
-                like_count: row.like_count
-            }))
-            setLikedWikis(topLikedWikis)
-            setLoadingLiked(false);
-        }
-
-        fetchLikedWikis();
+        fetchLikedWikis(setLoadingLiked, setLikedWikis);
     }, []);
 
     useEffect(() => {
-        async function fetched13ninstudioCounter() {
-            const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
-            try {
-                const response:Response = await fetch(requestURL);
-
-                // OpenDNS のブロックページに飛ばされたか確認
-                if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {
-                    alert("このアプリのカウンター機能がOpenDNS にブロックされています。\n正常にカウンターが機能しません");
-                    opendns("ja");
-                    return;
-                }
-
-                const userData = await response.json();
-                setWiki13ninstudioCounter(userData);
-
-            } catch (error) {
-                console.error("fetch error:", error);
-                alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
-                alert(error); // Safariなどのデベロッパーツールがないブラウザ用
-            }
-        }
-        fetched13ninstudioCounter();
+        fetched13ninstudioCounter(setWiki13ninstudioCounter);
     }, []); // ← 初回だけ実行
 
     useEffect(() => {
