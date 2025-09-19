@@ -114,14 +114,24 @@ export default function Home() {
 
     useEffect(() => {
         async function fetched13ninstudioCounter() {
+            const requestURL = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
             try {
-                const response = await fetch(
-                    "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html"
-                );
+                const response = await fetch(requestURL);
+
+                // OpenDNS のブロックページに飛ばされたか確認
+                if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {
+                    alert("このアプリのカウンター機能がOpenDNS にブロックされています。\n正常にカウンターが機能しません");
+                    opendns();
+                    return;
+                }
+
                 const userData = await response.json();
-                setWiki13ninstudioCounter(userData); // Promiseじゃなくて中身をset
+                setWiki13ninstudioCounter(userData);
+
             } catch (error) {
                 console.error("fetch error:", error);
+                alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
+                alert(error); // Safariなどのデベロッパーツールがないブラウザ用
             }
         }
         fetched13ninstudioCounter();

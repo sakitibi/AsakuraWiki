@@ -9,14 +9,16 @@ import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
 import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
 import FooterRu from '@/utils/pageParts/top/FooterRu';
 import versions from '@/utils/version';
-import { WikiPage, LikedWiki } from '@/pages/index';
+import { WikiPage, LikedWiki, WikiCounter } from '@/pages/index';
+import { opendns } from '@/utils/blockredirects';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
     const [loading, setLoading] = useState(true)
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
-    const [loadingLiked, setLoadingLiked] = useState(true)
+    const [loadingLiked, setLoadingLiked] = useState<boolean>(true);
+    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
 
     const H2Styles:React.CSSProperties = {
         marginBlockStart: '0.83em',
@@ -87,6 +89,39 @@ export default function Home() {
         fetchLikedWikis();
     }, []);
 
+    useEffect(() => {
+        const requestURL = "https://counter.wikiwiki.jp/c/13ninstudio/pv/ru/index.html";
+
+        async function fetched13ninstudioCounter() {
+            try {
+                const response = await fetch(requestURL);
+
+                // OpenDNS のブロックページに飛ばされたか確認
+                if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {
+                    alert("Функция счетчика этого приложения заблокирована OpenDNS.\nСчетчик не будет работать должным образом.");
+                    opendns("ru");
+                    return;
+                }
+
+                const userData = await response.json();
+                setWiki13ninstudioCounter(userData);
+
+            } catch (error) {
+                console.error("fetch error:", error);
+                alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
+                alert(error); // Safariなどのデベロッパーツールがないブラウザ用
+            }
+        }
+
+        fetched13ninstudioCounter();
+    }, []);
+
+    useEffect(() => {
+        console.log("index: ", wiki13ninstudioCounter);
+    }, [wiki13ninstudioCounter]);
+
+    const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
+
     const goCreateWiki = () => {
         location.href = '/dashboard/create-wiki'
     }
@@ -120,6 +155,12 @@ export default function Home() {
                 <LeftMenuRu URL="/"/>
                 <main style={{ padding: '2rem', flex: 1 }}>
                     <h1>АсакураWiki</h1>
+                        <div id="view-counter">
+                            <p>Сегодняшние взгляды: {wiki13ninstudioCounter?.today ?? 0}</p>
+                            <p>Всего просмотров: {wiki13ninstudioCounterTotal ? wiki13ninstudioCounterTotal : 0}</p>
+                            <p>Вчерашние взгляды: {wiki13ninstudioCounter?.yesterday ?? 0}</p>
+                            <p>Текущие взгляды: {wiki13ninstudioCounter?.online ?? 0}</p>
+                        </div>
                         <div id="liked-wiki">
                             <h2 className={styles.pLikedWiki__title}>оценено всеми Wiki</h2>
                                 {loadingLiked ? <p>Loading...</p> : (

@@ -104,7 +104,7 @@ export default function MinecraftVS(){
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/minecraft/vs/happy-ghast-sky-battle"/>
+                    <LeftMenuJp URL="/minecraft/vs/happy-ghast-sky-battle" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1 className={styles.MC_Heading_1}>マイクラバーサス ハッピーガスト スカイバトル!</h1>
                         <p className={styles.MC_articleHeroA_header_subheadline}>開催期間 2025年9月2日 12:30~16:30<br/>(主催者が急遽北海道へ出張の用事が出来た為、8月23日18:00から延期)</p>
