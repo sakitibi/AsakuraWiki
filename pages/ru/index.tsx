@@ -9,7 +9,7 @@ import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
 import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
 import FooterRu from '@/utils/pageParts/top/FooterRu';
 import versions from '@/utils/version';
-import { WikiPage, LikedWiki, WikiCounter } from '@/pages/index';
+import type { WikiPage, LikedWiki, WikiCounter } from '@/utils/indexInterfaces';
 import { opendns } from '@/utils/blockredirects';
 
 export default function Home() {

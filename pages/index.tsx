@@ -10,26 +10,7 @@ import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import versions from '@/utils/version';
 import { opendns } from '@/utils/blockredirects';
-
-export interface WikiPage {
-    wikiSlug: string;
-    pageSlug: string;
-    name: string;
-    updated_at: string;
-}
-
-export interface LikedWiki {
-    wikiSlug: string;
-    name: string;
-    like_count: number;
-}
-
-export interface WikiCounter {
-    online: number;
-    today: number;
-    total: number;
-    yesterday: number;
-};
+import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/indexInterfaces';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -115,9 +96,9 @@ export default function Home() {
 
     useEffect(() => {
         async function fetched13ninstudioCounter() {
-            const requestURL = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
+            const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
             try {
-                const response = await fetch(requestURL);
+                const response:Response = await fetch(requestURL);
 
                 // OpenDNS のブロックページに飛ばされたか確認
                 if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {

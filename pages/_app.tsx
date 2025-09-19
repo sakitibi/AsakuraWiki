@@ -8,13 +8,17 @@ import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
 import { Analytics } from "@vercel/analytics/next"
-import type { WikiCounter } from '@/pages/index';
+import type { WikiCounter, IPAddress } from '@/utils/indexInterfaces';
+import { opendns } from '@/utils/blockredirects';
+import { notuseIP } from '@/utils/user_list';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     const router = useRouter();
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
+    const [ipaddress, setIpaddress] = useState<IPAddress | null>(null);
+    const notuseIp_list_found = notuseIP.find(value => ipaddress?.ip.match(value));
 
     // ✅ ここに .askr リダイレクト処理を追加
     useEffect(() => {
@@ -76,6 +80,40 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
     const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
     console.log("ApplicationAllViewedCounter: ", wiki13ninstudioCounterTotal ?? null);
+
+    useEffect(() => {
+        async function fetchedipwho() {
+            const requestURL:string = "https://ipwho.is/?lang=ja";
+            try {
+                const response:Response = await fetch(requestURL);
+
+                // OpenDNS のブロックページに飛ばされたか確認
+                if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {
+                    alert("このアプリのセキュリティ機能がOpenDNS にブロックされています。\n正常にセキュリティが機能しません");
+                    opendns("ja");
+                    return;
+                }
+
+                const ipData = await response.json();
+                setIpaddress(ipData);
+            } catch (error) {
+                console.error("fetch error:", error);
+                alert("セキュリティの認証に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
+                alert(error); // Safariなどのデベロッパーツールがないブラウザ用
+            }
+        }
+        fetchedipwho();
+    }, []); // ← 初回だけ実行
+
+    useEffect(() => {
+        if(!notuseIp_list_found){
+            document.getElementById("__next")!.innerHTML = (`
+                <h1>403 forbidden</h1>
+                <p>あなたには閲覧する権限がありません</p>
+            `);
+            console.error("http 403 forbidden errors");
+        }
+    }, []);
 
     return (
         <>

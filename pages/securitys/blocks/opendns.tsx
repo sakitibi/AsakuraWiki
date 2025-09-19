@@ -29,10 +29,10 @@ export default function About() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/securitys/blocks/opendns" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>The counter function of this app is blocked by OpenDNS.</h1>
+                        <h1>The counter function or asakurawiki security <br/>features of this app is blocked by OpenDNS.</h1>
                         <p>{company} support is not available.</p>
                         <p>Please contact your network administrator.</p>
-                        <p>If that doesn't solve the problem,<br/>please add wikiwiki.jp to your whitelist.</p>
+                        <p>If that doesn't solve the problem,<br/>please add wikiwiki.jp or ipwho.is to your whitelist.</p>
                         <p>and Please inform your network provider.</p>
                         <p>That's all we can say from {company}.</p>
                     </main>
