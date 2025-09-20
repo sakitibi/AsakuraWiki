@@ -38,7 +38,8 @@ export const notuseUsername:RegExp[] = [ // 利用不可能なユーザー名リ
     /KIRE猫/gui,
     /いちごミルクの素/gu,
     /インポスター引きたい/gu,
-    /カワシマ/gu
+    /カワシマ/gu,
+    /シェマー.?/gu
 ];
 
 export const notuseIP:RegExp[] = [ // ブロックするipリスト
