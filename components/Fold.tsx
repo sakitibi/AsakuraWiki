@@ -34,7 +34,7 @@ export function extractFolds(content: string, context: Context, offset = 0, dept
         const isOpen:boolean = optionStr.includes('open');
         if (!titleRaw || !titleRaw.match(/\S/)) continue;
 
-        const parsedTitleNodes:React.ReactNode[] = parseInline(titleRaw, context);
+        const parsedTitleNodes:React.ReactNode[] = parseInline({ text: titleRaw, context});
 
         const foldOpenEndLocal:number = content.indexOf("{{", startLocal) + 2;
         let iLocal:number = foldOpenEndLocal;
