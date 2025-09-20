@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import Link from 'next/link'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
-type PageItem = { slug: string; title: string }
+interface PageItem{
+    slug: string;
+    title: string
+}
 
 export default function PageList({ prefix }: { prefix?: string }) {
-    const router = useRouter()
+    const router:NextRouter = useRouter()
     const { wikiSlug, page: rawPage } = router.query
 
     const currentSlug = Array.isArray(rawPage)
@@ -15,9 +18,9 @@ export default function PageList({ prefix }: { prefix?: string }) {
         ? rawPage
         : 'FrontPage'
 
-    const showTitle = prefix === 'title'
+    const showTitle:boolean = prefix === 'title'
     const [pages, setPages] = useState<PageItem[]>([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
@@ -34,9 +37,9 @@ export default function PageList({ prefix }: { prefix?: string }) {
                 .order('slug', { ascending: true })
 
                 if (error) {
-                setError(error.message)
+                    setError(error.message)
                 } else if (data) {
-                setPages(data.map(d => ({ slug: d.slug, title: d.title })))
+                    setPages(data.map(d => ({ slug: d.slug, title: d.title })))
                 }
             } catch (e: any) {
                 setError(e.message)

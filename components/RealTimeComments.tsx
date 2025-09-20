@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabaseServer } from 'lib/supabaseClientServer';
-import { useUser } from '@supabase/auth-helpers-react';
+import { User, useUser } from '@supabase/auth-helpers-react';
+import { PostgrestSingleResponse, RealtimeChannel } from '@supabase/supabase-js';
 
 interface Comment {
     id: number
@@ -11,36 +12,36 @@ interface Comment {
     created_at: string
 }
 
-type Props = {
+interface Props{
     wikiSlug: string
     pageSlug: string
 }
 
 export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
     const [comments, setComments] = useState<Comment[]>([])
-    const [name, setName] = useState('')
-    const [body, setBody] = useState('')
-    const [isSending, setIsSending] = useState(false)
-    const user = useUser();
+    const [name, setName] = useState<string>('')
+    const [body, setBody] = useState<string>('')
+    const [isSending, setIsSending] = useState<boolean>(false)
+    const user:User | null = useUser();
 
     useEffect(() => {
         if (!wikiSlug || !pageSlug) return
 
         // ── 初回ロード ──
         ;(async () => {
-            const res = await supabaseServer
+            const res:PostgrestSingleResponse<any[]> = await supabaseServer
                 .from('comments')
                 .select('*')
                 .eq('wiki_slug', wikiSlug)
                 .eq('page_slug', pageSlug)
                 .order('created_at', { ascending: true })
 
-            const data = (res.data as Comment[]) || []
+            const data:Comment[] = (res.data as Comment[]) || []
             setComments(data)
         })()
 
         // ── リアルタイム購読 ──
-        const channel = supabaseServer
+        const channel:RealtimeChannel = supabaseServer
             .channel(`comments-${wikiSlug}-${pageSlug}`)
             .on(
                 'postgres_changes',
@@ -76,7 +77,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         }
 
         setIsSending(true);
-        const res = await supabaseServer.from('comments').insert({
+        const res:PostgrestSingleResponse<null> = await supabaseServer.from('comments').insert({
             name,
             body,
             wiki_slug: wikiSlug,
@@ -121,7 +122,6 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
                         required
                     />
                 </div>
-
                 <button
                     disabled={isSending}
                     className="comment-submit"

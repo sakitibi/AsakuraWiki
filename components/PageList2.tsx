@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
-type PageItem = {
+interface PageItem{
     slug: string
     title: string
 }
@@ -21,15 +21,15 @@ export default function PageList2({
     label,
 }: PageList2Props) {
     const [pages, setPages] = useState<PageItem[]>([])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
     // オプション判定
-    const showTitle = options.includes('title')
-    const doInclude = options.includes('include')
-    const doReverse = options.includes('reverse')
-    const doCompact = options.includes('compact')
-    const doLink = options.includes('link')
+    const showTitle:boolean = options.includes('title')
+    const doInclude:boolean = options.includes('include')
+    const doReverse:boolean = options.includes('reverse')
+    const doCompact:boolean = options.includes('compact')
+    const doLink:boolean = options.includes('link')
 
     useEffect(() => {
         if (!wikiSlug) return
@@ -59,7 +59,7 @@ export default function PageList2({
                 } else if (data) {
                     setPages(data as PageItem[])
                 }
-            } catch (e: any) {
+            } catch (e:any) {
                 setError(e.message)
             } finally {
                 setLoading(false)
@@ -74,7 +74,7 @@ export default function PageList2({
 
     // link オプション: リストではなくリンクを返す
     if (doLink) {
-        const href = `/wiki/${wikiSlug}/${encodeURIComponent(pattern)}`
+        const href:string = `/wiki/${wikiSlug}/${encodeURIComponent(pattern)}`
         return <Link href={href}>{label ?? `…${pattern}`}</Link>
     }
 

@@ -23,7 +23,7 @@ export const getExportedVariables = async (wikiSlug: string, pageSlug: string) =
         .eq('slug', pageSlug)
         .single();
 
-    const exportMatch = data?.content.match(/#export\((global|local)\)\{(.+?)\}/);
+    const exportMatch:string = data?.content.match(/#export\((global|local)\)\{(.+?)\}/);
     if (!exportMatch) return [];
 
     const [, scope, vars] = exportMatch;

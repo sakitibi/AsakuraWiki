@@ -22,7 +22,7 @@ export default function IncludePage({
 
     useEffect(() => {
         if (stylesheetURL) {
-            const link = document.createElement('link')
+            const link:HTMLLinkElement = document.createElement('link')
             link.rel = 'stylesheet'
             link.href = stylesheetURL
             document.head.appendChild(link)
@@ -35,12 +35,12 @@ export default function IncludePage({
         })
         .then(async data => {
             let content: string = data.content || ''
-            const lines = content.split('\n')
+            const lines:string[] = content.split('\n')
 
             if (lineRange) {
                 const [startRaw = '', endRaw = ''] = lineRange.split('-')
-                const start = startRaw ? parseInt(startRaw) : 1
-                const end = endRaw ? parseInt(endRaw) : lines.length
+                const start:number = startRaw ? parseInt(startRaw) : 1
+                const end:number = endRaw ? parseInt(endRaw) : lines.length
 
                 if (startRaw || endRaw) {
                     if (isNaN(start) || isNaN(end) || start < 1 || end > lines.length || start > end) {
@@ -59,7 +59,7 @@ export default function IncludePage({
                 variables: {},
             }
 
-            const nodes = await parseWikiContent(content, context)
+            const nodes:React.ReactNode[] = await parseWikiContent(content, context)
             setParsedNodes(nodes)
         })
         .catch(err => {

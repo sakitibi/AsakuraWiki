@@ -41,7 +41,7 @@ export const notuseUsername:RegExp[] = [ // 利用不可能なユーザー名リ
     /カワシマ/gu
 ];
 
-export const notuseIP:RegExp[] = [
+export const notuseIP:RegExp[] = [ // ブロックするipリスト
     /101.111.180.186/gu,
     /118.9.16.2/gu,
     /126.219.88.117/gu,

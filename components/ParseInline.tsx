@@ -9,21 +9,27 @@ import IncludePage from '@/components/IncludePage';
 import TableOfContents from '@/components/TableOfContents';
 import calcPlugin from '@/components/calcPlugin';
 import { DATEDIF, DATEVALUE } from '@/utils/dateFunctions';
-import { Context } from "@/components/parsePluginTypes";
+import type { Context } from "@/components/parsePluginTypes";
 import versions from "@/utils/version";
+import type { ReactNode } from "react";
+
+interface parseInlineProps{
+    text: string;
+    context: Context;
+}
 
 /** インラインプラグインを処理します */
-export default function parseInline(text: string, context: Context): React.ReactNode[] {
+export default function parseInline({text, context}: parseInlineProps): React.ReactNode[] {
     const { wikiSlug, pageSlug } = context;
     const nodes: React.ReactNode[] = [];
-    let nodeKey = 0;
+    let nodeKey:number = 0;
     text.split(/\r?\n/).forEach((line) => {
         // 1) 見出しか?（*テキスト [anchor] に対応）
         const headingMatch = line.match(/^(\*{1,3})\s*(.+?)(?:\s*\[(.+?)\])?$/);
         if (headingMatch) {
-            const stars = headingMatch[1] as "*" | "**" | "***";
-            const title = headingMatch[2].trim();
-            const anchor = headingMatch[3]?.trim() ?? "";
+            const stars:"*" | "**" | "***" = headingMatch[1] as "*" | "**" | "***";
+            const title:string = headingMatch[2].trim();
+            const anchor:string = headingMatch[3]?.trim() ?? "";
 
             nodes.push(
                 <Header
@@ -37,7 +43,7 @@ export default function parseInline(text: string, context: Context): React.React
         }
 
         // 2) その他の行のインライン解析
-        const parsedLine = parseOtherInline(line, wikiSlug, pageSlug, context, nodeKey);
+        const parsedLine:ReactNode[] = parseOtherInline(line, wikiSlug, pageSlug, context, nodeKey);
         nodes.push(...parsedLine);
         nodeKey += parsedLine.length || 1;
     });
@@ -58,14 +64,14 @@ export function parseOtherInline(
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = []
     const safeTrim = (v: unknown) => typeof v === 'string' ? v.trim() : ''
-    let last = 0
+    let last:number = 0
     let m: RegExpExecArray | null
     // 各プラグインを順次キャプチャする正規表現
-    const re = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);/giu
+    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);/giu
 
     while ((m = re.exec(line))) {
-        const token = m[0];
-        const key = `inl-${baseKey}-${m.index}`;
+        const token:string = m[0];
+        const key:string = `inl-${baseKey}-${m.index}`;
 
         // 🔍 ログ: キャプチャされたトークンと位置
         console.log(`[plugin-match] token: "${token}" at index ${m.index}`);
@@ -82,20 +88,20 @@ export function parseOtherInline(
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
         if (token.startsWith('#marquee')) {
-            const text = m[28];
-            const loop = m[29];
-            const slide = m[30];
-            const bgColor = m[31];
-            const color = m[32];
-            const size = m[33];
-            const fontSize = size ? `${size}px` : 'inherit';
+            const text:string = m[28];
+            const loop:string = m[29];
+            const slide:string = m[30];
+            const bgColor:string = m[31];
+            const color:string = m[32];
+            const size:string = m[33];
+            const fontSize:string = size ? `${size}px` : 'inherit';
 
-            const iterationCount = loop && /^\d+$/.test(loop)
+            const iterationCount:number | 'infinite' = loop && /^\d+$/.test(loop)
                 ? Number(loop)
                 : 'infinite';
 
             // 画面サイズから suffix を決定
-            let sizeSuffix = 'xl';
+            let sizeSuffix:'xl'|'sm'|'md' = 'xl';
             if (typeof window !== 'undefined') {
                 const screenWidth = window.innerWidth;
                 if (screenWidth < 700) {
@@ -106,15 +112,15 @@ export function parseOtherInline(
             }
 
             // animation名を単純な文字列として構築（CSS Modules不要！）
-            const animationBase =
+            const animationBase:"scroll-slide-once" | "scroll-alternate" | "scroll-default" =
                 slide === 'slide'
                 ? 'scroll-slide-once'
                 : slide === 'alternate'
                 ? 'scroll-alternate'
                 : 'scroll-default';
-            const animationName = `${animationBase}-${sizeSuffix}`;
+            const animationName:string = `${animationBase}-${sizeSuffix}`;
 
-            const animationStyle = {
+            const animationStyle:React.CSSProperties = {
                 animationName,
                 animationDuration:
                     slide === 'slide' ? '5s'
@@ -163,7 +169,6 @@ export function parseOtherInline(
                     key={key}
                     year={+y}
                     month={+mo}
-                    hideHolidays={off === 'off'}
                 />
             )
             last = m.index + token.length
@@ -211,7 +216,7 @@ export function parseOtherInline(
         }
         // #ls([title])
         else if (token.startsWith('#ls')) {
-            const prefix = safeTrim(m[8]) || undefined
+            const prefix:string | undefined = safeTrim(m[8]) || undefined
             nodes.push(<PageList key={key} prefix={prefix} />)
             last = m.index + token.length
         }
@@ -221,10 +226,10 @@ export function parseOtherInline(
             // m[10] = [オプションリスト]
             // m[11] = {include,...} ブロック型オプション
             // m[12] = 表示用ラベル
-            const pattern = safeTrim(m[9])
-            const opts = m[10]?.split(',').map(s => safeTrim(s)) ?? []
-            const blockOpts = m[11]?.split(',').map(s => safeTrim(s)) ?? []
-            const label = safeTrim(m[12])
+            const pattern:string = safeTrim(m[9])
+            const opts:string[] = m[10]?.split(',').map(s => safeTrim(s)) ?? []
+            const blockOpts:string[] = m[11]?.split(',').map(s => safeTrim(s)) ?? []
+            const label:string = safeTrim(m[12])
 
             nodes.push(
                 <PageList2
@@ -239,8 +244,8 @@ export function parseOtherInline(
         }
         // #include(pageName|css,flag)
         else if (token.startsWith('#include')) {
-            const arg = safeTrim(m[13]!)
-            const parts = arg.split(',').map(s => safeTrim(s))
+            const arg:string = safeTrim(m[13]!)
+            const parts:string[] = arg.split(',').map(s => safeTrim(s))
             const [first, lineRange, flag] = parts
 
             let showTitle: boolean | undefined
@@ -248,7 +253,7 @@ export function parseOtherInline(
             else if (flag === 'none') showTitle = false
             else if (flag === 'title') showTitle = true
 
-            let pageName = first
+            let pageName:string = first
             let stylesheetURL: string | undefined
             if (first.includes('|')) {
                 const [name, css] = first.split('|', 2).map(s => safeTrim(s))
@@ -283,8 +288,8 @@ export function parseOtherInline(
         }
         // CENTER:
         else if (m[14]) {
-            const centered = safeTrim(m[14]);
-            const inner = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1);
+            const centered:string = safeTrim(m[14]);
+            const inner:ReactNode[] = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1);
             nodes.push(
                 <div key={key} style={{ textAlign: 'center' }}>
                     <>{Array.isArray(inner) ? inner : [inner]}</>
@@ -294,8 +299,8 @@ export function parseOtherInline(
         }
 
         else if (m[15]) {
-            const aligned = safeTrim(m[15]);
-            const inner = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
+            const aligned:string = safeTrim(m[15]);
+            const inner:ReactNode[] = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
             nodes.push(
                 <div key={key} style={{ textAlign: 'left' }}>
                     <>{Array.isArray(inner) ? inner : [inner]}</>
@@ -305,8 +310,8 @@ export function parseOtherInline(
         }
 
         else if (m[16]) {
-            const aligned = safeTrim(m[16]);
-            const inner = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
+            const aligned:string = safeTrim(m[16]);
+            const inner:ReactNode[] = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
             nodes.push(
                 <div key={key} style={{ textAlign: 'right' }}>
                     <>{Array.isArray(inner) ? inner : [inner]}</>
@@ -316,9 +321,9 @@ export function parseOtherInline(
         }
         else if (token.startsWith('&size(')) {
             console.log('[parse] &size match OK');
-            const sizeStart = token.indexOf('(');
-            const braceStart = token.indexOf('{');
-            const fontSize = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10);
+            const sizeStart:number = token.indexOf('(');
+            const braceStart:number = token.indexOf('{');
+            const fontSize:number = parseInt(token.slice(sizeStart + 1, braceStart - 1), 10);
 
             const braceBlock = extractBracedBlock(token, braceStart, 1);
             console.log(`[plugin-parse] &size|&color braceBlock.body: "${braceBlock.body}"`);
@@ -326,8 +331,8 @@ export function parseOtherInline(
             // 🔍 ログ: &size 構文詳細
             console.log(`[&size] size: ${fontSize}px, inner: ${braceBlock.body}`);
 
-            const hasBlockPlugin = /#accordion|#fold|#sel_container|#sel_row/.test(braceBlock.body);
-            const content = hasBlockPlugin
+            const hasBlockPlugin:boolean = /#accordion|#fold|#sel_container|#sel_row/.test(braceBlock.body);
+            const content:string | ReactNode[] = hasBlockPlugin
                 ? braceBlock.body
                 : parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1);
 
@@ -340,20 +345,20 @@ export function parseOtherInline(
             continue;
         }
         else if (token.startsWith('&color(')) {
-            const parenStart = token.indexOf('(')
-            const parenEnd = token.indexOf(')', parenStart)
-            const braceStart = token.indexOf('{');
+            const parenStart:number = token.indexOf('(')
+            const parenEnd:number = token.indexOf(')', parenStart)
+            const braceStart:number = token.indexOf('{');
             if (parenEnd === -1 || braceStart === -1) {
                 nodes.push(<span key={key} style={{ color: 'red' }}>構文エラー: &color 構文不正</span>)
                 continue
             }
             const braceBlock = extractBracedBlock(token, braceStart, 1); // ✅ 修正ここ！
             console.log(`[plugin-parse] &size|&color braceBlock.body: "${braceBlock.body}"`);
-            const args = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s))
-            const color = args[0]
-            const background = args[1]
+            const args:string[]= token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s))
+            const color:string = args[0]
+            const background:string = args[1]
 
-            const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
+            const content:ReactNode[] = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
 
             nodes.push(
                 <span
@@ -371,17 +376,17 @@ export function parseOtherInline(
             continue
         }
         else if (token.startsWith('[[')) {
-            const plainLink = token.match(/\[\[([^\]]+)\]\]/)
-            const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
+            const plainLink:RegExpMatchArray | null = token.match(/\[\[([^\]]+)\]\]/)
+            const labeledLink:RegExpMatchArray | null = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/)
             if (labeledLink) {
-                const label = labeledLink[1].trim()
-                const url = labeledLink[2].trim()
-                const inner = parseOtherInline(label, wikiSlug, pageSlug, context, baseKey + 1)
+                const label:string = labeledLink[1].trim()
+                const url:string = labeledLink[2].trim()
+                const inner:ReactNode[] = parseOtherInline(label, wikiSlug, pageSlug, context, baseKey + 1)
                 nodes.push(<a key={key} href={url}>{inner}</a>)
                 last = m.index + token.length // ✅ここを追加
                 continue
             } else if (plainLink) {
-                const url = plainLink[1].trim()
+                const url:string = plainLink[1].trim()
                 nodes.push(
                     <a key={key} href={url}>
                         {url}
@@ -393,11 +398,11 @@ export function parseOtherInline(
             last = m.index + token.length
         }
         else if (token.startsWith('&attachref(')) {
-            const match = token.match(/&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?/)
+            const match:RegExpMatchArray | null = token.match(/&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?/)
             if (match) {
-                const url = match[1].trim()
-                const width = parseInt(match[2], 10)
-                const height = parseInt(match[3], 10)
+                const url:string = match[1].trim()
+                const width:number = parseInt(match[2], 10)
+                const height:number = parseInt(match[3], 10)
                 nodes.push(
                     <img key={key} src={url} width={width} height={height} alt={url} />
                 )
@@ -408,19 +413,21 @@ export function parseOtherInline(
         }
         // 型付き #const(name:type){value};
         else if (m[35] && m[36] && m[37]) {
-            const varName = m[35].trim();
-            const varType = m[36].trim();
-            const varValue = m[37].trim();
+            const varName:string = m[35].trim();
+            const varType:string = m[36].trim();
+            const varValue:string = m[37].trim();
             context.constContext = context.constContext ?? {};
 
             if (varName in context.constContext) {
-                nodes.push(<span key={key} style={{ color: 'red' }}>定数 {varName} は再定義不可！</span>);
+                nodes.push(
+                    <span key={key} style={{ color: 'red' }}>定数 {varName} は再定義不可！</span>
+                );
             } else {
                 context.constContext[varName] = varValue;
                 nodes.push(
-                <span key={key} style={{ display: 'none', fontWeight: 'bold' }}>
-                    定数 {varName}（{varType}） = {varValue}
-                </span>
+                    <span key={key} style={{ display: 'none', fontWeight: 'bold' }}>
+                        定数 {varName}（{varType}） = {varValue}
+                    </span>
                 );
             }
             last = m.index + token.length;
@@ -428,14 +435,14 @@ export function parseOtherInline(
 
         // 型付き #let(name:type){value};
         else if (m[38] && m[39] && m[40]) {
-            const varName = m[38].trim();
-            const varType = m[39].trim();
-            const varValue = m[40].trim();
+            const varName:string = m[38].trim();
+            const varType:string = m[39].trim();
+            const varValue:string = m[40].trim();
             context.letContext = context.letContext ?? {};
             context.letContext[varName] = varValue;
             nodes.push(
                 <span key={key} style={{ display: 'none', fontStyle: 'italic' }}>
-                変数 {varName}（{varType}） ← {varValue}
+                    変数 {varName}（{varType}） ← {varValue}
                 </span>
             );
             last = m.index + token.length;
@@ -443,11 +450,11 @@ export function parseOtherInline(
 
         else if (m[41]) {
             // &const-use(name);
-            const varName = m[41].trim();
-            const value = context.constContext?.[varName];
+            const varName:string = m[41].trim();
+            const value:string | undefined = context.constContext?.[varName];
             nodes.push(
                 <span key={key}>
-                {value ?? `[定数未定義:${varName}]`}
+                    {value ?? `[定数未定義:${varName}]`}
                 </span>
             );
             last = m.index + token.length;
@@ -455,11 +462,11 @@ export function parseOtherInline(
 
         else if (m[42]) {
         // &let-use(name);
-            const varName = m[42].trim();
-            const value = context.letContext?.[varName];
+            const varName:string = m[42].trim();
+            const value:string | undefined = context.letContext?.[varName];
             nodes.push(
                 <span key={key}>
-                {value ?? `[変数未定義:${varName}]`}
+                    {value ?? `[変数未定義:${varName}]`}
                 </span>
             );
             last = m.index + token.length;
@@ -467,45 +474,49 @@ export function parseOtherInline(
 
         else if (m[43]) {
             // &relet(name);
-            const varName = m[43].trim();
+            const varName:string = m[43].trim();
             if (context.letContext?.[varName]) {
                 nodes.push(
-                <span key={key} style={{ display: 'none' }}>
-                    再代入OK: {varName}
-                </span>
+                    <span key={key} style={{ display: 'none' }}>
+                        再代入OK: {varName}
+                    </span>
                 );
             } else {
                 nodes.push(
-                <span key={key} style={{ color: 'red' }}>
-                    再代入対象 `{varName}` が未定義です
-                </span>
+                    <span key={key} style={{ color: 'red' }}>
+                        再代入対象 `{varName}` が未定義です
+                    </span>
                 );
             }
             last = m.index + token.length;
         }
         else if (m[44]) {
-            const args = m[44].split(',').map(s => s.trim());
+            const args:string[] = m[44].split(',').map(s => s.trim());
             const [expression, decStr, style, intStr] = args;
-            const decimals = decStr !== undefined ? Number(decStr) : 0;
-            const integers = intStr !== undefined ? Number(intStr) : undefined;
-            const resolvedExpr = expression.replace(/\b[a-zA-Z_]\w*\b/g, varName => {
+            const decimals:number = decStr !== undefined ? Number(decStr) : 0;
+            const integers:number | undefined = intStr !== undefined ? Number(intStr) : undefined;
+            const resolvedExpr:string = expression.replace(/\b[a-zA-Z_]\w*\b/g, varName => {
                 return context.constContext?.[varName] ?? context.letContext?.[varName] ?? varName;
             });
             try {
                 const result = calcPlugin(resolvedExpr, decimals, style, integers);
-                nodes.push(<span key={key}>{result}</span>);
+                nodes.push(
+                    <span key={key}>{result}</span>
+                );
             } catch (e) {
-                nodes.push(<span key={key} style={{ color: 'red' }}>計算失敗</span>);
+                nodes.push(
+                    <span key={key} style={{ color: 'red' }}>計算失敗</span>
+                );
             }
             last = m.index + token.length;
         }
         else if (token.startsWith('&version(')) {
-            const type = m[45]; // ← インデックスは正規表現のキャプチャ順に応じて調整
-            const index = parseInt(type, 10);
-            const value = versions[index];
+            const type:string = m[45]; // ← インデックスは正規表現のキャプチャ順に応じて調整
+            const index:number = parseInt(type, 10);
+            const value:string = versions[index];
             nodes.push(
                 <span key={key}>
-                {value ?? `[未定義のversion:${type}]`}
+                    {value ?? `[未定義のversion:${type}]`}
                 </span>
             );
             last = m.index + token.length;
@@ -519,18 +530,20 @@ export function parseOtherInline(
     }
     // 最後に残ったテキスト
     if (last < line.length) {
-        const rest = line.slice(last).trim()
+        const rest:string = line.slice(last).trim()
 
         // 不要な }; が出るならここで除去
-        const cleaned = rest.replace(/^};+$/, '')
+        const cleaned:string = rest.replace(/^};+$/, '')
 
-        const splitByEscapedNewline = cleaned.split(/\\n/)
+        const splitByEscapedNewline:string[] = cleaned.split(/\\n/)
         for (let i = 0; i < splitByEscapedNewline.length; i++) {
             if (splitByEscapedNewline[i]) {
                 nodes.push(splitByEscapedNewline[i])
             }
             if (i < splitByEscapedNewline.length - 1) {
-                nodes.push(<br key={`${baseKey}-br-${last}-${i}`} />)
+                nodes.push(
+                    <br key={`${baseKey}-br-${last}-${i}`} />
+                )
             }
         }
     }

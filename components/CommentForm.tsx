@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 export default function CommentForm() {
-    const [name, setName] = useState('');
-    const [body, setBody] = useState('');
+    const [name, setName] = useState<string>('');
+    const [body, setBody] = useState<string>('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

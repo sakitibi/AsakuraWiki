@@ -1,16 +1,16 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
-import { Context, ImportBlockProps } from '@/components/parsePluginTypes';
+import { Context, ImportBlockProps, injectConstBlocksProps } from '@/components/parsePluginTypes';
 
 // 例: #import(13ninstudio:module){ninki,kitikura-world}
 export const parseImport = (line: string) => {
-    const match = line.match(/#import\((.+?):(.+?)\)\{(.+?)\}/);
+    const match:RegExpMatchArray | null = line.match(/#import\((.+?):(.+?)\)\{(.+?)\}/);
     if (!match) return null;
     const [, wikiSlug, pageSlug, vars] = match;
-    const variables = vars.split(',').map(v => v.trim());
+    const variables:string[] = vars.split(',').map(v => v.trim());
     return { wikiSlug, pageSlug, variables };
 };
 
-function injectConstBlocks(variables: { name: string; value: string; type: string; kind: string }[]): string {
+function injectConstBlocks(variables: injectConstBlocksProps[]): string {
     return variables
         .map(({ name, value, type, kind }) => `#${kind}(${name}:${type}){${value}};`)
         .join('\n');
@@ -18,7 +18,7 @@ function injectConstBlocks(variables: { name: string; value: string; type: strin
 
 export async function resolveImports(content: string, context: Context): Promise<string> {
     console.log("resolveImports called");
-    const importRe = /#import\(([^:]+):([^)]+)\)\{(.+?)\};/g;
+    const importRe:RegExp = /#import\(([^:]+):([^)]+)\)\{(.+?)\};/g;
     let match: RegExpExecArray | null;
 
     while ((match = importRe.exec(content))) {
@@ -34,11 +34,11 @@ export async function resolveImports(content: string, context: Context): Promise
 
         if (pageError || !pageData?.content) continue;
 
-        const exportMatch = pageData.content.match(/#export\((global|local)\)\{(.+?)\};/);
+        const exportMatch:string = pageData.content.match(/#export\((global|local)\)\{(.+?)\};/);
         if (!exportMatch) continue;
-        const exportScope = exportMatch[1]; // ← global or local
-        const exportedVars = exportMatch[2].split(',').map((v: string) => v.trim());
-        const validVars = requestedVars.filter(v => exportedVars.includes(v));
+        const exportScope:string = exportMatch[1]; // ← global or local
+        const exportedVars:string[] = exportMatch[2].split(',').map((v: string) => v.trim());
+        const validVars:string[] = requestedVars.filter(v => exportedVars.includes(v));
         if (exportScope === 'local' && wikiSlug !== context.wikiSlug) {
             continue; // スコープ外なのでスキップ
         }
@@ -70,7 +70,7 @@ export async function resolveImports(content: string, context: Context): Promise
         }
 
         // content に挿入
-        const injectedBlock = injectConstBlocks(varData);
+        const injectedBlock:string = injectConstBlocks(varData);
         content = content.replace(match[0], injectedBlock);
     }
 
@@ -83,7 +83,12 @@ export default function ImportBlock({
     variables,
 }: ImportBlockProps) {
     return (
-        <div style={{ border: '1px dotted #888', padding: '0.5em', marginBottom: '1em', display: 'none' }}>
+        <div style={{
+            border: '1px dotted #888',
+            padding: '0.5em',
+            marginBottom: '1em',
+            display: 'none' }}
+        >
             <strong>Import from {slug}:{page}</strong> → {variables.join(', ')}
         </div>
     );

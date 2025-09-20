@@ -14,8 +14,8 @@ export const LenisProvider = () => {
         })
 
         const raf = (time: number) => {
-        lenis.raf(time)
-        requestAnimationFrame(raf)
+            lenis.raf(time)
+            requestAnimationFrame(raf)
         }
 
         requestAnimationFrame(raf)

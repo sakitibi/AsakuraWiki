@@ -1,6 +1,11 @@
 import { evaluate } from 'mathjs';
 
-export default function calcPlugin(expression: string, decimals: number = 0, style?: string, integers?: number): string {
+export default function calcPlugin(
+    expression: string,
+    decimals: number = 0,
+    style?: string,
+    integers?: number
+): string {
     let result = evaluate(expression); // 式の評価（安全に！）
 
     // 小数部の丸め

@@ -1,13 +1,13 @@
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { useDesignColor } from "@/utils/parsePlugins";
 
 /** Header コンポーネント */
 export default function Header({ title, level, anchor }: { title: string; level: '*' | '**' | '***'; anchor: string}) {
-    const router = useRouter()
+    const router:NextRouter = useRouter()
     const { wikiSlug } = router.query;
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
-    const designColor = useDesignColor(wikiSlugStr);
+    const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const Tag:"h2" | "h3" | "h4" = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
+    const designColor:string | null = useDesignColor(wikiSlugStr);
     const commonsStyle: React.CSSProperties = level === '*'
     ? (
         {

@@ -34,6 +34,13 @@ export interface ImportBlockProps{
     variables: string[];
 }
 
+export interface injectConstBlocksProps{
+    name: string;
+    value: string;
+    type: string;
+    kind: string
+}
+
 export type Token =
     | { type: 'text'; content: string }
     | { type: 'open'; title: string; level: '*' | '**' | '***'; isOpen: boolean }

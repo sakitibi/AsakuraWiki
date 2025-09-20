@@ -1,17 +1,17 @@
 import React from 'react';
 import { useDesignColor } from '@/utils/parsePlugins';
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 
-type SelContentProps = {
+interface SelContentProps {
     type: string;
     children: React.ReactNode;
 };
 
 export default function SelContent({ type, children }: SelContentProps) {
-    const router = useRouter()
-    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const designColor = useDesignColor(wikiSlugStr);
+    const router:NextRouter = useRouter()
+    const { wikiSlug } = router.query;
+    const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const designColor:"pink" | "blue" | "yellow" | "default" | null = useDesignColor(wikiSlugStr);
     const commonsStyle: React.CSSProperties = {
         border: '1px solid #a9a9a9',
         color: 'inherit',
@@ -72,7 +72,7 @@ export default function SelContent({ type, children }: SelContentProps) {
         }
     )
     if (type === 'header' || type === 'subheader' || type === 'miniheader') {
-        const style = headingStyle; // 見出しレベルを仮に '*' に固定
+        const style:React.CSSProperties = headingStyle; // 見出しレベルを仮に '*' に固定
         return (
             <th style={{...commonsStyle, ...style}}>{children}</th>
         );

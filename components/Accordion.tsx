@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { NextRouter, useRouter } from "next/router";
+import { ReactNode, useState } from "react";
 import { useDesignColor, parseWikiContent, extractBracedBlock } from "@/utils/parsePlugins";
 import { AccordionBlock, Context } from "./parsePluginTypes";
 /**
@@ -7,7 +7,7 @@ import { AccordionBlock, Context } from "./parsePluginTypes";
 */
 export async function extractAccordions(
     content: string,
-    offset = 0,
+    offset:number = 0,
     context: Context
 ): Promise<AccordionBlock[]> {
     console.log(
@@ -16,7 +16,7 @@ export async function extractAccordions(
     );
 
     // ② 強化した正規表現
-    const accRe = /#accordion\s*(?:\(\s*([^)]*?)\s*\)|\s+([^{]+?))\s*\{/gm;
+    const accRe:RegExp = /#accordion\s*(?:\(\s*([^)]*?)\s*\)|\s+([^{]+?))\s*\{/gm;
 
     const blocks: AccordionBlock[] = [];
     let m: RegExpExecArray | null;
@@ -25,22 +25,22 @@ export async function extractAccordions(
         const start = m.index;
 
         // タイトル／オプション解釈
-        const raw = (m[1] || m[2] || '').trim();
-        const args = raw.split(',').map(s => s.trim());
-        const title = args[0];
-        const level =
+        const raw:string = (m[1] || m[2] || '').trim();
+        const args:string[] = raw.split(',').map(s => s.trim());
+        const title:string = args[0];
+        const level:'*'|'**'|'***' =
         (args.find(a => /^(?:\*{1,3})$/.test(a)) as '*' | '**' | '***') ?? '*';
-        const isOpen = args.includes('open');
+        const isOpen:boolean = args.includes('open');
 
         // 単一「{」マッチを想定
-        const braceCount = 1;
-        const braceStart = accRe.lastIndex - braceCount;
+        const braceCount:number = 1;
+        const braceStart:number = accRe.lastIndex - braceCount;
 
         // ④ 本文抜き出し
         const { body, end } = extractBracedBlock(
-        content,
-        braceStart,
-        braceCount
+            content,
+            braceStart,
+            braceCount
         );
         if (!body) {
             console.warn(`⚠ extractBracedBlock failed at ${braceStart}`);
@@ -48,10 +48,10 @@ export async function extractAccordions(
         }
 
         // ⑤ ネスト再帰
-        const children = await extractAccordions(body, offset + braceStart, context);
+        const children:AccordionBlock[] = await extractAccordions(body, offset + braceStart, context);
 
         // ⑥ inline 用にマスク
-        let bodyForInline = body;
+        let bodyForInline:string = body;
         for (const child of children) {
             const relStart = child.start! - offset - braceStart;
             const relEnd = child.end! - offset - braceStart;
@@ -60,7 +60,7 @@ export async function extractAccordions(
                 ' '.repeat(relEnd - relStart) +
                 bodyForInline.slice(relEnd);
         }
-        const parsedBody = await parseWikiContent(
+        const parsedBody:ReactNode[] = await parseWikiContent(
             bodyForInline,
             context
         );
@@ -99,13 +99,13 @@ export async function extractAccordions(
 
 /** Accordion コンポーネント */
 export default function Accordion({ title, level, initiallyOpen, children, }: { title: string; level: '*' | '**' | '***'; initiallyOpen: boolean; children: React.ReactNode; }) {
-    const router = useRouter()
+    const router:NextRouter = useRouter()
     const { wikiSlug } = router.query;
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const [open, setOpen] = useState(initiallyOpen)
-    const Tag = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
-    const designColor = useDesignColor(wikiSlugStr);
-    const iconPath = open
+    const Tag:'h2'|'h3'|'h4' = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
+    const designColor:"pink" | "blue" | "yellow" | "default" | null = useDesignColor(wikiSlugStr);
+    const iconPath:string = open
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7c24-24 c24s-24-10.7-24-24z'
     const commonsStyle: React.CSSProperties = level === '*'
