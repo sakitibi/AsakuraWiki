@@ -202,7 +202,7 @@ function renderAST(
         if (node.type === 'text') {
             return (
                 <React.Fragment key={`t${idx}`}>
-                    {parseInline(node.content, context)}
+                    {parseInline({text: node.content, context})}
                 </React.Fragment>
             );
         }
