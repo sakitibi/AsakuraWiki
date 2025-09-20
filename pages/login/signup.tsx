@@ -4,20 +4,20 @@ import { notuseUsername } from '@/utils/user_list';
 import Head from 'next/head';
 
 export default function SignUpPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [errorMsg, setErrorMsg] = useState('');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>('');
 
-    const notuseUser_list_found = notuseUsername.find(value => username.match(value));
+    const notuseUser_list_found:RegExp | undefined = notuseUsername.find(value => username.match(value));
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
 
-        if(notuseUser_list_found){
+        if(!!username.match(notuseUser_list_found!)){
             setErrorMsg('このユーザー名は使用出来ません、');
             setLoading(false);
             return;
