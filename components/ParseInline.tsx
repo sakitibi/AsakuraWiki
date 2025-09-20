@@ -175,7 +175,7 @@ export function parseOtherInline(
         }
         // #DATEDIF(d1,d2,unit)
         else if (token.startsWith('#DATEDIF')) {
-            const val = DATEDIF(m[4], m[5], m[6] as any)
+            const val:number = DATEDIF(m[4], m[5], m[6])
             nodes.push(<span key={key}>{isNaN(val) ? 'ERR' : val}</span>)
             last = m.index + token.length
         }

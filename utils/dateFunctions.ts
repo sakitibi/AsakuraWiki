@@ -4,29 +4,30 @@
  * @param end   - "YYYY-MM-DD" 形式の終了日 
  * @param unit  - 'Y' | 'M' | 'D'
  */
+
 export function DATEDIF(
     start: string,
     end: string,
-    unit: 'Y' | 'M' | 'D'
+    unit: string
 ): number {
-    const s = new Date(start)
-    const e = new Date(end)
+    const s:Date = new Date(start)
+    const e:Date = new Date(end)
     if (isNaN(s.getTime()) || isNaN(e.getTime()) || s > e) return NaN
 
-    const diffY = e.getFullYear() - s.getFullYear()
-    const diffM = e.getMonth() - s.getMonth()
-    const diffD = e.getDate() - s.getDate()
+    const diffY:number = e.getFullYear() - s.getFullYear()
+    const diffM:number = e.getMonth() - s.getMonth()
+    const diffD:number = e.getDate() - s.getDate()
 
     switch (unit) {
         case 'Y':
-        // 年差 minus 繰り越し調整
-        return diffY - (diffM < 0 || (diffM === 0 && diffD < 0) ? 1 : 0)
+            // 年差 minus 繰り越し調整
+            return diffY - (diffM < 0 || (diffM === 0 && diffD < 0) ? 1 : 0)
         case 'M':
-        // 月差 plus 繰り越し調整
-        return diffY * 12 + diffM - (diffD < 0 ? 1 : 0)
+            // 月差 plus 繰り越し調整
+            return diffY * 12 + diffM - (diffD < 0 ? 1 : 0)
         case 'D':
-        // 日数差
-        return Math.floor((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24))
+            // 日数差
+            return Math.floor((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24))
         default:
         return NaN
     }
