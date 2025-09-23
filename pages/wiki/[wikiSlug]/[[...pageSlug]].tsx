@@ -10,13 +10,13 @@ import styles from 'css/wikis.min.module.css';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/handler';
-
+import dynamic from 'next/dynamic';
 interface Page {
     title: string
     content: string
 }
 
-export default function WikiPage() {
+function WikiPage() {
     const router = useRouter()
     const user:User | null = useUser() ?? null;
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
@@ -462,3 +462,5 @@ export default function WikiPage() {
         </>
     )
 }
+
+export default dynamic(() => Promise.resolve(WikiPage), { ssr: false });
