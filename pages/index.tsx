@@ -79,7 +79,7 @@ export default function Home() {
                     <div className={styles.contents}>
                         <LeftMenuJp URL='/'/>
                         <main style={{ padding: '2rem', flex: 1 }}>
-                            <h1>あさクラWiki</h1>
+                            <h1>あさクラWiki{versions[0]}</h1>
                                 <div id="view-counter">
                                     <p>今日の閲覧数: {wiki13ninstudioCounter?.today ?? 0}</p>
                                     <p>合計の閲覧数: {wiki13ninstudioCounterTotal ? wiki13ninstudioCounterTotal : 0}</p>

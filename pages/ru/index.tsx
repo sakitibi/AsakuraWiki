@@ -72,7 +72,7 @@ export default function Home() {
             <div className={styles.contents}>
                 <LeftMenuRu URL="/"/>
                 <main style={{ padding: '2rem', flex: 1 }}>
-                    <h1>АсакураWiki</h1>
+                    <h1>АсакураWiki{versions[0]}</h1>
                         <div id="view-counter">
                             <p>Сегодняшние взгляды: {wiki13ninstudioCounter?.today ?? 0}</p>
                             <p>Всего просмотров: {wiki13ninstudioCounterTotal ? wiki13ninstudioCounterTotal : 0}</p>

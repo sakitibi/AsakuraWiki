@@ -11,8 +11,8 @@ import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wik
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 
 interface Page {
-    title: string
-    content: string
+    title: string;
+    content: string;
 }
 
 export default function WikiPage() {
