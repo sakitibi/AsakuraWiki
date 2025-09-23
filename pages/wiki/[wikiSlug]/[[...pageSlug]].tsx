@@ -9,6 +9,7 @@ import Script from 'next/script';
 import styles from 'css/wikis.min.module.css';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
+import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/handler';
 
 interface Page {
     title: string
@@ -42,7 +43,6 @@ export default function WikiPage() {
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
 
-    const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found = deleted_wiki_list.find(value => value === wikiSlugStr);
 
@@ -186,44 +186,6 @@ export default function WikiPage() {
             return () => clearTimeout(timer);
         }
     }, []);
-
-    // 編集モード切り替え
-    const handleEdit = () => {
-        router.push({
-            pathname: `/wiki/${wikiSlugStr}`,
-            query: { cmd: 'edit', page: pageSlugStr },
-        });
-    };
-
-    const handleDelete = async () => {
-        if (!special_wiki_list_found) {
-            const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
-            if (!ok) return;
-
-            const { data: { session } } = await supabaseServer.auth.getSession();
-            const token = session?.access_token;
-
-            try {
-                const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!res.ok) {
-                    const data = await res.json();
-                    alert('削除に失敗しました: ' + data.error);
-                } else {
-                    alert('削除しました');
-                    router.replace(`/wiki/${wikiSlugStr}`);
-                }
-            } catch (err: any) {
-                console.error(err);
-                alert('削除に失敗しました: ' + err.message);
-            }
-        }
-    };
 
     useEffect(() => {
         if (cmdStr !== 'delete') return;
