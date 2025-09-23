@@ -2,23 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
-import { User, useUser } from '@supabase/auth-helpers-react';
+import { useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
 import styles from 'css/wikis.min.module.css';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
-import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/handler';
-import dynamic from 'next/dynamic';
+import { handleEdit, handleDelete } from '@/utils/pageParts/wiki/handler';
+
 interface Page {
     title: string
     content: string
 }
 
-function WikiPage() {
+export default function WikiPage() {
     const router = useRouter()
-    const user:User | null = useUser() ?? null;
+    const user = useUser();
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
 
@@ -43,6 +43,7 @@ function WikiPage() {
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
 
+    const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found = deleted_wiki_list.find(value => value === wikiSlugStr);
 
@@ -215,7 +216,7 @@ function WikiPage() {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ user: { id: user?.id ?? null } }),
+                    body: JSON.stringify({ user: { id: user.id } }),
                 });
 
                 if (!res.ok) {
@@ -447,7 +448,7 @@ function WikiPage() {
                                         </button>
                                         <br/>
                                         <div id="ad-container" style={{ textAlign: 'center' }}>
-                                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="650" height="311"></iframe>
+                                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="650"></iframe>
                                         </div>
                                     </article>
                                     <Script
@@ -462,5 +463,3 @@ function WikiPage() {
         </>
     )
 }
-
-export default dynamic(() => Promise.resolve(WikiPage), { ssr: false });
