@@ -1,5 +1,4 @@
 import { LenisProvider } from 'utils/LenisProvider';
-import { AppProps } from 'next/app';
 import { SessionContextProvider, useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import '@/css/index.min.globals.css';
@@ -14,7 +13,17 @@ import { adminerUserId, notuseIP } from '@/utils/user_list';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+interface CustomPageProps {
+    session?: any; // Supabase のセッション型に合わせて調整可能
+    [key: string]: any; // 他のプロップも許容
+}
+
+interface CustomAppProps {
+    Component: React.ComponentType<any>;
+    pageProps: CustomPageProps;
+}
+
+export default function MyApp({Component, pageProps}: CustomAppProps) {
     const router = useRouter();
     const user = useUser();
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
