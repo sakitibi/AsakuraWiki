@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
-import { useUser } from '@supabase/auth-helpers-react';
+import { User, useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
@@ -18,7 +18,7 @@ interface Page {
 
 export default function WikiPage() {
     const router = useRouter()
-    const user = useUser();
+    const user:User | null = useUser();
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
 
@@ -215,7 +215,7 @@ export default function WikiPage() {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ user: { id: user.id } }),
+                    body: JSON.stringify({ user: { id: user?.id ?? null } }),
                 });
 
                 if (!res.ok) {
