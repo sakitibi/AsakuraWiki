@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
-import { useUser } from '@supabase/auth-helpers-react';
+import { User, useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
@@ -16,14 +16,14 @@ interface Page {
 }
 
 export default function WikiPage() {
-    const router = useRouter()
-    const user = useUser();
-    const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
-    const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
+    const router:NextRouter = useRouter()
+    const user:User | null = useUser();
+    const { wikiSlug, pageSlug, page: pageQuery } = router.query;
+    const cmdStr:string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
 
     // クエリ→文字列化
-        const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-        const pageSlugStr =
+        const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+        const pageSlugStr:string =
         typeof pageQuery === 'string'
             ? pageQuery
             : Array.isArray(pageSlug)
@@ -38,13 +38,13 @@ export default function WikiPage() {
     const [content, setContent] = useState<string>('')  // ← textarea の中身
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
     const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
-    const [showRedirectButton, setShowRedirectButton] = useState(false);
+    const [showRedirectButton, setShowRedirectButton] = useState<boolean>(false);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
 
-    const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
-    const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
-    const deleted_wiki_list_found = deleted_wiki_list.find(value => value === wikiSlugStr);
+    const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
+    const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
+    const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
 
     useEffect(() => {
         if (!wikiSlugStr) return;
