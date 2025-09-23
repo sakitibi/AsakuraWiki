@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import { ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import Head from 'next/head';
 
 export default function CreateWikiPage() {
-    const [wikiId, setWikiId] = useState('');
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [agreeASKR, setAgreeASKR] = useState(false);
-    const [agree13nin, setAgree13nin] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
+    const [wikiId, setWikiId] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [agreeASKR, setAgreeASKR] = useState<boolean>(false);
+    const [agree13nin, setAgree13nin] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const router:NextRouter = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,9 +28,9 @@ export default function CreateWikiPage() {
             setLoading(false);
             return;
         }
-        const slug = wikiId.trim().toLowerCase();
-        const deleted_wiki_list_found = deleted_wiki_list.find(value => value === slug);
-        const ban_wiki_list_found = ban_wiki_list.find(value => value === slug);
+        const slug:string = wikiId.trim().toLowerCase();
+        const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === slug);
+        const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === slug);
 
         if(deleted_wiki_list_found || ban_wiki_list_found){
             alert("このWikiは過去に一度作成されていました、");

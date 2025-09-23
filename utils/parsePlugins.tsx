@@ -9,7 +9,11 @@ import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
 import ExportBlock from '@/components/ExportBlock';
 import ImportBlock, { resolveImports } from '@/components/ImportBlock';
 
-
+interface extractBracedBlock {
+    source: string;
+    startIdx: number;
+    braceCount: number;
+}
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
     useEffect(() => {
@@ -35,7 +39,7 @@ export function useDesignColor(slug: string) {
 }
 
 export function isValidLineRange(range: string): boolean {
-    const trimmed = range.trim()
+    const trimmed:string = range.trim()
     // 対応: "1", "1-", "-5", "3-8"
     return /^(\d+)?-(\d+)?$/.test(trimmed) || /^\d+$/.test(trimmed)
 }
@@ -50,8 +54,8 @@ export function extractBracedBlock(
     success: boolean;
     unmatchedDepth?: number;
 } {
-    let depth = braceCount;
-    let i = startIdx + braceCount;
+    let depth:number = braceCount;
+    let i:number = startIdx + braceCount;
 
     while (i < source.length) {
         const char = source[i];

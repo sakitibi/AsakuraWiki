@@ -62,7 +62,7 @@ export default function WikiPage() {
         false,
         false
     ]);
-    const designColor = "default";
+    const designColor:"default" = "default";
 
     useEffect(() => {
         document.body.classList.add('wiki-font');
@@ -81,9 +81,9 @@ export default function WikiPage() {
     // エラー or 読み込み中
     if (error)   return <div style={{ color: 'red' }}>{error}</div>
 
-    const isEdit = urlObj?.searchParams.get('cmd') === 'edit'
+    const isEdit:boolean = urlObj?.searchParams.get('cmd') === 'edit'
 
-    let commentSubmit:any = null;
+    let commentSubmit:HTMLCollection | null = null;
 
     const CommentSubmitInterval = setInterval(() => {
         if(typeof document.getElementsByClassName("comment-submit") === 'undefined'){
@@ -92,12 +92,12 @@ export default function WikiPage() {
             }
 
             if ((isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage")) {
-                for(let i = 0; i < commentSubmit.length; i++){
-                    commentSubmit[i].setAttribute("disabled", "true");
+                for(let i = 0; i < commentSubmit!.length; i++){
+                    commentSubmit![i].setAttribute("disabled", "true");
                 }
             }
         } else {
-            const ClearInterval = setInterval(() => {
+            const ClearInterval:NodeJS.Timeout = setInterval(() => {
                 clearInterval(CommentSubmitInterval);
                 clearInterval(ClearInterval);
             }, 1000);

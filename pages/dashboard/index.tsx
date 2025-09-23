@@ -1,10 +1,10 @@
-import { useUser } from '@supabase/auth-helpers-react';
+import { useUser, User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 
 export default function DashboardPage() {
-    const user = useUser();
-    const name =
+    const user:User | null = useUser();
+    const name:string =
         user?.user_metadata?.name ||  // GitHubログインなどの表示名
         user?.user_metadata?.full_name || // その他のプロバイダー
         user?.user_metadata?.username || // カスタムフィールド

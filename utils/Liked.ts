@@ -1,20 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useUser } from '@supabase/auth-helpers-react';
+import { NextRouter, useRouter } from 'next/router';
+import { User, useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from 'lib/supabaseClientServer';
 
 export const usePageLikeHandlers = () => {
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-    const user = useUser();
-    const userId = user?.id;
+    const [loading, setLoading] = useState<boolean>(false);
+    const router:NextRouter = useRouter();
+    const user:User | null = useUser();
+    const userId:string | undefined = user?.id;
 
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;
 
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const pageSlugStr =
+    const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const pageSlugStr:string =
         typeof pageQuery === 'string'
         ? pageQuery
         : Array.isArray(pageSlug)
@@ -128,14 +128,14 @@ export const usePageLikeHandlers = () => {
 };
 
 export const useWikiLikeHandlers = () => {
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-    const user = useUser();
-    const userId = user?.id;
+    const [loading, setLoading] = useState<boolean>(false);
+    const router:NextRouter = useRouter();
+    const user:User | null = useUser();
+    const userId:string | undefined = user?.id;
 
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;
-    const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const pageSlugStr =
+    const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const pageSlugStr:string =
         typeof pageQuery === 'string'
         ? pageQuery
         : Array.isArray(pageSlug)

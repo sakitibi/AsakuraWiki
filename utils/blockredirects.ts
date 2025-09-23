@@ -1,10 +1,13 @@
-export function opendns(lang:string){
-    const supportLink = document.createElement("a");
+type langProps = 
+"ja" | "ru";
+
+export function opendns(lang:langProps){
+    const supportLink:HTMLAnchorElement = document.createElement("a");
     supportLink.href = "/securitys/blocks/opendns";
     document.getElementById("menu-list")?.appendChild(supportLink);
-    const button = document.createElement("button");
+    const button:HTMLButtonElement = document.createElement("button");
     supportLink.appendChild(button);
-    const span = document.createElement("span");
+    const span:HTMLSpanElement = document.createElement("span");
     if(lang === "ja"){
         span.textContent = "詳細";
     } else if(lang === "ru"){

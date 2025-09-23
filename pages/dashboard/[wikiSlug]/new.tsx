@@ -1,21 +1,21 @@
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useUser, useSession } from '@supabase/auth-helpers-react';
+import { useUser, useSession, User, Session } from '@supabase/auth-helpers-react';
 import { supabaseServer } from 'lib/supabaseClientServer';
 
 export default function NewPage() {
-    const router = useRouter();
-    const user = useUser();
-    const session = useSession();
+    const router:NextRouter = useRouter();
+    const user:User | null = useUser();
+    const session:Session | null = useSession();
     const { wikiSlug } = router.query; // ✅ 変数名統一
-    const wikiSlugStr = typeof wikiSlug === 'string' ? wikiSlug : '';
+    const wikiSlugStr:string = typeof wikiSlug === 'string' ? wikiSlug : '';
 
-    const [title, setTitle] = useState('');
-    const [slug, setSlug] = useState('');
-    const [content, setContent] = useState('');
+    const [title, setTitle] = useState<string>('');
+    const [slug, setSlug] = useState<string>('');
+    const [content, setContent] = useState<string>('');
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
-    const [loading, setLoading] = useState(false);
-    const [errorMsg, setErrorMsg] = useState('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>('');
     const [ownerId, setownerId] = useState<string>('');
 
     // ✅ wikiSlug が確定してから実行

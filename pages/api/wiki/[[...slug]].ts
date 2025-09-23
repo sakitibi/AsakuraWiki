@@ -6,7 +6,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     try {
-        const raw = req.query.slug
+        const raw:string | string[] | undefined = req.query.slug
         const parts: string[] = Array.isArray(raw)
             ? raw
             : typeof raw === 'string'
@@ -30,7 +30,7 @@ export default async function handler(
             if (user) userId = user.id
         }
 
-        const isCLI = req.headers['x-cli'] === 'true' // CLI 判定用
+        const isCLI:boolean = req.headers['x-cli'] === 'true' // CLI 判定用
 
         // CLI 用チェック関数
         const checkCLIAllowed = async () => {
@@ -219,7 +219,7 @@ export default async function handler(
         res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST'])
         return res.status(405).json({ error: 'Method not allowed' })
 
-    } catch (e: any) {
+    } catch (e:any) {
         console.error('API exception:', e)
         return res.status(500).json({ error: e.message || 'Internal server error' })
     }

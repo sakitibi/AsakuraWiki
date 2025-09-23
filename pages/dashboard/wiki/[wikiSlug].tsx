@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useUser } from '@supabase/auth-helpers-react';
+import { NextRouter, useRouter } from 'next/router';
+import { useUser, User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
 import { supabaseServer } from 'lib/supabaseClientServer';
 
 export default function WikiSettingsPage() {
-    const router = useRouter();
+    const router:NextRouter = useRouter();
     const { wikiSlug } = router.query;
-    const user = useUser();
+    const user:User | null = useUser();
 
     // slug を文字列に正規化
-    const slugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+    const slugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const [name, setName] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
     const [editMode, setEditMode] = useState<'public' | 'private'>('public');
-    const [loading, setLoading] = useState(true);
-    const [errorMsg, setErrorMsg] = useState('');
+    const [loading, setLoading] = useState<boolean>(true);
+    const [errorMsg, setErrorMsg] = useState<string>('');
     const [designColor, setdesignColor] = useState<'pink' | 'blue' | 'yellow' |'default'>('default');
     const [isCLI, setIsCLI] = useState<boolean>(true);
 
