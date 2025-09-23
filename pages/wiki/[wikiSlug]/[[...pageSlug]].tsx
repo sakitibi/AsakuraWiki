@@ -18,7 +18,7 @@ interface Page {
 
 export default function WikiPage() {
     const router = useRouter()
-    const user:User | null = useUser();
+    const user:User | null = useUser() ?? null;
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
 
