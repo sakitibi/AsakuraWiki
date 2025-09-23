@@ -1,5 +1,5 @@
 import { LenisProvider } from 'utils/LenisProvider';
-import type { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import { SessionContextProvider, useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import '@/css/index.min.globals.css';
