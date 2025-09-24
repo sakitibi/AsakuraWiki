@@ -121,6 +121,11 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
             document.getElementById("__next")!.innerHTML = (`
                 <h1>403 forbidden</h1>
                 <p>あなたには閲覧する権限がありません</p>
+                <button>
+                    <a href="/securitys/blocks/ipaddress">
+                        <span>詳細</span>
+                    </a>
+                </button>
             `);
             console.error("http 403 forbidden errors");
         }
