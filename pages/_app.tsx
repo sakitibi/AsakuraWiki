@@ -97,14 +97,6 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
             const requestURL:string = "https://ipwho.is/?lang=ja";
             try {
                 const response:Response = await fetch(requestURL);
-
-                // OpenDNS のブロックページに飛ばされたか確認
-                if (response.url.match(/https:\/\/block\.opendns\.com.+?/)) {
-                    alert("このアプリのセキュリティ機能がOpenDNS にブロックされています。\n正常にセキュリティが機能しません");
-                    opendns("ja");
-                    return;
-                }
-
                 const ipData = await response.json();
                 setIpaddress(ipData);
             } catch (error) {
