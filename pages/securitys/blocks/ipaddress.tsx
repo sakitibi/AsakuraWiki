@@ -31,7 +31,7 @@ export default function About() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>Your IP address has been blocked by {company}</h1>
                         <p>This service is not available</p>
-                        <p>Send feedback to {company}</p>
+                        <p><a href="https://sakitibi-com9.webnode.jp/page/3">Send feedback to {company}</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>
