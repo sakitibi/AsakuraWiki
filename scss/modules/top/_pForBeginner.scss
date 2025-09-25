@@ -1,8 +1,8 @@
 /* pForBeginner系統 */
 
 .pForBeginner {
-    background-color: #abf1b6/*#fde6e7*/;
-    background-image: url("https://wikiwiki.jp/pa/assets/e607c1a8a5c8a27728d3.png");
+    background-color: #abf1b6;
+    background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white.png");
     border-radius: 10px;
     padding: 18px;
     & li::marker{
@@ -67,7 +67,7 @@
     -webkit-text-decoration: none !important;
     text-decoration: none !important;
     &::before{
-        background-image: url("https://wikiwiki.jp/pa/assets/bb11ec8bcbb1ecaa7a13.png");
+        background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/right_arrow_red.png");
         background-repeat: no-repeat;
         background-size: contain;
         content: "";
