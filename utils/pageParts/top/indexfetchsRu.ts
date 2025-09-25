@@ -63,21 +63,18 @@ export async function fetchLikedWikis(
 export async function fetched13ninstudioCounter(
     setWiki13ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
 ) {
+    const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/ru/index.html";
+    const response:Response = await fetch(requestURL);
     try {
-        const requestURL = "https://counter.wikiwiki.jp/c/13ninstudio/pv/ru/index.html";
-        const response = await fetch(requestURL);
-
+        const userData = await response.json();
+        setWiki13ninstudioCounter(userData);
+    } catch (error) {
         // OpenDNS のブロックページに飛ばされたか確認
-        if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {
+        if (response.url.match(/https:\/\/block\.opendns\.com.+?/)) {
             alert("Функция счетчика этого приложения заблокирована OpenDNS.\nСчетчик не будет работать должным образом.");
             opendns("ru");
             return;
         }
-
-        const userData = await response.json();
-        setWiki13ninstudioCounter(userData);
-
-    } catch (error) {
         console.error("fetch error:", error);
         alert("Не удалось получить счетчик.\nПроверьте сетевое окружение и перезагрузите страницу.");
         alert(error); // Safariなどのデベロッパーツールがないブラウザ用

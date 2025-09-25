@@ -1,4 +1,3 @@
-// lib/supabaseClientServer.ts
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 export const supabaseServer:SupabaseClient = createClient(

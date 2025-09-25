@@ -43,6 +43,7 @@ export const notuseUsername:RegExp[] = [ // 利用不可能なユーザー名リ
     /.+?悠仁/gu,
     /秋篠宮.+?/gu,
     /.+?佳子.+?/gu,
+    /.+?愛子.+?/gu,
     /.+?天皇.+?/gu
 ];
 

@@ -1,6 +1,10 @@
 import styles from 'css/index.min.module.css';
 
-export default function HeaderRu({ handleClick }: { handleClick: () => void }) {
+interface HeaderRuProps{
+    handleClick: () => void;
+}
+
+export default function HeaderRu({ handleClick }: HeaderRuProps) {
     const HeaderRuPage = () => {
         return(
             <header className={styles.lHeader}>

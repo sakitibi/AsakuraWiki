@@ -1,6 +1,10 @@
 import styles from 'css/index.min.module.css';
 
-export default function HeaderJp({ handleClick }: { handleClick: () => void }) {
+interface HeaderJpProps{
+    handleClick: () => void;
+}
+
+export default function HeaderJp({ handleClick }: HeaderJpProps) {
     const HeaderJpPage = () => {
         return(
             <header className={styles.lHeader}>

@@ -9,7 +9,11 @@ import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import versions from '@/utils/version';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
-import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/indexfetchsJp';
+import {
+    fetchRecentPages,
+    fetchLikedWikis,
+    fetched13ninstudioCounter
+} from '@/utils/pageParts/top/indexfetchsJp';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -17,8 +21,8 @@ export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
     const [recentPages, setRecentPages] = useState<WikiPage[]>([])
-    const [loadingLiked, setLoadingLiked] = useState(true)
-    const [loadingRecent, setLoadingRecent] = useState(true)
+    const [loadingLiked, setLoadingLiked] = useState<boolean>(true)
+    const [loadingRecent, setLoadingRecent] = useState<boolean>(true)
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
 
     const H2Styles:React.CSSProperties = {
