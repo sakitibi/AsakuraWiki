@@ -70,20 +70,17 @@ export async function fetched13ninstudioCounter(
     setWiki13ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
 ) {
     const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
+    const response:Response = await fetch(requestURL);
     try {
-        const response:Response = await fetch(requestURL);
-
+        const userData = await response.json();
+        setWiki13ninstudioCounter(userData);
+    } catch (error) {
         // OpenDNS のブロックページに飛ばされたか確認
-        if (response.url.match(/https:\/\/block\.opendns\.com.?/)) {
+        if (response.url.match(/https:\/\/block\.opendns\.com.+?/)) {
             alert("このアプリのカウンター機能がOpenDNS にブロックされています。\n正常にカウンターが機能しません");
             opendns("ja");
             return;
         }
-
-        const userData = await response.json();
-        setWiki13ninstudioCounter(userData);
-
-    } catch (error) {
         console.error("fetch error:", error);
         alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
         alert(error); // Safariなどのデベロッパーツールがないブラウザ用
