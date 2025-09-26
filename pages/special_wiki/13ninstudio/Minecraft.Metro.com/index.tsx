@@ -221,7 +221,7 @@ export default function WikiPage() {
                         </div>
                         <br/>
                         <div id="ad-container" style={{ textAlign: 'center' }}>
-                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="350" height="600"></iframe>
+                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                         </div>
                     </article>
                     <Script
