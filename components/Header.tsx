@@ -78,6 +78,11 @@ export default function Header({ title, level, anchor }: { title: string; level:
             borderColor: 'currentcolor currentcolor #fdd341 #fdd341',
             borderRight: '1px solid #fdd341',
             borderTop: '1px solid #fdd341'
+        } : designColor === 'purple' ? {
+            backgroundColor: '#dfa4fe',
+            borderColor: 'currentcolor currentcolor #8641fd #8641fd',
+            borderRight: '1px solid #8641fd',
+            borderTop: '1px solid #8641fd'
         } : {
             backgroundColor: '#d1f0a0',
             borderColor: 'currentcolor currentcolor #afd965 #afd965',
@@ -94,6 +99,8 @@ export default function Header({ title, level, anchor }: { title: string; level:
                 borderColor: '#86b8e2'
             } : designColor === 'yellow' ? {
                 borderColor: '#fdd341'
+            } : designColor === 'purple' ? {
+                borderColor: '#8641fd'
             } : {
                 borderColor: '#afd965'
             }
@@ -106,6 +113,8 @@ export default function Header({ title, level, anchor }: { title: string; level:
             borderLeft: '#86b8e2'
         } : designColor === 'yellow' ? {
             borderLeft: '#fdd341'
+        } : designColor === 'yellow' ? {
+            borderLeft: '#8641fd'
         } : {
             borderLeft: '#afd965'
         }

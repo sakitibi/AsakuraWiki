@@ -9,6 +9,7 @@ import Script from 'next/script';
 import styles from 'css/wikis.min.module.css';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
+import type { editMode, designColor } from '@/utils/wiki_settings';
 
 interface Page {
     title: string;
@@ -36,8 +37,8 @@ export default function WikiPage() {
     const [error, setError]     = useState<string | null>(null)
     const [title, setTitle]     = useState<string>('')
     const [content, setContent] = useState<string>('')  // ← textarea の中身
-    const [editMode, setEditMode] = useState<'private' | 'public'>('public');
-    const [designColor, setDesignColor] = useState<'pink' | 'blue' | 'yellow' | null>(null);
+    const [editMode, setEditMode] = useState<editMode>('public');
+    const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [showRedirectButton, setShowRedirectButton] = useState<boolean>(false);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
@@ -133,6 +134,7 @@ export default function WikiPage() {
             document.body.classList.remove('pink');
             document.body.classList.remove('blue');
             document.body.classList.remove('yellow');
+            document.body.classList.remove('purple');
         };
     }, [designColor]);
 

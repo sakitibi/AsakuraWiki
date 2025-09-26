@@ -3,6 +3,7 @@ import { NextRouter, useRouter } from 'next/router';
 import { useUser, User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
 import { supabaseServer } from 'lib/supabaseClientServer';
+import type { editMode, designColor } from '@/utils/wiki_settings';
 
 export default function WikiSettingsPage() {
     const router:NextRouter = useRouter();
@@ -13,10 +14,10 @@ export default function WikiSettingsPage() {
     const slugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const [name, setName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [editMode, setEditMode] = useState<'public' | 'private'>('public');
+    const [editMode, setEditMode] = useState<editMode>('public');
     const [loading, setLoading] = useState<boolean>(true);
     const [errorMsg, setErrorMsg] = useState<string>('');
-    const [designColor, setdesignColor] = useState<'pink' | 'blue' | 'yellow' |'default'>('default');
+    const [designColor, setdesignColor] = useState<designColor>('default');
     const [isCLI, setIsCLI] = useState<boolean>(true);
 
     useEffect(() => {
@@ -55,6 +56,7 @@ export default function WikiSettingsPage() {
                 data.design_color === 'pink' ? 'pink' : 
                 data.design_color === 'blue' ? 'blue' : 
                 data.design_color === 'yellow' ? 'yellow': 
+                data.design_color === 'purple' ? 'purple': 
                 'default'
             );
             setLoading(false);
@@ -196,13 +198,14 @@ export default function WikiSettingsPage() {
                                 <select
                                     value={designColor}
                                     onChange={(e) => 
-                                        setdesignColor(e.target.value as 'pink' | 'blue' | 'yellow' |'default')
+                                        setdesignColor(e.target.value as designColor)
                                     }
                                     >
                                     <option value="default">デフォルト</option>
                                     <option value="pink">ピンク</option>
                                     <option value="blue">ブルー</option>
                                     <option value="yellow">イエロー</option>
+                                    <option value="purple">パープル</option>
                                 </select>
                             </label>
                             <br /><br />

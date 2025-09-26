@@ -2,6 +2,14 @@ import { NextRouter, useRouter } from "next/router";
 import { ReactNode, useState } from "react";
 import { useDesignColor, parseWikiContent, extractBracedBlock } from "@/utils/parsePlugins";
 import { AccordionBlock, Context } from "./parsePluginTypes";
+import type { designColor, headerLevel } from "@/utils/wiki_settings";
+
+interface AccordionProps{
+    title: string;
+    level: headerLevel;
+    initiallyOpen: boolean;
+    children: React.ReactNode;
+}
 
 /**
  * ネスト可能なアコーディオンブロックを文字列から抽出します
@@ -29,8 +37,8 @@ export async function extractAccordions(
         const raw:string = (m[1] || m[2] || '').trim();
         const args:string[] = raw.split(',').map(s => s.trim());
         const title:string = args[0];
-        const level:'*'|'**'|'***' =
-        (args.find(a => /^(?:\*{1,3})$/.test(a)) as '*' | '**' | '***') ?? '*';
+        const level:headerLevel =
+        (args.find(a => /^(?:\*{1,3})$/.test(a)) as headerLevel) ?? '*';
         const isOpen:boolean = args.includes('open');
 
         // 単一「{」マッチを想定
@@ -99,13 +107,13 @@ export async function extractAccordions(
 }
 
 /** Accordion コンポーネント */
-export default function Accordion({ title, level, initiallyOpen, children, }: { title: string; level: '*' | '**' | '***'; initiallyOpen: boolean; children: React.ReactNode; }) {
+export default function Accordion({ title, level, initiallyOpen, children, }: AccordionProps) {
     const router:NextRouter = useRouter()
     const { wikiSlug } = router.query;
     const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const [open, setOpen] = useState(initiallyOpen)
     const Tag:'h2'|'h3'|'h4' = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
-    const designColor:"pink" | "blue" | "yellow" | "default" | null = useDesignColor(wikiSlugStr);
+    const designColor:designColor | null = useDesignColor(wikiSlugStr);
     const iconPath:string = open
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7c24-24 c24s-24-10.7-24-24z'
@@ -182,6 +190,11 @@ export default function Accordion({ title, level, initiallyOpen, children, }: { 
             borderColor: 'currentcolor currentcolor #fdd341 #fdd341',
             borderRight: '1px solid #fdd341',
             borderTop: '1px solid #fdd341'
+        } : designColor === 'purple' ? {
+            backgroundColor: '#dfa4fe',
+            borderColor: 'currentcolor currentcolor #8641fd #8641fd',
+            borderRight: '1px solid #8641fd',
+            borderTop: '1px solid #8641fd'
         } : {
             backgroundColor: '#d1f0a0',
             borderColor: 'currentcolor currentcolor #afd965 #afd965',
@@ -198,6 +211,8 @@ export default function Accordion({ title, level, initiallyOpen, children, }: { 
                 borderColor: '#86b8e2'
             } : designColor === 'yellow' ? {
                 borderColor: '#fdd341'
+            } : designColor === 'purple' ? {
+                borderColor: '#8641fd'
             } : {
                 borderColor: '#afd965'
             }
@@ -210,6 +225,8 @@ export default function Accordion({ title, level, initiallyOpen, children, }: { 
             borderLeft: '15px solid #86b8e2'
         } : designColor === 'yellow' ? {
             borderLeft: '15px solid #fdd341'
+        } : designColor === 'purple' ? {
+            borderLeft: '15px solid #8641fd'
         } : {
             borderLeft: '15px solid #afd965'
         }
@@ -219,7 +236,7 @@ export default function Accordion({ title, level, initiallyOpen, children, }: { 
         <div style={{ margin: '1em 0' }}>
             <Tag onClick={() => setOpen(!open)} style={{...commonsStyle,...headingStyle}}>
                 <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
-                <path fill="currentColor" d={iconPath} />
+                    <path fill="currentColor" d={iconPath} />
                 </svg>
                 {title}
             </Tag>

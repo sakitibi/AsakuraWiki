@@ -8,14 +8,10 @@ import parseInline from '@/components/ParseInline';
 import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
 import ExportBlock from '@/components/ExportBlock';
 import ImportBlock, { resolveImports } from '@/components/ImportBlock';
+import type { designColor } from './wiki_settings';
 
-interface extractBracedBlock {
-    source: string;
-    startIdx: number;
-    braceCount: number;
-}
 export function useDesignColor(slug: string) {
-    const [color, setColor] = useState<'pink' | 'blue' | 'yellow' | 'default' | null>(null);
+    const [color, setColor] = useState<designColor | null>(null);
     useEffect(() => {
         async function fetchColor() {
             const { data, error } = await supabaseServer
