@@ -16,7 +16,7 @@ body {
             overflow: hidden;
 
             &::before {
-                @include mixin.position(#1ce369, #076727); // 緑系
+                @include mixin.position(/*#1ce369, #076727*/#7b25fc, #410882); // 緑系
             }
 
             &:active::before {
