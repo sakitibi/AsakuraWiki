@@ -17,8 +17,13 @@
 }
 
 @mixin defaultGreen{
-    background-image: /*linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);*/
-    linear-gradient(to right, #5b1ebe, #440478, #000000, #5c1075, #7a05be, #6004e1);
+    background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
+    font-size: 15px;
+    @include background;
+}
+
+@mixin purple{
+    background-image: linear-gradient(to right, #5b1ebe, #440478, #000000, #5c1075, #7a05be, #6004e1);
     font-size: 15px;
     @include background;
 }
