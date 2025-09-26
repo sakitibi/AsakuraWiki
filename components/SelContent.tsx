@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDesignColor } from '@/utils/parsePlugins';
 import { NextRouter, useRouter } from 'next/router'
+import type { designColor } from '@/utils/wiki_settings';
 
 interface SelContentProps {
     type: string;
@@ -11,7 +12,7 @@ export default function SelContent({ type, children }: SelContentProps) {
     const router:NextRouter = useRouter()
     const { wikiSlug } = router.query;
     const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-    const designColor:"pink" | "blue" | "yellow" | "default" | null = useDesignColor(wikiSlugStr);
+    const designColor:designColor | null = useDesignColor(wikiSlugStr);
     const commonsStyle: React.CSSProperties = {
         border: '1px solid #a9a9a9',
         color: 'inherit',

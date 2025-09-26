@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Accordion from '@/components/Accordion';
-import SelContainer from '@/components/SelContainer';
-import SelRow from '@/components/SelRow';
-import SelContent from '@/components/SelContent';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import parseInline from '@/components/ParseInline';
 import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
@@ -73,21 +70,6 @@ export function extractBracedBlock(
         success: false,
         unmatchedDepth: depth
     };
-}
-
-function extractSelContainersSafe(content: string, excludeRanges: { start: number; end: number }[], offset = 0): { body: string; start: number; end: number }[] {
-    const raw = extractSelContainers(content);
-    return raw
-        .map((sel: { body: string; start: number; end: number }) => ({
-            ...sel,
-            start: offset + sel.start,
-            end: offset + sel.end,
-        }))
-        .filter(sel =>
-            !excludeRanges.some(range =>
-                sel.start >= range.start && sel.end <= range.end
-            )
-        );
 }
 
 function tokenize(src: string): Token[] {
@@ -275,53 +257,4 @@ function extractSelContainers(content: string): { body: string; start: number; e
     }
 
     return results;
-}
-
-function parseWikiContentFragment(containerBlock: string): React.ReactNode[] {
-    const nodes: React.ReactNode[] = [];
-    const rowItems: React.ReactNode[] = [];
-    const rowRe = /#sel_row\s*(\{+)/g;
-    let match: RegExpExecArray | null;
-
-    while ((match = rowRe.exec(containerBlock))) {
-        const braceCount = match[1].length;
-        const startIdx = match.index;
-        const braceStart = startIdx + match[0].length - braceCount;
-        const { body } = extractBracedBlock(containerBlock, braceStart, braceCount);
-
-        const selContents: React.ReactNode[] = [];
-        const contentRe = /&sel_content(?:\(([^)]*)\))?\{([\s\S]*?)\};?/g;
-        let contentMatch: RegExpExecArray | null;
-
-        while ((contentMatch = contentRe.exec(body))) {
-            const [, type, inner] = contentMatch;
-            if (inner?.trim()) {
-                selContents.push(
-                    <SelContent key={`sel-${match.index}-${contentMatch.index}`} type={type?.trim() || ''}>
-                        {inner.trim()}
-                    </SelContent>
-                );
-            }
-        }
-
-        rowItems.push(
-            <SelRow
-                key={`sel-row-${match.index}`}
-            >
-                {selContents}
-            </SelRow>
-        );
-        rowRe.lastIndex = braceStart + body.length + braceCount;
-    }
-
-    if (rowItems.length > 0) {
-        nodes.push(
-            <SelContainer
-                key="sel-container"
-            >
-                {rowItems}
-            </SelContainer>
-        );
-    }
-    return nodes;
 }

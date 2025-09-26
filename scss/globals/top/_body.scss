@@ -218,6 +218,15 @@ body{
                 @include mixin.menubar(#fffbed);
             }
         }
+        &.purple {
+            @include mixin.purple;
+            & button::before {
+                @include mixin.position(#7b25fc, #410882);
+            }
+            & .columnLeft {
+                @include mixin.menubar(#fdedff);
+            }
+        }
         & hr{
             background-color: #777;
             border: 0;
