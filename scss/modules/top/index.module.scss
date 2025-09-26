@@ -51,15 +51,16 @@
 
 .pFooterNav__item {
     display: inline-block;
+    $link_color: /*#6c803d*/#60038b;
     font-size: 10px;
     line-height: 1;
     margin: 0;
     padding: 0 1em;
     &:not(:first-child) {
-        border-left: 1px solid #6c803d;
+        border-left: 1px solid $link_color;
     }
     & a {
-        color: #6c803d !important;
+        color: $link_color !important;
         -webkit-text-decoration: none;
         text-decoration: none;
     }
