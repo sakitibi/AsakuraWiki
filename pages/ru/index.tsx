@@ -71,7 +71,7 @@ export default function Home() {
             <HeaderRu handleClick={handleClick}/>
             <div className={styles.contents}>
                 <LeftMenuRu URL="/"/>
-                <main style={{ padding: '2rem', flex: 1 }}>
+                <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
                     <h1>АсакураWiki{versions[0]}</h1>
                         <div id="view-counter">
                             <p>Сегодняшние взгляды: {wiki13ninstudioCounter?.today ?? 0}</p>

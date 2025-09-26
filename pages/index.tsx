@@ -82,7 +82,7 @@ export default function Home() {
                     <HeaderJp handleClick={handleClick} />
                     <div className={styles.contents}>
                         <LeftMenuJp URL='/'/>
-                        <main style={{ padding: '2rem', flex: 1 }}>
+                        <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
                             <h1>あさクラWiki{versions[0]}</h1>
                                 <div id="view-counter">
                                     <p>今日の閲覧数: {wiki13ninstudioCounter?.today ?? 0}</p>
