@@ -66,17 +66,23 @@ export async function fetched13ninstudioCounter(
     const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/ru/index.html";
     const response:Response = await fetch(requestURL);
     try {
+        isOpendns(response);
         const userData = await response.json();
         setWiki13ninstudioCounter(userData);
     } catch (error) {
-        // OpenDNS のブロックページに飛ばされたか確認
-        if (response.url.match(/https:\/\/block\.opendns\.com.+?/)) {
-            alert("Функция счетчика этого приложения заблокирована OpenDNS.\nСчетчик не будет работать должным образом.");
-            opendns("ru");
-            return;
-        }
+        isOpendns(response);
         console.error("fetch error:", error);
         alert("Не удалось получить счетчик.\nПроверьте сетевое окружение и перезагрузите страницу.");
         alert(error); // Safariなどのデベロッパーツールがないブラウザ用
     }
+}
+
+function isOpendns(response:Response){
+    // OpenDNS のブロックページに飛ばされたか確認
+    if (response.url.match(/https:\/\/block\.opendns\.com.+?/)) {
+        alert("Функция счетчика этого приложения заблокирована OpenDNS.\nСчетчик не будет работать должным образом.");
+        opendns("ru");
+        return;
+    }
+    return;
 }
