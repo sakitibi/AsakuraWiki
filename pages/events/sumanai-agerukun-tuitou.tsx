@@ -1,13 +1,13 @@
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import LeftMenuJp from '@/utils/pageParts/top/LeftMenuJp';
-import MenuJp from '@/utils/pageParts/top/MenuJp';
-import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
-import { useState } from 'react';
 import HeaderJp from '@/utils/pageParts/top/HeaderJp';
+import MenuJp from '@/utils/pageParts/top/MenuJp';
+import { useState } from 'react';
+import LeftMenuJp from '@/utils/pageParts/top/LeftMenuJp';
+import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 
-export default function NewsPage() {
+export default function About() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -19,25 +19,29 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/09/28 明後日のイベントの詳細</title>
+                <meta charSet='UTF-8'/>
+                <title>あさクラメンバーのあげるくんが爆破されてから4年</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025/09/28/3'/>
+                    <LeftMenuJp URL="/events/sumanai-agerukun-tuitou"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/09/28 明後日のイベントの詳細</h1>
+                        <h1>あさクラメンバーのあげるくんが爆破されてから4年</h1>
+                        <p>なので追悼式をします</p>
+                        <p>開催場所 あげるハウス敷地内</p>
+                        <p>やること</p>
                         <ol>
-                            <li><a href="/events/saegusarin-happybirthday">あさクラメンバーの三枝りんのお誕生日祭!(特設ページにて)</a></li>
-                            <li><a href="/events/sumanai-agerukun-tuitou">すまない先生のあげるくんハウス爆破から4年、追悼式(特設ページにて)</a></li>
+                            <li><ruby>蝋燭<rt>ろうそく</rt></ruby>を灯す</li>
+                            <li>臨時列車運行(あげるハウス~三枝)</li>
                         </ol>
-                        <p>2つとも内容が長いので、特設ページにて詳細を言います</p>
+                        <p>となっています</p>
                     </main>
                     <RightMenuJp/>
                 </div>
                 <FooterJp/>
             </div>
         </>
-    )
+    );
 }
