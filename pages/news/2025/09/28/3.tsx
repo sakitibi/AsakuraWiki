@@ -19,22 +19,20 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/09/15 ついに明日であさクラパート500!</title>
+                <title>2025/09/28 明後日のイベントの詳細</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025/09/15/1'/>
+                    <LeftMenuJp URL='/news/2025/09/28/3'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/09/15 ついに明日であさクラパート500!</h1>
-                        <p>あさクラパート500を記念して以下の様なライブをやります!</p>
+                        <h1>2025/09/28 明後日のイベントの詳細</h1>
                         <ol>
-                            <li><s>13:00~15:30までオンラインチャット解禁</s>終了しました</li>
-                            <li><s>13:00~15:30まであさクラワールドを回わる</s>終了しました</li>
-                            <li><s>22:00~23:30までプログラミングライブ!</s>終了しました</li>
+                            <li>あさクラメンバーの三枝りんのお誕生日祭!(特設ページにて)</li>
+                            <li>すまない先生のあげるくんハウス爆破から4年、追悼式(特設ページにて)</li>
                         </ol>
-                        <p><a href="https://youtube.com/playlist?list=PLDsY7IAMYhhhfOs5lUUSTs2YRy0crDNAj">再生リストの詳細はこちら</a></p>
+                        <p>2つとも内容が長いので、特設ページにて詳細を言います</p>
                     </main>
                     <RightMenuJp/>
                 </div>
