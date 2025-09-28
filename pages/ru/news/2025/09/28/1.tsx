@@ -1,0 +1,43 @@
+import Head from 'next/head';
+import styles from 'css/index.min.module.css';
+import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
+import MenuRu from '@/utils/pageParts/top/MenuRu';
+import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
+import { useState } from 'react';
+import HeaderRu from '@/utils/pageParts/top/HeaderRu';
+import FooterRu from '@/utils/pageParts/top/FooterRu';
+import { company } from '@/utils/version';
+
+export default function NewsPage() {
+    const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const handleClick = () => {
+        setMenuStatus((prevStatus) => {
+            const newStatus = !prevStatus;
+            document.body.style.overflow = newStatus ? 'hidden' : '';
+            return newStatus;
+        });
+    };
+    return (
+        <>
+            <Head>
+                <title>2025/09/28 Император и Императрица приезжают в дом моего лучшего друга.</title>
+            </Head>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
+            <div className={styles.contentsWrapper}>
+                <HeaderRu handleClick={handleClick}/>
+                <div className={styles.contents}>
+                    <LeftMenuRu URL='/news/2025/09/28/1'/>
+                    <main style={{ padding: '2rem', flex: 1 }}>
+                        <h1>2025/09/28 Сегодня и завтра Император и Императрица<br/> приедут в дом моего лучшего друга (<a href="https://youtube.com/@kyunosuke_odomin">Кюносукэ</a>).</h1>
+                        <p>Кюносукэ говорит, что выгонит их.</p>
+                        <p>{company} ответил на это следующим образом:</p>
+                        <p>Мы запретим въезд Их Величествам<br/> Императору и Императрице.</p>
+                        <p>Мы ценим ваше понимание и сотрудничество.</p>
+                    </main>
+                    <RightMenuRu/>
+                </div>
+                <FooterRu/>
+            </div>
+        </>
+    )
+}
