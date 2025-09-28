@@ -165,6 +165,9 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
                 </noscript>
                 <Component {...pageProps} />
             </SessionContextProvider>
+            <div style={{ textAlign: 'center', color: 'white' }}>
+                <h1><a href="/news/2025/09/28/2">本日はつばきつばきちゃんの誕生日!</a></h1>
+            </div>
         </>
     );
 }

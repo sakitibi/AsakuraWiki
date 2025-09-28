@@ -34,7 +34,7 @@ export default function Members() {
                                 <ul className='list2'>
                                     <li><a href="https://youtube.com/@otibinominecraft">Цубаки-чан</a></li>
                                     <li><a href="https://youtube.com/@otibinominecraft">Цубаки-кун</a></li>
-                                    <li><a href="https://youtube.com/@otibinominecraft">Чиби-чан</a></li>
+                                    <li><a href="https://youtube.com/@otibinominecraft">ЦубакиЦубаки-чан</a></li>
                                 </ul>
                             </li>
                             <li><a href="https://youtube.com/@SHIMAJIROCH">Агерукун (помощник администратора)</a>

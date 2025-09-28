@@ -5,7 +5,7 @@ import parseInline from '@/components/ParseInline';
 import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
 import ExportBlock from '@/components/ExportBlock';
 import ImportBlock, { resolveImports } from '@/components/ImportBlock';
-import type { designColor } from './wiki_settings';
+import type { designColor } from '@/utils/wiki_settings';
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<designColor | null>(null);
@@ -238,23 +238,4 @@ export async function parseWikiContent(
     const ast = buildAST(content);
     // AST→React ノード
     return renderAST(ast, context);
-}
-
-function extractSelContainers(content: string): { body: string; start: number; end: number }[] {
-    const results: { body: string; start: number; end: number }[] = [];
-    const re = /#sel_container(\{+)/g;
-    let match: RegExpExecArray | null;
-
-    while ((match = re.exec(content))) {
-        const braceCount = match[1].length;
-        const startIdx = match.index;
-        const braceStart = startIdx + match[0].length - braceCount;
-
-        const { body, end } = extractBracedBlock(content, braceStart, braceCount);
-        results.push({ body, start: startIdx, end });
-
-        re.lastIndex = end;
-    }
-
-    return results;
 }
