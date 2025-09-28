@@ -45,7 +45,8 @@ export const notuseUsername:RegExp[] = [ // 利用不可能なユーザー名リ
     /.+?佳子.+?/gu,
     /.+?愛子.+?/gu,
     /.+?紀子.+?/gu,
-    /.+?天皇.+?/gu
+    /.+?天皇.+?/gu,
+    /あもあす大好き.+?/gu
 ];
 
 export const blockedIP:RegExp[] = [ // ブロックするipリスト
