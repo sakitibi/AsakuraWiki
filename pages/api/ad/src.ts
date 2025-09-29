@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+// 注意 ==== あさクラWikiとは関係無い外部から呼ぶ用です ====
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
