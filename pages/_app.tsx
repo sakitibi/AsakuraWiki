@@ -8,7 +8,6 @@ import Script from 'next/script';
 import Head from 'next/head';
 import { Analytics } from "@vercel/analytics/next"
 import type { WikiCounter, IPAddress } from '@/utils/pageParts/top/indexInterfaces';
-import { opendns } from '@/utils/blockredirects';
 import { adminerUserId, blockedIP } from '@/utils/user_list';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
@@ -163,11 +162,11 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
+                <div style={{ textAlign: 'center', color: 'white' }}>
+                    <h1><a href="/news/2025/09/28/2">本日はつばきつばきちゃんの誕生日!</a></h1>
+                </div>
                 <Component {...pageProps} />
             </SessionContextProvider>
-            <div style={{ textAlign: 'center', color: 'white' }}>
-                <h1><a href="/news/2025/09/28/2">本日はつばきつばきちゃんの誕生日!</a></h1>
-            </div>
         </>
     );
 }
