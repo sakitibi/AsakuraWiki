@@ -20,7 +20,7 @@ export default function About() {
         <>
             <Head>
                 <meta charSet='UTF-8'/>
-                <title>あさクラメンバーのあげるくんが爆破されてから4年</title>
+                <title>あさクラメンバーのあげるくんが爆破されてから2025年9月30日午後4時で4年</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -28,7 +28,7 @@ export default function About() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/events/sumanai-agerukun-tuitou"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>あさクラメンバーのあげるくんが爆破されてから4年</h1>
+                        <h1>あさクラメンバーのあげるくんが爆破されてから<br/>2025年9月30日午後4時で4年</h1>
                         <p>なので追悼式をします</p>
                         <p>開催場所 あげるハウス敷地内</p>
                         <p>やること</p>
