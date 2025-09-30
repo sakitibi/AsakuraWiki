@@ -163,7 +163,7 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
                     </div>
                 </noscript>
                 <div style={{ textAlign: 'center', color: 'white' }}>
-                    <h1><a href="/news/2025/09/28/3">本日のいべんとはこちら!</a></h1>
+                    <h1><a href="/news/2025/09/28/3">本日のイベントはこちら!</a></h1>
                 </div>
                 <Component {...pageProps} />
             </SessionContextProvider>
