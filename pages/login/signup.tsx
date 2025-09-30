@@ -17,7 +17,7 @@ export default function SignUpPage() {
         setLoading(true);
         setErrorMsg('');
 
-        if(!!username.match(notuseUser_list_found!)){
+        if(notuseUser_list_found!){
             setErrorMsg('このユーザー名は使用出来ません、');
             console.error("error notused username: ", username);
             setLoading(false);
