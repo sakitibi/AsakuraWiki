@@ -29,7 +29,7 @@ export default function About() {
                     <LeftMenuJp URL="/events/saegusarin-happybirthday"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>あさクラメンバーの三枝りんの誕生日イベントについて</h1>
-                        <p>それを祝うイベントが2025年9月30日に開催されます!</p>
+                        <p>それを祝うイベントが2025年9月30日19時30分に開催されます!</p>
                         <p>開催場所 三枝りんハウス前</p>
                         <p>やること</p>
                         <ol>
