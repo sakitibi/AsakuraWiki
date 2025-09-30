@@ -51,7 +51,7 @@ export default function Members() {
                             <li><a href='https://youtube.com/@Memento-mori'>めめんともり</a></li>
                             <li><a href="https://youtube.com/@Latte1729">Latte</a></li>
                             <li><a href="https://youtube.com/@upapalon25">ウパパロン</a></li>
-                            <li><a href="https://youtube.com/@saegusarin_0930">三枝りん</a></li>
+                            <li><a href="https://youtube.com/@gusao_gusarin">三枝りん</a></li>
                             <li><a href='https://youtube.com/@Mizore471'>みぞれ</a></li>
                             <li><a href="https://youtube.com/@HinaRuka21">ひなにい</a></li>
                             <li><a href="https://youtube.com/@S_Reimari">Sレイマリ</a></li>

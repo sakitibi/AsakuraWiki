@@ -51,7 +51,7 @@ export default function Members() {
                             <li><a href='https://youtube.com/@Memento-mori'>Мементомори</a></li>
                             <li><a href="https://youtube.com/@Latte1729">Латте</a></li>
                             <li><a href="https://youtube.com/@upapalon25">Упапалон</a></li>
-                            <li><a href="https://youtube.com/@saegusarin_0930">Рин Саэгуса</a></li>
+                            <li><a href="https://youtube.com/@gusao_gusarin">Рин Саэгуса</a></li>
                             <li><a href='https://youtube.com/@Mizore471'>Мокрый снег</a></li>
                             <li><a href="https://youtube.com/@HinaRuka21">Хинани</a></li>
                             <li><a href="https://youtube.com/@S_Reimari">С. Реймари</a></li>

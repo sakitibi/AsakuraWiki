@@ -69,8 +69,9 @@ export async function fetchLikedWikis(
 export async function fetched13ninstudioCounter(
     setWiki13ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
 ) {
-    const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
+    const requestURL:string = /*"https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html"*/"https://block.opendns.com/main";
     const response:Response = await fetch(requestURL);
+    console.log("responseURL: ", response.url);
     try {
         isOpendns(response);
         const userData = await response.json();
