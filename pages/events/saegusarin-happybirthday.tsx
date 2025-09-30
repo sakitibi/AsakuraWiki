@@ -37,6 +37,7 @@ export default function About() {
                             <li>臨時列車運行(あげるハウス~三枝)</li>
                         </ol>
                         <p>となっています</p>
+                        <p><a href="https://youtube.com/live/OLzvOW0wbtM">ライブ配信はこちら</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>

@@ -37,6 +37,7 @@ export default function About() {
                             <li>Специальные поезда (AgeruHouse ~ Saegusa)</li>
                         </ol>
                         <p>Стало</p>
+                        <p><a href="https://youtube.com/live/OLzvOW0wbtM">Прямая трансляция здесь</a></p>
                     </main>
                     <RightMenuRu/>
                 </div>

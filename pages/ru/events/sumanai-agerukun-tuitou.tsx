@@ -20,7 +20,7 @@ export default function About() {
         <>
             <Head>
                 <meta charSet='UTF-8'/>
-                <title>Прошло 4 года с тех пор, как член Асакуры Агеру-кун был взорван</title>
+                <title>Исполняется четыре года с тех пор, как 30 сентября 2025 года в 16:00 был взорван дом члена клана Асакура, Агеру-куна.</title>
             </Head>
             <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -28,7 +28,7 @@ export default function About() {
                 <div className={styles.contents}>
                     <LeftMenuRu URL="/events/sumanai-agerukun-tuitou"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>Прошло 4 года с тех пор, как член<br/> Асакуры Агеру-кун был взорван</h1>
+                        <h1>Исполняется четыре года с тех пор, как 30 сентября 2025<br/> года в 16:00 был взорван дом члена клана Асакура, Агеру-куна.</h1>
                         <p>Так что мы проведем панихиду</p>
                         <p>Место проведения: На территории дома</p>
                         <p>Чем заняться</p>
