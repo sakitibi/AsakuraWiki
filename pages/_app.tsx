@@ -162,9 +162,6 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-                <div style={{ textAlign: 'center', color: 'white' }}>
-                    <h1><a href="/news/2025/09/28/3">本日のイベントはこちら!</a></h1>
-                </div>
                 <Component {...pageProps} />
             </SessionContextProvider>
         </>
