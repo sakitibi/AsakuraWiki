@@ -104,7 +104,7 @@ export default function UserDataGet(){
             const newSettings = new Map();
             for (let i = 0; i < userData.length; i++) {
                 const meta = userData[i].metadatas;
-                const [modStr, keyStr, typeStr] = decodeBase64Unicode(meta[5]).split(",");
+                const [modStr, keyStr, typeStr] = decodeBase64Unicode(meta[5])!.split(",");
                 newSettings.set(i, {
                     charset: decodeBase64Unicode(meta[4]),
                     mod: Number(modStr),
