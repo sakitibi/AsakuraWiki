@@ -8,6 +8,7 @@ import MenuJp from '@/utils/pageParts/top/MenuJp';
 import { useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
+import { supabaseServer } from "@/lib/supabaseClientServer";
 
 export default function MinecraftVSAdminer(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -25,7 +26,15 @@ export default function MinecraftVSAdminer(){
     const UserGet = async() => {
         try{
             setLoading(true);
-            const res = await fetch("/api/accounts/users");
+            const session = await supabaseServer.auth.getSession();
+            const token = session?.data?.session?.access_token;
+            const res = await fetch("/api/accounts/users", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await res.json();
             setUserData(data);
             setLoading(false);
@@ -50,7 +59,9 @@ export default function MinecraftVSAdminer(){
                                 <h1>ユーザー取得管理画面</h1>
                                 <p>自分でデコードしてね</p>
                                 <div id="user_gets">
-                                    <button onClick={async() => await UserGet()}>ユーザー取得</button>
+                                    <button onClick={async() => await UserGet()}>
+                                        <span>ユーザー取得</span>
+                                    </button>
                                 </div>
                                 {!!userData ? (
                                     <>
