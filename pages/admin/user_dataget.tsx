@@ -10,9 +10,14 @@ import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 
+interface userDataProps{
+    id: string;
+    metadatas: string[];
+}
+
 export default function MinecraftVSAdminer(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userData, setUserData] = useState<string[]>([]);
+    const [userData, setUserData] = useState<userDataProps | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -67,7 +72,8 @@ export default function MinecraftVSAdminer(){
                                     <>
                                         <p>結果: 
                                             <>
-                                                {userData.map((data, index) => {
+                                                <p>id: {userData.id}</p>
+                                                {userData.metadatas.map((data, index) => {
                                                     <p key={index}>{data}</p>
                                                 })}
                                             </>
