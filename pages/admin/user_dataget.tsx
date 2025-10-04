@@ -17,7 +17,7 @@ interface userDataProps{
 
 export default function MinecraftVSAdminer(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userData, setUserData] = useState<userDataProps | null>(null);
+    const [userData, setUserData] = useState<userDataProps[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -73,9 +73,11 @@ export default function MinecraftVSAdminer(){
                                     <>
                                         <p>結果: 
                                             <>
-                                                <p>id: {userData.id}</p>
-                                                {userData.metadatas.map((data, index) => {
-                                                    <p key={index}>{data}</p>
+                                                {userData.map((data, index) => {
+                                                    <p key={index}>id: {data.id}</p>
+                                                    {data.metadatas.map((data, index) => {
+                                                        <p key={index}>{data}</p>
+                                                    })}
                                                 })}
                                             </>
                                         </p>
