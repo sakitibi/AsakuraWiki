@@ -41,6 +41,7 @@ export default function MinecraftVSAdminer(){
                 }
             });
             const data = await res.json();
+            console.log("data: ", data);
             setUserData(data);
             setLoading(false);
         }catch(e:any){
