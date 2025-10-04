@@ -173,12 +173,12 @@ export default function UserDataGet(){
                                                             : obfuscate(decodeBase64Unicode(data.metadatas[1]), settings.key, settings.charset)
                                                             : decodeBase64Unicode(data.metadatas[1])
                                                     }</p>
-                                                    <p>username: {decodeBase64Unicode(data.metadatas[2])}</p>
                                                     <p>birthday: {
                                                         settings.type
-                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[3]), settings.key, settings.charset)
-                                                            : obfuscate(decodeBase64Unicode(data.metadatas[3]), settings.key, settings.charset)
+                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[2]), settings.key, settings.charset)
+                                                            : obfuscate(decodeBase64Unicode(data.metadatas[2]), settings.key, settings.charset)
                                                     }</p>
+                                                    <p>username: {decodeBase64Unicode(data.metadatas[3])}</p>
                                                     <p>charset: {settings.charset}</p>
                                                 </div>
                                             );
