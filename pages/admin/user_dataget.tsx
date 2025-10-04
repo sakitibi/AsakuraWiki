@@ -71,16 +71,15 @@ export default function MinecraftVSAdminer(){
                                 </div>
                                 {!!userData ? (
                                     <>
-                                        <p>結果: 
-                                            <>
-                                                {userData.map((data, index) => {
-                                                    <p key={index}>id: {data.id}</p>
-                                                    {data.metadatas.map((data, index) => {
-                                                        <p key={index}>{data}</p>
-                                                    })}
-                                                })}
-                                            </>
-                                        </p>
+                                        <p>結果:</p>
+                                        {userData.map((data, index) => (
+                                            <div key={index}>
+                                                <p>id: {data.id}</p>
+                                                {data.metadatas.map((meta, i) => (
+                                                    <p key={i}>{meta}</p>
+                                                ))}
+                                            </div>
+                                        ))}
                                     </>
                                 ) : null}
                             </>
