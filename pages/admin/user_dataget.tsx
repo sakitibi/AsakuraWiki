@@ -69,35 +69,31 @@ export default function UserDataGet(){
             console.error("error: ", e);
         }
     }
-        /**
-     * 文字列を数列に変換し、i を加算してループさせる
-     * @param str 変換対象の文字列
-     * @param randomKey 加算する数字
-     */
     function obfuscate(str: string, i: number, charset: string): string {
-    const mod = charset.length;
-    return str
-        .split('')
-        .map(c => {
-        const idx = charset.indexOf(c);
-        if (idx === -1) throw new Error(`Invalid char: ${c}`);
-            return charset[(idx + i) % mod];
-        })
-        .join('');
-    }
-
-    /**
-     * obfuscate の逆変換
-     * @param str 難読化された文字列
-     * @param randomKey obfuscate 時に使った randomKey
-     */
-    function deobfuscate(str: string, i:number, charset: string): string {
         const mod = charset.length;
         return str
             .split('')
             .map(c => {
-            const idx = charset.indexOf(c);
-            if (idx === -1) throw new Error(`Invalid char: ${c}`);
+                const idx = charset.indexOf(c);
+                if (idx === -1) {
+                    console.warn(`Invalid char skipped: ${c}`);
+                    return c; // そのまま返す
+                }
+                return charset[(idx + i) % mod];
+            })
+            .join('');
+    }
+
+    function deobfuscate(str: string, i: number, charset: string): string {
+        const mod = charset.length;
+        return str
+            .split('')
+            .map(c => {
+                const idx = charset.indexOf(c);
+                if (idx === -1) {
+                    console.warn(`Invalid char skipped: ${c}`);
+                    return c; // そのまま返す
+                }
                 return charset[(idx - i + mod) % mod];
             })
             .join('');
@@ -166,28 +162,22 @@ export default function UserDataGet(){
                                                 <div key={index}>
                                                     <p>id: {data.id}</p>
                                                     <p>email: {
-                                                        decodeBase64Unicode(
                                                         settings.type
-                                                            ? deobfuscate(data.metadatas[0], settings.key, settings.charset)
-                                                            : obfuscate(data.metadatas[0], settings.key, settings.charset)
-                                                        )
+                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[0]), settings.key, settings.charset)
+                                                            : obfuscate(decodeBase64Unicode(data.metadatas[0]), settings.key, settings.charset)
                                                     }</p>
                                                     <p>password: {
-                                                        decodeBase64Unicode(
                                                         password_deobfuscate
                                                             ? settings.type
-                                                            ? deobfuscate(data.metadatas[1], settings.key, settings.charset)
-                                                            : obfuscate(data.metadatas[1], settings.key, settings.charset)
-                                                            : data.metadatas[1]
-                                                        )
+                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[1]), settings.key, settings.charset)
+                                                            : obfuscate(decodeBase64Unicode(data.metadatas[1]), settings.key, settings.charset)
+                                                            : decodeBase64Unicode(data.metadatas[1])
                                                     }</p>
                                                     <p>username: {decodeBase64Unicode(data.metadatas[2])}</p>
                                                     <p>birthday: {
-                                                        decodeBase64Unicode(
                                                         settings.type
-                                                            ? deobfuscate(data.metadatas[3], settings.key, settings.charset)
-                                                            : obfuscate(data.metadatas[3], settings.key, settings.charset)
-                                                        )
+                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[3]), settings.key, settings.charset)
+                                                            : obfuscate(decodeBase64Unicode(data.metadatas[3]), settings.key, settings.charset)
                                                     }</p>
                                                     <p>charset: {settings.charset}</p>
                                                 </div>
