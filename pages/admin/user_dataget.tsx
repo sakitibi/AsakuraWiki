@@ -65,7 +65,13 @@ export default function MinecraftVSAdminer(){
                                 </div>
                                 {!!userData ? (
                                     <>
-                                        <p>結果: {userData}</p>
+                                        <p>結果: 
+                                            <>
+                                                {userData.map((data, index) => {
+                                                    <p key={index}>{data}</p>
+                                                })}
+                                            </>
+                                        </p>
                                     </>
                                 ) : null}
                             </>
