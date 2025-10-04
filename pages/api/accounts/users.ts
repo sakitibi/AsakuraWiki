@@ -5,7 +5,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     if (req.method === 'GET') {
         // データ取得
         const { data, error } = await supabaseServer
-        .from('items')
+        .from('user_metadatas')
         .select('*')
         .order('id', { ascending: true });
 
@@ -19,7 +19,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
 
         const { data, error } = await supabaseServer
-        .from('items')
+        .from('user_metadatas')
         .insert([{ metadatas: dataArray }])
         .select();
 
