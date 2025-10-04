@@ -51,8 +51,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
 
         const { data, error } = await supabaseServer
         .from('user_metadatas')
-        .insert([{ 
-            id: userId ?? null,
+        .insert([{
             metadatas: dataArray
         }])
         .select();
