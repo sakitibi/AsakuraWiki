@@ -35,6 +35,15 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             return res.status(403).json({ error: "You do not have permission to GET"});
         }
     } else if (req.method === 'POST') {
+        // ====== 認証ユーザー取得 ======
+        let userId: string | null = null
+        const authHeader = req.headers.authorization
+        if (authHeader?.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1]
+            const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
+            if (authError) console.error('Supabase auth error:', authError)
+            if (user) userId = user.id
+        }
         const { metadatas: dataArray } = req.body; // ここで配列を受け取る
         if (!Array.isArray(dataArray) || dataArray.length === 0) {
             return res.status(400).json({ error: 'data must be a non-empty array' });
@@ -42,7 +51,10 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
 
         const { data, error } = await supabaseServer
         .from('user_metadatas')
-        .insert([{ metadatas: dataArray }])
+        .insert([{ 
+            id: userId ?? null,
+            metadatas: dataArray
+        }])
         .select();
 
         if (error) return res.status(500).json({ error: error.message });
