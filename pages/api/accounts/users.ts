@@ -39,10 +39,19 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         if (!Array.isArray(dataArray) || dataArray.length === 0) {
             return res.status(400).json({ error: 'data must be a non-empty array' });
         }
-
+        // ====== 認証ユーザー取得 ======
+        let userId: string | null = null
+        const authHeader = req.headers.authorization
+        if (authHeader?.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1]
+            const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
+            if (authError) console.error('Supabase auth error:', authError)
+            if (user) userId = user.id
+        }
         const { data, error } = await supabaseServer
         .from('user_metadatas')
         .insert([{
+            id: userId,
             metadatas: dataArray
         }])
         .select();

@@ -73,5 +73,7 @@ export const blockedIP:RegExp[] = [ // ブロックするipリスト
 export const adminerUserId:string[] = [ // 管理者のuser_idリスト
     "9d2347a2-6322-4d55-93f1-71d8440e5f32",
     "f2ee27d8-5a46-4539-be74-b02eb6a789c3",
-    "0e7e8c35-8fb7-4c17-b154-4fe397a84d37"
+    "0e7e8c35-8fb7-4c17-b154-4fe397a84d37",
+    "d2a4ba8d-dc6c-450b-9e8b-6eb3813540e2",
+    "6f35d577-e001-4790-b04b-56c08dec11e9"
 ];
