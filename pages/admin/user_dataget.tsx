@@ -25,9 +25,12 @@ interface userSettingsProps{
 function decodeBase64Unicode(str:string){
     try{
         const bytes = Uint8Array.from(atob(str), c => c.charCodeAt(0));
-        return new TextDecoder().decode(bytes);
-    }catch(e:any){
+        const decoded = new TextDecoder().decode(bytes);
+        console.log("base64decoded: ", decoded);
+        return decoded;
+    } catch(e:any){
         console.error("error: ", e);
+        return "";
     }
 }
 
@@ -78,7 +81,7 @@ export default function UserDataGet(){
         .map(c => {
         const idx = charset.indexOf(c);
         if (idx === -1) throw new Error(`Invalid char: ${c}`);
-        return charset[(idx + i) % mod];
+            return charset[(idx + i) % mod];
         })
         .join('');
     }
@@ -104,7 +107,9 @@ export default function UserDataGet(){
             const newSettings = new Map();
             for (let i = 0; i < userData.length; i++) {
                 const meta = userData[i].metadatas;
-                const [modStr, keyStr, typeStr] = decodeBase64Unicode(meta[5])!.split(",");
+                const decodedMeta5 = decodeBase64Unicode(meta[5]);
+                if (!decodedMeta5) continue; // スキップ
+                const [modStr, keyStr, typeStr] = decodedMeta5.split(",");
                 newSettings.set(i, {
                     charset: decodeBase64Unicode(meta[4]),
                     mod: Number(modStr),
