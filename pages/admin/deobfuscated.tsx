@@ -39,14 +39,13 @@ export default function DecryptPage() {
         setError(null);
         setResult(null);
         try {
-            console.log("cipherText: ", cipherText);
-            console.log("charset: ", charset);
-            console.log("passphrase: ", passphrase);
-            if (charset) {
-                setCharset(charset); // ユーザー入力 charset を反映
+            const decodedCipherText = decodeBase64Unicode(cipherText);
+            const decodedCharset = decodeBase64Unicode(charset);
+            if (decodedCharset) {
+                setCharset(decodedCharset); // ユーザー入力 charset を反映
             }
 
-            const plain = await decrypt(cipherText, passphrase);
+            const plain = await decrypt(decodedCipherText!, passphrase);
             setResult(plain);
         } catch (e: any) {
             setError(e.message || "復号に失敗しました");
