@@ -104,12 +104,9 @@ export default function UserDataGet(){
     }
     const copyToClipboard = async (text: string) => {
         try {
-            setLoading(true);
             await navigator.clipboard.writeText(text); // Copy text to clipboard
-            setLoading(false);
         } catch (err) {
             console.error("Error copying text: ", err);
-            setLoading(false);
         }
     };
     useEffect(() => {
