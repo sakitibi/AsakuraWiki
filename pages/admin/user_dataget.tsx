@@ -5,7 +5,7 @@ import LeftMenuJp from '@/utils/pageParts/top/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import MenuJp from '@/utils/pageParts/top/MenuJp';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import { supabaseServer } from "@/lib/supabaseClientServer";
