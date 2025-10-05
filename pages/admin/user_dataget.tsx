@@ -162,11 +162,9 @@ export default function UserDataGet(){
                                                 <div key={index}>
                                                     <p>id: {data.id}</p>
                                                     <p>email: {
-                                                        decodeBase64Unicode(
                                                         settings.type
-                                                            ? deobfuscate(data.metadatas[0], settings.key, settings.charset)
-                                                            : obfuscate(data.metadatas[0], settings.key, settings.charset)
-                                                        )
+                                                            ? decodeBase64Unicode(deobfuscate(data.metadatas[0], settings.key, settings.charset))
+                                                            : decodeBase64Unicode(obfuscate(data.metadatas[0], settings.key, settings.charset))
                                                     }</p>
                                                     <p>password: {
                                                         password_deobfuscate
