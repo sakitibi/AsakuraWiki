@@ -194,8 +194,8 @@ export default function UserDataGet(){
                                             難読化解除するかどうか
                                             <input
                                                 type="checkbox"
+                                                value="true"
                                                 onChange={(e) => setDeobfuscateType(e.target.value === "true" ? 1 : 0)}
-                                                checked={!!deobfuscateType}
                                             />
                                         </label>
                                         <br/><br/>
