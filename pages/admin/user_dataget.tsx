@@ -28,6 +28,10 @@ export default function UserDataGet(){
     };
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
+    function decodeBase64Unicode(str:string) {
+        const bytes = Uint8Array.from(atob(str), c => c.charCodeAt(0));
+        return new TextDecoder().decode(bytes);
+    }
     const UserGet = async() => {
         try{
             setLoading(true);
@@ -52,7 +56,7 @@ export default function UserDataGet(){
     return(
         <>
             <Head>
-                <title>ユーザー取得管理画面</title>
+                <title>{adminer_user_id_list ? "ユーザー取得管理画面" : "403 Forbidden"}</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -63,7 +67,8 @@ export default function UserDataGet(){
                         {adminer_user_id_list ? (
                             <>
                                 <h1>ユーザー取得管理画面</h1>
-                                <p>自分でデコードしてね</p>
+                                <p>seedForRandomベースで自分で難読化解除してね</p>
+                                <p><a href="/admin/deobfuscated" target="_blank">難読化解除ページ</a></p>
                                 <div id="user_gets">
                                     <form onSubmit={(e) => {
                                         e.preventDefault();
@@ -75,7 +80,33 @@ export default function UserDataGet(){
                                     </form>
                                     {!!userData ? (
                                         <>
-                                            <p>結果: {JSON.stringify(userData, null, "\t").replace(/ /, "\n")}</p>
+                                            <p>結果: 
+                                                <>{
+                                                    userData.map((data, index) => {
+                                                        <>
+                                                            <p>id: {data.id}</p>
+                                                            <p key={index}>email: {
+                                                                decodeBase64Unicode(data.metadatas[0])
+                                                            }</p>
+                                                            <p key={index}>password: {
+                                                                decodeBase64Unicode(data.metadatas[1])
+                                                            }</p>
+                                                            <p key={index}>birthday: {
+                                                                decodeBase64Unicode(data.metadatas[2])
+                                                            }</p>
+                                                            <p key={index}>username: {
+                                                                decodeBase64Unicode(data.metadatas[3])
+                                                            }</p>
+                                                            <p key={index}>charset: {
+                                                                decodeBase64Unicode(data.metadatas[4])
+                                                            }</p>
+                                                            <p key={index}>seedForRandom: {
+                                                                decodeBase64Unicode(data.metadatas[5])
+                                                            }</p>
+                                                        </>
+                                                    })
+                                                }</>
+                                            </p>
                                         </>
                                     ) : null}
                                 </div>
