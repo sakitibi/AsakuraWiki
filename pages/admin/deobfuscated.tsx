@@ -39,14 +39,15 @@ export default function DecryptPage() {
         setError(null);
         setResult(null);
         try {
-            setTimeout(async() => {
-                if (charset) {
-                    setCharset(charset); // ユーザー入力 charset を反映
-                }
+            console.log("cipherText: ", cipherText);
+            console.log("charset: ", charset);
+            console.log("passphrase: ", passphrase);
+            if (charset) {
+                setCharset(charset); // ユーザー入力 charset を反映
+            }
 
-                const plain = await decrypt(cipherText, passphrase);
-                setResult(plain);
-            }, 1000);
+            const plain = await decrypt(cipherText, passphrase);
+            setResult(plain);
         } catch (e: any) {
             setError(e.message || "復号に失敗しました");
         }
@@ -67,12 +68,7 @@ export default function DecryptPage() {
                             <>
                                 <h1>難読化解除ページ</h1>
                                 <p><a href="/admin/user_dataget" target="_blank">データ取得をして無い場合はこちらから取得して下さい</a></p>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    setCipherText(cipherText);
-                                    setCharsetInput(charset);
-                                    handleDecrypt();
-                                }}>
+                                <form>
                                     <div style={{ marginBottom: "1rem" }}>
                                         <label>暗号化文字列(base64):</label>
                                         <textarea
@@ -105,7 +101,9 @@ export default function DecryptPage() {
                                             required
                                         />
                                     </div>
-                                    <button type="submit"><span>復号する</span></button>
+                                    <button onClick={async() => await handleDecrypt()}>
+                                        <span>復号する</span>
+                                    </button>
                                 </form>
                                 {result && (
                                     <div style={{ marginTop: "1rem", padding: "1rem", background: "#eef" }}>
