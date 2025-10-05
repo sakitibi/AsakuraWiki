@@ -39,12 +39,14 @@ export default function DecryptPage() {
         setError(null);
         setResult(null);
         try {
-            if (charset) {
-                setCharset(charset); // ユーザー入力 charset を反映
-            }
+            setTimeout(async() => {
+                if (charset) {
+                    setCharset(charset); // ユーザー入力 charset を反映
+                }
 
-            const plain = await decrypt(cipherText, passphrase);
-            setResult(plain);
+                const plain = await decrypt(cipherText, passphrase);
+                setResult(plain);
+            }, 1000);
         } catch (e: any) {
             setError(e.message || "復号に失敗しました");
         }
@@ -67,8 +69,8 @@ export default function DecryptPage() {
                                 <p><a href="/admin/user_dataget" target="_blank">データ取得をして無い場合はこちらから取得して下さい</a></p>
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
-                                    setCipherText(decodeBase64Unicode(cipherText)!);
-                                    setCharsetInput(decodeBase64Unicode(charset)!);
+                                    setCipherText(cipherText);
+                                    setCharsetInput(charset);
                                     handleDecrypt();
                                 }}>
                                     <div style={{ marginBottom: "1rem" }}>
