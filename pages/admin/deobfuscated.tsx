@@ -45,7 +45,7 @@ export default function DecryptPage() {
             if (decodedCharset) {
                 setCharset(decodedCharset); // ユーザー入力 charset を反映
             }
-            const plain = await decrypt(decodedCipherText!, passphrase, decodedCharset!);
+            const plain = await decrypt(decodedCipherText!, passphrase);
             setResult(plain);
         } catch (e: any) {
             console.error("error: ", e, "to: ", decodedCharset, "and", decodedCipherText);

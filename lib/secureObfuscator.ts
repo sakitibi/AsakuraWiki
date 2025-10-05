@@ -100,20 +100,6 @@ function bytesToCharsetDigits(bytes: Uint8Array): string {
     return out;
 }
 
-function charsetDigitsToBytes(digits: string): Uint8Array {
-    assertCharsetSize();
-    const N = CHARSET.length;
-    if (digits.length % 2 !== 0) throw new Error("invalid digit length");
-    const bytes = new Uint8Array(digits.length / 2);
-    for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
-        const a = CHAR_IDX[digits[i]];
-        const b = CHAR_IDX[digits[i + 1]];
-        if (a === undefined || b === undefined) throw new Error("invalid charset digit");
-        bytes[j] = a * N + b;
-    }
-    return bytes;
-}
-
 // ---------- Key derivation (PBKDF2) and AES-GCM encrypt/decrypt ----------
 export type EncryptOptions = {
     iterations?: number; // PBKDF2 iterations
@@ -158,28 +144,23 @@ async function deriveAesKey(
 }
 
 // charset文字列 → Uint8Array に変換（encrypt の逆）
-function bytesFromCharsetDigits(text: string, charset: string): Uint8Array {
-    const base = charset.length;
-    const bytes: number[] = [];
-    let acc = 0;
-    let bits = 0;
+function bytesFromCharsetDigits(digits: string): Uint8Array {
+    assertCharsetSize();
+    const N = CHARSET.length;
 
-    for (const ch of text) {
-        const idx = charset.indexOf(ch);
-        if (idx === -1) {
-            throw new Error(`Invalid character '${ch}' in ciphertext`);
-        }
+    if (digits.length % 2 !== 0) throw new Error("Invalid digit length");
+    const bytes = new Uint8Array(digits.length / 2);
 
-        acc = (acc << 8) + idx;
-        bits += 8;
+    for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
+        const hi = CHAR_IDX[digits[i]];
+        const lo = CHAR_IDX[digits[i + 1]];
 
-        while (bits >= 8) {
-            bits -= 8;
-            bytes.push((acc >> bits) & 0xff);
-        }
+        if (hi === undefined || lo === undefined) throw new Error("Invalid charset digit");
+
+        bytes[j] = hi * N + lo;
     }
 
-    return new Uint8Array(bytes);
+    return bytes;
 }
 
 // encrypt: returns CHARSET-only string containing (salt16 + iv12 + ciphertext+tag)
@@ -224,7 +205,6 @@ export async function encrypt(
 export async function decrypt(
     cipherText: string,
     passphrase: string,
-    charset: string,
     opts?: EncryptOptions
 ): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
@@ -234,7 +214,7 @@ export async function decrypt(
     const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
 
     // CHARSET文字列 → bytes 変換（Base64デコード済みのため）
-    const allBytes = bytesFromCharsetDigits(cipherText, charset);
+    const allBytes = bytesFromCharsetDigits(cipherText);
 
     if (allBytes.length < 16 + 12 + 1) {
         throw new Error("ciphertext too short");
