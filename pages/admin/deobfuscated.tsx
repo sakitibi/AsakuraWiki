@@ -48,6 +48,7 @@ export default function DecryptPage() {
             const plain = await decrypt(decodedCipherText!, passphrase);
             setResult(plain);
         } catch (e: any) {
+            console.error("error: ", e);
             setError(e.message || "復号に失敗しました");
         }
     }
