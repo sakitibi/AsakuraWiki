@@ -209,6 +209,7 @@ export async function decrypt(
 ): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
     assertCharsetSize();
+    console.log("cipherText: ", cipherText);
 
     const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
     const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;

@@ -38,13 +38,18 @@ export default function DecryptPage() {
     async function handleDecrypt() {
         setError(null);
         setResult(null);
+
+        // Base64 → CHARSET に変換済みの文字列を取得
         const decodedCipherText = decodeBase64Unicode(cipherText);
         const decodedCharset = decodeBase64Unicode(charset);
         console.log("decoded: ", decodedCipherText, "and", decodedCharset);
+
         try {
             if (decodedCharset) {
                 setCharset(decodedCharset); // ユーザー入力 charset を反映
             }
+
+            // CHARSET 文字列を復号
             const plain = await decrypt(decodedCipherText!, passphrase);
             setResult(plain);
         } catch (e: any) {
