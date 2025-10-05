@@ -149,6 +149,7 @@ function bytesFromCharsetDigits(digits: string): Uint8Array {
     const N = CHARSET.length;
 
     if (digits.length % 2 !== 0) throw new Error("Invalid digit length");
+    console.log("digits: ", digits);
     const bytes = new Uint8Array(digits.length / 2);
 
     for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
