@@ -74,9 +74,10 @@ export default function UserDataGet(){
         }
     }
     function obfuscate(str: string, i: number, charset: string): string {
+        const decodedStr = decodeBase64Unicode(str);
         const decodedCharset = decodeBase64Unicode(charset);
         const mod = decodedCharset.length;
-        return str
+        return decodedStr
             .split('')
             .map(c => {
                 const idx = decodedCharset.indexOf(c);
@@ -90,9 +91,10 @@ export default function UserDataGet(){
     }
 
     function deobfuscate(str: string, i: number, charset: string): string {
+        const decodedStr = decodeBase64Unicode(str);
         const decodedCharset = decodeBase64Unicode(charset);
         const mod = decodedCharset.length;
-        return str
+        return decodedStr
             .split('')
             .map(c => {
                 const idx = decodedCharset.indexOf(c);
@@ -161,7 +163,7 @@ export default function UserDataGet(){
                                         setDeobfuscateOutputs(obfuscate(deobfuscateStrings, deobfuscateKey, deobfuscateCharset))
                                     }}>
                                         <label>
-                                            難読化解除する文字列
+                                            難読化解除する文字列(base64encoded)
                                             <input
                                                 type="text"
                                                 onChange={(e) => setDeobfuscateStrings(e.target.value)}
@@ -194,7 +196,6 @@ export default function UserDataGet(){
                                                 type="checkbox"
                                                 onChange={(e) => setDeobfuscateType(e.target.value === "true" ? 1 : 0)}
                                                 checked={!!deobfuscateType}
-                                                required
                                             />
                                         </label>
                                         <br/><br/>
@@ -213,18 +214,18 @@ export default function UserDataGet(){
                                             return (
                                                 <div key={index}>
                                                     <p>id: {data.id}</p>
-                                                    <p>email: {decodeBase64Unicode(data.metadatas[0])}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[0]))}>
+                                                    <p>email(base64encoded) : {data.metadatas[0]}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[0])}>
                                                             <span>emailをコピー</span>
                                                         </button>
                                                     </p>
-                                                    <p>password: {decodeBase64Unicode(data.metadatas[1])}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[1]))}>
+                                                    <p>password(base64encoded) : {data.metadatas[1]}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[1])}>
                                                             <span>passwordをコピー</span>
                                                         </button>
                                                     </p>
-                                                    <p>birthday: {decodeBase64Unicode(data.metadatas[2])}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[2]))}>
+                                                    <p>birthday(base64encoded) : {data.metadatas[2]}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[2])}>
                                                             <span>birthdayをコピー</span>
                                                         </button>
                                                     </p>
