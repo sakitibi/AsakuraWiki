@@ -195,25 +195,43 @@ export async function encrypt(
     return bytesToCharsetDigits(outBytes);
 }
 
-// decrypt: expects CHARSET-only string produced by encrypt()
-export async function decrypt(cipherText: string, passphrase: string, opts?: EncryptOptions): Promise<string> {
+// decrypt: expects already Base64-decoded string (binary data as string)
+export async function decrypt(
+    cipherText: string,
+    passphrase: string,
+    opts?: EncryptOptions
+): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
     assertCharsetSize();
+
     const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
     const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
 
-    // convert digits -> bytes
-    const allBytes = charsetDigitsToBytes(cipherText);
-    if (allBytes.length < 16 + 12 + 1) throw new Error("ciphertext too short");
+    // base64デコード済み文字列をUint8Array化
+    const allBytes = new Uint8Array(cipherText.split("").map(c => c.charCodeAt(0)));
 
+    if (allBytes.length < 16 + 12 + 1) {
+        throw new Error("ciphertext too short");
+    }
+
+    // salt(16) + iv(12) + ciphertext(...)
     const salt = allBytes.slice(0, 16);
     const iv = allBytes.slice(16, 16 + 12);
-    const ivBuf = new Uint8Array(iv).buffer; // ← 型安全にコピー
+    const ivBuf = iv.buffer;
     const cbytes = allBytes.slice(16 + 12);
 
+    // 鍵導出
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
     const subtle = getSubtle();
-    const plainBuf = await subtle.decrypt({ name: "AES-GCM", iv: ivBuf }, key, cbytes);
+
+    // AES-GCM復号
+    const plainBuf = await subtle.decrypt(
+        { name: "AES-GCM", iv: ivBuf },
+        key,
+        cbytes
+    );
+
+    // UTF-8文字列に戻す
     const dec = new TextDecoder();
     return dec.decode(new Uint8Array(plainBuf));
 }
