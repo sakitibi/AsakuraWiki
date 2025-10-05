@@ -146,15 +146,12 @@ async function deriveAesKey(
     return derived;
 }
 
-// charset文字列 → Uint8Array に変換（encrypt の逆）
-function bytesFromCharsetDigits(digits: string): Uint8Array{
+// CHARSET文字列 → Uint8Array に変換（encrypt の逆）
+function bytesFromCharsetDigits(digits: string): Uint8Array {
     assertCharsetSize();
     const N = CHARSET.length;
-    console.log("CHARSET length:", CHARSET.length);
-    console.log("CHAR_IDX keys:", Object.keys(CHAR_IDX));
 
     if (digits.length % 2 !== 0) throw new Error("Invalid digit length");
-    console.log("digits: ", digits);
     const bytes = new Uint8Array(digits.length / 2);
 
     for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
@@ -169,22 +166,8 @@ function bytesFromCharsetDigits(digits: string): Uint8Array{
     return bytes;
 }
 
-// safe atob for plain ASCII charset output
-function decodeBase64ToAscii(str: string): string {
-    // if str is already charset ascii, atob will fail; guard
-    try {
-        return atob(str);
-    } catch {
-        return str;
-    }
-}
-
 function hex(u: Uint8Array) {
     return Array.from(u).map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-function dumpBytes(name: string, u: Uint8Array) {
-    console.log(`${name} len=${u.length}`, hex(u), u);
 }
 
 // encrypt: returns CHARSET-only string containing (salt16 + iv12 + ciphertext+tag)
@@ -226,61 +209,40 @@ export async function encrypt(
 }
 
 // decrypt: expects already Base64-decoded string (binary data as string)
+// decrypt: expects CHARSET-only string produced by encrypt()
 export async function decrypt(
-    cipherTextMaybeBase64: string,
+    cipherText: string, // encrypt() が返す CHARSET 文字列
     passphrase: string,
     opts?: EncryptOptions
 ): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
     assertCharsetSize();
 
-    // --- 1) If caller passed Base64 of charset string, convert it; otherwise keep as-is.
-    // If your stored value was btoa(charsetString), use atob to get charsetString back.
-    const cipherText = decodeBase64ToAscii(cipherTextMaybeBase64);
+    const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
+    const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
 
-    console.log(">>> decrypt start");
-    console.log("incoming (possibly base64):", cipherTextMaybeBase64);
-    console.log("resolved cipherText (charset string):", cipherText);
-    console.log("CURRENT CHARSET (len):", CHARSET.length, CHARSET);
-    console.log("CHAR_IDX keys count:", Object.keys(CHAR_IDX).length);
-
-    // show any characters not in CHARSET
-    const invalid = cipherText.split("").filter(c => CHAR_IDX[c] === undefined);
-    console.log("invalid charset characters in cipherText:", invalid.slice(0, 40));
-    if (invalid.length) throw new Error("cipherText contains characters not in current CHARSET");
-
+    // CHARSET文字列 → Uint8Array に変換
     const allBytes = bytesFromCharsetDigits(cipherText);
-    dumpBytes("allBytes", allBytes);
 
-    if (allBytes.length < 16 + 12 + 1) throw new Error("ciphertext too short");
+    if (allBytes.length < 16 + 12 + 1) {
+        throw new Error("ciphertext too short");
+    }
 
     const salt = allBytes.slice(0, 16);
     const iv = allBytes.slice(16, 28);
     const cbytes = allBytes.slice(28);
 
-    dumpBytes("salt", salt);
-    dumpBytes("iv", iv);
-    dumpBytes("cbytes (cipher+tag)", cbytes);
-    console.log("cbytes length:", cbytes.length);
-
-    const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
-    const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
-
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
-    console.log("derived key CryptoKey:", key);
-
     const subtle = getSubtle();
 
-    try {
-        const plainBuf = await subtle.decrypt({ name: "AES-GCM", iv }, key, cbytes);
-        dumpBytes("plainBuf", new Uint8Array(plainBuf));
-        const dec = new TextDecoder();
-        return dec.decode(new Uint8Array(plainBuf));
-    } catch (e: any) {
-        console.error("subtle.decrypt failed:", e);
-        // give a clearer error to show likely cause
-        throw new Error("Decrypt failed (OperationError). Possible causes: wrong passphrase/charset/salt/iv or corrupted ciphertext. See console logs.");
-    }
+    const plainBuf = await subtle.decrypt(
+        { name: "AES-GCM", iv: iv },
+        key,
+        cbytes
+    );
+
+    const dec = new TextDecoder();
+    return dec.decode(new Uint8Array(plainBuf));
 }
 
 // deterministic charset randomize (same seed -> same permutation)
