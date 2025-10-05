@@ -15,35 +15,10 @@ interface userDataProps{
     metadatas: string[];
 }
 
-interface userSettingsProps{
-    charset: string;
-    mod: number;
-    key: number;
-    type: number;
-}
-
-function decodeBase64Unicode(str:string){
-    try{
-        const bytes = Uint8Array.from(atob(str), c => c.charCodeAt(0));
-        const decoded = new TextDecoder().decode(bytes);
-        console.log("base64decoded: ", decoded);
-        return decoded;
-    } catch(e:any){
-        console.error("error: ", e);
-        return "";
-    }
-}
-
 export default function UserDataGet(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userData, setUserData] = useState<userDataProps[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [deobfuscateStrings, setDeobfuscateStrings] = useState<string>("");
-    const [deobfuscateCharset, setDeobfuscateCharset] = useState<string>("");
-    const [deobfuscateOutputs, setDeobfuscateOutputs] = useState<string>("");
-    const [deobfuscateKey, setDeobfuscateKey] = useState<number>(0);
-    const [deobfuscateType, setDeobfuscateType] = useState<number>(1);
-    const [userSettings, setUserSettings] = useState<Map<number, userSettingsProps>>(new Map());
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -73,64 +48,6 @@ export default function UserDataGet(){
             console.error("error: ", e);
         }
     }
-    function obfuscate(str: string, i: number, charset: string): string {
-        const decodedStr = decodeBase64Unicode(str);
-        const decodedCharset = decodeBase64Unicode(charset);
-        const mod = decodedCharset.length;
-        return decodedStr
-            .split('')
-            .map(c => {
-                const idx = decodedCharset.indexOf(c);
-                if (idx === -1) {
-                    console.warn(`Invalid char skipped: ${c}`);
-                    return c; // そのまま返す
-                }
-                return decodedCharset[(idx + i) % mod];
-            })
-            .join('');
-    }
-
-    function deobfuscate(str: string, i: number, charset: string): string {
-        const decodedStr = decodeBase64Unicode(str);
-        const decodedCharset = decodeBase64Unicode(charset);
-        const mod = decodedCharset.length;
-        return decodedStr
-            .split('')
-            .map(c => {
-                const idx = decodedCharset.indexOf(c);
-                if (idx === -1) {
-                    console.warn(`Invalid char skipped: ${c}`);
-                    return c; // そのまま返す
-                }
-                return decodedCharset[(idx - i + mod) % mod];
-            })
-            .join('');
-    }
-    const copyToClipboard = async (text: string) => {
-        try {
-            await navigator.clipboard.writeText(text); // Copy text to clipboard
-        } catch (err) {
-            console.error("Error copying text: ", err);
-        }
-    };
-    useEffect(() => {
-    if (userData && userData.length > 0) {
-            const newSettings = new Map();
-            for (let i = 0; i < userData.length; i++) {
-                const meta = userData[i].metadatas;
-                const decodedMeta5 = decodeBase64Unicode(meta[5]);
-                if (!decodedMeta5) continue; // スキップ
-                const [modStr, keyStr, typeStr]:string[] = decodedMeta5.split(",");
-                newSettings.set(i, {
-                    charset: meta[4].replace(/\t\n/, ""),
-                    mod: Number(modStr),
-                    key: Number(keyStr),
-                    type: Number(typeStr)
-                });
-            }
-            setUserSettings(newSettings);
-        }
-    }, [userData]);
     if (loading) return <p>読み込み中...</p>;
     return(
         <>
@@ -156,109 +73,12 @@ export default function UserDataGet(){
                                             <span>ユーザー取得</span>
                                         </button>
                                     </form>
-                                    <form onSubmit={(e) => {
-                                        e.preventDefault();
-                                        deobfuscateType ? 
-                                        setDeobfuscateOutputs(deobfuscate(deobfuscateStrings, deobfuscateKey, deobfuscateCharset)) :
-                                        setDeobfuscateOutputs(obfuscate(deobfuscateStrings, deobfuscateKey, deobfuscateCharset))
-                                    }}>
-                                        <label>
-                                            難読化解除する文字列(base64encoded)
-                                            <input
-                                                type="text"
-                                                onChange={(e) => setDeobfuscateStrings(e.target.value)}
-                                                required
-                                            />
-                                        </label>
-                                        <br/><br/>
-                                        <label>
-                                            Charset
-                                            <input
-                                                type="text"
-                                                onChange={(e) => setDeobfuscateCharset(e.target.value)}
-                                                required
-                                            />
-                                        </label>
-                                        <br/><br/>
-                                        <label>
-                                            難読化解除のキー
-                                            <input
-                                                type="number"
-                                                onChange={(e) => setDeobfuscateKey(Number(e.target.value))}
-                                                min={0}
-                                                required
-                                            />
-                                        </label>
-                                        <br/><br/>
-                                        <label>
-                                            難読化解除するかどうか
-                                            <input
-                                                type="checkbox"
-                                                value="true"
-                                                onChange={(e) => setDeobfuscateType(e.target.value === "true" ? 1 : 0)}
-                                            />
-                                        </label>
-                                        <br/><br/>
-                                        <button type="submit">
-                                            <span>難読化解除</span>
-                                        </button>
-                                    </form>
-                                    <p>結果: {deobfuscateOutputs}</p>
+                                    ({!!userData ? (
+                                        <>
+                                            <p>結果: {JSON.stringify(userData)}</p>
+                                        </>
+                                    ) : null})
                                 </div>
-                                {!!userData ? (
-                                    <>
-                                        <p>結果:</p>
-                                        {userData.map((data, index) => {
-                                            const settings:userSettingsProps | undefined = userSettings.get(index);
-                                            if (!settings) return null;
-                                            return (
-                                                <div key={index}>
-                                                    <p>id: {data.id}</p>
-                                                    <p>email(base64encoded) : {data.metadatas[0]}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[0])}>
-                                                            <span>emailをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                    <p>password(base64encoded) : {data.metadatas[1]}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[1])}>
-                                                            <span>passwordをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                    <p>birthday(base64encoded) : {data.metadatas[2]}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[2])}>
-                                                            <span>birthdayをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                    <p>username: {decodeBase64Unicode(data.metadatas[3])}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[3]))}>
-                                                            <span>usernameをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                    <p>charset(base64encoded): {settings.charset}
-                                                        <button onClick={async() => await copyToClipboard(settings.charset)}>
-                                                            <span>charsetをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                    <p>MOD: {settings.mod}
-                                                        <button onClick={async() => await copyToClipboard(String(settings.mod))}>
-                                                            <span>MODをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                    <p>key: {settings.key}
-                                                        <button onClick={async() => await copyToClipboard(String(settings.key))}>
-                                                            <span>keyをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                    <p>type: {settings.type}
-                                                        <button onClick={async() => await copyToClipboard(String(settings.type))}>
-                                                            <span>typeをコピー</span>
-                                                        </button>
-                                                    </p>
-                                                </div>
-                                            );
-                                        })}
-                                    </>
-                                ) : null}
                             </>
                         ) : (
                             <>
