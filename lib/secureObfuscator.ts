@@ -157,6 +157,31 @@ async function deriveAesKey(
     return derived;
 }
 
+// charset文字列 → Uint8Array に変換（encrypt の逆）
+function bytesFromCharsetDigits(text: string, charset: string): Uint8Array {
+    const base = charset.length;
+    const bytes: number[] = [];
+    let acc = 0;
+    let bits = 0;
+
+    for (const ch of text) {
+        const idx = charset.indexOf(ch);
+        if (idx === -1) {
+            throw new Error(`Invalid character '${ch}' in ciphertext`);
+        }
+
+        acc = (acc << 8) + idx;
+        bits += 8;
+
+        while (bits >= 8) {
+            bits -= 8;
+            bytes.push((acc >> bits) & 0xff);
+        }
+    }
+
+    return new Uint8Array(bytes);
+}
+
 // encrypt: returns CHARSET-only string containing (salt16 + iv12 + ciphertext+tag)
 export async function encrypt(
     plain: string,
@@ -199,6 +224,7 @@ export async function encrypt(
 export async function decrypt(
     cipherText: string,
     passphrase: string,
+    charset: string,
     opts?: EncryptOptions
 ): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
@@ -207,31 +233,27 @@ export async function decrypt(
     const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
     const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
 
-    // base64デコード済み文字列をUint8Array化
-    const allBytes = new Uint8Array(cipherText.split("").map(c => c.charCodeAt(0)));
+    // CHARSET文字列 → bytes 変換（Base64デコード済みのため）
+    const allBytes = bytesFromCharsetDigits(cipherText, charset);
 
     if (allBytes.length < 16 + 12 + 1) {
         throw new Error("ciphertext too short");
     }
 
-    // salt(16) + iv(12) + ciphertext(...)
     const salt = allBytes.slice(0, 16);
-    const iv = allBytes.slice(16, 16 + 12);
+    const iv = allBytes.slice(16, 28);
     const ivBuf = iv.buffer;
-    const cbytes = allBytes.slice(16 + 12);
+    const cbytes = allBytes.slice(28);
 
-    // 鍵導出
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
     const subtle = getSubtle();
 
-    // AES-GCM復号
     const plainBuf = await subtle.decrypt(
         { name: "AES-GCM", iv: ivBuf },
         key,
         cbytes
     );
 
-    // UTF-8文字列に戻す
     const dec = new TextDecoder();
     return dec.decode(new Uint8Array(plainBuf));
 }
