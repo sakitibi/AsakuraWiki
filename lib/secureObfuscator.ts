@@ -145,23 +145,27 @@ async function deriveAesKey(
 
 // charset文字列 → Uint8Array に変換（encrypt の逆）
 function bytesFromCharsetDigits(digits: string): Uint8Array {
-    assertCharsetSize();
-    const N = CHARSET.length;
+    try{
+        assertCharsetSize();
+        const N = CHARSET.length;
 
-    if (digits.length % 2 !== 0) throw new Error("Invalid digit length");
-    console.log("digits: ", digits);
-    const bytes = new Uint8Array(digits.length / 2);
+        if (digits.length % 2 !== 0) throw new Error("Invalid digit length");
+        console.log("digits: ", digits);
+        const bytes = new Uint8Array(digits.length / 2);
 
-    for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
-        const hi = CHAR_IDX[digits[i]];
-        const lo = CHAR_IDX[digits[i + 1]];
+        for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
+            const hi = CHAR_IDX[digits[i]];
+            const lo = CHAR_IDX[digits[i + 1]];
 
-        if (hi === undefined || lo === undefined) throw new Error("Invalid charset digit");
+            if (hi === undefined || lo === undefined) throw new Error("Invalid charset digit");
 
-        bytes[j] = hi * N + lo;
+            bytes[j] = hi * N + lo;
+        }
+
+        return bytes;
+    } catch(e:any){
+        console.error("error: ", e);
     }
-
-    return bytes;
 }
 
 // encrypt: returns CHARSET-only string containing (salt16 + iv12 + ciphertext+tag)
