@@ -3,10 +3,8 @@
 // 出力を任意の CHARSET のみで表現するユーティリティ。
 // TypeScript (Next.js) 向け — ブラウザと Node (Next API routes) の両対応。
 
-const DEFAULT_CHARSET = `0123456789abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ@-_.,{[]}:;^~|=!"#$%&'()<>?/\\\`*+
-    \x00\f\x01\x1A\x10\x05\x06\x13\x03\x04\x14\v\b\x0F\x07\x1E\x07\x1D
-    \x15\x1F\x12\x11\x18\x1B\x19\x0E\x7F\x02`.replace(/\t\n/gu, ""); // 例
+// ---------- CHARSET (可視文字のみ) ----------
+const DEFAULT_CHARSET = `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@-_`;
 let CHARSET = DEFAULT_CHARSET;
 let CHAR_IDX: Record<string, number> = buildIndex(CHARSET);
 
@@ -24,26 +22,18 @@ export function setCharset(newCharset: string) {
 
 // ---------- helpers for environment (subtle & random) ----------
 function getSubtle(): SubtleCrypto {
-    // browser: globalThis.crypto.subtle
-    // node >= 18: require('crypto').webcrypto.subtle
-    // throw if not found
-    if (typeof globalThis !== "undefined" && (globalThis as any).crypto && (globalThis as any).crypto.subtle) {
+    if (typeof globalThis !== "undefined" && (globalThis as any).crypto?.subtle) {
         return (globalThis as any).crypto.subtle as SubtleCrypto;
     }
     try {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const nodeCrypto = require("crypto");
-        if (nodeCrypto && nodeCrypto.webcrypto && nodeCrypto.webcrypto.subtle) {
-            return nodeCrypto.webcrypto.subtle as SubtleCrypto;
-        }
-    } catch (e) {
-        /* ignore */
-    }
+        if (nodeCrypto?.webcrypto?.subtle) return nodeCrypto.webcrypto.subtle as SubtleCrypto;
+    } catch {}
     throw new Error("Web Crypto Subtle API is not available in this environment");
 }
 
 function getRandomBytes(n: number): Uint8Array {
-    if (typeof globalThis !== "undefined" && (globalThis as any).crypto && typeof (globalThis as any).crypto.getRandomValues === "function") {
+    if (typeof globalThis !== "undefined" && typeof (globalThis as any).crypto?.getRandomValues === "function") {
         const a = new Uint8Array(n);
         (globalThis as any).crypto.getRandomValues(a);
         return a;
@@ -51,15 +41,14 @@ function getRandomBytes(n: number): Uint8Array {
     try {
         const nodeCrypto = require("crypto");
         return new Uint8Array(nodeCrypto.randomBytes(n));
-    } catch (e) {
-        // fallback to Math.random (very weak) — should not happen in Next.js runtime
+    } catch {
         const a = new Uint8Array(n);
         for (let i = 0; i < n; i++) a[i] = Math.floor(Math.random() * 256);
         return a;
     }
 }
 
-// ---------- small seeded hash (FNV-1a 32bit) used by randomizeCharset ----------
+// ---------- small seeded hash (FNV-1a 32bit) ----------
 function fnv1a32(str: string) {
     let h = 0x811c9dc5 >>> 0;
     for (let i = 0; i < str.length; i++) {
@@ -69,7 +58,7 @@ function fnv1a32(str: string) {
     return h >>> 0;
 }
 
-// xorshift32 for deterministic shuffle
+// ---------- deterministic shuffle (xorshift32) ----------
 class XorShift32 {
     private s: number;
     constructor(seed: number) { this.s = seed >>> 0 || 1; }
@@ -84,7 +73,7 @@ class XorShift32 {
     nextMod(mod: number) { return this.next() % mod; }
 }
 
-// ---------- base-N bytes <-> CHARSET encoding (2 chars per byte) ----------
+// ---------- base-N bytes <-> CHARSET ----------
 function assertCharsetSize() {
     const N = CHARSET.length;
     if (N * N < 256) throw new Error("charset too small: need N^2 >= 256");
@@ -95,58 +84,13 @@ function bytesToCharsetDigits(bytes: Uint8Array): string {
     const N = CHARSET.length;
     let out = "";
     for (let i = 0; i < bytes.length; i++) {
-        const b = bytes[i];
-        const hi = Math.floor(b / N);
-        const lo = b % N;
+        const hi = Math.floor(bytes[i] / N);
+        const lo = bytes[i] % N;
         out += CHARSET[hi] + CHARSET[lo];
     }
     return out;
 }
 
-// ---------- Key derivation (PBKDF2) and AES-GCM encrypt/decrypt ----------
-export type EncryptOptions = {
-    iterations?: number; // PBKDF2 iterations
-    keyLength?: 256 | 128; // AES key length bits
-};
-
-// Default: 200k iterations, AES-256
-const DEFAULT_ITERATIONS = 200_000;
-const DEFAULT_KEYLEN = 256;
-
-async function importKeyFromPassphrase(passphrase: string) {
-    const subtle = getSubtle();
-    const enc = new TextEncoder();
-    return subtle.importKey("raw", enc.encode(passphrase), { name: "PBKDF2" }, false, ["deriveKey"]);
-}
-
-async function deriveAesKey(
-    passphrase: string,
-    salt: Uint8Array,
-    iterations = DEFAULT_ITERATIONS,
-    keyLength = DEFAULT_KEYLEN
-) {
-    const subtle = getSubtle();
-    const passKey = await importKeyFromPassphrase(passphrase);
-
-    // Uint8Array -> ArrayBuffer copy で型安全にする
-    const saltBuf = new Uint8Array(salt).buffer;
-
-    const derived = await subtle.deriveKey(
-        {
-            name: "PBKDF2",
-            salt: saltBuf,
-            iterations,
-            hash: "SHA-256",
-        },
-        passKey,
-        { name: "AES-GCM", length: keyLength },
-        false,
-        ["encrypt", "decrypt"]
-    );
-    return derived;
-}
-
-// CHARSET文字列 → Uint8Array に変換（encrypt の逆）
 function bytesFromCharsetDigits(digits: string): Uint8Array {
     assertCharsetSize();
     const N = CHARSET.length;
@@ -157,104 +101,85 @@ function bytesFromCharsetDigits(digits: string): Uint8Array {
     for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
         const hi = CHAR_IDX[digits[i]];
         const lo = CHAR_IDX[digits[i + 1]];
-
         if (hi === undefined || lo === undefined) throw new Error("Invalid charset digit");
-
         bytes[j] = hi * N + lo;
     }
 
     return bytes;
 }
 
-function hex(u: Uint8Array) {
-    return Array.from(u).map(b => b.toString(16).padStart(2, "0")).join("");
+// ---------- Key derivation (PBKDF2) and AES-GCM ----------
+export type EncryptOptions = {
+    iterations?: number;
+    keyLength?: 256 | 128;
+};
+const DEFAULT_ITERATIONS = 200_000;
+const DEFAULT_KEYLEN = 256;
+
+async function importKeyFromPassphrase(passphrase: string) {
+    const subtle = getSubtle();
+    const enc = new TextEncoder();
+    return subtle.importKey("raw", enc.encode(passphrase), { name: "PBKDF2" }, false, ["deriveKey"]);
 }
 
-// encrypt: returns CHARSET-only string containing (salt16 + iv12 + ciphertext+tag)
-export async function encrypt(
-    plain: string,
-    passphrase: string,
-    opts?: EncryptOptions
-): Promise<string> {
+async function deriveAesKey(passphrase: string, salt: Uint8Array, iterations = DEFAULT_ITERATIONS, keyLength = DEFAULT_KEYLEN) {
+    const subtle = getSubtle();
+    const passKey = await importKeyFromPassphrase(passphrase);
+    const saltBuf = salt.buffer as ArrayBuffer;
+    return subtle.deriveKey(
+        { name: "PBKDF2", salt: saltBuf, iterations, hash: "SHA-256" },
+        passKey,
+        { name: "AES-GCM", length: keyLength },
+        false,
+        ["encrypt", "decrypt"]
+    );
+}
+
+// ---------- encrypt / decrypt ----------
+export async function encrypt(plain: string, passphrase: string, opts?: EncryptOptions): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
     assertCharsetSize();
 
-    const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
-    const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
-
-    // salt (16 bytes) for PBKDF2
     const salt = getRandomBytes(16);
-    const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
-
-    // iv for AES-GCM (12 bytes recommended)
+    const key = await deriveAesKey(passphrase, salt, opts?.iterations, opts?.keyLength);
     const iv = getRandomBytes(12);
-    const ivBuf = iv.buffer as ArrayBuffer; // ← 明示的に ArrayBuffer にキャスト
+    const ivBuf = iv as BufferSource;
+    const plainBuf = new TextEncoder().encode(plain);
+    const cipherBuf = await getSubtle().encrypt({ name: "AES-GCM", iv: ivBuf }, key, plainBuf);
 
-    const subtle = getSubtle();
-    const enc = new TextEncoder();
-    const plainBuf = enc.encode(plain);
-
-    // ✅ iv は Uint8Array のまま渡す
-    const cipherBuf = await subtle.encrypt({ name: "AES-GCM", iv: ivBuf }, key, plainBuf);
-
-    // construct output bytes: salt(16) || iv(12) || cipher(...)
-    const cbytes = new Uint8Array(cipherBuf);
-    const outBytes = new Uint8Array(salt.length + iv.length + cbytes.length);
+    const outBytes = new Uint8Array(salt.length + iv.length + cipherBuf.byteLength);
     outBytes.set(salt, 0);
     outBytes.set(iv, salt.length);
-    outBytes.set(cbytes, salt.length + iv.length);
+    outBytes.set(new Uint8Array(cipherBuf), salt.length + iv.length);
 
-    // encode to CHARSET digits
     return bytesToCharsetDigits(outBytes);
 }
 
-// decrypt: expects already Base64-decoded string (binary data as string)
-// decrypt: expects CHARSET-only string produced by encrypt()
-export async function decrypt(
-    cipherText: string, // encrypt() が返す CHARSET 文字列
-    passphrase: string,
-    opts?: EncryptOptions
-): Promise<string> {
+export async function decrypt(cipherText: string, passphrase: string, opts?: EncryptOptions): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
     assertCharsetSize();
 
-    const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
-    const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
-
-    // CHARSET文字列 → Uint8Array に変換
     const allBytes = bytesFromCharsetDigits(cipherText);
-
-    if (allBytes.length < 16 + 12 + 1) {
-        throw new Error("ciphertext too short");
-    }
+    if (allBytes.length < 16 + 12 + 1) throw new Error("ciphertext too short");
 
     const salt = allBytes.slice(0, 16);
     const iv = allBytes.slice(16, 28);
     const cbytes = allBytes.slice(28);
 
-    const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
-    const subtle = getSubtle();
+    const key = await deriveAesKey(passphrase, salt, opts?.iterations, opts?.keyLength);
+    const plainBuf = await getSubtle().decrypt({ name: "AES-GCM", iv }, key, cbytes);
 
-    const plainBuf = await subtle.decrypt(
-        { name: "AES-GCM", iv: iv },
-        key,
-        cbytes
-    );
-
-    const dec = new TextDecoder();
-    return dec.decode(new Uint8Array(plainBuf));
+    return new TextDecoder().decode(new Uint8Array(plainBuf));
 }
 
-// deterministic charset randomize (same seed -> same permutation)
+// ---------- deterministic charset randomize ----------
 export function randomizeCharset(seedPhrase: string) {
     const base = DEFAULT_CHARSET.split("");
     const seed = fnv1a32(seedPhrase);
     const prng = new XorShift32(seed || 1);
     for (let i = base.length - 1; i > 0; i--) {
         const j = prng.nextMod(i + 1);
-        const tmp = base[i];
-        base[i] = base[j];
-        base[j] = tmp;
+        [base[i], base[j]] = [base[j], base[i]];
     }
     setCharset(base.join(""));
 }

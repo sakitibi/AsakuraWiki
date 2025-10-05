@@ -27,34 +27,20 @@ export default function DecryptPage() {
     };
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
-    function decodeBase64Unicode(str:string) {
-        try{
-            const bytes = Uint8Array.from(atob(str), c => c.charCodeAt(0));
-            return new TextDecoder().decode(bytes);
-        } catch(e:any){
-            console.error("base64 decode error: ", e, "to", str);
-        }
-    }
     async function handleDecrypt() {
         setError(null);
         setResult(null);
-
-        // Base64 → CHARSET に変換済みの文字列を取得
-        const decodedCipherText = decodeBase64Unicode(cipherText);
-        const decodedCharset = decodeBase64Unicode(charset);
-        console.log("decoded: ", decodedCipherText, "and", decodedCharset);
-
         try {
-            if (decodedCharset) {
-                setCharset(decodedCharset); // ユーザー入力 charset を反映
+            if (charset) {
+                setCharset(charset); // ユーザー入力 charset を反映
             }
 
             // CHARSET 文字列を復号
-            const plain = await decrypt(decodedCipherText!, passphrase);
+            const plain = await decrypt(cipherText, passphrase);
             console.log("plain: ", plain);
             setResult(plain);
         } catch (e: any) {
-            console.error("error: ", e, "to: ", decodedCharset, "and", decodedCipherText);
+            console.error("error: ", e, "to: ", charset, "and", cipherText);
             setError(e.message || "復号に失敗しました");
         }
     }
@@ -75,7 +61,7 @@ export default function DecryptPage() {
                                 <p><a href="/admin/user_dataget" target="_blank">データ取得をして無い場合はこちらから取得して下さい</a></p>
                                 <form onSubmit={(e) => e.preventDefault()}>
                                     <div style={{ marginBottom: "1rem" }}>
-                                        <label>暗号化文字列(base64):</label>
+                                        <label>暗号化文字列:</label>
                                         <textarea
                                             rows={6}
                                             style={{ width: "100%" }}
@@ -97,7 +83,7 @@ export default function DecryptPage() {
                                     </div>
 
                                     <div style={{ marginBottom: "1rem" }}>
-                                        <label>Charset (base64, 省略するとデフォルト):</label>
+                                        <label>Charset (省略するとデフォルト):</label>
                                         <input
                                             type="text"
                                             style={{ width: "100%" }}
