@@ -38,17 +38,16 @@ export default function DecryptPage() {
     async function handleDecrypt() {
         setError(null);
         setResult(null);
+        const decodedCipherText = decodeBase64Unicode(cipherText);
+        const decodedCharset = decodeBase64Unicode(charset);
         try {
-            const decodedCipherText = decodeBase64Unicode(cipherText);
-            const decodedCharset = decodeBase64Unicode(charset);
             if (decodedCharset) {
                 setCharset(decodedCharset); // ユーザー入力 charset を反映
             }
-
             const plain = await decrypt(decodedCipherText!, passphrase);
             setResult(plain);
         } catch (e: any) {
-            console.error("error: ", e);
+            console.error("error: ", e, "to: ", decodedCharset, "and", decodedCipherText);
             setError(e.message || "復号に失敗しました");
         }
     }
