@@ -215,42 +215,42 @@ export default function UserDataGet(){
                                                 <div key={index}>
                                                     <p>id: {data.id}</p>
                                                     <p>email: {decodeBase64Unicode(data.metadatas[0])}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[0])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[0]))}>
                                                             <span>emailをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>password: {decodeBase64Unicode(data.metadatas[1])}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[1])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[1]))}>
                                                             <span>passwordをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>birthday: {decodeBase64Unicode(data.metadatas[2])}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[2])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[2]))}>
                                                             <span>birthdayをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>username: {decodeBase64Unicode(data.metadatas[3])}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[3])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[3]))}>
                                                             <span>usernameをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>charset: {settings.charset}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[4])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[4]))}>
                                                             <span>charsetをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>MOD: {settings.mod}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[5].split(",")[0])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5].split(",")[0]))}>
                                                             <span>MODをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>key: {settings.key}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[5].split(",")[1])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5].split(",")[1]))}>
                                                             <span>keyをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>type: {settings.type}
-                                                        <button onClick={async() => await copyToClipboard(data.metadatas[5].split(",")[2])}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5].split(",")[2]))}>
                                                             <span>typeをコピー</span>
                                                         </button>
                                                     </p>
