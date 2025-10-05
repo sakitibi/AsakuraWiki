@@ -232,22 +232,22 @@ export default function UserDataGet(){
                                                         </button>
                                                     </p>
                                                     <p>charset: {settings.charset}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[4]))}>
+                                                        <button onClick={async() => await copyToClipboard(settings.charset)}>
                                                             <span>charsetをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>MOD: {settings.mod}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5]).split(",")[0])}>
+                                                        <button onClick={async() => await copyToClipboard(String(settings.mod))}>
                                                             <span>MODをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>key: {settings.key}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5]).split(",")[1])}>
+                                                        <button onClick={async() => await copyToClipboard(String(settings.key))}>
                                                             <span>keyをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>type: {settings.type}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5]).split(",")[2])}>
+                                                        <button onClick={async() => await copyToClipboard(String(settings.type))}>
                                                             <span>typeをコピー</span>
                                                         </button>
                                                     </p>
