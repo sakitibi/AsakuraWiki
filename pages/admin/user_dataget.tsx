@@ -84,33 +84,32 @@ export default function UserDataGet(){
                                     </form>
                                     {!!userData ? (
                                         <>
-                                            <p>結果: 
-                                                <>{
-                                                    userData.map((data, index) => {
-                                                        <>
-                                                            <p>id: {data.id}</p>
-                                                            <p key={index}>email: {
-                                                                decodeBase64Unicode(data.metadatas[0])
-                                                            }</p>
-                                                            <p key={index}>password: {
-                                                                decodeBase64Unicode(data.metadatas[1])
-                                                            }</p>
-                                                            <p key={index}>birthday: {
-                                                                decodeBase64Unicode(data.metadatas[2])
-                                                            }</p>
-                                                            <p key={index}>username: {
-                                                                decodeBase64Unicode(data.metadatas[3])
-                                                            }</p>
-                                                            <p key={index}>charset: {
-                                                                decodeBase64Unicode(data.metadatas[4])
-                                                            }</p>
-                                                            <p key={index}>seedForRandom: {
-                                                                decodeBase64Unicode(data.metadatas[5])
-                                                            }</p>
-                                                        </>
-                                                    })
-                                                }</>
-                                            </p>
+                                            <p>結果: </p>
+                                            <>{
+                                                userData.map((data, index) => {
+                                                    <>
+                                                        <p>id: {data.id}</p>
+                                                        <p key={index}>email: {
+                                                            decodeBase64Unicode(data.metadatas[0])
+                                                        }</p>
+                                                        <p key={index}>password: {
+                                                            decodeBase64Unicode(data.metadatas[1])
+                                                        }</p>
+                                                        <p key={index}>birthday: {
+                                                            decodeBase64Unicode(data.metadatas[2])
+                                                        }</p>
+                                                        <p key={index}>username: {
+                                                            decodeBase64Unicode(data.metadatas[3])
+                                                        }</p>
+                                                        <p key={index}>charset: {
+                                                            decodeBase64Unicode(data.metadatas[4])
+                                                        }</p>
+                                                        <p key={index}>seedForRandom: {
+                                                            decodeBase64Unicode(data.metadatas[5])
+                                                        }</p>
+                                                    </>
+                                                })
+                                            }</>
                                         </>
                                     ) : null}
                                 </div>
