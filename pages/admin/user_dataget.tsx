@@ -105,7 +105,7 @@ export default function UserDataGet(){
                 const meta = userData[i].metadatas;
                 const decodedMeta5 = decodeBase64Unicode(meta[5]);
                 if (!decodedMeta5) continue; // スキップ
-                const [modStr, keyStr, typeStr] = decodedMeta5.split(",");
+                const [modStr, keyStr, typeStr]:string[] = decodedMeta5.split(",");
                 newSettings.set(i, {
                     charset: decodeBase64Unicode(meta[4]).replace(/\t\n/gu, ""),
                     mod: Number(modStr),
