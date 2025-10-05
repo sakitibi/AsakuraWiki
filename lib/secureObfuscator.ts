@@ -203,7 +203,7 @@ export async function encrypt(
 
 // decrypt: expects already Base64-decoded string (binary data as string)
 export async function decrypt(
-    cipherText: string,
+    cipherText: string, // すでに Base64 → CHARSET 文字列に変換済み
     passphrase: string,
     opts?: EncryptOptions
 ): Promise<string> {
@@ -213,7 +213,7 @@ export async function decrypt(
     const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
     const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
 
-    // CHARSET文字列 → bytes 変換（Base64デコード済みのため）
+    // CHARSET文字列 → Uint8Array に変換
     const allBytes = bytesFromCharsetDigits(cipherText);
 
     if (allBytes.length < 16 + 12 + 1) {
@@ -222,14 +222,14 @@ export async function decrypt(
 
     const salt = allBytes.slice(0, 16);
     const iv = allBytes.slice(16, 28);
-    const ivBuf = iv.buffer;
     const cbytes = allBytes.slice(28);
 
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
     const subtle = getSubtle();
 
+    // iv は Uint8Array でも ArrayBuffer でもOKなので安全に渡す
     const plainBuf = await subtle.decrypt(
-        { name: "AES-GCM", iv: ivBuf },
+        { name: "AES-GCM", iv: iv },
         key,
         cbytes
     );
