@@ -75,7 +75,7 @@ export default function UserDataGet(){
                                     </form>
                                     {!!userData ? (
                                         <>
-                                            <p>結果: {JSON.stringify(userData, null, "\t")}</p>
+                                            <p>結果: {JSON.stringify(userData, null, "\t").replace(/ /, "\n")}</p>
                                         </>
                                     ) : null}
                                 </div>
