@@ -230,6 +230,7 @@ export async function decrypt(
     const cbytes = allBytes!.slice(28);
 
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
+    console.log("key: ", key);
     const subtle = getSubtle();
 
     // iv は Uint8Array でも ArrayBuffer でもOKなので安全に渡す
