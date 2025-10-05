@@ -239,7 +239,7 @@ export async function decrypt(
         key,
         cbytes
     );
-
+    console.log("plainBuf: ", plainBuf);
     const dec = new TextDecoder();
     return dec.decode(new Uint8Array(plainBuf));
 }
