@@ -74,31 +74,33 @@ export default function UserDataGet(){
         }
     }
     function obfuscate(str: string, i: number, charset: string): string {
-        const mod = charset.length;
+        const decodedCharset = decodeBase64Unicode(charset);
+        const mod = decodedCharset.length;
         return str
             .split('')
             .map(c => {
-                const idx = charset.indexOf(c);
+                const idx = decodedCharset.indexOf(c);
                 if (idx === -1) {
                     console.warn(`Invalid char skipped: ${c}`);
                     return c; // そのまま返す
                 }
-                return charset[(idx + i) % mod];
+                return decodedCharset[(idx + i) % mod];
             })
             .join('');
     }
 
     function deobfuscate(str: string, i: number, charset: string): string {
-        const mod = charset.length;
+        const decodedCharset = decodeBase64Unicode(charset);
+        const mod = decodedCharset.length;
         return str
             .split('')
             .map(c => {
-                const idx = charset.indexOf(c);
+                const idx = decodedCharset.indexOf(c);
                 if (idx === -1) {
                     console.warn(`Invalid char skipped: ${c}`);
                     return c; // そのまま返す
                 }
-                return charset[(idx - i + mod) % mod];
+                return decodedCharset[(idx - i + mod) % mod];
             })
             .join('');
     }
@@ -118,7 +120,7 @@ export default function UserDataGet(){
                 if (!decodedMeta5) continue; // スキップ
                 const [modStr, keyStr, typeStr]:string[] = decodedMeta5.split(",");
                 newSettings.set(i, {
-                    charset: decodeBase64Unicode(meta[4]).replace(/\t\n/gu, ""),
+                    charset: meta[4].replace(/\t\n/, ""),
                     mod: Number(modStr),
                     key: Number(keyStr),
                     type: Number(typeStr)
@@ -231,7 +233,7 @@ export default function UserDataGet(){
                                                             <span>usernameをコピー</span>
                                                         </button>
                                                     </p>
-                                                    <p>charset: {settings.charset}
+                                                    <p>charset(base64encoded): {settings.charset}
                                                         <button onClick={async() => await copyToClipboard(settings.charset)}>
                                                             <span>charsetをコピー</span>
                                                         </button>
