@@ -36,9 +36,13 @@ function decodeBase64Unicode(str:string){
 
 export default function UserDataGet(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [password_deobfuscate, setPassword_deobfuscate] = useState<boolean>(true);
     const [userData, setUserData] = useState<userDataProps[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [deobfuscateStrings, setDeobfuscateStrings] = useState<string>("");
+    const [deobfuscateCharset, setDeobfuscateCharset] = useState<string>("");
+    const [deobfuscateOutputs, setDeobfuscateOutputs] = useState<string>("");
+    const [deobfuscateKey, setDeobfuscateKey] = useState<number>(0);
+    const [deobfuscateType, setDeobfuscateType] = useState<number>(1);
     const [userSettings, setUserSettings] = useState<Map<number, userSettingsProps>>(new Map());
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -98,6 +102,16 @@ export default function UserDataGet(){
             })
             .join('');
     }
+    const copyToClipboard = async (text: string) => {
+        try {
+            setLoading(true);
+            await navigator.clipboard.writeText(text); // Copy text to clipboard
+            setLoading(false);
+        } catch (err) {
+            console.error("Error copying text: ", err);
+            setLoading(false);
+        }
+    };
     useEffect(() => {
     if (userData && userData.length > 0) {
             const newSettings = new Map();
@@ -137,52 +151,109 @@ export default function UserDataGet(){
                                         e.preventDefault();
                                         UserGet();
                                     }}>
-                                        <label>
-                                            パスワードを難読化解除するか
-                                            <input
-                                                type="checkbox"
-                                                name="password_deobfuscate"
-                                                required
-                                                checked={password_deobfuscate}
-                                                onChange={() => {setPassword_deobfuscate(password_deobfuscate ? false : true)}}
-                                            />
-                                        </label>
                                         <button type="submit">
                                             <span>ユーザー取得</span>
                                         </button>
                                     </form>
+                                    <form onSubmit={(e) => {
+                                        e.preventDefault();
+                                        deobfuscateType ? 
+                                        setDeobfuscateOutputs(deobfuscate(deobfuscateStrings, deobfuscateKey, deobfuscateCharset)) :
+                                        setDeobfuscateOutputs(obfuscate(deobfuscateStrings, deobfuscateKey, deobfuscateCharset))
+                                    }}>
+                                        <label>
+                                            難読化解除する文字列
+                                            <input
+                                                type="text"
+                                                onChange={(e) => setDeobfuscateStrings(e.target.value)}
+                                                required
+                                            />
+                                        </label>
+                                        <br/><br/>
+                                        <label>
+                                            Charset
+                                            <input
+                                                type="text"
+                                                onChange={(e) => setDeobfuscateCharset(e.target.value)}
+                                                required
+                                            />
+                                        </label>
+                                        <br/><br/>
+                                        <label>
+                                            難読化解除のキー
+                                            <input
+                                                type="number"
+                                                onChange={(e) => setDeobfuscateKey(Number(e.target.value))}
+                                                min={0}
+                                                required
+                                            />
+                                        </label>
+                                        <br/><br/>
+                                        <label>
+                                            難読化解除するかどうか
+                                            <input
+                                                type="checkbox"
+                                                onChange={(e) => setDeobfuscateType(e.target.value === "true" ? 1 : 0)}
+                                                checked={!!deobfuscateType}
+                                                required
+                                            />
+                                        </label>
+                                        <br/><br/>
+                                        <button type="submit">
+                                            <span>難読化解除</span>
+                                        </button>
+                                    </form>
+                                    <p>結果: {deobfuscateOutputs}</p>
                                 </div>
                                 {!!userData ? (
                                     <>
                                         <p>結果:</p>
                                         {userData.map((data, index) => {
-                                            const settings = userSettings.get(index);
+                                            const settings:userSettingsProps | undefined = userSettings.get(index);
                                             if (!settings) return null;
                                             return (
                                                 <div key={index}>
                                                     <p>id: {data.id}</p>
-                                                    <p>email: {
-                                                        settings.type
-                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[0]), settings.key, settings.charset)
-                                                            : obfuscate(decodeBase64Unicode(data.metadatas[0]), settings.key, settings.charset)
-                                                    }</p>
-                                                    <p>password: {
-                                                        password_deobfuscate
-                                                            ? settings.type
-                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[1]), settings.key, settings.charset)
-                                                            : obfuscate(decodeBase64Unicode(data.metadatas[1]), settings.key, settings.charset)
-                                                            : decodeBase64Unicode(data.metadatas[1])
-                                                    }</p>
-                                                    <p>birthday: {
-                                                        settings.type
-                                                            ? deobfuscate(decodeBase64Unicode(data.metadatas[2]), settings.key, settings.charset)
-                                                            : obfuscate(decodeBase64Unicode(data.metadatas[2]), settings.key, settings.charset)
-                                                    }</p>
-                                                    <p>username: {decodeBase64Unicode(data.metadatas[3])}</p>
-                                                    <p>charset: {settings.charset}</p>
-                                                    <p>MOD: {settings.charset}</p>
-                                                    <p>key: {settings.key}</p>
-                                                    <p>type: {settings.type}</p>
+                                                    <p>email: {decodeBase64Unicode(data.metadatas[0])}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[0])}>
+                                                            <span>emailをコピー</span>
+                                                        </button>
+                                                    </p>
+                                                    <p>password: {decodeBase64Unicode(data.metadatas[1])}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[1])}>
+                                                            <span>passwordをコピー</span>
+                                                        </button>
+                                                    </p>
+                                                    <p>birthday: {decodeBase64Unicode(data.metadatas[2])}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[2])}>
+                                                            <span>birthdayをコピー</span>
+                                                        </button>
+                                                    </p>
+                                                    <p>username: {decodeBase64Unicode(data.metadatas[3])}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[3])}>
+                                                            <span>usernameをコピー</span>
+                                                        </button>
+                                                    </p>
+                                                    <p>charset: {settings.charset}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[4])}>
+                                                            <span>charsetをコピー</span>
+                                                        </button>
+                                                    </p>
+                                                    <p>MOD: {settings.mod}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[5].split(",")[0])}>
+                                                            <span>MODをコピー</span>
+                                                        </button>
+                                                    </p>
+                                                    <p>key: {settings.key}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[5].split(",")[1])}>
+                                                            <span>keyをコピー</span>
+                                                        </button>
+                                                    </p>
+                                                    <p>type: {settings.type}
+                                                        <button onClick={async() => await copyToClipboard(data.metadatas[5].split(",")[2])}>
+                                                            <span>typeをコピー</span>
+                                                        </button>
+                                                    </p>
                                                 </div>
                                             );
                                         })}
