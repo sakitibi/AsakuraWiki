@@ -59,7 +59,7 @@ export default function UserDataGet(){
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/admin/user_dataget" rupages="false"/>
-                    <main style={{ padding: '2rem', flex: 1 }}>
+                    <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
                         {adminer_user_id_list ? (
                             <>
                                 <h1>ユーザー取得管理画面</h1>
