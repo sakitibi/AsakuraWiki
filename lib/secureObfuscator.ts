@@ -144,28 +144,26 @@ async function deriveAesKey(
 }
 
 // charset文字列 → Uint8Array に変換（encrypt の逆）
-function bytesFromCharsetDigits(digits: string): Uint8Array {
-    try{
-        assertCharsetSize();
-        const N = CHARSET.length;
+function bytesFromCharsetDigits(digits: string): Uint8Array{
+    assertCharsetSize();
+    const N = CHARSET.length;
+    console.log("CHARSET length:", CHARSET.length);
+    console.log("CHAR_IDX keys:", Object.keys(CHAR_IDX));
 
-        if (digits.length % 2 !== 0) throw new Error("Invalid digit length");
-        console.log("digits: ", digits);
-        const bytes = new Uint8Array(digits.length / 2);
+    if (digits.length % 2 !== 0) throw new Error("Invalid digit length");
+    console.log("digits: ", digits);
+    const bytes = new Uint8Array(digits.length / 2);
 
-        for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
-            const hi = CHAR_IDX[digits[i]];
-            const lo = CHAR_IDX[digits[i + 1]];
+    for (let i = 0, j = 0; i < digits.length; i += 2, j++) {
+        const hi = CHAR_IDX[digits[i]];
+        const lo = CHAR_IDX[digits[i + 1]];
 
-            if (hi === undefined || lo === undefined) throw new Error("Invalid charset digit");
+        if (hi === undefined || lo === undefined) throw new Error("Invalid charset digit");
 
-            bytes[j] = hi * N + lo;
-        }
-
-        return bytes;
-    } catch(e:any){
-        console.error("error: ", e);
+        bytes[j] = hi * N + lo;
     }
+
+    return bytes;
 }
 
 // encrypt: returns CHARSET-only string containing (salt16 + iv12 + ciphertext+tag)
@@ -221,14 +219,15 @@ export async function decrypt(
 
     // CHARSET文字列 → Uint8Array に変換
     const allBytes = bytesFromCharsetDigits(cipherText);
+    console.log("digits to decode:", cipherText.split("").filter(c => !CHAR_IDX[c]));
 
-    if (allBytes.length < 16 + 12 + 1) {
+    if (allBytes!.length < 16 + 12 + 1) {
         throw new Error("ciphertext too short");
     }
 
-    const salt = allBytes.slice(0, 16);
-    const iv = allBytes.slice(16, 28);
-    const cbytes = allBytes.slice(28);
+    const salt = allBytes!.slice(0, 16);
+    const iv = allBytes!.slice(16, 28);
+    const cbytes = allBytes!.slice(28);
 
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
     const subtle = getSubtle();
