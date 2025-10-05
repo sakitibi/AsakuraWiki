@@ -40,6 +40,7 @@ export default function DecryptPage() {
         setResult(null);
         const decodedCipherText = decodeBase64Unicode(cipherText);
         const decodedCharset = decodeBase64Unicode(charset);
+        console.log("decoded: ", decodedCipherText, "and", decodedCharset);
         try {
             if (decodedCharset) {
                 setCharset(decodedCharset); // ユーザー入力 charset を反映
@@ -51,7 +52,6 @@ export default function DecryptPage() {
             setError(e.message || "復号に失敗しました");
         }
     }
-
     return (
         <>
             <Head>
