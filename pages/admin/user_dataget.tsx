@@ -73,11 +73,11 @@ export default function UserDataGet(){
                                             <span>ユーザー取得</span>
                                         </button>
                                     </form>
-                                    ({!!userData ? (
+                                    {!!userData ? (
                                         <>
-                                            <p>結果: {JSON.stringify(userData)}</p>
+                                            <p>結果: {JSON.stringify(userData, null, "\t")}</p>
                                         </>
-                                    ) : null})
+                                    ) : null}
                                 </div>
                             </>
                         ) : (
