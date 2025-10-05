@@ -27,7 +27,14 @@ export default function DecryptPage() {
     };
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
-
+    function decodeBase64Unicode(str:string) {
+        try{
+            const bytes = Uint8Array.from(atob(str), c => c.charCodeAt(0));
+            return new TextDecoder().decode(bytes);
+        } catch(e:any){
+            console.error("base64 decode error: ", e, "to", str);
+        }
+    }
     async function handleDecrypt() {
         setError(null);
         setResult(null);
@@ -63,12 +70,12 @@ export default function DecryptPage() {
                                     handleDecrypt();
                                 }}>
                                     <div style={{ marginBottom: "1rem" }}>
-                                        <label>暗号化文字列:</label>
+                                        <label>暗号化文字列(base64):</label>
                                         <textarea
                                             rows={6}
                                             style={{ width: "100%" }}
                                             value={cipherText}
-                                            onChange={(e) => setCipherText(e.target.value)}
+                                            onChange={(e) => setCipherText(decodeBase64Unicode(e.target.value)!)}
                                             required
                                         />
                                     </div>
@@ -85,16 +92,16 @@ export default function DecryptPage() {
                                     </div>
 
                                     <div style={{ marginBottom: "1rem" }}>
-                                        <label>Charset (省略するとデフォルト):</label>
+                                        <label>Charset (base64, 省略するとデフォルト):</label>
                                         <input
                                             type="text"
                                             style={{ width: "100%" }}
                                             value={charset}
-                                            onChange={(e) => setCharsetInput(e.target.value)}
+                                            onChange={(e) => setCharsetInput(decodeBase64Unicode(e.target.value)!)}
                                             required
                                         />
                                     </div>
-                                    <button type="submit">復号する</button>
+                                    <button type="submit"><span>復号する</span></button>
                                 </form>
                                 {result && (
                                     <div style={{ marginTop: "1rem", padding: "1rem", background: "#eef" }}>

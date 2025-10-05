@@ -28,14 +28,6 @@ export default function UserDataGet(){
     };
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
-    function decodeBase64Unicode(str:string) {
-        try{
-            const bytes = Uint8Array.from(atob(str), c => c.charCodeAt(0));
-            return new TextDecoder().decode(bytes);
-        } catch(e:any){
-            console.error("base64 decode error: ", e, "to", str);
-        }
-    }
     const UserGet = async() => {
         try{
             setLoading(true);
