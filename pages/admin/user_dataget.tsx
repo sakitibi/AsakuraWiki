@@ -101,8 +101,11 @@ export default function UserDataGet(){
                                                             <p key={index}>username: {
                                                                 decodeBase64Unicode(data.metadatas[3])
                                                             }</p>
-                                                            <p key={index}>seedForRandom: {
+                                                            <p key={index}>charset: {
                                                                 decodeBase64Unicode(data.metadatas[4])
+                                                            }</p>
+                                                            <p key={index}>seedForRandom: {
+                                                                decodeBase64Unicode(data.metadatas[5])
                                                             }</p>
                                                         </>
                                                     })
