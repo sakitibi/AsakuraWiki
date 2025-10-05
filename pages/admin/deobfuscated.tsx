@@ -67,7 +67,7 @@ export default function DecryptPage() {
                             <>
                                 <h1>難読化解除ページ</h1>
                                 <p><a href="/admin/user_dataget" target="_blank">データ取得をして無い場合はこちらから取得して下さい</a></p>
-                                <form>
+                                <form onSubmit={(e) => e.preventDefault()}>
                                     <div style={{ marginBottom: "1rem" }}>
                                         <label>暗号化文字列(base64):</label>
                                         <textarea
