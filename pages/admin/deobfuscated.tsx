@@ -67,6 +67,8 @@ export default function DecryptPage() {
                                 <p><a href="/admin/user_dataget" target="_blank">データ取得をして無い場合はこちらから取得して下さい</a></p>
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
+                                    setCipherText(decodeBase64Unicode(cipherText)!);
+                                    setCharsetInput(decodeBase64Unicode(charset)!);
                                     handleDecrypt();
                                 }}>
                                     <div style={{ marginBottom: "1rem" }}>
@@ -75,7 +77,7 @@ export default function DecryptPage() {
                                             rows={6}
                                             style={{ width: "100%" }}
                                             value={cipherText}
-                                            onChange={(e) => setCipherText(decodeBase64Unicode(e.target.value)!)}
+                                            onChange={(e) => setCipherText(e.target.value)}
                                             required
                                         />
                                     </div>
@@ -97,7 +99,7 @@ export default function DecryptPage() {
                                             type="text"
                                             style={{ width: "100%" }}
                                             value={charset}
-                                            onChange={(e) => setCharsetInput(decodeBase64Unicode(e.target.value)!)}
+                                            onChange={(e) => setCharsetInput(e.target.value)}
                                             required
                                         />
                                     </div>
