@@ -103,7 +103,7 @@ export default function UserDataGet(){
             const newSettings = new Map();
             for (let i = 0; i < userData.length; i++) {
                 const meta = userData[i].metadatas;
-                const decodedMeta5 = decodeBase64Unicode(meta[5]).replace(/\t\n/, "");
+                const decodedMeta5 = decodeBase64Unicode(meta[5]).replace(/\t\n/gu, "");
                 if (!decodedMeta5) continue; // スキップ
                 const [modStr, keyStr, typeStr] = decodedMeta5.split(",");
                 newSettings.set(i, {
