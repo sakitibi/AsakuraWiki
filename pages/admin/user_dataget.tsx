@@ -180,6 +180,9 @@ export default function UserDataGet(){
                                                     }</p>
                                                     <p>username: {decodeBase64Unicode(data.metadatas[3])}</p>
                                                     <p>charset: {settings.charset}</p>
+                                                    <p>MOD: {settings.charset}</p>
+                                                    <p>key: {settings.key}</p>
+                                                    <p>type: {settings.type}</p>
                                                 </div>
                                             );
                                         })}
