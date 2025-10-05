@@ -51,6 +51,7 @@ export default function DecryptPage() {
 
             // CHARSET 文字列を復号
             const plain = await decrypt(decodedCipherText!, passphrase);
+            console.log("plain: ", plain);
             setResult(plain);
         } catch (e: any) {
             console.error("error: ", e, "to: ", decodedCharset, "and", decodedCipherText);
