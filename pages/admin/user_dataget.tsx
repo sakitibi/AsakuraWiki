@@ -237,17 +237,17 @@ export default function UserDataGet(){
                                                         </button>
                                                     </p>
                                                     <p>MOD: {settings.mod}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5].split(",")[0]))}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5]).split(",")[0])}>
                                                             <span>MODをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>key: {settings.key}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5].split(",")[1]))}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5]).split(",")[1])}>
                                                             <span>keyをコピー</span>
                                                         </button>
                                                     </p>
                                                     <p>type: {settings.type}
-                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5].split(",")[2]))}>
+                                                        <button onClick={async() => await copyToClipboard(decodeBase64Unicode(data.metadatas[5]).split(",")[2])}>
                                                             <span>typeをコピー</span>
                                                         </button>
                                                     </p>
