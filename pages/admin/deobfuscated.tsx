@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { decrypt } from "@/lib/secureObfuscator";
+import { useEffect, useState } from "react";
+import { decrypt, encrypt } from "@/lib/secureObfuscator";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import Head from "next/head"
@@ -39,6 +39,22 @@ export default function DecryptPage() {
             setError(e.message || "復号に失敗しました");
         }
     }
+    // roundtrip テスト：encrypt -> decrypt を同一ランタイムで
+    async function roundtripTest() {
+        const pass = "test-pass-123";
+        const plain = "Hello 世界 — test";
+        try {
+            const cipher = await encrypt(plain, pass);   // あなたの encrypt
+            console.log("cipher (len):", cipher.length);
+            const got = await decrypt(cipher, pass);     // あなたの decrypt
+            console.log("roundtrip OK, got:", got);
+        } catch (e:any) {
+            console.error("roundtrip FAILED:", e);
+        }
+    }
+    useEffect(() => {
+        roundtripTest().catch(console.error);
+    }, []);
     return (
         <>
             <Head>
