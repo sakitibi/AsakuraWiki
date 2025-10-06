@@ -21,19 +21,24 @@ export function encrypt(
     birthday: string,
     username: string
 ): string[] {
-    const encryptedArray = [
-        encodeBase64(HexEncode(
-            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + email
-        )!),
-        encodeBase64(HexEncode(
-            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + password
-        )!),
-        encodeBase64(HexEncode(
-            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + birthday
-        )!),
-        encodeBase64(HexEncode(
-            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + username
-        )!),
+    const secureRandomStringArray:string[] = [
+        secureRandomString(Math.floor(Math.random() * 11) + 10),
+        secureRandomString(Math.floor(Math.random() * 11) + 10),
+        secureRandomString(Math.floor(Math.random() * 11) + 10),
+        secureRandomString(Math.floor(Math.random() * 11) + 10)
+    ];
+    const HexEncodedArray:string[] = [
+        HexEncode(secureRandomStringArray[0] + "<" + email)!,
+        HexEncode(secureRandomStringArray[1] + "<" + password)!,
+        HexEncode(secureRandomStringArray[2] + "<" + birthday)!,
+        HexEncode(secureRandomStringArray[3] + "<" + username)!
+    ];
+    console.log("HexEncodedArray: ", HexEncodedArray);
+    const encryptedArray:string[] = [
+        encodeBase64(HexEncodedArray[0]!),
+        encodeBase64(HexEncodedArray[1]!),
+        encodeBase64(HexEncodedArray[2]!),
+        encodeBase64(HexEncodedArray[3]!),
     ];
     console.log("encryptedArray: ", encryptedArray);
     return encryptedArray;
