@@ -20,7 +20,7 @@ function z85Encode(data: Uint8Array): string {
   if (data.length % 4 !== 0) throw new Error("Z85: data length must be multiple of 4");
   let s = "";
   for (let i = 0; i < data.length; i += 4) {
-    const v = (data[i] << 24) | (data[i+1] << 16) | (data[i+2] << 8) | (data[i+3]);
+    const v = (data[i] << 24) | (data[i+1] << 16) | (data[i+2] << 8) | data[i+3];
     let div = 85 ** 4;
     for (let j = 0; j < 5; j++) {
       s += Z85_CHARS[Math.floor(v / div) % 85];
@@ -59,7 +59,7 @@ function getRandomBytes(n: number): Uint8Array {
 }
 
 // ---- PBKDF2 / AES key helpers ----
-async function importKeyFromPassphrase(passphrase: string) {
+async function importKeyFromPassphrase(passphrase: string): Promise<CryptoKey> {
   const subtle = getSubtle();
   return subtle.importKey(
     "raw",
@@ -70,13 +70,13 @@ async function importKeyFromPassphrase(passphrase: string) {
   );
 }
 
-async function deriveAesKey(passphrase: string, salt: Uint8Array, iterations = DEFAULT_ITERATIONS, keyLength = DEFAULT_KEYLEN) {
+async function deriveAesKey(passphrase: string, salt: Uint8Array, iterations = DEFAULT_ITERATIONS, keyLength = DEFAULT_KEYLEN): Promise<CryptoKey> {
   const subtle = getSubtle();
   const passKey = await importKeyFromPassphrase(passphrase);
   return subtle.deriveKey(
     {
       name: "PBKDF2",
-      salt:salt as BufferSource,
+      salt: salt.buffer.slice(salt.byteOffset, salt.byteOffset + salt.byteLength) as BufferSource,
       iterations,
       hash: "SHA-256"
     },
@@ -135,5 +135,5 @@ export async function decrypt(cipherText: string, passphrase: string): Promise<s
   const subtle = getSubtle();
   const plainBuf = await subtle.decrypt({ name: "AES-GCM", iv }, key, data);
 
-  return new TextDecoder().decode(plainBuf);
+  return new TextDecoder().decode(new Uint8Array(plainBuf));
 }
