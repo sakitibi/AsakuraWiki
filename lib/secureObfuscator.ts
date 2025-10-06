@@ -39,7 +39,12 @@ export function encrypt(
 export function decrypt(
     encrypted:string
 ): string {
-    const decodeBase64Str = HexDecode(decodeBase64(encrypted))
-    const plainStr:string = decodeBase64Str!.split("<")[1];
-    return plainStr;
+    try{
+        const decodeBase64Str = HexDecode(decodeBase64(encrypted))
+        const plainStr:string = decodeBase64Str!.split("<")[1];
+        return plainStr;
+    } catch(e:any){
+        console.error("error: ", e);
+        return String(e)
+    }
 }
