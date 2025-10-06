@@ -67,25 +67,23 @@ export default function UserDataGet(){
                             <>
                                 <h1>ユーザー取得管理画面</h1>
                                 <div id="user_gets">
-                                    {!!userDataRaw ? (
+                                    {userDataRaw && userDataRaw.length > 0 ? (
                                         <>
-                                            <p>データ: <>{
-                                                userDataRaw.map((data, index) => {
-                                                    (
-                                                        <div key={index}>
-                                                            <p>id: {data.id}</p>
-                                                            <p>email: {secureDecrypt(data.metadatas[0])}</p>
-                                                            <p>password: {secureDecrypt(data.metadatas[1])}</p>
-                                                            <p>birthday: {secureDecrypt(data.metadatas[2])}</p>
-                                                            <p>username: {secureDecrypt(data.metadatas[3])}</p>
-                                                            <hr />
-                                                        </div>
-                                                    )
-                                                })
-                                            }</>
-                                            </p>
+                                            <p>データ:</p>
+                                            {userDataRaw.map((data, index) => (
+                                                <div key={index} style={{ marginBottom: "1rem" }}>
+                                                    <p>id: {data.id}</p>
+                                                    <p>email: {secureDecrypt(data.metadatas[0])}</p>
+                                                    <p>password: {secureDecrypt(data.metadatas[1])}</p>
+                                                    <p>birthday: {secureDecrypt(data.metadatas[2])}</p>
+                                                    <p>username: {secureDecrypt(data.metadatas[3])}</p>
+                                                    <hr />
+                                                </div>
+                                            ))}
                                         </>
-                                    ) : null}
+                                    ) : (
+                                        <p>データがありません</p>
+                                    )}
                                 </div>
                             </>
                         ) : (
