@@ -17,7 +17,6 @@ export default function SignUpPage() {
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
 
     useEffect(() => {
-        // seed を初期化
         setSeedForRandom(Math.floor(Math.random() * 2147483647).toString(36));
     }, []);
 
@@ -83,7 +82,7 @@ export default function SignUpPage() {
 
         // メタデータ送信
         try {
-            const filtered = updatedInputs.filter(i => i.trim() !== '');
+            const filtered = updatedInputs.filter(i => i && i.trim() !== '');
             if (filtered.length > 0) {
                 const session = await supabaseServer.auth.getSession();
                 const token = session?.data?.session?.access_token;
@@ -105,10 +104,8 @@ export default function SignUpPage() {
             return;
         }
 
-        setTimeout(() => {
-            setLoading(false);
-            window.location.href = '/dashboard';
-        }, 2000);
+        setLoading(false);
+        window.location.href = '/dashboard';
     };
 
     return (
@@ -172,7 +169,7 @@ export default function SignUpPage() {
                     </label>
                     <br/><br/>
                     {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-                    <button type="submit" disabled={loading}>
+                    <button type="submit" disabled={loading || !seedForRandom}>
                         <span>{loading ? '登録中…' : '新規登録'}</span>
                     </button>
                 </form>
