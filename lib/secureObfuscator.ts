@@ -32,13 +32,6 @@ export function encrypt(
         secureRandomString(Math.floor(Math.random() * 11) + 10)
     ];
     console.log("secureRandomStringArray: ", secureRandomStringArray);
-    const NoHexEncodedArray:string[] = [
-        `${secureRandomStringArray[0]}<${email}`,
-        `${secureRandomStringArray[1]}<${password}`,
-        `${secureRandomStringArray[2]}<${birthday}`,
-        `${secureRandomStringArray[3]}<${username}`
-    ];
-    console.log("NoHexEncodedArray: ", NoHexEncodedArray);
     const HexEncodedArray:string[] = [
         HexEncode(`${secureRandomStringArray[0]}<${email}`)!,
         HexEncode(`${secureRandomStringArray[1]}<${password}`)!,

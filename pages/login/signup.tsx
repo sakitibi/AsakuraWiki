@@ -72,7 +72,7 @@ export default function SignUpPage() {
         }
 
         setLoading(false);
-        //window.location.href = '/dashboard';
+        window.location.href = '/dashboard';
     };
 
     return (

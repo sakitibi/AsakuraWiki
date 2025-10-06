@@ -100,10 +100,10 @@ export default function Home() {
                                         .filter((wp) => wp.like_count > 0)
                                         .map((wp) => (
                                             <li key={`liked-${wp.wikiSlug}`}>
-                                            <Link href={`/wiki/${wp.wikiSlug}`}>
-                                                <button><strong>{wp.name} Wiki*</strong></button>
-                                            </Link>
-                                            <small>平均いいね数: {wp.like_count}人</small>
+                                                <Link href={`/wiki/${wp.wikiSlug}`}>
+                                                    <button><strong>{wp.name} Wiki*</strong></button>
+                                                </Link>
+                                                <small>平均いいね数: {wp.like_count}人</small>
                                             </li>
                                         ))
                                     }
