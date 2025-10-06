@@ -2,7 +2,7 @@ import { useUser, User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import { supabaseServer } from '@/lib/supabaseClientServer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function DashboardPage() {
     const user:User | null = useUser();
@@ -23,7 +23,9 @@ export default function DashboardPage() {
             setLoading(false);
         }
     }
-    setLoading(false);
+    useEffect(() => {
+        setLoading(false);
+    }, []);
     return (
         <>
             <Head>
