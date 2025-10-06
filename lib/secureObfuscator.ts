@@ -40,7 +40,7 @@ export function decrypt(
     encrypted:string
 ): string {
     try{
-        const decodeBase64Str = HexDecode(decodeBase64(encrypted))
+        const decodeBase64Str = decodeBase64(HexDecode(encrypted)!)
         console.log("decodeBase64Str: ", decodeBase64Str);
         const plainStr:string = decodeBase64Str!.split("<")[1];
         console.log("plainStr: ", plainStr);
