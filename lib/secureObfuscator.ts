@@ -3,8 +3,8 @@
 import {
     encodeBase64Unicode as encodeBase64,
     decodeBase64Unicode as decodeBase64,
-    utf8ToHex as HexDecode,
-    hexToUtf8 as HexEncode
+    utf8ToHex as HexEncode,
+    hexToUtf8 as HexDecode
 } from "@/lib/base64";
 
 function secureRandomString(length:number) {
