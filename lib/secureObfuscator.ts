@@ -4,7 +4,8 @@
 // TypeScript (Next.js) 向け — ブラウザと Node (Next API routes) の両対応。
 
 // ---------- CHARSET (可視文字のみ) ----------
-const DEFAULT_CHARSET = `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@-_`;
+const DEFAULT_CHARSET = `0123456789abcdefghijklmnopqrstuvwxyz
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ@-_.,{[]}:;^~|=!"#$%&'()<>?/\\\`*+`.replace(/\t\n/gu, "");
 let CHARSET = DEFAULT_CHARSET;
 let CHAR_IDX: Record<string, number> = buildIndex(CHARSET);
 
