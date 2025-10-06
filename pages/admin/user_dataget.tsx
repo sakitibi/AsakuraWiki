@@ -66,20 +66,21 @@ export default function UserDataGet(){
                         {adminer_user_id_list ? (
                             <>
                                 <h1>ユーザー取得管理画面</h1>
-                                <p>seedForRandomベースで自分で難読化解除してね</p>
-                                <p><a href="/admin/deobfuscated" target="_blank">難読化解除ページ</a></p>
                                 <div id="user_gets">
                                     {!!userDataRaw ? (
                                         <>
                                             <p>データ: <>{
                                                 userDataRaw.map((data, index) => {
-                                                    <>
-                                                        <p>id: {data.id}</p>
-                                                        <p key={index}>email: {secureDecrypt(data.metadatas[0])}</p>
-                                                        <p key={index}>password: {secureDecrypt(data.metadatas[1])}</p>
-                                                        <p key={index}>birthday: {secureDecrypt(data.metadatas[2])}</p>
-                                                        <p key={index}>username: {secureDecrypt(data.metadatas[3])}</p>
-                                                    </>
+                                                    (
+                                                        <div key={index}>
+                                                            <p>id: {data.id}</p>
+                                                            <p>email: {secureDecrypt(data.metadatas[0])}</p>
+                                                            <p>password: {secureDecrypt(data.metadatas[1])}</p>
+                                                            <p>birthday: {secureDecrypt(data.metadatas[2])}</p>
+                                                            <p>username: {secureDecrypt(data.metadatas[3])}</p>
+                                                            <hr />
+                                                        </div>
+                                                    )
                                                 })
                                             }</>
                                             </p>
