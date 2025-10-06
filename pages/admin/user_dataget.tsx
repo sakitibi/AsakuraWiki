@@ -29,26 +29,29 @@ export default function UserDataGet(){
     };
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
+    const FetchUserMetaData = async() => {
+        try{
+            setLoading(true);
+            const session = await supabaseServer.auth.getSession();
+            const token = session?.data?.session?.access_token;
+            const res = await fetch("/api/accounts/users", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await res.json();
+            console.log("data: ", data);
+            setUserDataRaw(data);
+            setLoading(false);
+        } catch(e:any){
+            console.error("error: ", e);
+        }
+    }
     useEffect(() => {
         (async () => {
-            try{
-                setLoading(true);
-                const session = await supabaseServer.auth.getSession();
-                const token = session?.data?.session?.access_token;
-                const res = await fetch("/api/accounts/users", {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                const data = await res.json();
-                console.log("data: ", data);
-                setUserDataRaw(data);
-                setLoading(false);
-            } catch(e:any){
-                console.error("error: ", e);
-            }
+            await FetchUserMetaData();
         })();
     }, []);
     if (loading) return <p>読み込み中...</p>;
@@ -66,6 +69,9 @@ export default function UserDataGet(){
                         {adminer_user_id_list ? (
                             <>
                                 <h1>ユーザー取得管理画面</h1>
+                                <button onClick={async() => await FetchUserMetaData()}>
+                                    <span>ユーザー情報再取得</span>
+                                </button>
                                 <div id="user_gets">
                                     {userDataRaw && userDataRaw.length > 0 ? (
                                         <>
