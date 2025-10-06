@@ -97,25 +97,26 @@ export async function encrypt(plain: string, passphrase: string, opts?: EncryptO
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
 
     const cipherBuf = new Uint8Array(await getSubtle().encrypt(
-        { name: "AES-GCM", iv:iv as BufferSource },
+        { name: "AES-GCM", iv: iv as BufferSource },
         key,
         new TextEncoder().encode(plain)
     ));
 
     // salt + iv + cipher
-    let out = new Uint8Array(salt.length + iv.length + cipherBuf.length);
+    const out = new Uint8Array(salt.length + iv.length + cipherBuf.length);
     out.set(salt, 0);
     out.set(iv, salt.length);
     out.set(cipherBuf, salt.length + iv.length);
 
-    // 4バイト倍数にパディング + 最後の1バイトに padLen を保存
-    const padLen = (4 - (out.length % 4)) % 4;
-    const padded = new Uint8Array(out.length + padLen + 1);
+    // padLen を含めて全体を 4 の倍数に
+    const totalLenWithPad = out.length + 1; // 最後の1バイトに padLen を入れる
+    const padLen = (4 - (totalLenWithPad % 4)) % 4;
+    const padded = new Uint8Array(totalLenWithPad + padLen);
     padded.set(out, 0);
-    // パディング0で埋める
-    for (let i = 0; i < padLen; i++) padded[out.length + i] = 0;
+    // パディングは 0
+    for (let i = 0; i < padLen; i++) padded[out.length + 1 + i] = 0;
     // 最後の1バイトに padLen
-    padded[padded.length - 1] = padLen;
+    padded[out.length] = padLen;
 
     return z85Encode(padded);
 }
