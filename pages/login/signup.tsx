@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { notuseUsername } from '@/utils/user_list';
 import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
@@ -11,30 +11,9 @@ export default function SignUpPage() {
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
-    const [seedForRandom, setSeedForRandom] = useState<string | null>(null);
     const [userMeta, setUserMeta] = useState<any[]>([]);
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
-
-    useEffect(() => {
-        setSeedForRandom(Math.floor(Math.random() * 2147483647).toString(36));
-    }, []);
-
-    const showError = (e: unknown) => console.error(e);
-
-    // 安全に暗号化する関数
-    async function onRun(text: string): Promise<string> {
-        if (!seedForRandom) throw new Error("暗号化用のシードがまだ初期化されていません");
-        try {
-            const result = await secureEncrypt(text, seedForRandom);
-            if (!result) throw new Error("暗号化に失敗しました");
-            return result;
-        } catch (e) {
-            showError(e);
-            throw e;
-        }
-    }
-
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -46,27 +25,8 @@ export default function SignUpPage() {
             return;
         }
 
-        if (!seedForRandom) {
-            setErrorMsg('暗号化用のシードがまだ初期化されていません');
-            setLoading(false);
-            return;
-        }
-
         // メタデータ暗号化
-        let updatedInputs: string[];
-        try {
-            updatedInputs = [
-                await onRun(email),
-                await onRun(password),
-                await onRun(birthday),
-                await onRun(username),
-                seedForRandom
-            ];
-        } catch (e) {
-            setErrorMsg('暗号化に失敗しました');
-            setLoading(false);
-            return;
-        }
+        const updatedInputs:string[] = secureEncrypt(email, password, birthday, username);
 
         // Supabase にユーザー登録（email/passwordは平文でOK）
         const { data, error } = await supabaseServer.auth.signUp({
@@ -175,7 +135,7 @@ export default function SignUpPage() {
                     </label>
                     <br/><br/>
                     {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-                    <button type="submit" disabled={loading || !seedForRandom}>
+                    <button type="submit" disabled={loading}>
                         <span>{loading ? '登録中…' : '新規登録'}</span>
                     </button>
                 </form>

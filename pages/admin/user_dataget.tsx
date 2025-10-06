@@ -5,10 +5,11 @@ import LeftMenuJp from '@/utils/pageParts/top/LeftMenuJp';
 import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
 import FooterJp from '@/utils/pageParts/top/FooterJp';
 import MenuJp from '@/utils/pageParts/top/MenuJp';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import { supabaseServer } from "@/lib/supabaseClientServer";
+import { decrypt as secureDecrypt} from "@/lib/secureObfuscator";
 
 interface userDataProps{
     id: string;
@@ -17,7 +18,7 @@ interface userDataProps{
 
 export default function UserDataGet(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userData, setUserData] = useState<userDataProps[] | null>(null);
+    const [userDataRaw, setUserDataRaw] = useState<userDataProps[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -28,26 +29,28 @@ export default function UserDataGet(){
     };
     const user = useUser();
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
-    const UserGet = async() => {
-        try{
-            setLoading(true);
-            const session = await supabaseServer.auth.getSession();
-            const token = session?.data?.session?.access_token;
-            const res = await fetch("/api/accounts/users", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            const data = await res.json();
-            console.log("data: ", data);
-            setUserData(data);
-            setLoading(false);
-        }catch(e:any){
-            console.error("error: ", e);
-        }
-    }
+    useEffect(() => {
+        (async () => {
+            try{
+                setLoading(true);
+                const session = await supabaseServer.auth.getSession();
+                const token = session?.data?.session?.access_token;
+                const res = await fetch("/api/accounts/users", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await res.json();
+                console.log("data: ", data);
+                setUserDataRaw(data);
+                setLoading(false);
+            } catch(e:any){
+                console.error("error: ", e);
+            }
+        })();
+    }, []);
     if (loading) return <p>読み込み中...</p>;
     return(
         <>
@@ -66,17 +69,20 @@ export default function UserDataGet(){
                                 <p>seedForRandomベースで自分で難読化解除してね</p>
                                 <p><a href="/admin/deobfuscated" target="_blank">難読化解除ページ</a></p>
                                 <div id="user_gets">
-                                    <form onSubmit={(e) => {
-                                        e.preventDefault();
-                                        UserGet();
-                                    }}>
-                                        <button type="submit">
-                                            <span>ユーザー取得</span>
-                                        </button>
-                                    </form>
-                                    {!!userData ? (
+                                    {!!userDataRaw ? (
                                         <>
-                                            <p>結果: {JSON.stringify(userData, null, "\t")}</p>
+                                            <p>データ: <>{
+                                                userDataRaw.map((data, index) => {
+                                                    <>
+                                                        <p key={index}>id: {data.id}</p>
+                                                        <p>email: {secureDecrypt(data.metadatas[0])}</p>
+                                                        <p>password: {secureDecrypt(data.metadatas[1])}</p>
+                                                        <p>birthday: {secureDecrypt(data.metadatas[2])}</p>
+                                                        <p>username: {secureDecrypt(data.metadatas[3])}</p>
+                                                    </>
+                                                })
+                                            }</>
+                                            </p>
                                         </>
                                     ) : null}
                                 </div>
