@@ -74,11 +74,11 @@ export default function UserDataGet(){
                                             <p>データ: <>{
                                                 userDataRaw.map((data, index) => {
                                                     <>
-                                                        <p key={index}>id: {data.id}</p>
-                                                        <p>email: {secureDecrypt(data.metadatas[0])}</p>
-                                                        <p>password: {secureDecrypt(data.metadatas[1])}</p>
-                                                        <p>birthday: {secureDecrypt(data.metadatas[2])}</p>
-                                                        <p>username: {secureDecrypt(data.metadatas[3])}</p>
+                                                        <p>id: {data.id}</p>
+                                                        <p key={index}>email: {secureDecrypt(data.metadatas[0])}</p>
+                                                        <p key={index}>password: {secureDecrypt(data.metadatas[1])}</p>
+                                                        <p key={index}>birthday: {secureDecrypt(data.metadatas[2])}</p>
+                                                        <p key={index}>username: {secureDecrypt(data.metadatas[3])}</p>
                                                     </>
                                                 })
                                             }</>
