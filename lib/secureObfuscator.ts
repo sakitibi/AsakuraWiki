@@ -21,12 +21,17 @@ export function encrypt(
     birthday: string,
     username: string
 ): string[] {
+    console.log("email: ", email);
+    console.log("password: ", password);
+    console.log("birthday: ", birthday);
+    console.log("username: ", username);
     const secureRandomStringArray:string[] = [
         secureRandomString(Math.floor(Math.random() * 11) + 10),
         secureRandomString(Math.floor(Math.random() * 11) + 10),
         secureRandomString(Math.floor(Math.random() * 11) + 10),
         secureRandomString(Math.floor(Math.random() * 11) + 10)
     ];
+    console.log("secureRandomStringArray: ", secureRandomStringArray);
     const HexEncodedArray:string[] = [
         HexEncode(`${secureRandomStringArray[0]}<${email}`)!,
         HexEncode(`${secureRandomStringArray[1]}<${password}`)!,
