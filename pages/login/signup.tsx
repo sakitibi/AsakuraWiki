@@ -52,6 +52,7 @@ export default function SignUpPage() {
             return;
         }
 
+        // メタデータ暗号化
         let updatedInputs: string[];
         try {
             updatedInputs = [
@@ -67,11 +68,16 @@ export default function SignUpPage() {
             return;
         }
 
-        // Supabase にユーザー登録
+        // Supabase にユーザー登録（email/passwordは平文でOK）
         const { data, error } = await supabaseServer.auth.signUp({
             email,
             password,
-            options: { data: { username, birthday } }
+            options: {
+                data: {
+                    username,
+                    birthday
+                }
+            }
         });
 
         if (error || !data.user) {
@@ -80,7 +86,7 @@ export default function SignUpPage() {
             return;
         }
 
-        // メタデータ送信
+        // 暗号化メタデータ送信
         try {
             const filtered = updatedInputs.filter(i => i && i.trim() !== '');
             if (filtered.length > 0) {

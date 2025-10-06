@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { decrypt, encrypt } from "@/lib/secureObfuscator";
+import { useState } from "react";
+import { decrypt } from "@/lib/secureObfuscator";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import Head from "next/head"

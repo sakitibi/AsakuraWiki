@@ -1,54 +1,7 @@
-// AES-GCM + PBKDF2 + Z85 (0x21–0x7E printable ASCII) 安全保存版
-interface EncryptOptsProps {
-    iterations?: number;
-    keyLength?: 256 | 128;
-}
-
+// AES-GCM + PBKDF2 + Base64 安全保存版
 const DEFAULT_ITERATIONS = 200_000;
 const DEFAULT_KEYLEN = 256;
 
-// ---- Z85 encode / decode ----
-const Z85_CHARS = (() => {
-    let s = "";
-    for (let i = 0x21; i <= 0x7E; i++) s += String.fromCharCode(i);
-    return s;
-})();
-const Z85_VALUES: Record<string, number> = {};
-for (let i = 0; i < Z85_CHARS.length; i++) Z85_VALUES[Z85_CHARS[i]] = i;
-
-function z85Encode(data: Uint8Array): string {
-    if (data.length % 4 !== 0) throw new Error("Z85: data length must be multiple of 4");
-    let s = "";
-    for (let i = 0; i < data.length; i += 4) {
-        const v = (data[i] << 24) | (data[i+1] << 16) | (data[i+2] << 8) | data[i+3];
-        let div = 85 ** 4;
-        for (let j = 0; j < 5; j++) {
-            s += Z85_CHARS[Math.floor(v / div) % 85];
-            div /= 85;
-        }
-    }
-    return s;
-}
-
-function z85Decode(s: string): Uint8Array {
-    if (s.length % 5 !== 0) throw new Error("Z85: string length must be multiple of 5");
-    const out = new Uint8Array((s.length / 5) * 4);
-    for (let i = 0; i < s.length; i += 5) {
-        let v = 0;
-        for (let j = 0; j < 5; j++) {
-            const val = Z85_VALUES[s[i + j]];
-            if (val === undefined) throw new Error(`Invalid Z85 char: ${s[i + j]}`);
-            v = v * 85 + val;
-        }
-        out[(i/5)*4 + 0] = (v >>> 24) & 0xFF;
-        out[(i/5)*4 + 1] = (v >>> 16) & 0xFF;
-        out[(i/5)*4 + 2] = (v >>> 8) & 0xFF;
-        out[(i/5)*4 + 3] = v & 0xFF;
-    }
-    return out;
-}
-
-// ---- SubtleCrypto helpers ----
 function getSubtle(): SubtleCrypto {
     if (!globalThis.crypto?.subtle) throw new Error("SubtleCrypto not available");
     return globalThis.crypto.subtle;
@@ -75,7 +28,7 @@ async function deriveAesKey(passphrase: string, salt: Uint8Array, iterations = D
     return getSubtle().deriveKey(
         {
             name: "PBKDF2",
-            salt: salt.buffer.slice(salt.byteOffset, salt.byteOffset + salt.byteLength) as BufferSource,
+            salt:salt as BufferSource,
             iterations,
             hash: "SHA-256"
         },
@@ -86,51 +39,48 @@ async function deriveAesKey(passphrase: string, salt: Uint8Array, iterations = D
     );
 }
 
+function arrayBufferToBase64(buf: ArrayBuffer): string {
+    let binary = '';
+    const bytes = new Uint8Array(buf);
+    const chunkSize = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.subarray(i, i + chunkSize);
+        binary += String.fromCharCode(...chunk);
+    }
+    return btoa(binary);
+}
+
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+    const binary = atob(base64);
+    const buf = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) buf[i] = binary.charCodeAt(i);
+    return buf.buffer;
+}
+
 // ---- Encrypt / Decrypt ----
-export async function encrypt(plain: string, passphrase: string, opts?: EncryptOptsProps): Promise<string> {
-    if (!passphrase) throw new Error("passphrase required");
-
-    const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
-    const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
-
+export async function encrypt(plain: string, passphrase: string): Promise<string> {
     const salt = getRandomBytes(16);
     const iv = getRandomBytes(12);
-    const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
+    const key = await deriveAesKey(passphrase, salt);
 
-    // undefined を避ける
-    const inputBytes = new TextEncoder().encode(plain ?? "");
-
-    const cipherBuf = new Uint8Array(await getSubtle().encrypt(
+    const cipherBuf = await getSubtle().encrypt(
         { name: "AES-GCM", iv:iv as BufferSource },
         key,
-        inputBytes
-    ));
+        new TextEncoder().encode(plain ?? "")
+    );
 
-    // salt + iv + cipher
-    let out = new Uint8Array(salt.length + iv.length + cipherBuf.length);
-    out.set(salt, 0);
-    out.set(iv, salt.length);
-    out.set(cipherBuf, salt.length + iv.length);
+    const combined = new Uint8Array(salt.length + iv.length + cipherBuf.byteLength);
+    combined.set(salt, 0);
+    combined.set(iv, salt.length);
+    combined.set(new Uint8Array(cipherBuf), salt.length + iv.length);
 
-    // 4 の倍数にパディング（0埋め）
-    const padLen = (4 - (out.length % 4)) % 4;
-    if (padLen > 0) {
-        const padded = new Uint8Array(out.length + padLen);
-        padded.set(out, 0);
-        out = padded;
-    }
-
-    return z85Encode(out);
+    return arrayBufferToBase64(combined.buffer);
 }
 
 export async function decrypt(cipherText: string, passphrase: string): Promise<string> {
-    if (!passphrase) throw new Error("passphrase required");
-
-    let allBytes = z85Decode(cipherText);
-
+    const allBytes = new Uint8Array(base64ToArrayBuffer(cipherText));
     if (allBytes.length < 16 + 12) throw new Error("ciphertext too short");
 
-    // salt + iv
     const salt = allBytes.slice(0, 16);
     const iv = allBytes.slice(16, 28);
     const data = allBytes.slice(28);
@@ -138,5 +88,5 @@ export async function decrypt(cipherText: string, passphrase: string): Promise<s
     const key = await deriveAesKey(passphrase, salt);
     const plainBuf = await getSubtle().decrypt({ name: "AES-GCM", iv }, key, data);
 
-    return new TextDecoder().decode(new Uint8Array(plainBuf));
+    return new TextDecoder().decode(plainBuf);
 }
