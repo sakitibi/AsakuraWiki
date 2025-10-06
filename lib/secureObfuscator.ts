@@ -1,8 +1,5 @@
 // /lib/secureObfuscator.ts
 // AES-GCM + PBKDF2 + Z85 (0x21–0x7E printable ASCII) 安全保存用
-
-import { TextEncoder, TextDecoder } from "util";
-
 interface EncryptOptsProps {
   iterations?: number;
   keyLength?: 256 | 128;
