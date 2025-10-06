@@ -97,40 +97,37 @@ export async function encrypt(plain: string, passphrase: string, opts?: EncryptO
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
 
     const cipherBuf = new Uint8Array(await getSubtle().encrypt(
-        { name: "AES-GCM", iv: iv as BufferSource },
+        { name: "AES-GCM", iv:iv as BufferSource },
         key,
         new TextEncoder().encode(plain)
     ));
 
     // salt + iv + cipher
-    const out = new Uint8Array(salt.length + iv.length + cipherBuf.length);
+    let out = new Uint8Array(salt.length + iv.length + cipherBuf.length);
     out.set(salt, 0);
     out.set(iv, salt.length);
     out.set(cipherBuf, salt.length + iv.length);
 
-    // padLen を含めて全体を 4 の倍数に
-    const totalLenWithPad = out.length + 1; // 最後の1バイトに padLen を入れる
-    const padLen = (4 - (totalLenWithPad % 4)) % 4;
-    const padded = new Uint8Array(totalLenWithPad + padLen);
-    padded.set(out, 0);
-    // パディングは 0
-    for (let i = 0; i < padLen; i++) padded[out.length + 1 + i] = 0;
-    // 最後の1バイトに padLen
-    padded[out.length] = padLen;
+    // 4 の倍数にパディング（0 で埋めるだけ）
+    const padLen = (4 - (out.length % 4)) % 4;
+    if (padLen > 0) {
+        const padded = new Uint8Array(out.length + padLen);
+        padded.set(out, 0);
+        return z85Encode(padded);
+    }
 
-    return z85Encode(padded);
+    return z85Encode(out);
 }
 
 export async function decrypt(cipherText: string, passphrase: string): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
 
     let allBytes = z85Decode(cipherText);
-    if (allBytes.length < 1) throw new Error("ciphertext too short");
 
-    // 最後の1バイトから padLen を取得
-    const padLen = allBytes[allBytes.length - 1];
-    if (padLen > 0) allBytes = allBytes.slice(0, allBytes.length - padLen - 1);
-    else allBytes = allBytes.slice(0, allBytes.length - 1);
+    // 後ろのパディング 0 を無視
+    while (allBytes.length > 28 && allBytes[allBytes.length - 1] === 0) {
+        allBytes = allBytes.slice(0, allBytes.length - 1);
+    }
 
     if (allBytes.length < 16 + 12 + 1) throw new Error("ciphertext too short");
 
