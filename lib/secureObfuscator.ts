@@ -21,29 +21,32 @@ export function encrypt(
     birthday: string,
     username: string
 ): string[] {
-    const randomStrArray:string[] = [
-        secureRandomString(Math.floor(Math.random() * 11) + 10),
-        secureRandomString(Math.floor(Math.random() * 11) + 10),
-        secureRandomString(Math.floor(Math.random() * 11) + 10),
-        secureRandomString(Math.floor(Math.random() * 11) + 10),
+    const encryptedArray = [
+        encodeBase64(HexEncode(
+            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + email
+        )!),
+        encodeBase64(HexEncode(
+            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + password
+        )!),
+        encodeBase64(HexEncode(
+            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + birthday
+        )!),
+        encodeBase64(HexEncode(
+            secureRandomString(Math.floor(Math.random() * 11) + 10) + "<" + username
+        )!),
     ];
-    const randomStr:string = JSON.stringify(randomStrArray);
-    return [
-        encodeBase64(HexEncode(randomStr.split("\",\"")[0] + "<" + email)!),
-        encodeBase64(HexEncode(randomStr.split("\",\"")[1] + "<" + password)!),
-        encodeBase64(HexEncode(randomStr.split("\",\"")[2] + "<" + birthday)!),
-        encodeBase64(HexEncode(randomStr.split("\",\"")[3] + "<" + username)!),
-    ];
+    console.log("encryptedArray: ", encryptedArray);
+    return encryptedArray;
 }
 
 export function decrypt(
     encrypted:string
 ): string {
     try{
-        const decodeBase64Str = decodeBase64(HexDecode(encrypted)!)
+        const decodeBase64Str = HexDecode(decodeBase64(encrypted))
         console.log("decodeBase64Str: ", decodeBase64Str);
         const plainStr:string = decodeBase64Str!.split("<")[1];
-        console.log("plainStr: ", plainStr);
+        console.log("plainStr: ", plainStr)
         return plainStr;
     } catch(e:any){
         console.error("error: ", e);

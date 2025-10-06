@@ -49,6 +49,7 @@ export default function SignUpPage() {
         // 暗号化メタデータ送信
         try {
             const filtered = updatedInputs.filter(i => i && i.trim() !== '');
+            console.log("filtered: ", filtered);
             if (filtered.length > 0) {
                 const session = await supabaseServer.auth.getSession();
                 const token = session?.data?.session?.access_token;
@@ -71,7 +72,7 @@ export default function SignUpPage() {
         }
 
         setLoading(false);
-        window.location.href = '/dashboard';
+        //window.location.href = '/dashboard';
     };
 
     return (
