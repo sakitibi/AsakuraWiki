@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { decrypt, setCharset } from "@/lib/secureObfuscator";
+import { decrypt } from "@/lib/secureObfuscator";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import Head from "next/head"
@@ -15,7 +15,6 @@ export default function DecryptPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [cipherText, setCipherText] = useState("");
     const [passphrase, setPassphrase] = useState("");
-    const [charset, setCharsetInput] = useState("");
     const [result, setResult] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const handleClick = () => {
@@ -31,16 +30,12 @@ export default function DecryptPage() {
         setError(null);
         setResult(null);
         try {
-            if (charset) {
-                setCharset(charset); // ユーザー入力 charset を反映
-            }
-
             // CHARSET 文字列を復号
             const plain = await decrypt(cipherText, passphrase);
             console.log("plain: ", plain);
             setResult(plain);
         } catch (e: any) {
-            console.error("error: ", e, "to: ", charset, "and", cipherText);
+            console.error("error: ", e, "to: ", cipherText);
             setError(e.message || "復号に失敗しました");
         }
     }
@@ -78,17 +73,6 @@ export default function DecryptPage() {
                                             style={{ width: "100%" }}
                                             value={passphrase}
                                             onChange={(e) => setPassphrase(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div style={{ marginBottom: "1rem" }}>
-                                        <label>Charset (省略するとデフォルト):</label>
-                                        <input
-                                            type="text"
-                                            style={{ width: "100%" }}
-                                            value={charset}
-                                            onChange={(e) => setCharsetInput(e.target.value)}
                                             required
                                         />
                                     </div>

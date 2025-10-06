@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { notuseUsername } from '@/utils/user_list';
 import {
-    encrypt as secureEncrypt,
-    setCharset,
-    randomizeCharset,
+    encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 
@@ -16,8 +14,6 @@ export default function SignUpPage() {
     const [username, setUsername] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
-    const [charset, setCharsetLocal] = useState<string>(`0123456789abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ@-_.,{[]}:;^~|=!"#$%&'()<>?/\\\`*+`.replace(/\t\n/gu, ""));
     const [seedForRandom, setSeedForRandom] = useState<string>("");
 
     const notuseUser_list_found:RegExp | undefined = notuseUsername.find(value => username.match(value));
@@ -32,39 +28,9 @@ export default function SignUpPage() {
             showError(e);
         }
     }
-
-    function InitCharset(): string {
-        const chars = charset.split('');
-        for (let i = chars.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [chars[i], chars[j]] = [chars[j], chars[i]];
-        }
-        setCharsetLocal(chars.join(''));
-        return chars.join('');
-    }
-
-    function onSetCharset() {
-        try {
-            setCharset(charset);
-        } catch (e) {
-            showError(e);
-        }
-    }
-
-    function onRandomize() {
-        randomizeCharset(seedForRandom);
-    }
     useEffect(() => {
-        InitCharset();
         setSeedForRandom(Math.floor(Math.random() * 2147483647).toString(36));
     }, []);
-    useEffect(() => {
-        onSetCharset();
-    }, [charset]);
-    useEffect(() => {
-        onRandomize();
-    }, [seedForRandom]);
-
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -81,7 +47,6 @@ export default function SignUpPage() {
             await onRun(password) as string,
             await onRun(birthday) as string,
             await onRun(username) as string,
-            charset,
             seedForRandom
         ];
         // 先に Supabase でユーザー登録
