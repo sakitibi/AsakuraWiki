@@ -119,26 +119,62 @@ export default function SignUpPage() {
             <main style={{ padding: '2rem', maxWidth: 500 }}>
                 <h1>📝 新規登録</h1>
                 <form onSubmit={handleSignUp}>
-                    <input type="email" placeholder="メールアドレス" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', padding: '0.5rem' }} />
+                    <input
+                        type="email"
+                        placeholder="メールアドレス"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '0.5rem' }}
+                    />
                     <br /><br />
-                    <input type="password" placeholder="パスワード" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', padding: '0.5rem' }} />
+                    <input 
+                        type="password"
+                        placeholder="パスワード"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '0.5rem' }}
+                    />
                     <br /><br />
-                    <input type="date" placeholder="生年月日" value={birthday} onChange={e => setBirthday(e.target.value)} required style={{ width: '100%', padding: '0.5rem' }} />
+                    <input
+                        type="date"
+                        placeholder="生年月日"
+                        value={birthday}
+                        onChange={e => setBirthday(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '0.5rem' }}
+                    />
                     <br /><br />
-                    <input type="text" placeholder="ユーザー名" value={username} onChange={e => setUsername(e.target.value)} required style={{ width: '100%', padding: '0.5rem' }} />
+                    <input
+                        type="text"
+                        placeholder="ユーザー名"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '0.5rem' }}
+                    />
                     <br /><br />
                     <label>
                         <a href="/policies">あさクラWiki利用規約</a>に同意
-                        <input type="checkbox" required />
+                        <input
+                            type="checkbox"
+                            required
+                        />
                     </label>
                     <br /><br />
                     <label>
                         <a href="https://sakitibi-com9.webnode.jp/page/10">13nin利用規約</a>に同意
-                        <input type="checkbox" required />
+                        <input
+                            type="checkbox" 
+                            required
+                        />
                     </label>
                     <br/><br/>
                     {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-                    <button type="submit" disabled={loading}>{loading ? '登録中…' : '新規登録'}</button>
+                    <button type="submit" disabled={loading}>
+                        <span>{loading ? '登録中…' : '新規登録'}</span>
+                    </button>
                 </form>
             </main>
         </>
