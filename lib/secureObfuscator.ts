@@ -89,6 +89,7 @@ async function deriveAesKey(passphrase: string, salt: Uint8Array, iterations = D
 // ---- Encrypt / Decrypt ----
 export async function encrypt(plain: string, passphrase: string, opts?: EncryptOptsProps): Promise<string> {
     if (!passphrase) throw new Error("passphrase required");
+
     const iterations = opts?.iterations ?? DEFAULT_ITERATIONS;
     const keyBits = opts?.keyLength ?? DEFAULT_KEYLEN;
 
@@ -96,10 +97,13 @@ export async function encrypt(plain: string, passphrase: string, opts?: EncryptO
     const iv = getRandomBytes(12);
     const key = await deriveAesKey(passphrase, salt, iterations, keyBits);
 
+    // undefined を避ける
+    const inputBytes = new TextEncoder().encode(plain ?? "");
+
     const cipherBuf = new Uint8Array(await getSubtle().encrypt(
         { name: "AES-GCM", iv:iv as BufferSource },
         key,
-        new TextEncoder().encode(plain)
+        inputBytes
     ));
 
     // salt + iv + cipher
@@ -108,12 +112,12 @@ export async function encrypt(plain: string, passphrase: string, opts?: EncryptO
     out.set(iv, salt.length);
     out.set(cipherBuf, salt.length + iv.length);
 
-    // 4 の倍数にパディング（0 で埋めるだけ）
+    // 4 の倍数にパディング（0埋め）
     const padLen = (4 - (out.length % 4)) % 4;
     if (padLen > 0) {
         const padded = new Uint8Array(out.length + padLen);
         padded.set(out, 0);
-        return z85Encode(padded);
+        out = padded;
     }
 
     return z85Encode(out);
@@ -124,13 +128,9 @@ export async function decrypt(cipherText: string, passphrase: string): Promise<s
 
     let allBytes = z85Decode(cipherText);
 
-    // 後ろのパディング 0 を無視
-    while (allBytes.length > 28 && allBytes[allBytes.length - 1] === 0) {
-        allBytes = allBytes.slice(0, allBytes.length - 1);
-    }
+    if (allBytes.length < 16 + 12) throw new Error("ciphertext too short");
 
-    if (allBytes.length < 16 + 12 + 1) throw new Error("ciphertext too short");
-
+    // salt + iv
     const salt = allBytes.slice(0, 16);
     const iv = allBytes.slice(16, 28);
     const data = allBytes.slice(28);
