@@ -1,6 +1,6 @@
 import styles from 'css/index.min.module.css';
 
-export default function RightMenuJp(){
+export default function Rightjp/Menu(){
     return(
         <aside className={`${styles.lContents__aside} ${styles.childrenSpaced}`}>
             <div className={styles.pForBeginner}>

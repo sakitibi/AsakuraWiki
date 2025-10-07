@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import FooterJp from '@/utils/pageParts/top/FooterJp';
+import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
 export default function LoginPage() {
     return (

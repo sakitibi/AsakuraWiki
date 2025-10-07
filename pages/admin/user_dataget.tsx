@@ -1,10 +1,10 @@
 import Head from "next/head"
 import styles from 'css/index.min.module.css';
-import HeaderJp from '@/utils/pageParts/top/HeaderJp';
-import LeftMenuJp from '@/utils/pageParts/top/LeftMenuJp';
-import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
-import FooterJp from '@/utils/pageParts/top/FooterJp';
-import MenuJp from '@/utils/pageParts/top/MenuJp';
+import HeaderJp from '@/utils/pageParts/top/jp/Header';
+import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
+import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
+import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";

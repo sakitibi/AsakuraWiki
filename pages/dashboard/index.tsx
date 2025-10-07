@@ -1,6 +1,6 @@
 import { useUser, User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
-import FooterJp from '@/utils/pageParts/top/FooterJp';
+import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { useEffect, useState } from 'react';
 

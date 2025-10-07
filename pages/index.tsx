@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import HeaderJp from '@/utils/pageParts/top/HeaderJp';
-import MenuJp from '@/utils/pageParts/top/MenuJp';
-import LeftMenuJp from '@/utils/pageParts/top/LeftMenuJp';
-import RightMenuJp from '@/utils/pageParts/top/RightMenuJp';
+import HeaderJp from '@/utils/pageParts/top/jp/Header';
+import MenuJp from '@/utils/pageParts/top/jp/Menu';
+import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
+import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import styles from 'css/index.min.module.css';
-import FooterJp from '@/utils/pageParts/top/FooterJp';
+import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
 import LoginedUI from '@/utils/pageParts/top/indexJpLogined';
 import { User, useUser } from '@supabase/auth-helpers-react';

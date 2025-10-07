@@ -1,8 +1,8 @@
-import MenuJp from "@/utils/pageParts/top/MenuJp";
-import HeaderJp from "@/utils/pageParts/top/HeaderJp";
-import FooterJp from "@/utils/pageParts/top/FooterJp";
-import LeftMenuJp from "@/utils/pageParts/top/LeftMenuJp";
-import RightMenuJp from "@/utils/pageParts/top/RightMenuJp";
+import MenuJp from "@/utils/pageParts/top/jp/Menu";
+import HeaderJp from "@/utils/pageParts/top/jp/Header";
+import FooterJp from "@/utils/pageParts/top/jp/Footer";
+import LeftMenuJp from "@/utils/pageParts/top/Leftjp/Menu";
+import RightMenuJp from "@/utils/pageParts/top/Rightjp/Menu";
 import { useState } from "react";
 import Head from "next/head";
 import styles from 'css/index.min.module.css';

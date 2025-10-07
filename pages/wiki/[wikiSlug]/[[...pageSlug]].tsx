@@ -8,7 +8,7 @@ import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
 import Script from 'next/script';
 import styles from 'css/wikis.min.module.css';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
-import FooterJp from '@/utils/pageParts/top/FooterJp';
+import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { WikiBanned, WikiDeleted } from '@/utils/pageParts/wiki/wiki_notfound';
 

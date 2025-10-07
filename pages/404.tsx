@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import FooterJp from '@/utils/pageParts/top/FooterJp';
+import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
 export default function Custom404() {
     return (

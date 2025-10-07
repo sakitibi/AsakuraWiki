@@ -1,10 +1,10 @@
-import MenuJp from "@/utils/pageParts/top/MenuJp";
+import MenuJp from "@/utils/pageParts/top/jp/Menu";
 import Head from "next/head";
 import { useState } from "react";
-import LeftMenuJp from "@/utils/pageParts/top/LeftMenuJp";
-import HeaderJp from "@/utils/pageParts/top/HeaderJp";
-import RightMenuJp from "@/utils/pageParts/top/RightMenuJp";
-import FooterJp from "@/utils/pageParts/top/FooterJp";
+import LeftMenuJp from "@/utils/pageParts/top/Leftjp/Menu";
+import HeaderJp from "@/utils/pageParts/top/jp/Header";
+import RightMenuJp from "@/utils/pageParts/top/Rightjp/Menu";
+import FooterJp from "@/utils/pageParts/top/jp/Footer";
 import styles from 'css/index.min.module.css';
 
 export default function CountRies() {
