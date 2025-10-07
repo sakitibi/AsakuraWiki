@@ -2,7 +2,7 @@ import MenuJp from "@/utils/pageParts/top/jp/Menu";
 import HeaderJp from "@/utils/pageParts/top/jp/Header";
 import FooterJp from "@/utils/pageParts/top/jp/Footer";
 import LeftMenuJp from "@/utils/pageParts/top/jp/LeftMenu";
-import RightMenuJp from "@/utils/pageParts/top/Rightjp/Menu";
+import RightMenuJp from "@/utils/pageParts/top/jp/RightMenu";
 import { useState } from "react";
 import Head from "next/head";
 import styles from 'css/index.min.module.css';
