@@ -49,13 +49,17 @@ export default function Home() {
     }, [wiki13ninstudioCounter]);
 
     useEffect(() => {
-        if(!user){
-            const html = document.getElementsByTagName("html");
-            for(let i = 0; i < html.length; i++){
+        const html = document.getElementsByTagName("html");
+        for(let i = 0; i < html.length; i++){
+            if(!user){
                 html[i].setAttribute("data-theme", "dark");
+            } else {
+                if(html[i].getAttribute("data-theme") === "dark"){
+                    html[i].removeAttribute("data-theme");
+                }
             }
         }
-    }, []);
+    }, [user]);
 
     const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
 
