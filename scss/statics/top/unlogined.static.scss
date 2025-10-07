@@ -23,7 +23,7 @@ html{
 
 body {
     $tw-bg-opacity: 1;
-    background-color: hsl(var(--background-default / --tw-bg-opacity));
+    background-color: hsl(var(--background-default / $tw-bg-opacity)) !important;
     $tw-text-opacity: 1;
     color: hsl(var(--foreground-default) / $tw-text-opacity);
     -webkit-font-smoothing: antialiased;
@@ -79,6 +79,15 @@ h6:not(.overwrite) {
 .lead {
     font-size: 1.25rem;
     font-weight: 300;
+}
+
+:is([data-theme*=dark] .dark\:hover\:bg-brand\/50:hover) {
+    background-color: hsl(var(--brand-default) / .5);
+}
+
+:is([data-theme*=dark] .dark\:hover\:border-brand:hover) {
+    $tw-border-opacity: 1;
+    border-color: hsl(var(--brand-default) / $tw-border-opacity);
 }
 
 .text-brand {
