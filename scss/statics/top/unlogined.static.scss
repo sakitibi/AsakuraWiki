@@ -1,0 +1,42 @@
+
+@use 'media';
+
+:root{
+    --background-default: 0deg 0% 7.1%;
+    --foreground-default: 0deg 0% 98%;
+    --brand-default: 153.1deg 60.2% 52.7%;
+}
+
+body {
+    $tw-bg-opacity: 1;
+    background-color: hsl(var(--background-default / --tw-bg-opacity));
+    $tw-text-opacity: 1;
+    color: hsl(var(--foreground-default) / $tw-text-opacity);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    line-height: inherit;
+}
+
+h1:not(.overwrite),
+h2:not(.overwrite),
+h3:not(.overwrite),
+h4:not(.overwrite),
+h5:not(.overwrite),
+h6:not(.overwrite) {
+    scroll-margin-top: 90px;
+}
+
+.text-brand {
+    $tw-text-opacity: 1;
+    color: hsl(var(--brand-default / $tw-text-opacity));
+}
+
+.text-foreground {
+    $tw-text-opacity: 1;
+    color: hsl(var(--foreground-default / $tw-text-opacity));
+}
+
+.block {
+    display: block;
+}
