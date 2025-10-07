@@ -48,6 +48,15 @@ export default function Home() {
         console.log("index: ", wiki13ninstudioCounter);
     }, [wiki13ninstudioCounter]);
 
+    useEffect(() => {
+        if(!user){
+            const html = document.getElementsByTagName("html");
+            for(let i = 0; i < html.length; i++){
+                html[i].setAttribute("data-theme", "dark");
+            }
+        }
+    }, []);
+
     const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
 
     const goCreateWiki = () => {
