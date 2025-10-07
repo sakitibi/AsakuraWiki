@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
 import { useState } from 'react';
-import HeaderRu from '@/utils/pageParts/top/HeaderRu';
-import MenuRu from '@/utils/pageParts/top/MenuRu';
-import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
-import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
-import FooterRu from '@/utils/pageParts/top/FooterRu';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
+import MenuRu from '@/utils/pageParts/top/ru/Menu';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);

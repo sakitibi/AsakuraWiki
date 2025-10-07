@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import HeaderRu from '@/utils/pageParts/top/HeaderRu';
-import MenuRu from '@/utils/pageParts/top/MenuRu';
-import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
-import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
-import FooterRu from '@/utils/pageParts/top/FooterRu';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
+import MenuRu from '@/utils/pageParts/top/ru/Menu';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
 import type { WikiPage, LikedWiki, WikiCounter } from '@/utils/pageParts/top/indexInterfaces';
-import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/indexfetchsRu';
+import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/ru/indexfetchs';
 import { useUser, User } from '@supabase/auth-helpers-react';
-import LoginedUI from '@/utils/pageParts/top/indexRuLogined';
+import LoginedUI from '@/utils/pageParts/top/ru/indexLogined';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])

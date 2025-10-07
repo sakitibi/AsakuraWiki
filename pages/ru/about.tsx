@@ -1,10 +1,10 @@
 import Head from 'next/head';
 import styles from 'css/index.min.module.css';
-import HeaderRu from '@/utils/pageParts/top/HeaderRu';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
 import { useState } from 'react';
-import RightMenuRu from '@/utils/pageParts/top/RightMenuRu';
-import LeftMenuRu from '@/utils/pageParts/top/LeftMenuRu';
-import FooterRu from '@/utils/pageParts/top/FooterRu';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
 
 export default function About() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);

@@ -1,7 +1,7 @@
 import versions from "@/utils/version";
 import styles from '@/css/index.min.module.css';
 import Link from "next/link";
-import { LikedWiki, WikiCounter, WikiPage } from "./indexInterfaces";
+import { LikedWiki, WikiCounter, WikiPage } from "../indexInterfaces";
 
 interface LoginUIProps{
     wiki13ninstudioCounter: WikiCounter | null,

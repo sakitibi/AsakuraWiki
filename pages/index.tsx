@@ -7,13 +7,13 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
-import LoginedUI from '@/utils/pageParts/top/indexJpLogined';
+import LoginedUI from '@/utils/pageParts/top/jp/indexLogined';
 import { User, useUser } from '@supabase/auth-helpers-react';
 import {
     fetchRecentPages,
     fetchLikedWikis,
     fetched13ninstudioCounter
-} from '@/utils/pageParts/top/indexfetchsJp';
+} from '@/utils/pageParts/top/jp/indexfetchs';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
