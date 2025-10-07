@@ -9,6 +9,7 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
 import LoginedUI from '@/utils/pageParts/top/jp/indexLogined';
 import { User, useUser } from '@supabase/auth-helpers-react';
+import LogoutedUI from '@/utils/pageParts/top/jp/indexLogouted';
 import {
     fetchRecentPages,
     fetchLikedWikis,
@@ -75,6 +76,9 @@ export default function Home() {
                             /* css end */
                         `}
                     </style>
+                    {!user ? (
+                        <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css"/>
+                    ) : null}
                     <meta property="og:title" content="無料 レンタル WIKI サービス あさクラWIKI"></meta>
                 </Head>
                 <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
@@ -97,7 +101,7 @@ export default function Home() {
                                     goCreateWiki={goCreateWiki}
                                 />
                             ) : (
-                                null
+                                <LogoutedUI/>
                             )}
                         </main>
                         <RightMenuJp/>

@@ -16,3 +16,9 @@
         margin-left: 0;
     }
 }
+
+@media (min-width: 768px) {
+    .bd-masthead .lead {
+        font-size: calc(1.275rem + .3vw);
+    }
+}
