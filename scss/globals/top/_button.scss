@@ -3,7 +3,7 @@
 body {
     // 💚 デフォルトテーマ（wiki-fontが無い場合）
     &:not(.wiki-font, .wiki-font.pink, .wiki-font.blue, .wiki-font.yellow, .wiki-font.default) {
-        button:not(#menu-button,.navfold-summary) {
+        button:not(#menu-button,.navfold-summary,.fold-button) {
             position: relative;
             padding: 10px 20px;
             font-size: 16px;
@@ -38,7 +38,7 @@ body {
 
     // 🎨 wiki-fontテーマ共通のボタンスタイル
     &.wiki-font {
-        & button:not(#menu-button,.navfold-summary) {
+        & button:not(#menu-button,.navfold-summary,.fold-button) {
             position: relative;
             padding: 10px 20px;
             font-size: 16px;
@@ -71,18 +71,18 @@ body {
                 cursor: not-allowed;
             }
         }
-        &.pink button:not(#menu-button,.navfold-summary)::before {
+        &.pink button:not(#menu-button,.navfold-summary,.fold-button)::before {
             @include mixin.position(rgb(244, 164, 229), rgb(199, 17, 157));
         }
         // 🔵 ブルーテーマのグラデーション
-        &.blue button:not(#menu-button,.navfold-summary)::before {
+        &.blue button:not(#menu-button,.navfold-summary,.fold-button)::before {
             @include mixin.position(rgb(164, 212, 244), rgb(17, 102, 199));
         }
         // 💛 イエローテーマのグラデーション
-        &.yellow button:not(#menu-button,.navfold-summary)::before {
+        &.yellow button:not(#menu-button,.navfold-summary,.fold-button)::before {
             @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
         }
-        &.default button:not(#menu-button,.navfold-summary)::before {
+        &.default button:not(#menu-button,.navfold-summary,.fold-button)::before {
             @include mixin.position(#1ce369, #076727);
         }
     }
