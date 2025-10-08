@@ -31,7 +31,7 @@ export async function extractFolds(
         const raw:string = (m[1] || m[2] || '').trim();
         const args:string[] = raw.split(',').map(s => s.trim());
         const title:string = args[0];
-        const isOpen:boolean = args.includes('open');
+        const isOpen:boolean = args.includes('openFolds');
 
         // 単一「{」マッチを想定
         const braceCount:number = 1;

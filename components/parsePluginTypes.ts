@@ -44,8 +44,8 @@ export interface injectConstBlocksProps{
 
 export type Token =
     | { type: 'text'; content: string }
-    | { type: 'open'; title: string; level?: '*' | '**' | '***'; isOpen: boolean }
-    | { type: 'close' }
+    | { type: 'open' | 'openFolds'; title: string; level?: '*' | '**' | '***'; isOpen: boolean }
+    | { type: 'close' | 'closeFolds' }
     | { type: 'export'; scope: 'global' | 'local'; variables: string[] }
     | { type: 'import'; slug: string; page: string; variables: string[] };
 export type ASTNode =

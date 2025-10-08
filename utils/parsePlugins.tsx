@@ -175,6 +175,19 @@ function buildAST(src: string): ASTNode[] {
         else if (tk.type === 'close') {
             if (stack.length > 1) stack.pop();
         }
+        else if (tk.type === 'openFolds') {
+            const node: ASTNode = {
+                type: 'fold',
+                title: tk.title,
+                isOpen: tk.isOpen,
+                children: [],
+            };
+            curr.push(node);
+            stack.push((node as any).children);
+        }
+        else if (tk.type === 'closeFolds') {
+            if (stack.length > 1) stack.pop();
+        }
         else if (tk.type === 'export') {
             const node: ASTNode = {
                 type: 'export',
