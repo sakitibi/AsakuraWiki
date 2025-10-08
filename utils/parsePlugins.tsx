@@ -105,9 +105,9 @@ function tokenize(src: string): Token[] {
         if (openMFold) {
             const argsRaw = (openMFold![1] || openMFold![2] || '').trim().split(',').map(s => s.trim());
             tokens.push({
-                type: 'open',
+                type: 'openFolds',
                 title: argsRaw[0] || '',
-                isOpen: argsRaw.includes('open'),
+                isOpen: argsRaw.includes('openFolds'),
             });
             i += openMFold[0].length;
             continue;
@@ -116,7 +116,7 @@ function tokenize(src: string): Token[] {
         // 閉じ braces
         const closeMFold:RegExpMatchArray | null = src.slice(i).match(/^\}{2,}/);
         if (closeMFold) {
-            tokens.push({ type: 'close' });
+            tokens.push({ type: 'closeFolds' });
             i += closeMFold[0].length;
             continue;
         }
