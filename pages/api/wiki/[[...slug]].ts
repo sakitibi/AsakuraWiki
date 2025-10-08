@@ -1,10 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
+const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    const origin = req.headers.origin;
+    res.setHeader('Access-Control-Allow-Origin', "*");
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     try {
         const raw:string | string[] | undefined = req.query.slug
         const parts: string[] = Array.isArray(raw)
@@ -103,7 +109,13 @@ export default async function handler(
         // ======================
         if (req.method === 'PUT') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-
+            for(const data of ALLOWED_ORIGINS){
+                if(origin !== data){
+                    return res.status(403).json({ error: `do not permissions to ${req.method}`});
+                } else {
+                    continue;
+                }
+            }
             const { content, title } = req.body
             if (typeof content !== 'string' || typeof title !== 'string') {
                 return res.status(400).json({ error: 'Invalid request body' })
@@ -150,7 +162,13 @@ export default async function handler(
         // ======================
         if (req.method === 'DELETE') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-
+            for(const data of ALLOWED_ORIGINS){
+                if(origin !== data){
+                    return res.status(403).json({ error: `do not permissions to ${req.method}`});
+                } else {
+                    continue;
+                }
+            }
             // まず対象ページが存在するか確認
             const { data: existingPage, error: existingErr } = await supabaseServer
                 .from('wiki_pages')
@@ -197,7 +215,13 @@ export default async function handler(
         // ======================
         if (req.method === 'POST') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-
+            for(const data of ALLOWED_ORIGINS){
+                if(origin !== data){
+                    return res.status(403).json({ error: `do not permissions to ${req.method}`});
+                } else {
+                    continue;
+                }
+            }
             const { slug, title, content } = req.body
             if (!slug || !title || !content) {
                 return res.status(400).json({ error: 'Missing parameters' })
