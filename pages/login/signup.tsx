@@ -8,6 +8,7 @@ export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
+    const [countries, setCountries] = useState<string>('');
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -26,7 +27,7 @@ export default function SignUpPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string[] = secureEncrypt(email, password, birthday, username);
+        const updatedInputs:string[] = secureEncrypt(email, password, birthday, username, countries);
 
         // Supabase にユーザー登録（email/passwordは平文でOK）
         const { data, error } = await supabaseServer.auth.signUp({
@@ -35,7 +36,8 @@ export default function SignUpPage() {
             options: {
                 data: {
                     username,
-                    birthday
+                    birthday,
+                    countries
                 }
             }
         });
@@ -110,6 +112,19 @@ export default function SignUpPage() {
                         style={{ width: '100%', padding: '0.5rem' }}
                     />
                     <br /><br />
+                    <label>
+                        国籍
+                        <select
+                            value={countries}
+                            onChange={(e) =>
+                                setCountries(e.target.value)
+                            }
+                        >
+                            <option selected value="japan">日本 Japan</option>
+                            <option value="russia">ロシア Русский</option>
+                            <option value="others">その他 Others</option>
+                        </select>
+                    </label>
                     <input
                         type="text"
                         placeholder="ユーザー名"
