@@ -109,11 +109,11 @@ export default async function handler(
         // ======================
         if (req.method === 'PUT') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-            for(const data of ALLOWED_ORIGINS){
-                if(origin !== data){
-                    return res.status(403).json({ error: `do not permissions to ${req.method}`});
+            for(let i = 0; i > ALLOWED_ORIGINS.length; i++){
+                if(origin !== ALLOWED_ORIGINS[i]){
+                    return JSON.stringify({ error: `do not permissions`});
                 } else {
-                    continue;
+                    i = ALLOWED_ORIGINS.length;
                 }
             }
             const { content, title } = req.body
@@ -162,11 +162,11 @@ export default async function handler(
         // ======================
         if (req.method === 'DELETE') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-            for(const data of ALLOWED_ORIGINS){
-                if(origin !== data){
-                    return res.status(403).json({ error: `do not permissions to ${req.method}`});
+            for(let i = 0; i > ALLOWED_ORIGINS.length; i++){
+                if(origin !== ALLOWED_ORIGINS[i]){
+                    return JSON.stringify({ error: `do not permissions`});
                 } else {
-                    continue;
+                    i = ALLOWED_ORIGINS.length;
                 }
             }
             // まず対象ページが存在するか確認
@@ -215,11 +215,11 @@ export default async function handler(
         // ======================
         if (req.method === 'POST') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-            for(const data of ALLOWED_ORIGINS){
-                if(origin !== data){
-                    return res.status(403).json({ error: `do not permissions to ${req.method}`});
+            for(let i = 0; i > ALLOWED_ORIGINS.length; i++){
+                if(origin !== ALLOWED_ORIGINS[i]){
+                    return JSON.stringify({ error: `do not permissions`});
                 } else {
-                    continue;
+                    i = ALLOWED_ORIGINS.length;
                 }
             }
             const { slug, title, content } = req.body
