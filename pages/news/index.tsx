@@ -30,8 +30,8 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
-                            <hr/>
                             <li>2025/10/08 <a href="/news/2025/10/08/1">「{kokuseiChousaStr}」は個人情報を抜くための罠です!!</a></li>
+                            <hr/>
                             <li>2025/09/28</li>
                             <ol reversed>
                                 <li><a href="/news/2025/09/28/3">明後日のイベントの詳細</a></li>
