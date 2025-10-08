@@ -8,7 +8,7 @@ export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
-    const [countries, setCountries] = useState<string>('');
+    const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
     const [jender, setJender] = useState<string>('');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
@@ -149,7 +149,7 @@ export default function SignUpPage() {
                         <select
                             value={countries}
                             onChange={(e) =>
-                                setCountries(e.target.value)
+                                setCountries(e.target.value as "japan" | "russia" | "others")
                             }
                             required
                         >
