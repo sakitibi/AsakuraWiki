@@ -6,6 +6,7 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import { kokuseiChousaStr } from '@/pages/news/2025/10/08/1';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -30,6 +31,7 @@ export default function NewsPage() {
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
                             <hr/>
+                            <li>2025/10/08 <a href="/news/2025/10/08/1">「{kokuseiChousaStr}」は個人情報を抜くための罠です!!</a></li>
                             <li>2025/09/28</li>
                             <ol reversed>
                                 <li><a href="/news/2025/09/28/3">明後日のイベントの詳細</a></li>
