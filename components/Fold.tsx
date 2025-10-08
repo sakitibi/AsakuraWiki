@@ -105,7 +105,7 @@ export default function Fold({ title, initiallyOpen, children }: FoldProps){
     return(
         <div style={{ margin: '0px 0px' }}>
             <button onClick={() => setOpen(!open)} type="button" className="fold-button" style={{
-                backgroundColor: 'white',
+                backgroundColor: 'initial',
                 border: 'none',
                 color: 'inherit',
                 cursor: 'pointer',
