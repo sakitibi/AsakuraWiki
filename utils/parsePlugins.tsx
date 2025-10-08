@@ -6,6 +6,7 @@ import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
 import ExportBlock from '@/components/ExportBlock';
 import ImportBlock, { resolveImports } from '@/components/ImportBlock';
 import type { designColor } from '@/utils/wiki_settings';
+import Fold from '@/components/Fold';
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<designColor | null>(null);
@@ -199,6 +200,17 @@ function renderAST(
                 >
                     {renderAST(node.children, context)}
                 </Accordion>
+            );
+        }
+        else if (node.type === 'fold') {
+            return (
+                <Fold
+                    key={`f${idx}`}
+                    title={node.title}
+                    initiallyOpen={node.isOpen}
+                >
+                    {renderAST(node.children, context)}
+                </Fold>
             );
         }
         else if (node.type === 'export') {

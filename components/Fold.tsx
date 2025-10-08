@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import parseInline from "@/components/ParseInline";
+import React, { ReactNode, useState } from "react";
 import { FoldBlock, Context } from "@/components/parsePluginTypes";
+import { extractBracedBlock, parseWikiContent } from "@/utils/parsePlugins";
 
 interface FoldProps{
     title: React.ReactNode;
@@ -8,92 +8,92 @@ interface FoldProps{
     children: React.ReactNode;
 }
 
-export function extractFolds(content: string, context: Context, offset = 0, depth = 0): FoldBlock[] {
-    console.log("🔥 extractFolds called at depth", depth);
-    const MAX_DEPTH = 100;
-    if (depth > MAX_DEPTH) {
-        console.error("⛔ 再帰深度上限に達したため打ち切ります\n#accordionなどの別プラグインをご利用ください");
-        return [];
-    }
+export async function extractFolds(
+    content: string,
+    offset:number = 0,
+    context: Context
+): Promise<FoldBlock[]> {
+    console.log(
+        '▶ extractAccordions called.',
+        { offset, snippet: content.slice(0, 60).replace(/\n/g, '⏎') }
+    );
+
+    // ② 強化した正規表現
+    const foldRe:RegExp = /#fold\((.*?)\)\s*\{\{/g;
 
     const blocks: FoldBlock[] = [];
-    const foldRe:RegExp = /#fold\((.*?)\)\s*\{\{/g;
-    const matches:RegExpMatchArray[] = Array.from(content.matchAll(foldRe));
-    let cursor:number = 0;
+    let m: RegExpExecArray | null;
 
-    for (const m of matches) {
-        const startLocal:number = m.index!;
-        const startGlobal:number = offset + startLocal;
-        const foldHeader:string = m[1];
+    while ((m = foldRe.exec(content))) {
+        const start = m.index;
 
-        const lastCommaIndex:number = foldHeader.lastIndexOf(',');
-        if (lastCommaIndex === -1) continue;
+        // タイトル／オプション解釈
+        const raw:string = (m[1] || m[2] || '').trim();
+        const args:string[] = raw.split(',').map(s => s.trim());
+        const title:string = args[0];
+        const isOpen:boolean = args.includes('open');
 
-        const titleRaw:string = foldHeader.slice(0, lastCommaIndex).trim();
-        const optionStr:string = foldHeader.slice(lastCommaIndex + 1).trim();
-        const isOpen:boolean = optionStr.includes('open');
-        if (!titleRaw || !titleRaw.match(/\S/)) continue;
+        // 単一「{」マッチを想定
+        const braceCount:number = 1;
+        const braceStart:number = foldRe.lastIndex - braceCount;
 
-        const parsedTitleNodes:React.ReactNode[] = parseInline({ text: titleRaw, context});
-
-        const foldOpenEndLocal:number = content.indexOf("{{", startLocal) + 2;
-        let iLocal:number = foldOpenEndLocal;
-        let depthCount:number = 1;
-        while (iLocal < content.length && depthCount > 0) {
-            const two = content.slice(iLocal, iLocal + 2);
-            if (two === '{{') {
-                depthCount++; iLocal += 2;
-            } else if (two === '}}') {
-                depthCount--; iLocal += 2;
-            } else {
-                iLocal++;
-            }
+        // ④ 本文抜き出し
+        const { body, end } = extractBracedBlock(
+            content,
+            braceStart,
+            braceCount
+        );
+        if (!body) {
+            console.warn(`⚠ extractBracedBlock failed at ${braceStart}`);
+            continue;
         }
 
-        if (depthCount !== 0 || iLocal > content.length) continue;
+        // ⑤ ネスト再帰
+        const children:FoldBlock[] = await extractFolds(body, offset + braceStart, context);
 
-        const bodyStart:number = foldOpenEndLocal;
-        const bodyEnd:number = iLocal - 2; // 👈 ここで閉じ `}}` を除外
-        const body:string = bodyEnd >= bodyStart ? content.slice(bodyStart, bodyEnd) : '';
-
-        if (!body.trim() && !body.includes('#fold(')) continue;
-        if (depth === 0 && body.trim() === content.trim()) continue;
-
-        const childFolds:FoldBlock[] = extractFolds(body, context, 0, depth + 1);
-        const prefix:string = content.slice(cursor, startLocal);
-        const trimmedPrefix:string = prefix.trim();
-
-        if (!trimmedPrefix.match(/^\s*}}+\s*$/)) {
-            blocks.push({
-                prefix,
-                title: <>{parsedTitleNodes.map((n, i) => <React.Fragment key={i}>{n}</React.Fragment>)}</>,
-                body,
-                isOpen,
-                start: startGlobal,
-                end: offset + iLocal,
-                children: body.includes('#fold(') ? childFolds : []
-            });
+        // ⑥ inline 用にマスク
+        let bodyForInline:string = body;
+        for (const child of children) {
+            const relStart = child.start! - offset - braceStart;
+            const relEnd = child.end! - offset - braceStart;
+            bodyForInline =
+                bodyForInline.slice(0, relStart) +
+                ' '.repeat(relEnd - relStart) +
+                bodyForInline.slice(relEnd);
         }
+        const parsedBody:ReactNode[] = await parseWikiContent(
+            bodyForInline,
+            context
+        );
 
-        cursor = iLocal;
+        blocks.push({
+            prefix: content.slice(
+                blocks.length ? blocks[blocks.length - 1].end! - offset : 0,
+                start
+            ),
+            title,
+            isOpen,
+            body,
+            bodyNode: parsedBody,
+            start: offset + start,
+            end: offset + end,
+            children,
+        });
+
+        console.log(`  🪗 block #${blocks.length - 1}:`, {
+            title,
+            start: offset + start,
+            end: offset + end,
+            childCount: children.length,
+        });
+
+        // 次の検索スタート位置をマニュアルで更新しても OK
+        foldRe.lastIndex = end;
     }
 
-    if (depth === 0 && cursor < content.length) {
-        const tail:string = content.slice(cursor);
-        const trimmedTail:string = tail.trim();
-        if (!trimmedTail.match(/^\s*}}+\s*$/)) {
-            blocks.push({
-                prefix: tail,
-                body: '',
-                title: <></>,
-                isOpen: false,
-                start: offset + cursor,
-                end: offset + content.length,
-                children: []
-            });
-        }
-    }
-
+    console.log(
+        `=> extractAccordions returning ${blocks.length} blocks at offset=${offset}`
+    );
     return blocks;
 }
 
