@@ -94,10 +94,30 @@ function tokenize(src: string): Token[] {
         }
 
         // 閉じ braces
-        const closeM = src.slice(i).match(/^\}{2,}/);
+        const closeM:RegExpMatchArray | null = src.slice(i).match(/^\}{2,}/);
         if (closeM) {
             tokens.push({ type: 'close' });
             i += closeM[0].length;
+            continue;
+        }
+        const openReFold = /^#fold\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
+        const openMFold = src.slice(i).match(openReFold);
+        if (openMFold) {
+            const argsRaw = (openMFold![1] || openMFold![2] || '').trim().split(',').map(s => s.trim());
+            tokens.push({
+                type: 'open',
+                title: argsRaw[0] || '',
+                isOpen: argsRaw.includes('open'),
+            });
+            i += openMFold[0].length;
+            continue;
+        }
+
+        // 閉じ braces
+        const closeMFold:RegExpMatchArray | null = src.slice(i).match(/^\}{2,}/);
+        if (closeMFold) {
+            tokens.push({ type: 'close' });
+            i += closeMFold[0].length;
             continue;
         }
         const exportMatch = src.slice(i).match(/^#export\((global|local)\)\{(.+?)\};/);
@@ -145,7 +165,7 @@ function buildAST(src: string): ASTNode[] {
             const node: ASTNode = {
                 type: 'accordion',
                 title: tk.title,
-                level: tk.level,
+                level: tk.level ?? "*",
                 isOpen: tk.isOpen,
                 children: [],
             };

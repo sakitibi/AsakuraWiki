@@ -44,7 +44,7 @@ export interface injectConstBlocksProps{
 
 export type Token =
     | { type: 'text'; content: string }
-    | { type: 'open'; title: string; level: '*' | '**' | '***'; isOpen: boolean }
+    | { type: 'open'; title: string; level?: '*' | '**' | '***'; isOpen: boolean }
     | { type: 'close' }
     | { type: 'export'; scope: 'global' | 'local'; variables: string[] }
     | { type: 'import'; slug: string; page: string; variables: string[] };
