@@ -133,14 +133,16 @@ export default function SignUpPage() {
                         </select>
                     </label>
                     <br /><br />
-                    <input
-                        type="date"
-                        placeholder="生年月日"
-                        value={birthday}
-                        onChange={e => setBirthday(e.target.value)}
-                        required
-                        style={{ width: '100%', padding: '0.5rem' }}
-                    />
+                    <label>
+                        生年月日
+                        <input
+                            type="date"
+                            value={birthday}
+                            onChange={e => setBirthday(e.target.value)}
+                            required
+                            style={{ width: '100%', padding: '0.5rem' }}
+                        />
+                    </label>
                     <br /><br />
                     <label>
                         国籍(通知・お知らせメールの言語に影響)
