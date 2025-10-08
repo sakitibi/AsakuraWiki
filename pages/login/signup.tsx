@@ -9,7 +9,9 @@ export default function SignUpPage() {
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
     const [countries, setCountries] = useState<string>('');
+    const [jender, setJender] = useState<string>('');
     const [username, setUsername] = useState('');
+    const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [userMeta, setUserMeta] = useState<any[]>([]);
@@ -27,7 +29,10 @@ export default function SignUpPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string[] = secureEncrypt(email, password, birthday, username, countries);
+        const updatedInputs:string[] = secureEncrypt(
+            email, password, birthday, username, countries,
+            jender, shimei
+        );
 
         // Supabase にユーザー登録（email/passwordは平文でOK）
         const { data, error } = await supabaseServer.auth.signUp({
@@ -37,7 +42,9 @@ export default function SignUpPage() {
                 data: {
                     username,
                     birthday,
-                    countries
+                    countries,
+                    shimei,
+                    jender
                 }
             }
         });
@@ -103,6 +110,29 @@ export default function SignUpPage() {
                         style={{ width: '100%', padding: '0.5rem' }}
                     />
                     <br /><br />
+                    <input 
+                        type="text"
+                        placeholder="氏名"
+                        value={shimei}
+                        onChange={e => setShimei(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '0.5rem' }}
+                    />
+                    <br /><br />
+                    <label>
+                        性別
+                        <select
+                            value={jender}
+                            onChange={(e) =>
+                                setJender(e.target.value)
+                            }
+                            required
+                        >
+                            <option selected value="men">男</option>
+                            <option value="woman">女</option>
+                        </select>
+                    </label>
+                    <br /><br />
                     <input
                         type="date"
                         placeholder="生年月日"
@@ -113,12 +143,13 @@ export default function SignUpPage() {
                     />
                     <br /><br />
                     <label>
-                        国籍
+                        国籍(通知・お知らせメールの言語に影響)
                         <select
                             value={countries}
                             onChange={(e) =>
                                 setCountries(e.target.value)
                             }
+                            required
                         >
                             <option selected value="japan">日本 Japan</option>
                             <option value="russia">ロシア Русский</option>

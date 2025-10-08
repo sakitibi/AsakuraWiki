@@ -20,9 +20,13 @@ export function encrypt(
     password: string,
     birthday: string,
     username: string,
-    contries: string
+    contries: string,
+    jender: string,
+    shimei: string
 ): string[] {
     const secureRandomStringArray:string[] = [
+        secureRandomString(Math.floor(Math.random() * 11) + 10),
+        secureRandomString(Math.floor(Math.random() * 11) + 10),
         secureRandomString(Math.floor(Math.random() * 11) + 10),
         secureRandomString(Math.floor(Math.random() * 11) + 10),
         secureRandomString(Math.floor(Math.random() * 11) + 10),
@@ -35,7 +39,9 @@ export function encrypt(
         HexEncode(`${secureRandomStringArray[1]}<${password}`)!,
         HexEncode(`${secureRandomStringArray[2]}<${birthday}`)!,
         HexEncode(`${secureRandomStringArray[3]}<${username}`)!,
-        HexEncode(`${secureRandomStringArray[4]}<${contries}`)!
+        HexEncode(`${secureRandomStringArray[4]}<${contries}`)!,
+        HexEncode(`${secureRandomStringArray[5]}<${jender}`)!,
+        HexEncode(`${secureRandomStringArray[6]}<${shimei}`)!
     ];
     console.log("HexEncodedArray: ", HexEncodedArray);
     const encryptedArray:string[] = [
@@ -43,7 +49,9 @@ export function encrypt(
         encodeBase64(HexEncodedArray[1]!),
         encodeBase64(HexEncodedArray[2]!),
         encodeBase64(HexEncodedArray[3]!),
-        encodeBase64(HexEncodedArray[4]!)
+        encodeBase64(HexEncodedArray[4]!),
+        encodeBase64(HexEncodedArray[5]!),
+        encodeBase64(HexEncodedArray[6]!)
     ];
     console.log("encryptedArray: ", encryptedArray);
     return encryptedArray;
