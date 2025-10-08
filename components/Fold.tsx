@@ -14,7 +14,7 @@ export async function extractFolds(
     context: Context
 ): Promise<FoldBlock[]> {
     console.log(
-        '▶ extractAccordions called.',
+        '▶ extractFolds called.',
         { offset, snippet: content.slice(0, 60).replace(/\n/g, '⏎') }
     );
 
