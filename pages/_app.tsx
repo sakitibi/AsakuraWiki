@@ -9,6 +9,7 @@ import Head from 'next/head';
 import { Analytics } from "@vercel/analytics/next"
 import type { WikiCounter, IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { adminerUserId, blockedIP } from '@/utils/user_list';
+import { kokuseiChousaStr } from '@/pages/news/2025/10/08/1';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 
@@ -162,6 +163,11 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
+                <div>
+                    <p><strong>2025/10/08 <a href="/news/2025/10/08/1">
+                        「{kokuseiChousaStr}」は個人情報を抜くための罠です!!詳しくはこちら</a></strong>
+                    </p>
+                </div>
                 <Component {...pageProps} />
             </SessionContextProvider>
         </>
