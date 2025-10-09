@@ -1,8 +1,11 @@
 import React from "react";
 import { special_wiki_list } from "@/utils/wiki_list";
+import { handleUpdate } from "@/utils/pageParts/wiki/wiki_handler";
+import { editMode } from "@/utils/wiki_settings";
+import { User } from "@supabase/supabase-js";
+import { NextRouter } from "next/router";
 
 interface WikiEditPageProps{
-    handleUpdate: (e: React.FormEvent<Element>) => Promise<void>;
     title: string;
     setTitle: React.Dispatch<React.SetStateAction<string>>;
     content: string;
@@ -11,10 +14,13 @@ interface WikiEditPageProps{
     loading: boolean;
     wikiSlugStr: string;
     pageSlugStr: string;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    editMode: editMode;
+    user: User | null;
+    router: NextRouter;
 }
 
 export default function WikiEditPage({
-    handleUpdate,
     title,
     setTitle,
     content,
@@ -22,12 +28,28 @@ export default function WikiEditPage({
     parsedPreview,
     loading,
     wikiSlugStr,
-    pageSlugStr
+    pageSlugStr,
+    setLoading,
+    editMode,
+    user,
+    router
 }: WikiEditPageProps){
     return(
         <main style={{ padding: '2rem', maxWidth: 600 }}>
             <h1>📝 ページ編集</h1>
-            <form onSubmit={handleUpdate}>
+            <form onSubmit={(e:React.FormEvent) => {
+                e.preventDefault();
+                handleUpdate(
+                    setLoading,
+                    editMode,
+                    user,
+                    wikiSlugStr,
+                    pageSlugStr,
+                    title,
+                    content,
+                    router
+                );
+            }}>
                 <label>
                 タイトル:
                 <input

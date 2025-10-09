@@ -138,57 +138,6 @@ export default function WikiPage() {
         };
     }, [designColor]);
 
-    // ======================
-    // 更新処理
-    // ======================
-    const handleUpdate = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (editMode === 'private' && !user) {
-            alert("403 Forbidden あなたは編集する権限がありません");
-            location.href = `/wiki/${wikiSlugStr}/${pageSlugStr}`;
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const { data: { session } } = await supabaseServer.auth.getSession();
-            const token = session?.access_token;
-
-            const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({ title, content }),
-            });
-
-            if (!res.ok) {
-                const err = await res.json();
-                alert('更新に失敗しました: ' + err.error);
-                return;
-            }
-
-            router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== "sinsei") {
-            location.href = `/special_wiki/maitetsu_bkmt/${pageSlugStr}`;
-        } else {
-            // 少し遅れてボタン表示を開始
-            const timer = setTimeout(() => {
-                setShowRedirectButton(true);
-            }, 500);
-
-            return () => clearTimeout(timer);
-        }
-    }, []);
-
     // 編集モード切り替え
     const handleEdit = () => {
         router.push({
@@ -352,7 +301,6 @@ export default function WikiPage() {
                     </Head>
                     {isEdit ? (
                         <WikiEditPage
-                            handleUpdate={handleUpdate}
                             title={title}
                             setTitle={setTitle}
                             content={content}
@@ -361,6 +309,10 @@ export default function WikiPage() {
                             loading={loading}
                             wikiSlugStr={wikiSlugStr}
                             pageSlugStr={pageSlugStr}
+                            setLoading={setLoading}
+                            editMode={editMode}
+                            user={user}
+                            router={router}
                         />
                     ) : (
                         <>
