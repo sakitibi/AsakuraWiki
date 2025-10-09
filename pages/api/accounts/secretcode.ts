@@ -46,7 +46,6 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             // ====== 認証ユーザー取得 ======
             let userId: string | null = null
             let userEmail:string | null = null
-            let userPassword:string | null = null
             const authHeader = req.headers.authorization
             if (authHeader?.startsWith('Bearer ')) {
                 const token = authHeader.split(' ')[1]
@@ -55,9 +54,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 if (authError) console.error('Supabase auth error:', authError)
                 if (user) userId = user.id
                 if (user) userEmail = user.email ?? ""
-                if (user) userPassword = user.email ?? ""
                 // JWTペイロードを作成
-                const payload = { userId, userEmail, userPassword };
+                const payload = { userId, userEmail };
                 // JWTを生成
                 const jwt = await generateJWT(payload);
                 // トークンを返す
