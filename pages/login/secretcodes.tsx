@@ -19,6 +19,12 @@ export default function LoginPage() {
                         'Authorization': `SecretCodes ${secretCode}`
                     }
                 });
+                if (!res.ok) {
+                    const error = await res.json();
+                    console.error("API error:", error);
+                    setErrorMsg(error.error || "不明なエラー");
+                    return;
+                }
                 const data = await res.json();
                 setReturned(data);
             } catch(e:any){
