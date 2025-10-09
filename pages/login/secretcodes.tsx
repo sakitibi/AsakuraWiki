@@ -10,7 +10,7 @@ export default function LoginPage() {
     const [returned, setReturned] = useState<any>(null);
 
     useEffect(() => {
-        (async function(){
+        async function secretCodeAPIFetched(){
             const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',
                 headers: {
@@ -21,15 +21,16 @@ export default function LoginPage() {
             const data = await res.json();
             console.log("data: ", data)
             setReturned(data);
-        })();
+        }
+        secretCodeAPIFetched();
     }, []);
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
         const { data, error } = await supabaseServer.auth.signInWithPassword({
-            email: decrypt(returned[0]?.metadatas[0]),
-            password: decrypt(returned[0]?.metadatas[1]),
+            email: decrypt(returned[0]!.metadatas[0]),
+            password: decrypt(returned[0]!.metadatas[1]),
         });
         console.log('Login Data:', data);
         console.log('Login Error:', error);
