@@ -44,3 +44,15 @@ export const handleUpdate = async (
         setLoading(false);
     }
 };
+
+// 編集モード切り替え
+export const handleEdit = (
+    router: NextRouter,
+    wikiSlugStr: string,
+    pageSlugStr: string
+) => {
+    router.push({
+        pathname: `/wiki/${wikiSlugStr}`,
+        query: { cmd: 'edit', page: pageSlugStr },
+    });
+};

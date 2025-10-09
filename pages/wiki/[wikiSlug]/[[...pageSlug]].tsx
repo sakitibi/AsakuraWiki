@@ -4,12 +4,14 @@ import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { User, useUser } from '@supabase/auth-helpers-react';
 import { supabaseServer } from 'lib/supabaseClientServer';
-import { usePageLikeHandlers, useWikiLikeHandlers } from 'utils/Liked';
+import { usePageLikeHandlers } from '@/utils/pageParts/wiki/like/page';
+import { useWikiLikeHandlers } from '@/utils/pageParts/wiki/like/wiki';
 import Script from 'next/script';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { WikiBanned, WikiDeleted } from '@/utils/pageParts/wiki/wiki_notfound';
 import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
+import { handleEdit } from '@/utils/pageParts/wiki/wiki_handler';
 
 interface Page {
     title: string;
@@ -137,14 +139,6 @@ export default function WikiPage() {
             document.body.classList.remove('purple');
         };
     }, [designColor]);
-
-    // 編集モード切り替え
-    const handleEdit = () => {
-        router.push({
-            pathname: `/wiki/${wikiSlugStr}`,
-            query: { cmd: 'edit', page: pageSlugStr },
-        });
-    };
 
     const handleDelete = async () => {
         if (!special_wiki_list_found) {
@@ -333,7 +327,9 @@ export default function WikiPage() {
                                             <span>リダイレクトされない場合はこちら</span>
                                             </button>
                                         )}
-                                        <button onClick={handleEdit} style={{ marginLeft: 8 }}>
+                                        <button onClick={() => 
+                                            handleEdit(router, wikiSlugStr, pageSlugStr)
+                                        } style={{ marginLeft: 8 }}>
                                         <span>このページを編集</span>
                                         </button>
                                         <button onClick={handleDelete}>
