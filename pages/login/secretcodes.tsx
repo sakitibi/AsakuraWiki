@@ -11,38 +11,48 @@ export default function LoginPage() {
     useEffect(() => {
         if (!!secretCode) return;
         async function secretCodeAPIFetched() {
-            const res = await fetch("/api/accounts/secretcode", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `SecretCodes ${secretCode}`
-                }
-            });
-            const data = await res.json();
-            setReturned(data);
+            try{
+                const res = await fetch("/api/accounts/secretcode", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `SecretCodes ${secretCode}`
+                    }
+                });
+                const data = await res.json();
+                setReturned(data);
+            } catch(e:any){
+                console.error("error: ", e);
+            }
         }
         secretCodeAPIFetched();
     }, [secretCode]);
     const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setErrorMsg('');
-        if (!returned || !returned[0]?.metadatas?.[0] || !returned[0]?.metadatas?.[1]) {
-            setErrorMsg("ログイン情報が取得できませんでした");
+        try{
+            e.preventDefault();
+            setLoading(true);
+            setErrorMsg('');
+            if (!returned || !returned[0]?.metadatas?.[0] || !returned[0]?.metadatas?.[1]) {
+                setErrorMsg("ログイン情報が取得できませんでした");
+                setLoading(false);
+                return;
+            }
+            const { data, error } = await supabaseServer.auth.signInWithPassword({
+                email: decrypt(returned[0]!.metadatas[0]),
+                password: decrypt(returned[0]!.metadatas[1]),
+            });
+            console.log('Login Data:', data);
+            console.log('Login Error:', error);
             setLoading(false);
-            return;
-        }
-        const { data, error } = await supabaseServer.auth.signInWithPassword({
-            email: decrypt(returned[0]!.metadatas[0]),
-            password: decrypt(returned[0]!.metadatas[1]),
-        });
-        console.log('Login Data:', data);
-        console.log('Login Error:', error);
-        setLoading(false);
-        if (error) {
-            setErrorMsg(error.message);
-        } else {
-            window.location.href = '/dashboard';
+            if (error) {
+                setErrorMsg(error.message);
+            } else {
+                window.location.href = '/dashboard';
+            }
+        } catch(e){
+            console.error("error: ", e)
+        } finally{
+            setLoading(false);
         }
     };
 
