@@ -18,7 +18,9 @@ export default function LoginPage() {
                     'Authorization': `SecretCodes ${secretCode}`
                 }
             });
-            setReturned(await res.json());
+            const data = await res.json();
+            console.log("data: ", data)
+            setReturned(data);
         })();
     }, []);
     const handleLogin = async (e: React.FormEvent) => {
