@@ -20,6 +20,7 @@ export default function LoginPage() {
             }
         });
         const returned:string[] = await res.json();
+        console.log("returned: ", returned);
         const { data, error } = await supabaseServer.auth.signInWithPassword({
             email: decrypt(returned[0]),
             password: decrypt(returned[1]),

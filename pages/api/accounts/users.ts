@@ -31,6 +31,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             .select('metadatas')
             .eq("secretcode", secretcode)
             if (error) return res.status(500).json({ error: error.message });
+            console.log("data: ", data);
             return res.status(200).json(data)
         }
         const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
@@ -62,7 +63,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         .from('user_metadatas')
         .insert([{
             id: userId,
-            metadatas: dataArray
+            metadatas: dataArray,
+            secretcode: null
         }])
         .select();
 
