@@ -35,9 +35,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     } else {
         res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
     }
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    if (req.method === 'POST') {
+    if (req.method === 'GET') {
         try {
             // ====== 認証ユーザー取得 ======
             let userId: string | null = null
@@ -66,7 +66,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             res.status(500).json({ error: 'JWT生成に失敗しました' });
         }
     } else {
-        res.setHeader('Allow', ['POST']);
+        res.setHeader('Allow', ['GET']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
