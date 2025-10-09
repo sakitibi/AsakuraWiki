@@ -39,6 +39,7 @@ export default function CreateWikiPage() {
             </Head>
             <main style={{ padding: '2rem', maxWidth: 600 }}>
                 <h1>あさクラシークレットコードを作る</h1>
+                <p>注意 13ninアカウントでログインしないと<br/>この機能は使用出来ません</p>
                 <form onSubmit={handleSubmit}>
                     <label>
                     あさクラシークレットコード:
