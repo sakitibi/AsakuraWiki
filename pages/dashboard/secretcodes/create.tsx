@@ -35,10 +35,10 @@ export default function CreateWikiPage() {
     return (
         <>
             <Head>
-                <title>新しいWikiを作る</title>
+                <title>あさクラシークレットコードを作る</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 600 }}>
-                <h1>新しいWikiを作る</h1>
+                <h1>あさクラシークレットコードを作る</h1>
                 <form onSubmit={handleSubmit}>
                     <label>
                     あさクラシークレットコード:
