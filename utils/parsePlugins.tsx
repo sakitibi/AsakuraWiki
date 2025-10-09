@@ -58,7 +58,7 @@ export function extractBracedBlock(
         } else if (char === '}') {
             depth--;
             if (depth === 0) {
-                const body = source.slice(startIdx + braceCount, i);
+                const body:string = source.slice(startIdx + braceCount, i);
                 return { body, end: i + 1, success: true };
             }
         }
@@ -75,14 +75,14 @@ export function extractBracedBlock(
 
 function tokenize(src: string): Token[] {
     const tokens: Token[] = [];
-    let i = 0;
+    let i:number = 0;
 
     while (i < src.length) {
         // #accordion（開き）
-        const openRe = /^#accordion\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
-        const openM = src.slice(i).match(openRe);
+        const openRe:RegExp = /^#accordion\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
+        const openM:RegExpMatchArray | null = src.slice(i).match(openRe);
         if (openM) {
-            const argsRaw = (openM[1] || openM[2] || '').trim().split(',').map(s => s.trim());
+            const argsRaw:string[] = (openM[1] || openM[2] || '').trim().split(',').map(s => s.trim());
             tokens.push({
                 type: 'open',
                 title: argsRaw[0] || '',
@@ -100,8 +100,8 @@ function tokenize(src: string): Token[] {
             i += closeM[0].length;
             continue;
         }
-        const openReFold = /^#fold\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
-        const openMFold = src.slice(i).match(openReFold);
+        const openReFold:RegExp = /^#fold\s*(?:\(\s*([^)]+)\)|\s+([^{]+))\s*\{{2,}/;
+        const openMFold:RegExpMatchArray | null = src.slice(i).match(openReFold);
         if (openMFold) {
             const argsRaw = (openMFold![1] || openMFold![2] || '').trim().split(',').map(s => s.trim());
             tokens.push({

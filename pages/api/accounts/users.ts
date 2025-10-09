@@ -1,6 +1,7 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminerUserId } from '@/utils/user_list';
+import { decrypt } from '@/lib/secureObfuscator';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -22,6 +23,15 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
             if (authError) console.error('Supabase auth error:', authError)
             if (user) userId = user.id
+        }
+        else if(authHeader?.startsWith('SecretCodes ')) {
+            const secretcode = authHeader.split(' ')[1];
+            const { data, error } = await supabaseServer
+            .from('user_metadatas')
+            .select('metadatas')
+            .eq("secretcode", secretcode)
+            if (error) return res.status(500).json({ error: error.message });
+            return res.status(200).json(data)
         }
         const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
         if(adminer_user_id_list){

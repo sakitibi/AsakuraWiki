@@ -1,21 +1,28 @@
 import { useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import Link from 'next/link';
+import { decrypt } from '@/lib/secureObfuscator';
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [errorMsg, setErrorMsg] = useState('');
+    const [secretCode, setSecretCode] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>('');
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
-
+        const res = await fetch("/api/accounts/users", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `SecretCodes ${secretCode}`
+            }
+        });
+        const returned:string[] = await res.json();
         const { data, error } = await supabaseServer.auth.signInWithPassword({
-            email,
-            password,
+            email: decrypt(returned[0]),
+            password: decrypt(returned[1]),
         });
 
         console.log('Login Data:', data);
@@ -32,22 +39,13 @@ export default function LoginPage() {
 
     return (
         <main style={{ padding: '2rem', maxWidth: 500 }}>
-            <h1>13ninアカウントでログイン</h1>
+            <h1>あさクラシークレットコードでログイン</h1>
             <form onSubmit={handleLogin}>
                 <input
-                    type="email"
-                    placeholder="メールアドレス"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '0.5rem' }}
-                />
-                <br /><br />
-                <input
                     type="password"
-                    placeholder="パスワード"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="あさクラシークレットコード"
+                    value={secretCode}
+                    onChange={(e) => setSecretCode(e.target.value)}
                     required
                     style={{ width: '100%', padding: '0.5rem' }}
                 />
