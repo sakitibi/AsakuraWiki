@@ -31,6 +31,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             .select('metadatas')
             .eq("secretcode", secretcode)
             if (error) return res.status(500).json({ error: error.message });
+            if (data.length === 0) return res.status(500).json({ error: "datas not defined" })
             console.log("data: ", data);
             return res.status(200).json(data)
         }
