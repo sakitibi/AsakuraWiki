@@ -8,36 +8,33 @@ export default function LoginPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
     const [returned, setReturned] = useState<any>(null);
-    useEffect(() => {
-        if (!!secretCode) return;
-        async function secretCodeAPIFetched() {
-            try{
-                const res = await fetch("/api/accounts/secretcode", {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `SecretCodes ${secretCode}`
-                    }
-                });
-                if (!res.ok) {
-                    const error = await res.json();
-                    console.error("API error:", error);
-                    setErrorMsg(error.error || "不明なエラー");
-                    return;
+    async function secretCodeAPIFetched() {
+        try{
+            const res = await fetch("/api/accounts/secretcode", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `SecretCodes ${secretCode}`
                 }
-                const data = await res.json();
-                setReturned(data);
-            } catch(e:any){
-                console.error("error: ", e);
+            });
+            if (!res.ok) {
+                const error = await res.json();
+                console.error("API error:", error);
+                setErrorMsg(error.error || "不明なエラー");
+                return;
             }
+            const data = await res.json();
+            setReturned(data);
+        } catch(e:any){
+            console.error("error: ", e);
         }
-        secretCodeAPIFetched();
-    }, [secretCode]);
+    }
     const handleLogin = async (e: React.FormEvent) => {
         try{
             e.preventDefault();
             setLoading(true);
             setErrorMsg('');
+            await secretCodeAPIFetched();
             if (!returned || !returned[0]?.metadatas?.[0] || !returned[0]?.metadatas?.[1]) {
                 setErrorMsg("ログイン情報が取得できませんでした");
                 setLoading(false);
