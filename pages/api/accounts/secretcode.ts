@@ -61,6 +61,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             }
             else if(authHeader?.startsWith('SecretCodes ')) {
                 const secretcode = authHeader.split(' ')[1];
+                console.log("secretcode: ", secretcode);
                 const { data, error } = await supabaseServer
                 .from('user_metadatas')
                 .select('metadatas')
