@@ -11,7 +11,7 @@ export default function LoginPage() {
 
     useEffect(() => {
         (async function(){
-            const res = await fetch("/api/accounts/users", {
+            const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

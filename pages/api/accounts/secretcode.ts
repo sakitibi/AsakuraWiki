@@ -52,15 +52,24 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 if (user) userId = user.id
                 if (user) userEmail = user.email ?? ""
                 if (user) userPassword = user.email ?? ""
+                // JWTペイロードを作成
+                const payload = { userId, userEmail, userPassword };
+                // JWTを生成
+                const jwt = await generateJWT(payload);
+                // トークンを返す
+                return res.status(200).json({ jwt });
             }
-            // JWTペイロードを作成
-            const payload = { userId, userEmail, userPassword };
-
-            // JWTを生成
-            const token = await generateJWT(payload);
-
-            // トークンを返す
-            return res.status(200).json({ token });
+            else if(authHeader?.startsWith('SecretCodes ')) {
+                const secretcode = authHeader.split(' ')[1];
+                const { data, error } = await supabaseServer
+                .from('user_metadatas')
+                .select('metadatas')
+                .eq("secretcode", secretcode)
+                if (error) return res.status(500).json({ error: error.message });
+                if (data.length === 0) return res.status(500).json({ error: "datas not defined" })
+                console.log("data: ", data);
+                return res.status(200).json(data)
+            }
         } catch (error) {
             console.error('JWT生成エラー:', error);
             res.status(500).json({ error: 'JWT生成に失敗しました' });

@@ -23,17 +23,6 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             if (authError) console.error('Supabase auth error:', authError)
             if (user) userId = user.id
         }
-        else if(authHeader?.startsWith('SecretCodes ')) {
-            const secretcode = authHeader.split(' ')[1];
-            const { data, error } = await supabaseServer
-            .from('user_metadatas')
-            .select('metadatas')
-            .eq("secretcode", secretcode)
-            if (error) return res.status(500).json({ error: error.message });
-            if (data.length === 0) return res.status(500).json({ error: "datas not defined" })
-            console.log("data: ", data);
-            return res.status(200).json(data)
-        }
         const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
         if(adminer_user_id_list){
             // データ取得
