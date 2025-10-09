@@ -27,7 +27,7 @@ export default function CreateWikiPage() {
         const {error: SecretCodeError} = await supabaseServer
             .from('user_metadatas')
             .update({
-                secretcode: data
+                secretcode: data.token
             })
             .eq("id", user?.id)
         if (SecretCodeError) {
