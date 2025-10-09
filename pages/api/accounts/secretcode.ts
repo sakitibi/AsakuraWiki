@@ -35,8 +35,12 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     } else {
         res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
     }
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
     if (req.method === 'GET') {
         try {
             // ====== 認証ユーザー取得 ======
@@ -80,7 +84,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             });
         }
     } else {
-        res.setHeader('Allow', ['GET']);
+        res.setHeader('Allow', ['GET','OPTIONS']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
