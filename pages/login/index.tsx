@@ -15,7 +15,7 @@ export default function LoginPage() {
                     <Link href="/login/email">
                         <button style={buttonStyle}><span>13ninアカウントでログイン</span></button>
                     </Link>
-                    <Link href="/login/secretcode">
+                    <Link href="/login/secretcodes">
                         <button style={buttonStyle}><span>あさクラシークレットコードでログイン</span></button>
                     </Link>
                     <Link href="/login/github">
