@@ -67,13 +67,17 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 .select('metadatas')
                 .eq("secretcode", secretcode)
                 if (error) return res.status(500).json({ error: error.message });
-                if (data.length === 0) return res.status(500).json({ error: "datas not defined" })
+                if (data.length === 0) {
+                    return res.status(404).json({ error: "No matching user found" });
+                }
                 console.log("data: ", data);
                 return res.status(200).json(data)
             }
         } catch (error) {
-            console.error('JWT生成エラー:', error);
-            res.status(500).json({ error: 'JWT生成に失敗しました' });
+            res.status(500).json({
+                error: 'JWT生成エラー',
+                details: String(error)
+            });
         }
     } else {
         res.setHeader('Allow', ['GET']);
