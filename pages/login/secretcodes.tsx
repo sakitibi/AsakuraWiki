@@ -8,9 +8,9 @@ export default function LoginPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
     const [returned, setReturned] = useState<any>(null);
-
     useEffect(() => {
-        async function secretCodeAPIFetched(){
+        if (!!secretCode) return;
+        async function secretCodeAPIFetched() {
             const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',
                 headers: {
@@ -19,15 +19,19 @@ export default function LoginPage() {
                 }
             });
             const data = await res.json();
-            console.log("data: ", data)
             setReturned(data);
         }
         secretCodeAPIFetched();
-    }, []);
+    }, [secretCode]);
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
+        if (!returned || !returned[0]?.metadatas?.[0] || !returned[0]?.metadatas?.[1]) {
+            setErrorMsg("ログイン情報が取得できませんでした");
+            setLoading(false);
+            return;
+        }
         const { data, error } = await supabaseServer.auth.signInWithPassword({
             email: decrypt(returned[0]!.metadatas[0]),
             password: decrypt(returned[0]!.metadatas[1]),
