@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import Link from 'next/link';
 import { decrypt } from '@/lib/secureObfuscator';
@@ -7,30 +7,31 @@ export default function LoginPage() {
     const [secretCode, setSecretCode] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
+    const [returned, setReturned] = useState<any>(null);
 
+    useEffect(() => {
+        (async function(){
+            const res = await fetch("/api/accounts/users", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `SecretCodes ${secretCode}`
+                }
+            });
+            setReturned(await res.json());
+        })();
+    }, []);
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
-        const res = await fetch("/api/accounts/users", {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `SecretCodes ${secretCode}`
-            }
-        });
-        const returned = await res.json();
-        console.log("returned: ", returned);
         const { data, error } = await supabaseServer.auth.signInWithPassword({
-            email: decrypt(returned[0].metadatas[0]),
-            password: decrypt(returned[0].metadatas[1]),
+            email: decrypt(returned[0]?.metadatas[0]),
+            password: decrypt(returned[0]?.metadatas[1]),
         });
-
         console.log('Login Data:', data);
         console.log('Login Error:', error);
-
         setLoading(false);
-
         if (error) {
             setErrorMsg(error.message);
         } else {
