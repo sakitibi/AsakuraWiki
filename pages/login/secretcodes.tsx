@@ -19,11 +19,11 @@ export default function LoginPage() {
                 'Authorization': `SecretCodes ${secretCode}`
             }
         });
-        const returned:string[] = await res.json();
+        const returned = await res.json();
         console.log("returned: ", returned);
         const { data, error } = await supabaseServer.auth.signInWithPassword({
-            email: decrypt(returned[0]),
-            password: decrypt(returned[1]),
+            email: decrypt(returned[0].metadatas[0]),
+            password: decrypt(returned[0].metadatas[1]),
         });
 
         console.log('Login Data:', data);
