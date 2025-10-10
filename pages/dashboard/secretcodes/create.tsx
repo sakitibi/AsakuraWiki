@@ -20,26 +20,18 @@ export default function CreateSecretCode() {
         const session = await supabaseServer.auth.getSession();
         const token = session?.data?.session?.access_token;
         const res:Response = await fetch("/api/accounts/secretcode", {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: String(!!asakura_menber_found && provider === "email")
         })
-        const data = await res.json();
-        // 1) wikis テーブルに挿入
-        const {error: SecretCodeError} = await supabaseServer
-            .from('user_metadatas')
-            .update({
-                secretcode: data.jwt
-            })
-            .eq("id", user?.id)
-        if (SecretCodeError) {
-            alert('あさクラシークレットコードの作成に失敗しました: ' + SecretCodeError.message);
+        if (!res.ok) {
+            alert('あさクラシークレットコードの作成に失敗しました: ' + await res.json());
             setLoading(false);
             return;
         }
-        console.log("isOK: ", !!asakura_menber_found && provider === "email")
         setLoading(false);
     };
 
