@@ -26,6 +26,9 @@ export default function DashboardPage() {
             setLoading(false);
         }
     }
+    const createSecretCode = () => {
+        window.location.href = "/dashboard/secretcodes/create";
+    }
     useEffect(() => {
         setLoading(false);
     }, []);
@@ -48,6 +51,7 @@ export default function DashboardPage() {
                             </button>
                             <button
                                 disabled={loading || !asakura_menber_found}
+                                onClick={createSecretCode}
                             >
                                 <Link href="/dashboard/secretcodes/create">
                                     <span>あさクラシークレットコードの作成
