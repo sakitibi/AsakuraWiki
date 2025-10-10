@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import Link from 'next/link';
 import { decrypt } from '@/lib/secureObfuscator';
@@ -23,12 +23,19 @@ export default function LoginPage() {
                 return null;
             }
             const data = await res.json();
+            localStorage.setItem("secretcodeSessions", secretCode)
             return data;
         } catch (e: any) {
             console.error("error: ", e);
             return null;
         }
     }
+    useEffect(() => {
+        const session = localStorage.getItem("secretcodeSessions") ?? null;
+        if(session){
+            setSecretCode(session);
+        }
+    }, []);
     const handleLogin = async (e: React.FormEvent) => {
         try{
             e.preventDefault();

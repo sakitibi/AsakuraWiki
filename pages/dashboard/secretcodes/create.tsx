@@ -32,6 +32,8 @@ export default function CreateSecretCode() {
             setLoading(false);
             return;
         }
+        const data = await res.json();
+        localStorage.setItem("secretcodeSessions", data.jwt);
         setLoading(false);
     };
 
