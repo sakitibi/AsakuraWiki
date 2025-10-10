@@ -4,7 +4,6 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { useEffect, useState } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
-import Link from 'next/link';
 
 export default function DashboardPage() {
     const user:User | null = useUser();
@@ -16,6 +15,7 @@ export default function DashboardPage() {
         user?.user_metadata?.username || // カスタムフィールド
         user?.email ||                   // 最後の手段
         'ゲスト';
+    const provider = user?.app_metadata.provider;
     const handleLogout = async() => {
         try{
             setLoading(true);
@@ -54,7 +54,7 @@ export default function DashboardPage() {
                                 onClick={createSecretCode}
                             >
                                 <span>あさクラシークレットコードの作成
-                                    {!asakura_menber_found ? "(使用不可)" : null}
+                                    {!asakura_menber_found || provider !== "email" ? "(使用不可)" : null}
                                 </span>
                             </button>
                         </div>
