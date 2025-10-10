@@ -163,8 +163,12 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-                <div style={{ textAlign: 'center', fontSize: '30'}}>
-                    <p><strong>2025/10/08 <a href="/news/2025/10/08/1">
+                <div style={{
+                    textAlign: 'center',
+                    fontSize: '25px',
+                    color: 'white'
+                }}>
+                    <p><strong><a href="/news/2025/10/08/1">
                         「{kokuseiChousaStr}」は個人情報を抜くための罠です!!詳しくはこちら</a></strong>
                     </p>
                 </div>
