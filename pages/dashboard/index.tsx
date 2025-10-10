@@ -50,7 +50,7 @@ export default function DashboardPage() {
                                 <span>ログアウト</span>
                             </button>
                             <button
-                                disabled={loading || !asakura_menber_found}
+                                disabled={loading || !asakura_menber_found || provider !== "email"}
                                 onClick={createSecretCode}
                             >
                                 <span>あさクラシークレットコードの作成
