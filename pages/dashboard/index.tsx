@@ -53,11 +53,9 @@ export default function DashboardPage() {
                                 disabled={loading || !asakura_menber_found}
                                 onClick={createSecretCode}
                             >
-                                <Link href="/dashboard/secretcodes/create">
-                                    <span>あさクラシークレットコードの作成
-                                        {!asakura_menber_found ? "(使用不可)" : null}
-                                    </span>
-                                </Link>
+                                <span>あさクラシークレットコードの作成
+                                    {!asakura_menber_found ? "(使用不可)" : null}
+                                </span>
                             </button>
                         </div>
                     </div>
