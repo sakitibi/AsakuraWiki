@@ -3,10 +3,13 @@ import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { useEffect, useState } from 'react';
+import { asakuraMenberUserId } from '@/utils/user_list';
+import Link from 'next/link';
 
 export default function DashboardPage() {
     const user:User | null = useUser();
     const [loading, setLoading] = useState<boolean>(true);
+    const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const name:string =
         user?.user_metadata?.name ||  // GitHubログインなどの表示名
         user?.user_metadata?.full_name || // その他のプロバイダー
@@ -42,6 +45,15 @@ export default function DashboardPage() {
                                 onClick={async() => await handleLogout()}
                             >
                                 <span>ログアウト</span>
+                            </button>
+                            <button
+                                disabled={loading || !asakura_menber_found}
+                            >
+                                <Link href="/dashboard/secretcodes/create">
+                                    <span>あさクラシークレットコードの作成
+                                        {!asakura_menber_found ? "(使用不可)" : null}
+                                    </span>
+                                </Link>
                             </button>
                         </div>
                     </div>
