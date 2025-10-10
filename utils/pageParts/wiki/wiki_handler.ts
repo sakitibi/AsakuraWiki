@@ -56,3 +56,38 @@ export const handleEdit = (
         query: { cmd: 'edit', page: pageSlugStr },
     });
 };
+
+export const handleDelete = async (
+    special_wiki_list_found: string | undefined,
+    wikiSlugStr: string,
+    pageSlugStr: string,
+    router: NextRouter
+) => {
+    if (!special_wiki_list_found) {
+        const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
+        if (!ok) return;
+
+        const { data: { session } } = await supabaseServer.auth.getSession();
+        const token = session?.access_token;
+
+        try {
+            const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                alert('削除に失敗しました: ' + data.error);
+            } else {
+                alert('削除しました');
+                router.replace(`/wiki/${wikiSlugStr}`);
+            }
+        } catch (err: any) {
+            console.error(err);
+            alert('削除に失敗しました: ' + err.message);
+        }
+    }
+};

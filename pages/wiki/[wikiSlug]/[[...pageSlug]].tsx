@@ -11,7 +11,7 @@ import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wik
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { WikiBanned, WikiDeleted } from '@/utils/pageParts/wiki/wiki_notfound';
 import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
-import { handleEdit } from '@/utils/pageParts/wiki/wiki_handler';
+import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/wiki_handler';
 
 interface Page {
     title: string;
@@ -139,89 +139,54 @@ export default function WikiPage() {
             document.body.classList.remove('purple');
         };
     }, [designColor]);
+    const deletePage = async () => {
+        if (pageSlugStr === 'FrontPage') {
+            alert('FrontPage は削除できません');
+            router.replace(`/wiki/${wikiSlugStr}`);
+            return;
+        }
 
-    const handleDelete = async () => {
-        if (!special_wiki_list_found) {
-            const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
-            if (!ok) return;
+        const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
+        if (!ok) {
+            router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+            return;
+        }
 
+        try {
             const { data: { session } } = await supabaseServer.auth.getSession();
             const token = session?.access_token;
 
-            try {
-                const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+            const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user: { id: user?.id } }),
+            });
 
-                if (!res.ok) {
-                    const data = await res.json();
-                    alert('削除に失敗しました: ' + data.error);
-                } else {
-                    alert('削除しました');
-                    router.replace(`/wiki/${wikiSlugStr}`);
-                }
-            } catch (err: any) {
-                console.error(err);
-                alert('削除に失敗しました: ' + err.message);
+            if (!res.ok) {
+                const err = await res.json();
+                alert('削除に失敗しました: ' + err.error);
+            } else {
+                alert('削除しました');
+                router.replace(`/wiki/${wikiSlugStr}`);
             }
+        } catch (err: any) {
+            console.error(err);
+            alert('削除に失敗しました: ' + err.message);
         }
     };
-
     useEffect(() => {
         if (cmdStr !== 'delete') return;
         if (!pageSlugStr || !wikiSlugStr) return;
         if (!user) return; // ← user が取得できるまで待機
-
-        const deletePage = async () => {
-            if (pageSlugStr === 'FrontPage') {
-                alert('FrontPage は削除できません');
-                router.replace(`/wiki/${wikiSlugStr}`);
-                return;
-            }
-
-            const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
-            if (!ok) {
-                router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-                return;
-            }
-
-            try {
-                const { data: { session } } = await supabaseServer.auth.getSession();
-                const token = session?.access_token;
-
-                const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ user: { id: user.id } }),
-                });
-
-                if (!res.ok) {
-                    const err = await res.json();
-                    alert('削除に失敗しました: ' + err.error);
-                } else {
-                    alert('削除しました');
-                    router.replace(`/wiki/${wikiSlugStr}`);
-                }
-            } catch (err: any) {
-                console.error(err);
-                alert('削除に失敗しました: ' + err.message);
-            }
-        };
-
         deletePage();
     }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
 
-    const isEdit = cmdStr === 'edit';
+    const isEdit:boolean = cmdStr === 'edit';
     // プレビュー or 閲覧コンテンツ
-
-    let commentSubmit:any = null;
-
+    let commentSubmit: HTMLCollectionOf<Element> | null = null;
     const CommentSubmitInterval = setInterval(() => {
         if(typeof document.getElementsByClassName("comment-submit") === 'undefined'){
             if(typeof document.getElementsByClassName("comment-submit") !== 'undefined'){
@@ -229,8 +194,8 @@ export default function WikiPage() {
             }
 
             if ((isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage")) {
-                for(let i = 0; i < commentSubmit.length; i++){
-                    commentSubmit[i].setAttribute("disabled", "true");
+                for(let i = 0; i < commentSubmit!.length; i++){
+                    commentSubmit![i].setAttribute("disabled", "true");
                 }
             }
         } else {
@@ -332,7 +297,12 @@ export default function WikiPage() {
                                         } style={{ marginLeft: 8 }}>
                                         <span>このページを編集</span>
                                         </button>
-                                        <button onClick={handleDelete}>
+                                        <button onClick={async() => await handleDelete(
+                                            special_wiki_list_found,
+                                            wikiSlugStr,
+                                            pageSlugStr,
+                                            router
+                                        )}>
                                         <span>このページを削除</span>
                                         </button>
                                         <br />
