@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import Link from 'next/link';
 import { decrypt } from '@/lib/secureObfuscator';
@@ -7,7 +7,6 @@ export default function LoginPage() {
     const [secretCode, setSecretCode] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
-    const [returned, setReturned] = useState<any>(null);
     async function secretCodeAPIFetched(): Promise<any> {
         try {
             const res = await fetch("/api/accounts/secretcode", {
@@ -54,8 +53,8 @@ export default function LoginPage() {
                 return;
             }
             const { data, error } = await supabaseServer.auth.signInWithPassword({
-                email: decrypt(returned[0]!.metadatas[0]),
-                password: decrypt(returned[0]!.metadatas[1]),
+                email: decrypt(fetched[0]!.metadatas[0]),
+                password: decrypt(fetched[0]!.metadatas[1]),
             });
             console.log('Login Data:', data);
             console.log('Login Error:', error);
