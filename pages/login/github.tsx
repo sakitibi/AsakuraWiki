@@ -3,12 +3,15 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 
 export default function GitHubLogin() {
     useEffect(() => {
-        supabaseServer.auth.signInWithOAuth({
-            provider: 'github',
-            options: {
-                redirectTo: `${window.location.origin}/login/inputs/`,
-            },
-        });
+        const Signin = async() => {
+            await supabaseServer.auth.signInWithOAuth({
+                provider: 'github',
+                options: {
+                    redirectTo: `${window.location.origin}/login/inputs/`,
+                },
+            });
+        }
+        Signin();
     }, []);
 
     return (
