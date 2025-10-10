@@ -8,25 +8,26 @@ export default function LoginPage() {
     const [loading, setLoading] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
     const [returned, setReturned] = useState<any>(null);
-    async function secretCodeAPIFetched() {
-        try{
+    async function secretCodeAPIFetched(): Promise<any> {
+        try {
             const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `SecretCodes ${secretCode}`
+                    'Authorization': `SecretCodes ${secretCode.trim()}`
                 }
             });
             if (!res.ok) {
                 const error = await res.json();
                 console.error("API error:", error);
                 setErrorMsg(error.error || "不明なエラー");
-                return;
+                return null;
             }
             const data = await res.json();
-            setReturned(data);
-        } catch(e:any){
+            return data;
+        } catch (e: any) {
             console.error("error: ", e);
+            return null;
         }
     }
     const handleLogin = async (e: React.FormEvent) => {
@@ -34,9 +35,9 @@ export default function LoginPage() {
             e.preventDefault();
             setLoading(true);
             setErrorMsg('');
-            await secretCodeAPIFetched();
-            console.log("returned: ", returned);
-            if (!returned || !returned[0]?.metadatas?.[0] || !returned[0]?.metadatas?.[1]) {
+            const fetched = await secretCodeAPIFetched();
+            console.log("fetched: ", fetched);
+            if (!fetched || !fetched[0]?.metadatas?.[0] || !fetched[0]?.metadatas?.[1]) {
                 setErrorMsg("ログイン情報が取得できませんでした");
                 setLoading(false);
                 return;

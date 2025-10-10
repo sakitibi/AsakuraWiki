@@ -6,16 +6,18 @@ function RandomRange(){
     return Math.floor(Math.random() * 2147483647).toString(36);
 }
 
+function RandomRange5(){
+    return RandomRange() + 
+    RandomRange() + 
+    RandomRange() + 
+    RandomRange() + 
+    RandomRange();
+}
+
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 const Key = new TextEncoder().encode(
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange().substring(0, 30)
+    RandomRange5() + 
+    RandomRange5().substring(0, 40)
 );
 
 async function generateJWT(payload:JWTPayload) {
@@ -66,9 +68,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 const secretcode = authHeader.split(' ')[1];
                 console.log("secretcode: ", secretcode);
                 const { data, error } = await supabaseServer
-                .from('user_metadatas')
-                .select('metadatas')
-                .eq("secretcode", secretcode)
+                    .from('user_metadatas')
+                    .select('metadatas')
+                    .eq("secretcode", secretcode)
                 if (error) return res.status(500).json({ error: error.message });
                 if (data.length === 0) {
                     return res.status(404).json({ error: "No matching user found" });
