@@ -59,6 +59,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 // JWTを生成
                 const jwt = await generateJWT(payload);
                 // トークンを返す
+                console.log("jwt: ", jwt);
                 return res.status(200).json({ jwt });
             }
             else if(authHeader?.startsWith('SecretCodes ')) {

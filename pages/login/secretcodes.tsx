@@ -35,6 +35,7 @@ export default function LoginPage() {
             setLoading(true);
             setErrorMsg('');
             await secretCodeAPIFetched();
+            console.log("returned: ", returned);
             if (!returned || !returned[0]?.metadatas?.[0] || !returned[0]?.metadatas?.[1]) {
                 setErrorMsg("ログイン情報が取得できませんでした");
                 setLoading(false);
