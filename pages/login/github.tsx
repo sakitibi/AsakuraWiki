@@ -6,7 +6,7 @@ export default function GitHubLogin() {
         supabaseServer.auth.signInWithOAuth({
             provider: 'github',
             options: {
-                redirectTo: `${window.location.origin}/dashboard`,
+                redirectTo: `${window.location.origin}/login/inputs/`,
             },
         });
     }, []);
