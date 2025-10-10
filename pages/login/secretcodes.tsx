@@ -37,7 +37,18 @@ export default function LoginPage() {
             setErrorMsg('');
             const fetched = await secretCodeAPIFetched();
             console.log("fetched: ", fetched);
-            if (!fetched || !fetched[0]?.metadatas?.[0] || !fetched[0]?.metadatas?.[1]) {
+            if (!Array.isArray(fetched) || fetched.length === 0) {
+                setErrorMsg("ログイン情報が取得できませんでした");
+                setLoading(false);
+                return;
+            }
+            if (
+                !Array.isArray(fetched) ||
+                fetched.length === 0 ||
+                !fetched ||
+                !fetched[0]?.metadatas?.[0] ||
+                !fetched[0]?.metadatas?.[1]
+            ) {
                 setErrorMsg("ログイン情報が取得できませんでした");
                 setLoading(false);
                 return;
