@@ -6,8 +6,8 @@ import { User, useUser } from '@supabase/auth-helpers-react';
 
 export default function CreateSecretCode() {
     const [loading, setLoading] = useState<boolean>(false);
-    const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const user:User | null = useUser();
+    const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const provider = user?.app_metadata.provider;
     const handleClick = async () => {
         setLoading(true);
