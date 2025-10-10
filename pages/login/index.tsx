@@ -12,10 +12,10 @@ export default function LoginPage() {
                 <h1>🔐 ログイン</h1>
                 <p>ログイン方法を選択してください：</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-                    <Link href="/login/email">
+                    <Link href="/login/13nin/">
                         <button style={buttonStyle}><span>13ninアカウントでログイン</span></button>
                     </Link>
-                    <Link href="/login/secretcodes">
+                    <Link href="/login/13nin/secretcodes">
                         <button style={buttonStyle}><span>あさクラシークレットコードでログイン</span></button>
                     </Link>
                     <Link href="/login/github">
@@ -23,6 +23,9 @@ export default function LoginPage() {
                     </Link>
                     <Link href="/login/gitlab">
                         <button style={buttonStyle}><span>GitLabでログイン</span></button>
+                    </Link>
+                    <Link href="/login/bitbucket">
+                        <button style={buttonStyle}><span>BitBucketでログイン</span></button>
                     </Link>
                     <Link href="/login/discord">
                         <button style={buttonStyle}><span>Discordでログイン</span></button>

@@ -60,7 +60,7 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 ) : (
-                    <p>ログインが必要です</p>
+                    <p>401 ログインが必要です</p>
                 )}
             </main>
             <FooterJp/>
