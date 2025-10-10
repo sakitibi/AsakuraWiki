@@ -39,6 +39,7 @@ export default function CreateSecretCode() {
             setLoading(false);
             return;
         }
+        console.log("isOK: ", !!asakura_menber_found && provider === "email")
         setLoading(false);
     };
 
