@@ -6,6 +6,8 @@
 @use 'mixin';
 @use 'minecraft/vs';
 @use 'listGroup';
+@use 'panel';
+@use 'fa';
 
 .pHotWiki__title{
     @include mixin.pLikedWiki;

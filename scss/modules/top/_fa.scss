@@ -1,0 +1,31 @@
+.faSolid, .fas {
+    font-weight: 900;
+}
+.faLandmark {
+    --fa: "\f66f";
+    --fa--fa: "\f66f\f66f";
+}
+.faFw {
+    text-align: center;
+    width: 1.25em;
+}
+.faLg {
+    font-size: 1.25em;
+    line-height: .05em;
+    vertical-align: -.075em;
+}
+.faClassic, .faLight, .faRegular, .faSolid, .faThin, .fal, .far, .fas, .fat {
+    font-family: Font Awesome\ 6 Pro;
+}
+.fa, .faBrands, .faClassic, .faDuotone, .faLight, .faRegular, .faSharp,
+.faSharpDuotone, .faSolid, .faThin, .fab, .fad, .fadl, .fadr, .fadt, .fal,
+.far, .fas, .fasdl, .fasdr, .fasds, .fasdt, .fasl, .fasr, .fass, .fast, .fat {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-feature-settings: normal;
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1;
+    text-rendering: auto;
+}
