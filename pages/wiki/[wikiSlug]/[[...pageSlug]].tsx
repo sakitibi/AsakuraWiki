@@ -12,6 +12,8 @@ import type { editMode, designColor } from '@/utils/wiki_settings';
 import { WikiBanned, WikiDeleted } from '@/utils/pageParts/wiki/wiki_notfound';
 import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
 import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/wiki_handler';
+import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
+import deletePage from '@/utils/pageParts/wiki/deletePage';
 
 interface Page {
     title: string;
@@ -139,49 +141,16 @@ export default function WikiPage() {
             document.body.classList.remove('purple');
         };
     }, [designColor]);
-    const deletePage = async () => {
-        if (pageSlugStr === 'FrontPage') {
-            alert('FrontPage は削除できません');
-            router.replace(`/wiki/${wikiSlugStr}`);
-            return;
-        }
-
-        const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
-        if (!ok) {
-            router.replace(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-            return;
-        }
-
-        try {
-            const { data: { session } } = await supabaseServer.auth.getSession();
-            const token = session?.access_token;
-
-            const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ user: { id: user?.id } }),
-            });
-
-            if (!res.ok) {
-                const err = await res.json();
-                alert('削除に失敗しました: ' + err.error);
-            } else {
-                alert('削除しました');
-                router.replace(`/wiki/${wikiSlugStr}`);
-            }
-        } catch (err: any) {
-            console.error(err);
-            alert('削除に失敗しました: ' + err.message);
-        }
-    };
     useEffect(() => {
         if (cmdStr !== 'delete') return;
         if (!pageSlugStr || !wikiSlugStr) return;
         if (!user) return; // ← user が取得できるまで待機
-        deletePage();
+        deletePage(
+            wikiSlugStr,
+            pageSlugStr,
+            router,
+            user
+        );
     }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
 
     const isEdit:boolean = cmdStr === 'edit';
@@ -205,6 +174,13 @@ export default function WikiPage() {
             }, 1000);
         }
     }, 1000);
+    useEffect(() => {
+        CommentSubmitFunc(
+            isEdit,
+            wikiSlugStr,
+            pageSlugStr
+        );
+    }, []);
     const previewText = isEdit ? content : page?.content ?? ''
     useEffect(() => {
         const fetchParsedPreview = async () => {
