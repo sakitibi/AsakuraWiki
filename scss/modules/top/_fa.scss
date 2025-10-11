@@ -29,3 +29,14 @@
     line-height: 1;
     text-rendering: auto;
 }
+.fa-landmark {
+    --fa: "\f66f";
+    --fa--fa: "\f66f\f66f";
+}
+.faBrands:before, .faClassic:before, .faDuotone:before, .faLight:before,
+.faRegular:before, .faSharpDuotone:before, .faSharp:before, .faSolid:before,
+.faThin:before, .fa:before, .fab:before, .fad:before, .fadl:before, .fadr:before,
+.fadt:before, .fal:before, .far:before, .fas:before, .fasdl:before, .fasdr:before,
+.fasds:before, .fasdt:before, .fasl:before, .fasr:before, .fass:before, .fast:before, .fat:before {
+    content: var(--fa);
+}
