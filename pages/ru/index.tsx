@@ -66,6 +66,9 @@ export default function Home() {
                     /* css end */
                 `}
             </style>
+            {!user ? (
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css"/>
+            ) : null}
         </Head>
         <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
         <div className={styles.contentsWrapper}>
