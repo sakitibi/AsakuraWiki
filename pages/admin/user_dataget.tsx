@@ -84,7 +84,10 @@ export default function UserDataGet(){
                                                     <p>birthday: {secureDecrypt(data.metadatas[2])}</p>
                                                     <p>username: {secureDecrypt(data.metadatas[3])}</p>
                                                     <p>countries: {secureDecrypt(data.metadatas[4])}</p>
-                                                    <p>jender: {secureDecrypt(data.metadatas[5])}</p>
+                                                    <p>jender: {
+                                                        secureDecrypt(data.metadatas[5]) === "woman" ? 
+                                                        "女" : "男"
+                                                    }</p>
                                                     <p>shimei: {secureDecrypt(data.metadatas[6])}</p>
                                                     <hr />
                                                 </div>

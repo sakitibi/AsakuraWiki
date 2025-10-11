@@ -10,7 +10,7 @@ import { User, useUser } from "@supabase/auth-helpers-react";
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
     const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
-    const [jender, setJender] = useState<string>('');
+    const [jender, setJender] = useState<"men" | "woman">('men');
     const [username, setUsername] = useState<string>('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);

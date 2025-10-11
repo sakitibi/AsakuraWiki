@@ -9,7 +9,7 @@ export default function SignUpPage() {
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
     const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
-    const [jender, setJender] = useState<string>('');
+    const [jender, setJender] = useState<"men" | "woman">('men');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
