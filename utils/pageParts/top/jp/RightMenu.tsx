@@ -18,7 +18,7 @@ export default function RightMenuJp(){
                 <h2 className={styles.pContact__title}>サポート</h2>
                 <ul className={styles.pContact__list}>
                     <li className={styles.pContact__item}>
-                        <a className="pContact__link" href="/about/ad">広告について</a>
+                        <a href="/about/ad">広告について</a>
                     </li>
                 </ul>
             </div>

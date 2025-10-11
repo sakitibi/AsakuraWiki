@@ -205,7 +205,6 @@ export default function WikiPage() {
             }, 1000);
         }
     }, 1000);
-
     const previewText = isEdit ? content : page?.content ?? ''
     useEffect(() => {
         const fetchParsedPreview = async () => {

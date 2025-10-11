@@ -35,11 +35,11 @@ export default function AboutAd() {
                             <p>Бесплатный прокатный сервис WIKI «Asakura Wiki» работает за счет доходов от рекламы от рекламодателей и спонсоров.<br/>Вот почему мы показываем рекламу на каждой вики, которую вы создаете.</p>
                             <h2>Часто задаваемые вопросы о рекламе</h2>
                             <div className={styles.listGroup}>
-                                <a className={styles.listGroupItem} href="#01">Будут ли администраторы вики получать доход?</a>
-                                <a className={styles.listGroupItem} href="#02">Могу ли я разместить объявление?</a>
-                                <a className={styles.listGroupItem} href="#03">Почему существуют ограничения на рекламу?</a>
-                                <a className={styles.listGroupItem} href="#04">Почему я вижу так много объявлений на некоторых вики и страницах?</a>
-                                <a className={styles.listGroupItem} href="#05">Можно ли убрать показ рекламы за отдельную плату?</a>
+                                <a className={`${styles.listGroupItem} AdSupport__link`} href="#01">Будут ли администраторы вики получать доход?</a>
+                                <a className={`${styles.listGroupItem} AdSupport__link`} href="#02">Могу ли я разместить объявление?</a>
+                                <a className={`${styles.listGroupItem} AdSupport__link`} href="#03">Почему существуют ограничения на рекламу?</a>
+                                <a className={`${styles.listGroupItem} AdSupport__link`} href="#04">Почему я вижу так много объявлений на некоторых вики и страницах?</a>
+                                <a className={`${styles.listGroupItem} AdSupport__link`} href="#05">Можно ли убрать показ рекламы за отдельную плату?</a>
                             </div>
                             <h2 id="01">Будут ли администраторы вики получать доход?</h2>
                             <p>Не только администратор, но и пользователь не получит никакой компенсации.</p>
