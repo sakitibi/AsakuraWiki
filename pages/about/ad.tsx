@@ -36,10 +36,10 @@ export default function About() {
                             <h2>広告についてよくあるご質問</h2>
                             <div className={styles.listGroup}>
                                 <a className={styles.listGroupItem} href="#01">Wikiの管理人に収益が発生しますか？</a>
-                                <a className={styles.listGroupItem} href="#02">WIKIの管理人に収益が発生しますか？</a>
-                                <a className={styles.listGroupItem} href="#03">WIKIの管理人に収益が発生しますか？</a>
-                                <a className={styles.listGroupItem} href="#04">WIKIの管理人に収益が発生しますか？</a>
-                                <a className={styles.listGroupItem} href="#05">WIKIの管理人に収益が発生しますか？</a>
+                                <a className={styles.listGroupItem} href="#02">広告を貼ることができますか？</a>
+                                <a className={styles.listGroupItem} href="#03">どうして広告掲載に制限が付いているの？</a>
+                                <a className={styles.listGroupItem} href="#04">特定のWikiやページで広告が多く表示されるのはどうしてですか？</a>
+                                <a className={styles.listGroupItem} href="#05">有料で広告表示を外すことは可能でしょうか？</a>
                             </div>
                             <h2 id="01">Wikiの管理人に収益が発生しますか？</h2>
                             <p>管理人に限らず、ご利用のユーザーに報酬等は一切発生しません。</p>
