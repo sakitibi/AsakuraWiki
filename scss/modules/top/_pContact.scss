@@ -48,4 +48,9 @@
         background-repeat: no-repeat;
         background-size: contain;
     }
+    &:active, &:focus, &:hover {
+        color: #ef8688 !important;
+        -webkit-text-decoration: underline !important;
+        text-decoration: underline !important;
+    }
 }
