@@ -27,6 +27,7 @@ export default function DashboardPage() {
         }
     }
     const createSecretCode = () => {
+        if (loading || !asakura_menber_found || provider !== "email") return;
         window.location.href = "/dashboard/secretcodes/create";
     }
     useEffect(() => {
