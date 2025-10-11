@@ -549,7 +549,7 @@ export function parseOtherInline(
                 <span key={keyStr} style={{
                     fontWeight: 'bold'
                 }}>
-                    {showDate ? `(${dateStr})` : ''} <span style={{
+                    {showDate ? dateStr : ''} <span style={{
                         color: diffDays <= 1 ?
                         'red' : diffDays <= 3 ?
                         'orange' : diffDays <= 5 ?
