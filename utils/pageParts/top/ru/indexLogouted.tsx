@@ -2,7 +2,7 @@ export default function LogoutedUI(){
     return(
         <>
             <div className="text-dark">
-                <strong className="masthead-notice rounded-3">Что нового в Asakura Wiki</strong>
+                <strong className="masthead-notice rounded-3 p-2">Что нового в Asakura Wiki</strong>
                 <p>Плагины new</p>
                 <p>Встроенные плагины</p>
             </div>

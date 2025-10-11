@@ -2,7 +2,7 @@ export default function LogoutedUI(){
     return(
         <>
             <div className="text-dark">
-                <strong className="masthead-notice rounded-3">あさクラWikiの新機能</strong>
+                <strong className="masthead-notice rounded-3 p-2">あさクラWikiの新機能</strong>
                 <p>newプラグイン</p>
                 <p>インラインプラグイン</p>
             </div>
