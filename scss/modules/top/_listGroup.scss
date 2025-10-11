@@ -27,7 +27,7 @@ $bs-list-group-item-padding-x: 1rem;
 .listGroupItem {
     background-color: $bs-list-group-bg;
     border: $bs-list-group-border-width solid $bs-list-group-border-color;
-    color: $bs-list-group-color !important;
+    color: $bs-list-group-color;
     display: block;
     padding: $bs-list-group-item-padding-y $bs-list-group-item-padding-x;
     position: relative;

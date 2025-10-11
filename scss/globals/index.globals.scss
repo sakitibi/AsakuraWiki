@@ -15,10 +15,6 @@ a, a:active, a:focus, a:hover {
 }
 a {
     color: #337ab7;
-    &:-webkit-any-link {
-        color: -webkit-link;
-        cursor: pointer;
-    }
 }
 
 @keyframes bg-color{

@@ -63,7 +63,7 @@ body{
             display: block;
             unicode-bidi: isolate;
         }
-        & a, a:active, a:focus, a:hover {
+        & a:not(.AdSupport__link), a:not(.AdSupport__link):active, a:not(.AdSupport__link):focus, a:not(.AdSupport__link):hover {
             color: #ef8688;
             -webkit-text-decoration: underline;
             text-decoration: underline;
