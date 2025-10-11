@@ -90,91 +90,103 @@ export default function AccountsSetup(){
         }
     }, [user, isSetuped]);
     return (
-        <>
-            <Head>
-                <title>アカウントのセットアップ</title>
-            </Head>
-            <main style={{ padding: '2rem', maxWidth: 500 }}>
-                <form onSubmit={handleSignUp}>
-                    <input 
-                        type="text"
-                        placeholder="氏名"
-                        value={shimei}
-                        onChange={e => setShimei(e.target.value)}
-                        required
-                        style={{ width: '100%', padding: '0.5rem' }}
-                    />
-                    <br /><br />
-                    <label>
-                        性別
-                        <select
-                            value={jender}
-                            onChange={(e) =>
-                                setJender(e.target.value)
-                            }
-                            required
-                        >
-                            <option selected value="men">男</option>
-                            <option value="woman">女</option>
-                        </select>
-                    </label>
-                    <br /><br />
-                    <label>
-                        生年月日
-                        <input
-                            type="date"
-                            value={birthday}
-                            onChange={e => setBirthday(e.target.value)}
+        !!user ? (
+            <>
+                <Head>
+                    <title>アカウントのセットアップ</title>
+                </Head>
+                <main style={{ padding: '2rem', maxWidth: 500 }}>
+                    <form onSubmit={handleSignUp}>
+                        <input 
+                            type="text"
+                            placeholder="氏名"
+                            value={shimei}
+                            onChange={e => setShimei(e.target.value)}
                             required
                             style={{ width: '100%', padding: '0.5rem' }}
                         />
-                    </label>
-                    <br /><br />
-                    <label>
-                        国籍(通知・お知らせメールの言語に影響)
-                        <select
-                            value={countries}
-                            onChange={(e) =>
-                                setCountries(e.target.value as "japan" | "russia" | "others")
-                            }
-                            required
-                        >
-                            <option selected value="japan">日本 Japan</option>
-                            <option value="russia">ロシア Русский</option>
-                            <option value="others">その他 Others</option>
-                        </select>
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="ユーザー名"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        required
-                        style={{ width: '100%', padding: '0.5rem' }}
-                    />
-                    <br /><br />
-                    <label>
-                        <a href="/policies">あさクラWiki利用規約</a>に同意
+                        <br /><br />
+                        <label>
+                            性別
+                            <select
+                                value={jender}
+                                onChange={(e) =>
+                                    setJender(e.target.value)
+                                }
+                                required
+                            >
+                                <option selected value="men">男</option>
+                                <option value="woman">女</option>
+                            </select>
+                        </label>
+                        <br /><br />
+                        <label>
+                            生年月日
+                            <input
+                                type="date"
+                                value={birthday}
+                                onChange={e => setBirthday(e.target.value)}
+                                required
+                                style={{ width: '100%', padding: '0.5rem' }}
+                            />
+                        </label>
+                        <br /><br />
+                        <label>
+                            国籍(通知・お知らせメールの言語に影響)
+                            <select
+                                value={countries}
+                                onChange={(e) =>
+                                    setCountries(e.target.value as "japan" | "russia" | "others")
+                                }
+                                required
+                            >
+                                <option selected value="japan">日本 Japan</option>
+                                <option value="russia">ロシア Русский</option>
+                                <option value="others">その他 Others</option>
+                            </select>
+                        </label>
                         <input
-                            type="checkbox"
+                            type="text"
+                            placeholder="ユーザー名"
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
                             required
+                            style={{ width: '100%', padding: '0.5rem' }}
                         />
-                    </label>
-                    <br /><br />
-                    <label>
-                        <a href="https://sakitibi-com9.webnode.jp/page/10">13nin利用規約</a>に同意
-                        <input
-                            type="checkbox" 
-                            required
-                        />
-                    </label>
-                    <br/><br/>
-                    {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-                    <button type="submit" disabled={loading}>
-                        <span>{loading ? '登録中…' : '新規登録'}</span>
-                    </button>
-                </form>
-            </main>
-        </>
+                        <br /><br />
+                        <label>
+                            <a href="/policies">あさクラWiki利用規約</a>に同意
+                            <input
+                                type="checkbox"
+                                required
+                            />
+                        </label>
+                        <br /><br />
+                        <label>
+                            <a href="https://sakitibi-com9.webnode.jp/page/10">13nin利用規約</a>に同意
+                            <input
+                                type="checkbox" 
+                                required
+                            />
+                        </label>
+                        <br/><br/>
+                        {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
+                        <button type="submit" disabled={loading}>
+                            <span>{loading ? '登録中…' : '新規登録'}</span>
+                        </button>
+                    </form>
+                </main>
+            </>
+        ) : (
+            <>
+                <Head>
+                    <title>403 Forbidden</title>
+                </Head>
+                <main style={{ padding: '2rem', maxWidth: 500 }}>
+                    <h1>403 Forbidden</h1>
+                    <p>アクセスする権限が有りません</p>
+                </main>
+            </>
+        )
     )
 }
