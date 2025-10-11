@@ -67,7 +67,7 @@ export function parseOtherInline(
     let last:number = 0
     let m: RegExpExecArray | null
     // 各プラグインを順次キャプチャする正規表現
-    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);/giu
+    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&new(?:\(([^)]*)\))?\{([^\}]+)\};/giu
 
     while ((m = re.exec(line))) {
         const token:string = m[0];
@@ -520,12 +520,44 @@ export function parseOtherInline(
                 </span>
             );
             last = m.index + token.length;
-        } else {
+        }
+        else if (token.startsWith('&new')) {
+            const args = m[46]?.split(',').map(s => s.trim()) ?? [];
+            const dateStr = m[47]?.trim();
+            const keyStr = `inl-${baseKey}-${m.index}`;
+
+            // 日付文字列から Date オブジェクトを生成
+            const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim()); // 曜日を除去
+            if (isNaN(parsedDate.getTime())) {
+                nodes.push(
+                    <span key={keyStr} style={{ color: 'red' }}>日付形式エラー</span>
+                );
+                last = m.index + token.length;
+            }
+
+            const now = new Date();
+            const diffMs = now.getTime() - parsedDate.getTime();
+            const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+            let label = '';
+            if (diffDays <= 1) label = 'New!';
+            else if (diffDays <= 5) label = 'New';
+
+            const showDate = !args.includes('nodate');
+
             nodes.push(
-                <span key={key} style={{ color: 'red' }}>
-                    構文エラー: &version 構文不正
+                <span key={keyStr} style={{
+                    color: diffDays <= 1 ?
+                    'red' : diffDays <= 3 ?
+                    'orange' : diffDays <= 5 ?
+                    'green' : 'inherit',
+                    fontWeight: 'bold'
+                }}>
+                    {label} {showDate ? `(${dateStr})` : ''}
                 </span>
             );
+
+            last = m.index + token.length;
         }
     }
     // 最後に残ったテキスト
