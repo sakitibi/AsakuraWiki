@@ -28,7 +28,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL='/news/2025/09/28/1'/>
+                    <LeftMenuJp URL="/news/2025/10/08" rupages='false'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/10/08 「{kokuseiChousaStr}」は個人情報を抜くための罠です!!</h1>
                         <div id="warn-kokusei">
@@ -59,6 +59,7 @@ export default function NewsPage() {
                                 <li>ご近所の人にこのページのリンク付きの封筒を投函する</li>
                                 <li>SNSなどでもこのページのリンク付きのポストを投稿する</li>
                                 <li>{kokuseiChousaStr}期間が終わっても、油断をせずに上5つの事をする</li>
+                                <li>最終手段 {kokuseiChousaStr}に偽の情報を提出する</li>
                             </ol>
                         </div>
                     </main>
