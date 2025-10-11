@@ -6,11 +6,12 @@ import {
     encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
 import { User, useUser } from "@supabase/auth-helpers-react";
+import type { JenderTypes } from "@/pages/login/13nin/signup";
 
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
     const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
-    const [jender, setJender] = useState<"men" | "woman">('men');
+    const [jender, setJender] = useState<JenderTypes>('men');
     const [username, setUsername] = useState<string>('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -111,7 +112,7 @@ export default function AccountsSetup(){
                             <select
                                 value={jender}
                                 onChange={(e) =>
-                                    setJender(e.target.value)
+                                    setJender(e.target.value as JenderTypes)
                                 }
                                 required
                             >

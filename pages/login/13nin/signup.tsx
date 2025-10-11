@@ -4,12 +4,14 @@ import { notuseUsername } from '@/utils/user_list';
 import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 
+export type JenderTypes = "men" | "woman";
+
 export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
     const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
-    const [jender, setJender] = useState<"men" | "woman">('men');
+    const [jender, setJender] = useState<JenderTypes>('men');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -124,7 +126,7 @@ export default function SignUpPage() {
                         <select
                             value={jender}
                             onChange={(e) =>
-                                setJender(e.target.value)
+                                setJender(e.target.value as JenderTypes)
                             }
                             required
                         >
