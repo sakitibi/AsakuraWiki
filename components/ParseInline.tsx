@@ -547,7 +547,8 @@ export function parseOtherInline(
 
             nodes.push(
                 <span key={keyStr} style={{
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    fontSize: '80%'
                 }}>
                     {showDate ? dateStr : ''} <span style={{
                         color: diffDays <= 1 ?

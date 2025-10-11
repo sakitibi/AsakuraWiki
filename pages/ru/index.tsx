@@ -10,6 +10,7 @@ import type { WikiPage, LikedWiki, WikiCounter } from '@/utils/pageParts/top/ind
 import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/ru/indexfetchs';
 import { useUser, User } from '@supabase/auth-helpers-react';
 import LoginedUI from '@/utils/pageParts/top/ru/indexLogined';
+import LogoutedUI from '@/utils/pageParts/top/ru/indexLogouted';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -84,7 +85,7 @@ export default function Home() {
                             goCreateWiki={goCreateWiki}
                         />
                     ) : (
-                        <></>
+                        <LogoutedUI/>
                     )}
                 </main>
                 <RightMenuRu/>
