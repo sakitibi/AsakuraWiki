@@ -23,10 +23,11 @@ export default function AccountsSetup(){
     useEffect(() => {
         const UserFetched = async() => {
             try{
+                if(!user) return;
                 const { data, error } = await supabaseServer
                     .from('user_metadatas')
                     .select('metadatas')
-                    .eq('id', user?.id)
+                    .eq('id', user!.id)
                 if(error){
                     console.error("error: ", error);
                     return;
@@ -52,7 +53,7 @@ export default function AccountsSetup(){
         }
         // メタデータ暗号化
         const updatedInputs:string[] = secureEncrypt(
-            user?.email!, "null>null", birthday, username, countries,
+            user?.email!, "null", birthday, username, countries,
             jender, shimei
         );
         // 暗号化メタデータ送信
