@@ -7,7 +7,7 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
-export default function About() {
+export default function AboutAd() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
