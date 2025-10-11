@@ -15,6 +15,7 @@
     --brand-500: 154.9deg 100% 19.2%;
     --brand-400: 155.5deg 100% 9.6%;
     --brand-default: 153.1deg 60.2% 52.7%;
+    --bs-border-radius-lg: 0.5rem;
 }
 
 html{
@@ -239,4 +240,8 @@ h6:not(.overwrite) {
 a {
     color: inherit;
     text-decoration: inherit;
+}
+
+.rounded-3 {
+    border-radius: var(--bs-border-radius-lg) !important;
 }
