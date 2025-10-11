@@ -535,11 +535,11 @@ export function parseOtherInline(
                 last = m.index + token.length;
             }
 
-            const now = new Date();
-            const diffMs = now.getTime() - parsedDate.getTime();
-            const diffDays = diffMs / (1000 * 60 * 60 * 24);
+            const now:Date = new Date();
+            const diffMs:number = now.getTime() - parsedDate.getTime();
+            const diffDays:number = diffMs / (1000 * 60 * 60 * 24);
 
-            let label = '';
+            let label:string = '';
             if (diffDays <= 1) label = 'New!';
             else if (diffDays <= 5) label = 'New';
 
@@ -547,13 +547,14 @@ export function parseOtherInline(
 
             nodes.push(
                 <span key={keyStr} style={{
-                    color: diffDays <= 1 ?
-                    'red' : diffDays <= 3 ?
-                    'orange' : diffDays <= 5 ?
-                    'green' : 'inherit',
                     fontWeight: 'bold'
                 }}>
-                    {label} {showDate ? `(${dateStr})` : ''}
+                    {showDate ? `(${dateStr})` : ''} <span style={{
+                        color: diffDays <= 1 ?
+                        'red' : diffDays <= 3 ?
+                        'orange' : diffDays <= 5 ?
+                        'green' : 'inherit'
+                    }}>{label}</span>
                 </span>
             );
 
