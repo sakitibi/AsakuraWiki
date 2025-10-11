@@ -14,6 +14,14 @@ export default function RightMenuJp(){
                     </li>
                 </ul>
             </div>
+            <div className={styles.pContact}>
+                <h2 className={styles.pContact__title}>サポート</h2>
+                <ul className={styles.pContact__list}>
+                    <li className={styles.pContact__item}>
+                        <a href="/about/ad">広告について</a>
+                    </li>
+                </ul>
+            </div>
         </aside>
     );
 }
