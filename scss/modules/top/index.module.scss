@@ -5,6 +5,7 @@
 @use 'media';
 @use 'mixin';
 @use 'minecraft/vs';
+@use 'listGroup';
 
 .pHotWiki__title{
     @include mixin.pLikedWiki;
