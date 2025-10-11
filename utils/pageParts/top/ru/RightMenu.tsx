@@ -18,7 +18,7 @@ export default function RightMenuRu(){
                 <h2 className={styles.pContact__title}>поддерживать</h2>
                 <ul className={styles.pContact__list}>
                     <li className={styles.pContact__item}>
-                        <a href="/about/ad">О рекламе</a>
+                        <a className="pContact__link" href="/about/ad">О рекламе</a>
                     </li>
                 </ul>
             </div>
