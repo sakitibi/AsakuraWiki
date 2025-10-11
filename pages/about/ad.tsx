@@ -20,7 +20,7 @@ export default function About() {
         <>
             <Head>
                 <meta charSet='UTF-8'/>
-                <title>当レンタルWikiについて</title>
+                <title>広告について</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
