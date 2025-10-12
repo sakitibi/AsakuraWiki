@@ -24,15 +24,6 @@ export default function About() {
             return newStatus;
         });
     };
-    const osusume_app_random_init = (): Object[] => {
-        return [
-            apps[Math.floor(Math.random() * apps.length)],
-            apps[Math.floor(Math.random() * apps.length)],
-            apps[Math.floor(Math.random() * apps.length)],
-            apps[Math.floor(Math.random() * apps.length)],
-            apps[Math.floor(Math.random() * apps.length)]
-        ]
-    }
     const targetDate = new Date('2025-12-18');
     useEffect(() => {
         const currentDate = new Date();
@@ -55,7 +46,7 @@ export default function About() {
             return data;
         });
         console.log("firstDatas: ", firstDatas);
-        if(hasDuplicates(osusumeData)){
+        if(apps.length > 1 && hasDuplicates(osusumeData)){
             const nextDatas = osusumeData.map(data => {
                 data = apps[Math.floor(Math.random() * apps.length)]
                 return data;
