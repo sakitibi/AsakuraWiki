@@ -56,7 +56,7 @@ export default function About() {
                 osusumeCheck();
             }, 500);
         } else {
-            setOsusume(osusume?.concat([firstDatas]));
+            setOsusume([firstDatas]);
             console.log("osusume: ", osusume?.concat([firstDatas]));
         }
     }
