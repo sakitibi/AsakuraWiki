@@ -88,7 +88,7 @@ export default function AccountsSetup(){
     },[user]);
     useEffect(() => {
         if(user?.app_metadata.provider === "email" || isSetuped){
-            window.location.href = "/dashboard";
+            window.location.replace("/dashboard");
         }
     }, [user, isSetuped]);
     return (
