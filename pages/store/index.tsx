@@ -7,16 +7,24 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
+interface AppProps {
+    app_title: string,
+    developer: string,
+    review: number,
+    appicon_url: string,
+    app_description: string | null
+}
+
 function hasDuplicates(array: any[]) {
     return new Set(array).size !== array.length;
 }
 
 export default function About() {
     const [menuStatus, setMenuStatus] = useState(false);
-    const [apps, setApps] = useState<Object[]>([]);
+    const [apps, setApps] = useState<AppProps[]>([]);
     const [isSetup, setIsSetup] = useState(false);
-    const [osusume, setOsusume] = useState<Object[]>([]);
-    const [osusumeData, setOsusumeData] = useState<Object[]>([]);
+    const [osusume, setOsusume] = useState<AppProps[]>([]);
+    const [osusumeData, setOsusumeData] = useState<AppProps[]>([]);
 
     const handleClick = () => {
         setMenuStatus(prev => {
@@ -86,6 +94,19 @@ export default function About() {
                         <h1>13ninGamesStore</h1>
                         <div id="osusume-apps">
                             <p>おすすめアプリ</p>
+                            <>
+                                {osusume.map((data, index) => {
+                                    <>
+                                        <div className='osusume' key={index} style={{ display: 'flex' }}>
+                                            <img src={data.appicon_url} alt={`${data.app_title}_icon`}/>
+                                            <h2>{data.app_title}</h2>
+                                            <p>{data.app_description}</p>
+                                            <small>{data.developer}</small>
+                                            <small>{data.review}</small>
+                                        </div>
+                                    </>
+                                })}
+                            </>
                         </div>
                     </main>
                     <RightMenuJp />
