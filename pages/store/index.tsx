@@ -7,10 +7,16 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
+function hasDuplicates(array:any[]) {
+    return new Set(array).size !== array.length;
+}
+
 export default function About() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [apps, setApps] = useState<Object[]>([]);
     const [isSetup, setIsSetup] = useState<boolean>(false);
+    const [osusume, setOsusume] = useState<Object[]>();
+    const [osusumeData, setOsusumeData] = useState<Object[]>([]);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
             const newStatus = !prevStatus;
@@ -18,6 +24,15 @@ export default function About() {
             return newStatus;
         });
     };
+    const osusume_app_random_init = (): Object[] => {
+        return [
+            apps[Math.floor(Math.random() * apps.length)],
+            apps[Math.floor(Math.random() * apps.length)],
+            apps[Math.floor(Math.random() * apps.length)],
+            apps[Math.floor(Math.random() * apps.length)],
+            apps[Math.floor(Math.random() * apps.length)]
+        ]
+    }
     const targetDate = new Date('2025-12-18');
     useEffect(() => {
         const currentDate = new Date();
@@ -34,8 +49,28 @@ export default function About() {
         }
         AppDataFetch();
     }, []);
+    const osusumeCheck = () => {
+        const firstDatas = osusumeData.map(data => {
+            data = apps[Math.floor(Math.random() * apps.length)]
+            return data;
+        });
+        if(hasDuplicates(osusumeData)){
+            const nextDatas = osusumeData.map(data => {
+                data = apps[Math.floor(Math.random() * apps.length)]
+                return data;
+            });
+            setOsusumeData(nextDatas)
+            setTimeout(() => {
+                osusumeCheck();
+            }, 500);
+        } else {
+            setOsusume(osusume?.concat(firstDatas));
+            console.log("osusume: ", osusume?.concat(firstDatas));
+        }
+    }
     useEffect(() => {
         if(!apps) return;
+        osusumeCheck();
     }, [apps]);
     return (
         !isSetup ? (
