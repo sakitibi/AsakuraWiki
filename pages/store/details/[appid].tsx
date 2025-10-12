@@ -30,7 +30,7 @@ export default function Store() {
     const [apps, setApps] = useState<AppProps[]>([]);
     const [isSetup, setIsSetup] = useState(false);
     const router:NextRouter = useRouter();
-    const { appDetails } = router.query;
+    const { page: appDetails } = router.query;
     // クエリ→文字列化
     const appDetailsStr:string = Array.isArray(appDetails) ? appDetails.join('/') : appDetails ?? '';
     const handleClick = () => {
