@@ -51,13 +51,13 @@ export default function About() {
                 data = apps[Math.floor(Math.random() * apps.length)]
                 return data;
             });
-            setOsusumeData(nextDatas)
+            setOsusumeData([nextDatas])
             setTimeout(() => {
                 osusumeCheck();
             }, 500);
         } else {
-            setOsusume(osusume?.concat(firstDatas));
-            console.log("osusume: ", osusume?.concat(firstDatas));
+            setOsusume(osusume?.concat([firstDatas]));
+            console.log("osusume: ", osusume?.concat([firstDatas]));
         }
     }
     useEffect(() => {
