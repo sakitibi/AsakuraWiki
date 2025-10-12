@@ -30,7 +30,7 @@ export default function Store() {
     const [apps, setApps] = useState<AppProps[]>([]);
     const [isSetup, setIsSetup] = useState(false);
     const router:NextRouter = useRouter();
-    const { page: appDetails } = router.query;
+    const { appDetails } = router.query;
     // クエリ→文字列化
     const appDetailsStr:string = Array.isArray(appDetails) ? appDetails.join('/') : appDetails ?? '';
     const handleClick = () => {
@@ -48,6 +48,7 @@ export default function Store() {
 
     useEffect(() => {
         const AppDataFetch = async () => {
+            console.log("appDetails: ", appDetails);
             console.log("appDetailsStr: ", appDetailsStr);
             if(!appDetailsStr) return;
             const res = await fetch("/api/store/details", {
