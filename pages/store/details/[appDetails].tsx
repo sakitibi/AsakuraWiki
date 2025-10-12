@@ -62,6 +62,12 @@ export default function Store() {
         AppDataFetch();
     }, [appDetailsStr]);
 
+    const InstallHandler = (url:string) => {
+        if(!url) return;
+        window.location.href = url;
+        return
+    }
+
     const AppTitleStyles:React.CSSProperties = {
         border: 0,
         fontSize: '44px',
@@ -118,8 +124,11 @@ export default function Store() {
                                             <div style={{ display: 'flex' }}>
                                                 <button
                                                     style={DownloadButtonStyles}
+                                                    onClick={() => InstallHandler(data.download_url)}
                                                 >
-                                                    インストール
+                                                    <span>
+                                                        インストール
+                                                    </span>
                                                 </button>
                                             </div>
                                             <h3>このゲームについて</h3>
