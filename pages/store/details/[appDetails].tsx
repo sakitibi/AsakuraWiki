@@ -22,7 +22,7 @@ interface AppProps {
     isChecked: boolean,
     developer_id: string,
     download_counter: number,
-    update_at: Date
+    update_at: string
 }
 
 export default function Store() {
@@ -125,7 +125,7 @@ export default function Store() {
                                             <h3>このゲームについて</h3>
                                             <p style={{ maxWidth: '600px' }}>{data.app_description ?? ""}</p>
                                             <p>最終更新日: {
-                                                `${String(data.update_at.getFullYear())}/${String(data.update_at.getMonth())}/${String(data.update_at.getDate())}`
+                                                `${data.update_at.split("-")[0]}/${data.update_at.split("-")[1]}/${data.update_at.split("-")[2].split(" ")[0]}`
                                             }</p>
                                         </div>
                                     ) : null}
