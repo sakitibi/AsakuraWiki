@@ -19,7 +19,7 @@ function hasDuplicates(array: any[]) {
     return new Set(array).size !== array.length;
 }
 
-export default function About() {
+export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps[]>([]);
     const [isSetup, setIsSetup] = useState(false);
