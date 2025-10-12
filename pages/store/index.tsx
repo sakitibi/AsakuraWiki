@@ -42,7 +42,8 @@ export default function About() {
     }, []);
 
     const osusumeCheck = () => {
-        const firstDatas = Array.from({ length: 5 }, () => {
+        const count = Math.min(apps.length, 5);
+        const firstDatas = Array.from({ length: count }, () => {
             return apps[Math.floor(Math.random() * apps.length)];
         });
 
@@ -85,9 +86,6 @@ export default function About() {
                         <h1>13ninGamesStore</h1>
                         <div id="osusume-apps">
                             <p>おすすめアプリ</p>
-                            {osusume.map((app, index) => (
-                                <div key={index}>{JSON.stringify(app)}</div>
-                            ))}
                         </div>
                     </main>
                     <RightMenuJp />
