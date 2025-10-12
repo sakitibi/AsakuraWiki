@@ -54,6 +54,7 @@ export default function About() {
             data = apps[Math.floor(Math.random() * apps.length)]
             return data;
         });
+        console.log("firstDatas: ", firstDatas);
         if(hasDuplicates(osusumeData)){
             const nextDatas = osusumeData.map(data => {
                 data = apps[Math.floor(Math.random() * apps.length)]
