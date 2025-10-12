@@ -26,7 +26,7 @@ export default function About() {
     useEffect(() => {
         const AppDataFetch = async() => {
             const res = await fetch("/api/store/osusume_app", {
-                method: "POST"
+                method: "GET"
             });
             const data = await res.json();
             console.log("data: ", data);
