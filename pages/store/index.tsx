@@ -9,7 +9,7 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
 export default function About() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [apps, setApps] = useState<string[]>([]);
+    const [apps, setApps] = useState<Object[]>([]);
     const [isSetup, setIsSetup] = useState<boolean>(false);
     const handleClick = () => {
         setMenuStatus((prevStatus) => {
@@ -21,11 +21,13 @@ export default function About() {
     const targetDate = new Date('2025-12-18');
     useEffect(() => {
         const currentDate = new Date();
-        //setIsSetup(currentDate < targetDate);
+        setIsSetup(currentDate > targetDate);
     }, [new Date().getDate()]);
     useEffect(() => {
         const AppDataFetch = async() => {
-            const res = await fetch("/api/store/osusume_app");
+            const res = await fetch("/api/store/osusume_app", {
+                method: "POST"
+            });
             const data = await res.json();
             console.log("data: ", data);
             setApps(apps.concat(data));
