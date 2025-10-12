@@ -22,28 +22,28 @@ export default function AccountsSetup(){
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const user:User | null = useUser();
     useEffect(() => {
-        const UserFetched = () => {
+        const UserFetched = async() => {
             try{
-                setTimeout(async() => {
-                    console.log("user: ", user);
-                    if(!user) return;
-                    const { data, error } = await supabaseServer
-                        .from('user_metadatas')
-                        .select('metadatas')
-                        .eq('id', user?.id)
-                    if(error){
-                        console.error("error: ", error);
-                        return;
-                    }
-                    if(!!data[0].metadatas){
-                        setIsSetuped(true);
-                    }
-                }, 2000);
+                console.log("user: ", user);
+                if(!user) return;
+                const { data, error } = await supabaseServer
+                    .from('user_metadatas')
+                    .select('metadatas')
+                    .eq('id', user?.id)
+                if(error){
+                    console.error("error: ", error);
+                    return;
+                }
+                if(!!data[0].metadatas){
+                    setIsSetuped(true);
+                }
             }catch(e){
                 console.error("error: ", e);
             }
         }
-        UserFetched();
+        setTimeout(() => {
+            UserFetched();
+        }, 2000);
     },[]);
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
