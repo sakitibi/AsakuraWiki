@@ -21,30 +21,6 @@ export default function AccountsSetup(){
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const user:User | null = useUser();
-    useEffect(() => {
-        const UserFetched = async() => {
-            try{
-                console.log("user: ", user);
-                //if(!user) return;
-                const { data, error } = await supabaseServer
-                    .from('user_metadatas')
-                    .select('metadatas')
-                    .eq('id', user?.id)
-                if(error){
-                    console.error("error: ", error);
-                    return;
-                }
-                if(!!data[0].metadatas){
-                    setIsSetuped(true);
-                }
-            }catch(e){
-                console.error("error: ", e);
-            }
-        }
-        setTimeout(async() => {
-            await UserFetched();
-        }, 5000);
-    },[]);
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -88,6 +64,30 @@ export default function AccountsSetup(){
         setLoading(false);
         window.location.href = '/dashboard';
     };
+    useEffect(() => {
+        const UserFetched = async() => {
+            try{
+                console.log("user: ", user);
+                if(!user) return;
+                const { data, error } = await supabaseServer
+                    .from('user_metadatas')
+                    .select('metadatas')
+                    .eq('id', user?.id)
+                if(error){
+                    console.error("error: ", error);
+                    return;
+                }
+                if(!!data[0].metadatas){
+                    setIsSetuped(true);
+                }
+            }catch(e){
+                console.error("error: ", e);
+            }
+        }
+        setTimeout(async() => {
+            await UserFetched();
+        }, 2000);
+    },[]);
     useEffect(() => {
         if(user?.app_metadata.provider === "email" || isSetuped){
             window.location.href = "/dashboard";
