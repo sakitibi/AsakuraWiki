@@ -95,7 +95,7 @@ export default function About() {
                         <div id="osusume-apps">
                             <p>おすすめアプリ</p>
                             <>
-                                {osusume.map((data, index) => {(
+                                {osusume.map((data, index) => (
                                     <>
                                         <div className='osusume' key={index} style={{ display: 'flex' }}>
                                             <img src={data.appicon_url} alt={`${data.app_title}_icon`}/>
@@ -105,7 +105,7 @@ export default function About() {
                                             <small>{data.review}</small>
                                         </div>
                                     </>
-                                )})}
+                                ))}
                             </>
                         </div>
                     </main>
