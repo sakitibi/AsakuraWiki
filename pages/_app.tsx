@@ -109,6 +109,25 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
     }, []); // ← 初回だけ実行
 
     useEffect(() => {
+        if(!document.querySelectorAll('a[href^="#"]')) return;
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            (anchor as HTMLAnchorElement).addEventListener('click', function (e) {
+                e.preventDefault(); // デフォルトのリンク動作を無効化
+
+                const targetId:string | null = anchor.getAttribute('href')!.substring(1); // #を除いたIDを取得
+                const targetElement:HTMLElement | null = document.getElementById(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop, // 対象要素の位置
+                        behavior: 'smooth' // スムーススクロールを有効化
+                    });
+                }
+            });
+        });
+    }, [(document.querySelectorAll('a[href^="#"]'))]);
+
+    useEffect(() => {
         if(!adminer_user_id_list && blockedIP_list_found){
             document.getElementById("__next")!.innerHTML = (`
                 <h1>403 forbidden</h1>
