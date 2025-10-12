@@ -25,7 +25,7 @@ export default function AccountsSetup(){
         const UserFetched = async() => {
             try{
                 console.log("user: ", user);
-                if(!user) return;
+                //if(!user) return;
                 const { data, error } = await supabaseServer
                     .from('user_metadatas')
                     .select('metadatas')
