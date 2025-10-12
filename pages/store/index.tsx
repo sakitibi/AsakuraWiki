@@ -12,7 +12,8 @@ interface AppProps {
     developer: string,
     review: number,
     appicon_url: string,
-    app_description: string | null
+    app_description: string | null,
+    appid: string
 }
 
 function hasDuplicates(array: any[]) {
@@ -101,14 +102,19 @@ export default function Store() {
                                             <img
                                                 src={data.appicon_url}
                                                 alt={`${data.app_title}_icon`}
-                                                width="150"
-                                                height="150"
+                                                width="100"
+                                                height="100"
                                             />
                                             <div style={{ display: 'block' }}>
-                                                <h2>{data.app_title}</h2>
-                                                <p>{data.app_description}</p>
-                                                <p><small>{data.developer}</small></p>
-                                                <p><small>{data.review}</small></p>
+                                                <a
+                                                    href={`/store/details/${data.appid}`}
+                                                    style={{ color: 'inherit' }}
+                                                >
+                                                    <h2>{data.app_title}</h2>
+                                                    <p>{data.app_description}</p>
+                                                    <p><small>{data.developer}</small></p>
+                                                    <p><small>{data.review}</small></p>
+                                                </a>
                                             </div>
                                         </div>
                                     </>
@@ -116,7 +122,6 @@ export default function Store() {
                             </>
                         </div>
                     </main>
-                    <RightMenuJp />
                 </div>
                 <FooterJp />
             </div>
