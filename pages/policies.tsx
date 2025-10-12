@@ -7,6 +7,7 @@ import { useState } from "react";
 import Head from "next/head";
 import styles from 'css/index.min.module.css';
 import { company } from "@/utils/version";
+import { kokuseiChousaStr } from "./news/2025/10/08/1";
 
 export default function Policies(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -114,6 +115,10 @@ export default function Policies(){
                                         <a href="https://wikiwiki.jp/maitestu-net">マイ鉄ネットワーク</a>、
                                         <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
                                         などの荒らしを擁護、支援、宣伝などをする行為
+                                    </strong>
+                                    <br/>
+                                    <strong>
+                                        <a href="https://www.e-kokusei.go.jp">{kokuseiChousaStr}</a>を支援、宣伝などをする行為
                                     </strong>
                                 </li>
                                 <li className="danger_list">
