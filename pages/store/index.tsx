@@ -38,7 +38,7 @@ export default function About() {
         if(!apps) return;
     }, [apps]);
     return (
-        isSetup ? (
+        !isSetup ? (
             <>
                 <Head>
                     <meta charSet='UTF-8'/>
