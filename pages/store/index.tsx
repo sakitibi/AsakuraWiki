@@ -98,11 +98,18 @@ export default function About() {
                                 {osusume.map((data, index) => (
                                     <>
                                         <div className='osusume' key={index} style={{ display: 'flex' }}>
-                                            <img src={data.appicon_url} alt={`${data.app_title}_icon`}/>
-                                            <h2>{data.app_title}</h2>
-                                            <p>{data.app_description}</p>
-                                            <small>{data.developer}</small>
-                                            <small>{data.review}</small>
+                                            <img
+                                                src={data.appicon_url}
+                                                alt={`${data.app_title}_icon`}
+                                                width="150"
+                                                height="150"
+                                            />
+                                            <div style={{ display: 'block' }}>
+                                                <h2>{data.app_title}</h2>
+                                                <p>{data.app_description}</p>
+                                                <small>{data.developer}</small>
+                                                <small>{data.review}</small>
+                                            </div>
                                         </div>
                                     </>
                                 ))}
