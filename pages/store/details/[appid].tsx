@@ -49,6 +49,7 @@ export default function Store() {
     useEffect(() => {
         const AppDataFetch = async () => {
             console.log("appDetailsStr: ", appDetailsStr);
+            if(!appDetailsStr) return;
             const res = await fetch("/api/store/details", {
                 method: 'POST',
                 body: appDetailsStr
@@ -58,7 +59,7 @@ export default function Store() {
             setApps(data); // concat不要
         };
         AppDataFetch();
-    }, []);
+    }, [appDetailsStr]);
 
     const AppTitleStyles:React.CSSProperties = {
         border: 0,
