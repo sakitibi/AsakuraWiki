@@ -46,7 +46,7 @@ export default function Policies(){
                                 <li>「知的財産権」とは、著作権、特許権、実用新案権、意匠権、商標権その他の知的財産権（それらの権利を取得し、またはそれらの権利につき登録等を出願する権利を含みます。）を意味します。</li>
                                 <li>「投稿データ」とは、ユーザーが本サービスを利用して投稿その他送信するコンテンツ（文章、画像、動画その他のデータを含みますがこれらに限りません。）を意味します。</li>
                                 <li>「当社」とは、<strong>株式会社<ruby>{company}<rt>じゅうさんにんすたじお</rt></ruby></strong>を意味します。</li>
-                                <li>「当社ウェブサイト」とは、そのドメインが「asakura-wiki.vercel.app, sakitibi.github.io, sakitibi-com9.webnode.jp, sakitibi-com8.webnode.jp, support-sakitibi-com9.webnode.jp」である、当社が運営するウェブサイト（理由の如何を問わず、当社のウェブサイトのドメインまたは内容が変更された場合は、当該変更後のウェブサイトを含みます。）を意味します。</li>
+                                <li>「当社ウェブサイト」とは、そのドメインが「asakura-wiki.vercel.app, sakitibi.github.io, sakitibi-com9.webnode.jp, sakitibi-com8.webnode.jp,<br/> support-sakitibi-com9.webnode.jp」である、当社が運営するウェブサイト（理由の如何を問わず、<br/>当社のウェブサイトのドメインまたは内容が変更された場合は、当該変更後のウェブサイトを含みます。）を意味します。</li>
                                 <li>「ユーザー」とは、登録ユーザー並びにゲストユーザーの総称です。</li>
                                 <li>「登録ユーザー」とは、第3条（登録）に基づいて本サービスの利用者としての登録がなされた個人を意味します。</li>
                                 <li>「ゲストユーザー」とは、閲覧などの、前項に定めるユーザー登録を行わずに利用できるサービスを利用する個人のことです。</li>
@@ -117,6 +117,11 @@ export default function Policies(){
                                         などの荒らしを擁護、支援、宣伝などをする行為
                                     </strong>
                                     <br/>
+                                    <strong>
+                                        <a href="https://www.e-kokusei.go.jp">{kokuseiChousaStr}</a>を支援、宣伝などをする行為
+                                    </strong>
+                                </li>
+                                <li className="danger_list">
                                     <strong>
                                         <a href="https://www.e-kokusei.go.jp">{kokuseiChousaStr}</a>を支援、宣伝などをする行為
                                     </strong>
