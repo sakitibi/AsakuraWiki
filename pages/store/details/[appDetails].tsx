@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import styles from 'css/index.min.module.css';
+import styles from 'css/store.min.module.css';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
@@ -68,24 +68,6 @@ export default function Store() {
         return
     }
 
-    const AppTitleStyles:React.CSSProperties = {
-        border: 0,
-        fontSize: '44px',
-        margin: 0,
-        padding: 0,
-        verticalAlign: 'baseline'
-    }
-
-    const DownloadButtonStyles:React.CSSProperties = {
-        color: "rgb(32, 33, 36) !important",
-        backgroundColor: "#00a173 !important",
-        minWidth: "160px",
-        borderRadius: "8px",
-        padding: "0 16px 0 16px",
-        transition: "border .28s cubic-bezier(.4, 0, .2, 1), box-shadow .28s cubic-bezier(.4, 0, .2, 1)",
-        boxShadow: "none"
-    }
-
     return !isSetup ? (
         <>
             <Head>
@@ -103,7 +85,7 @@ export default function Store() {
                                 <div id="details-container" key={index}>
                                     {data.isChecked ? (
                                         <div id="details-contents">
-                                            <h1 style={AppTitleStyles}>{data.app_title}</h1>
+                                            <h1 id={styles.appTitle}>{data.app_title}</h1>
                                             <p style={{ color: "#00a173" }}>
                                                 <a style={{ color: 'inherit' }} href={`/store/developer/${data.developer_id}`}>
                                                     {data.developer}
@@ -123,7 +105,7 @@ export default function Store() {
                                             <p>{data.download_counter}ダウンロード</p>
                                             <div style={{ display: 'flex' }}>
                                                 <button
-                                                    style={DownloadButtonStyles}
+                                                    id={styles.installButton}
                                                     onClick={() => InstallHandler(data.download_url)}
                                                 >
                                                     <span>

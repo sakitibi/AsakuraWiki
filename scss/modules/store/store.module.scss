@@ -1,0 +1,17 @@
+#appTitle{
+    border: 0;
+    font-size: 44px;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+#installButton{
+    color: rgb(32, 33, 36) !important;
+    background-color: #00a173 !important;
+    min-width: 160px;
+    border-radius: 8px;
+    padding: 0 16px 0 16px;
+    transition: border .28s cubic-bezier(.4, 0, .2, 1), box-shadow .28s cubic-bezier(.4, 0, .2, 1);
+    box-shadow: none;
+}
