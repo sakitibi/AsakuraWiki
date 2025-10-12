@@ -41,9 +41,9 @@ export default function AccountsSetup(){
                 console.error("error: ", e);
             }
         }
-        setTimeout(() => {
-            UserFetched();
-        }, 2000);
+        setTimeout(async() => {
+            await UserFetched();
+        }, 5000);
     },[]);
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
