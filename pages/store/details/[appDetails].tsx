@@ -119,6 +119,7 @@ export default function Store() {
                                                     />
                                                 </p>
                                                 <p>{data.review}</p>
+                                                <br/>
                                                 <p>{data.download_counter}ダウンロード</p>
                                             </div>
                                             <div style={{ display: 'flex' }}>
