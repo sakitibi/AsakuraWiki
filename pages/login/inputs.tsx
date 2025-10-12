@@ -24,11 +24,12 @@ export default function AccountsSetup(){
     useEffect(() => {
         const UserFetched = async() => {
             try{
+                console.log("user: ", user);
                 if(!user) return;
                 const { data, error } = await supabaseServer
                     .from('user_metadatas')
                     .select('metadatas')
-                    .eq('id', user!.id)
+                    .eq('id', user?.id)
                 if(error){
                     console.error("error: ", error);
                     return;
