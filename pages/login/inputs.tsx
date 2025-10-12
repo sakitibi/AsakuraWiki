@@ -64,30 +64,28 @@ export default function AccountsSetup(){
         setLoading(false);
         window.location.href = '/dashboard';
     };
-    useEffect(() => {
-        const UserFetched = async() => {
-            try{
-                console.log("user: ", user);
-                if(!user) return;
-                const { data, error } = await supabaseServer
-                    .from('user_metadatas')
-                    .select('metadatas')
-                    .eq('id', user?.id)
-                if(error){
-                    console.error("error: ", error);
-                    return;
-                }
-                if(!!data[0].metadatas){
-                    setIsSetuped(true);
-                }
-            }catch(e){
-                console.error("error: ", e);
+    const UserFetched = async() => {
+        try{
+            console.log("user: ", user);
+            if(!user) return;
+            const { data, error } = await supabaseServer
+                .from('user_metadatas')
+                .select('metadatas')
+                .eq('id', user?.id)
+            if(error){
+                console.error("error: ", error);
+                return;
             }
+            if(!!data[0].metadatas){
+                setIsSetuped(true);
+            }
+        }catch(e){
+            console.error("error: ", e);
         }
-        setTimeout(async() => {
-            await UserFetched();
-        }, 2000);
-    },[]);
+    }
+    useEffect(() => {
+        UserFetched();
+    },[user]);
     useEffect(() => {
         if(user?.app_metadata.provider === "email" || isSetuped){
             window.location.href = "/dashboard";
