@@ -38,7 +38,7 @@ export default function AccountsSetup(){
                     if(!!data[0].metadatas){
                         setIsSetuped(true);
                     }
-                }, 1000);
+                }, 2000);
             }catch(e){
                 console.error("error: ", e);
             }
