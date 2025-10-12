@@ -107,8 +107,8 @@ export default function About() {
                                             <div style={{ display: 'block' }}>
                                                 <h2>{data.app_title}</h2>
                                                 <p>{data.app_description}</p>
-                                                <small>{data.developer}</small>
-                                                <small>{data.review}</small>
+                                                <p><small>{data.developer}</small></p>
+                                                <p><small>{data.review}</small></p>
                                             </div>
                                         </div>
                                     </>
