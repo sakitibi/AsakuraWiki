@@ -48,6 +48,7 @@ export default function Store() {
 
     useEffect(() => {
         const AppDataFetch = async () => {
+            console.log("appDetailsStr: ", appDetailsStr);
             const res = await fetch("/api/store/details", {
                 method: 'POST',
                 body: appDetailsStr
