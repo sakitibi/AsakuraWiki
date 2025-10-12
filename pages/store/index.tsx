@@ -50,7 +50,7 @@ export default function About() {
         AppDataFetch();
     }, []);
     const osusumeCheck = () => {
-        const firstDatas = osusumeData.map(data => {
+        const firstDatas = apps.map(data => {
             data = apps[Math.floor(Math.random() * apps.length)]
             return data;
         });
