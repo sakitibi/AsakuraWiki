@@ -49,7 +49,7 @@ export default function Store() {
     useEffect(() => {
         const AppDataFetch = async () => {
             const res = await fetch("/api/store/details", {
-                method: 'GET',
+                method: 'POST',
                 body: appDetailsStr
             });
             const data = await res.json();

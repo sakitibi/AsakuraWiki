@@ -10,9 +10,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     } else {
         res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
     }
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    if (req.method === 'GET') {
+    if (req.method === 'POST') {
         const body:string = req.body;
         // データ取得
         const { data, error } = await supabaseServer
@@ -20,7 +20,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             .select('*')
             .eq("appid", body)
         if (error) return res.status(500).json({ error: error.message });
-        return res.status(200).json(data);
+        return res.status(201).json(data);
     } else {
         res.setHeader('Allow', ['GET']);
         return res.status(405).end(`Method ${req.method} Not Allowed`);
