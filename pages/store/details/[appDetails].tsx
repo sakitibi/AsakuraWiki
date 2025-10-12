@@ -77,8 +77,8 @@ export default function Store() {
     }
 
     const DownloadButtonStyles:React.CSSProperties = {
-        color: "rgb(32, 33, 36)",
-        backgroundColor: "#00a173",
+        color: "rgb(32, 33, 36) !important",
+        backgroundColor: "#00a173 !important",
         minWidth: "160px",
         borderRadius: "8px",
         padding: "0 16px 0 16px",
