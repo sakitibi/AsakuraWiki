@@ -109,7 +109,12 @@ export default function Store() {
                                                     className="installButton"
                                                     onClick={() => InstallHandler(data.download_url)}
                                                 >
-                                                    <span>
+                                                    <span
+                                                        style={{
+                                                            textAlign: 'center',
+                                                            margin: '0 auto'
+                                                        }}
+                                                    >
                                                         インストール
                                                     </span>
                                                 </button>
