@@ -3,7 +3,7 @@
 body {
     // 💚 デフォルトテーマ（wiki-fontが無い場合）
     &:not(.wiki-font, .wiki-font.pink, .wiki-font.blue, .wiki-font.yellow, .wiki-font.default) {
-        button:not(#menu-button,.navfold-summary,.fold-button,#installButton) {
+        button:not(#menu-button,.navfold-summary,.fold-button,.installButton) {
             position: relative;
             padding: 10px 20px;
             font-size: 16px;

@@ -106,6 +106,7 @@ export default function Store() {
                                             <div style={{ display: 'flex' }}>
                                                 <button
                                                     id={styles.installButton}
+                                                    className="installButton"
                                                     onClick={() => InstallHandler(data.download_url)}
                                                 >
                                                     <span>
