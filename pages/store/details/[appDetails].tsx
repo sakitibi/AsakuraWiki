@@ -4,7 +4,6 @@ import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
-import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { NextRouter, useRouter } from 'next/router';
 import { supabaseServer } from '@/lib/supabaseClientServer';
