@@ -86,12 +86,12 @@ export default function Store() {
                                     {data.isChecked ? (
                                         <div id="details-contents">
                                             <h1 id={styles.appTitle}>{data.app_title}</h1>
-                                            <p style={{ color: "#00a173" }}>
-                                                <a style={{ color: 'inherit' }} href={`/store/developer/${data.developer_id}`}>
+                                            <p>
+                                                <a id={styles.appDeveloper} href={`/store/developer/${data.developer_id}`}>
                                                     {data.developer}
                                                 </a>
                                             </p>
-                                            <div style={{ display: 'flex' }}>
+                                            <div id={styles.appIconContainer}>
                                                 <p>
                                                     <img
                                                         src={data.appicon_url}
