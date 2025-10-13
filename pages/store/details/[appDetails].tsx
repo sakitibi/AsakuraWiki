@@ -7,6 +7,7 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { NextRouter, useRouter } from 'next/router';
+import { supabaseServer } from '@/lib/supabaseClientServer';
 
 interface AppProps {
     app_title: string;
@@ -62,8 +63,18 @@ export default function Store() {
         AppDataFetch();
     }, [appDetailsStr]);
 
-    const InstallHandler = (url:string) => {
+    const InstallHandler = async(url:string, download_counter: number) => {
         if(!url) return;
+        // データ取得
+        const { error } = await supabaseServer
+            .from('store.apps')
+            .update({
+                download_counter: download_counter
+            })
+        if(error){
+            console.error("error: ", error.message);
+            return;
+        }
         window.location.href = url;
         return
     }
@@ -107,7 +118,7 @@ export default function Store() {
                                                 <button
                                                     id={styles.installButton}
                                                     className="installButton"
-                                                    onClick={() => InstallHandler(data.download_url)}
+                                                    onClick={async() => await InstallHandler(data.download_url, data.download_counter)}
                                                 >
                                                     <span
                                                         style={{
