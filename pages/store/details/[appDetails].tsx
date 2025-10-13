@@ -7,6 +7,8 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { NextRouter, useRouter } from 'next/router';
 import { supabaseServer } from '@/lib/supabaseClientServer';
+import Custom404 from '@/pages/404';
+import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 
 interface AppProps {
     app_title: string;
@@ -137,7 +139,9 @@ export default function Store() {
                                         </div>
                                     ) : null}
                                 </div>
-                            )) : null}
+                            )) : (
+                                <Custom404/>
+                            )}
                         </>
                     </main>
                 </div>
@@ -145,21 +149,6 @@ export default function Store() {
             </div>
         </>
     ) : (
-        <>
-            <Head>
-                <title>準備中</title>
-            </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
-            <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick} />
-                <div className={styles.contents}>
-                    <LeftMenuJp URL="/store/details" rupages='false' />
-                    <main style={{ padding: '2rem', flex: 1 }}>
-                        <p>準備中</p>
-                    </main>
-                </div>
-                <FooterJp />
-            </div>
-        </>
+        <StoreUnopened/>
     );
 }

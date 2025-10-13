@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabaseServer } from 'lib/supabaseClientServer';
-
-interface PageItem{
-    slug: string
-    title: string
-}
+import type { PageItem } from '@/components/PageList';
 
 export interface PageList2Props {
     wikiSlug: string

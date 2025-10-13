@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { hasDuplicates } from '@/utils/array';
+import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 
 interface AppProps {
     app_title: string;
@@ -123,21 +124,6 @@ export default function Store() {
             </div>
         </>
     ) : (
-        <>
-            <Head>
-                <title>準備中</title>
-            </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
-            <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick} />
-                <div className={styles.contents}>
-                    <LeftMenuJp URL="/store" rupages='false' />
-                    <main style={{ padding: '2rem', flex: 1 }}>
-                        <p>準備中</p>
-                    </main>
-                </div>
-                <FooterJp />
-            </div>
-        </>
+        <StoreUnopened/>
     );
 }

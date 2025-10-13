@@ -3,7 +3,7 @@ import { NextRouter, useRouter } from 'next/router'
 import Link from 'next/link'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
-interface PageItem{
+export interface PageItem{
     slug: string;
     title: string
 }

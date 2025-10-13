@@ -115,7 +115,7 @@ export default function MyApp({Component, pageProps}: CustomAppProps) {
                 e.preventDefault(); // デフォルトのリンク動作を無効化
 
                 const targetId:string | null = anchor.getAttribute('href')!.substring(1); // #を除いたIDを取得
-                const targetElement:HTMLElement | null = document.getElementById(targetId);
+                const targetElement:HTMLAnchorElement | null = document.getElementById(targetId) as HTMLAnchorElement;
 
                 if (targetElement) {
                     window.scrollTo({
