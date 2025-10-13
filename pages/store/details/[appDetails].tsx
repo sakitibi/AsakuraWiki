@@ -9,20 +9,20 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { NextRouter, useRouter } from 'next/router';
 
 interface AppProps {
-    app_title: string,
-    developer: string,
-    review: number,
-    appicon_url: string,
-    app_description: string | null,
-    appid: string,
-    download_url: string,
-    developer_siteurl: string,
-    official: boolean,
-    app_version: string,
-    isChecked: boolean,
-    developer_id: string,
-    download_counter: number,
-    update_at: string
+    app_title: string;
+    developer: string;
+    review: number;
+    appicon_url: string;
+    app_description: string | null;
+    appid: string;
+    download_url: string;
+    developer_siteurl: string;
+    official: boolean;
+    app_version: string;
+    isChecked: boolean;
+    developer_id: string;
+    download_counter: number;
+    update_at: string;
 }
 
 export default function Store() {
@@ -43,7 +43,7 @@ export default function Store() {
     const targetDate = new Date('2025-12-18');
     useEffect(() => {
         const currentDate = new Date();
-        setIsSetup(currentDate > targetDate);
+        setIsSetup(currentDate < targetDate);
     }, []);
 
     useEffect(() => {

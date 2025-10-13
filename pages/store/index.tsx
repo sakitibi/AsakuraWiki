@@ -6,18 +6,15 @@ import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import { hasDuplicates } from '@/utils/array';
 
 interface AppProps {
-    app_title: string,
-    developer: string,
-    review: number,
-    appicon_url: string,
-    app_description: string | null,
-    appid: string
-}
-
-function hasDuplicates(array: any[]) {
-    return new Set(array).size !== array.length;
+    app_title: string;
+    developer: string;
+    review: number;
+    appicon_url: string;
+    app_description: string | null;
+    appid: string;
 }
 
 export default function Store() {
@@ -37,7 +34,7 @@ export default function Store() {
     const targetDate = new Date('2025-12-18');
     useEffect(() => {
         const currentDate = new Date();
-        setIsSetup(currentDate > targetDate);
+        setIsSetup(currentDate < targetDate);
     }, []);
 
     useEffect(() => {
