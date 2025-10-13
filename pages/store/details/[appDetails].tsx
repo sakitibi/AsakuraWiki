@@ -10,7 +10,7 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import Custom404 from '@/pages/404';
 import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 
-interface AppProps {
+export interface AppProps {
     app_title: string;
     developer: string;
     review: number;

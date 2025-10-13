@@ -1,3 +1,5 @@
+$link-color: #00a173;
+
 #appTitle{
     border: 0;
     font-size: 44px;
@@ -24,7 +26,7 @@
     display: inline-flex;
     color: rgb(32, 33, 36) !important;
     cursor: pointer;
-    background-color: #00a173 !important;
+    background-color: $link-color !important;
     align-items: center;
     min-width: 160px;
     min-height: 36px;
@@ -35,8 +37,17 @@
     box-shadow: none;
 }
 
+.developersApplinks{
+    display: inherit !important;
+    color: $link-color !important;
+    text-decoration: none !important;
+    flex: 1;
+    margin: 0 10px;
+    text-align: center !important;
+}
+
 @media screen and (min-width: 600px) {
     #appIconContainer::before {
-        width: 72px;
+        width: 72px !important;
     }
 }
