@@ -136,7 +136,6 @@ export default function Store() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <p>準備中</p>
                     </main>
-                    <RightMenuJp />
                 </div>
                 <FooterJp />
             </div>
