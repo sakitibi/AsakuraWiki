@@ -65,7 +65,7 @@ export default function Store() {
                                     <div style={{ display: 'flex' }}>
                                         {data.isChecked ? (
                                             <a
-                                                className={styles.developersApplink}
+                                                className={styles.developersApplinks}
                                                 href={`/store/details/${data.appid}`}
                                             >
                                                 <img
