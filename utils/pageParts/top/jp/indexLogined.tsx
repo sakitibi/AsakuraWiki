@@ -8,12 +8,12 @@ interface LoginedUIProps{
     wiki13ninstudioCounterTotal:number,
     loadingLiked:boolean,
     likedWikis:LikedWiki[],
-    H2Styles:React.CSSProperties,
+    readonly H2Styles:React.CSSProperties,
     loading:boolean,
     pages:WikiPage[],
     loadingRecent:boolean,
     recentPages:WikiPage[],
-    goCreateWiki:() => void
+    readonly goCreateWiki:() => void
 }
 
 export default function LoginedUI(
