@@ -86,7 +86,7 @@ export default function Store() {
                         </>
                     </main>
                 </div>
-                <FooterJp />
+                <FooterJp/>
             </div>
         </>
     ) : (

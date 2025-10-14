@@ -23,7 +23,7 @@ export default function Custom404({
                     <p>お探しのページは存在しません。</p>
                 </div>
             </main>
-            {!isEmbed ? <FooterJp/> : null}
+            {isEmbed !== "true" ? <FooterJp/> : null}
         </>
     );
 }
