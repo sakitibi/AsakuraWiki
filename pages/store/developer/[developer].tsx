@@ -63,19 +63,21 @@ export default function Store() {
                             {!!apps ? apps.map((data, index) => (
                                 <div id="developers-container" key={index}>
                                     <div style={{ display: 'flex' }}>
-                                        <a
-                                            className={styles.developersApplink}
-                                            href={`/store/details/${data.appid}`}
-                                        >
-                                            <img
-                                                src={data.appicon_url}
-                                                alt={`${data.app_title}_icon`}
-                                                width="50"
-                                                height="50"
-                                            />
-                                            <h2>{data.app_title}</h2>
-                                            <p>{data.review}</p>
-                                        </a>
+                                        {data.isChecked ? (
+                                            <a
+                                                className={styles.developersApplink}
+                                                href={`/store/details/${data.appid}`}
+                                            >
+                                                <img
+                                                    src={data.appicon_url}
+                                                    alt={`${data.app_title}_icon`}
+                                                    width="50"
+                                                    height="50"
+                                                />
+                                                <h2>{data.app_title}</h2>
+                                                <p>{data.review}</p>
+                                            </a>
+                                        ) : null}
                                     </div>
                                 </div>
                             )) : (
