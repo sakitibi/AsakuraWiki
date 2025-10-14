@@ -59,8 +59,8 @@ export default function Store() {
                     <LeftMenuJp URL="/store/developer/" rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
-                            <h1>{!!apps ? apps[0].developer : null}</h1>
-                            {!!apps ? apps.map((data, index) => (
+                            <h1>{apps.length > 0 ? apps[0].developer : null}</h1>
+                            {apps.length > 0 ? apps.map((data, index) => (
                                 <div id="developers-container" key={index}>
                                     <div style={{ display: 'flex' }}>
                                         {data.isChecked ? (
