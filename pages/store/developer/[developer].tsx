@@ -13,7 +13,6 @@ import type { AppProps } from '@/pages/store/details/[appDetails]';
 export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps[]>([]);
-    const [developerName, setDeveloperName] = useState<string>("");
     const [isSetup, setIsSetup] = useState(false);
     const router:NextRouter = useRouter();
     const { developer } = router.query;
@@ -29,7 +28,7 @@ export default function Store() {
     const targetDate = new Date('2025-12-18');
     useEffect(() => {
         const currentDate = new Date();
-        setIsSetup(currentDate < targetDate);
+        setIsSetup(currentDate > targetDate);
     }, []);
     useEffect(() => {
         const AppDataFetch = async () => {
