@@ -1,7 +1,7 @@
 import styles from 'css/index.min.module.css';
 
 interface HeaderJpProps{
-    handleClick: () => void;
+    readonly handleClick: () => void;
 }
 
 export default function HeaderJp({ handleClick }: HeaderJpProps) {

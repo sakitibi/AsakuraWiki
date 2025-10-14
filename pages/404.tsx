@@ -1,7 +1,13 @@
 import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
-export default function Custom404() {
+interface Custom404Props{
+    isEmbed?: boolean
+}
+
+export default function Custom404({
+    isEmbed = false
+}: Custom404Props) {
     return (
         <>
             <Head>
@@ -14,7 +20,7 @@ export default function Custom404() {
                     <p>お探しのページは存在しません。</p>
                 </div>
             </main>
-            <FooterJp/>
+            {!isEmbed ? <FooterJp/> : null}
         </>
     );
 }
