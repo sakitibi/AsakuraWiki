@@ -2,12 +2,15 @@ import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 
 interface Custom404Props{
-    isEmbed?: boolean
+    isEmbed?: "false" | "true"
 }
 
 export default function Custom404({
-    isEmbed = false
+    isEmbed
 }: Custom404Props) {
+    if(isEmbed !== "true"){
+        isEmbed = "false"
+    }
     return (
         <>
             <Head>

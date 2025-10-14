@@ -81,7 +81,7 @@ export default function Store() {
                                     </div>
                                 </div>
                             )) : (
-                                <Custom404/>
+                                <Custom404 isEmbed="true"/>
                             )}
                         </>
                     </main>
