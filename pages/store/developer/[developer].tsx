@@ -35,7 +35,7 @@ export default function Store() {
             console.log("developer: ", developer);
             console.log("DevelopersStr: ", DevelopersStr);
             if(!DevelopersStr) return;
-            const res = await fetch("/api/store/developers", {
+            const res = await fetch("/api/store/details", {
                 method: 'POST',
                 body: DevelopersStr
             });
