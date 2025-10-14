@@ -56,7 +56,7 @@ export default function Store() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick} />
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/store/developers/" rupages='false' />
+                    <LeftMenuJp URL="/store/developer/" rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
                             <h1>{apps[0].developer}</h1>
