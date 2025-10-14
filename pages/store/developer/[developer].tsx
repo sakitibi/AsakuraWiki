@@ -62,7 +62,7 @@ export default function Store() {
                             <h1>{apps.length > 0 ? apps[0].developer : null}</h1>
                             {apps.length > 0 ? apps.map((data, index) => (
                                 <div id="developers-container" key={index}>
-                                    <div style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex', gap: '20px' }}>
                                         {data.isChecked ? (
                                             <a
                                                 className={styles.developersApplinks}
