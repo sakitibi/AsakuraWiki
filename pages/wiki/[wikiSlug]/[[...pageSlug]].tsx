@@ -43,7 +43,6 @@ export default function WikiPage() {
     const [content, setContent] = useState<string>('')  // ← textarea の中身
     const [editMode, setEditMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
-    const [showRedirectButton, setShowRedirectButton] = useState<boolean>(false);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
 
@@ -236,8 +235,7 @@ export default function WikiPage() {
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
-                                        {showRedirectButton &&
-                                        wikiSlugStr === special_wiki_list[0] &&
+                                        {wikiSlugStr === special_wiki_list[0] &&
                                         (pageSlugStr === 'FrontPage') && (
                                             <button
                                             onClick={() =>
