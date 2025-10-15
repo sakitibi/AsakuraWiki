@@ -60,7 +60,7 @@ export default function LoginPage() {
                 </button>
             </form>
             <h2>まだアカウントを持っていませんか?</h2>
-            <Link href="./signup">
+            <Link href="/login/13nin/signup">
                 <a>
                     <button><span>新規登録</span></button>
                 </a>
