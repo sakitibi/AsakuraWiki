@@ -9,6 +9,13 @@ import React, { useState, useEffect } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 
+interface TeamTableProps{
+    user_name:string;
+    user_id:string;
+    user_link:string;
+    score: number;
+}
+
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<Object>([]);
@@ -60,7 +67,7 @@ export default function MinecraftVS(){
     }, []);
     console.log("Current userlists:", userlists);
     const RuleImgChanges = () => {
-        const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! && document.querySelectorAll("img")[1]!
+        const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! as HTMLImageElement
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
         console.log("RuleImgChangesData: ", ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
     }
@@ -123,7 +130,7 @@ export default function MinecraftVS(){
                         <p>参加者:</p>
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <ul>
-                                {Object.entries(userlists).map(([team, users]: [string, {user_name:string, user_id:string, user_link:string, score: number}[]]) => (
+                                {Object.entries(userlists).map(([team, users]: [string, TeamTableProps[]]) => (
                                     <>
                                         <li key={team}>
                                         <h2 style={{ textAlign: 'center' }}>&nbsp;【{team}チーム】</h2>
@@ -153,7 +160,12 @@ export default function MinecraftVS(){
                         <div className={styles.MC_AEM_Wrapper}>
                             <div className={styles.MC_CarouselD}>
                                 <picture>
-                                    <img src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png" id="rule-book-img" className={styles.MC_Carousel_track_slide_media_img}/>
+                                    <img
+                                        src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png"
+                                        alt={RuleBookSrcArray[ruleBookImg] ?? ""}
+                                        id="rule-book-img"
+                                        className={styles.MC_Carousel_track_slide_media_img}
+                                    />
                                 </picture>
                                 <div style={{ display: 'flex' }}>
                                     <button onClick={RuleImgRemoves}><span>前へ</span></button>
