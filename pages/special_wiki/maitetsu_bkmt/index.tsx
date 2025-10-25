@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import BKMT_Front from '@/utils/pageParts/special_wiki/maitetsu_bkmt/Front';
 
-export default function WikiPage() {
+export default function MaitetsuBKMTMain() {
     const router = useRouter()
     const { wikiSlug, pageSlug, page: pageQuery, cmd } = router.query;
     const cmdStr = typeof cmd === 'string' ? cmd : '';

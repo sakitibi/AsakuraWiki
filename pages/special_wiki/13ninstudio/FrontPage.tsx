@@ -1,8 +1,7 @@
-export default function Redirecting(){
-    const Redirect = () => {
-        location.href = "/wiki/13ninstudio";
-    }
+import Redirecting from "@/pages/special_wiki/13ninstudio/index";
+
+export default function Redirecting2(){
     return(
-        <button onClick={Redirect}><span>リダイレクト</span></button>
+        <Redirecting/>
     )
 }
