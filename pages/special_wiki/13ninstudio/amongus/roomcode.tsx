@@ -43,6 +43,9 @@ export default function WikiPage() {
                     <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
                         <div id="body">
                             <h1>Amongus部屋コード募集</h1>
+                            <p>サーバー: アジア</p>
+                            <p>言語: 日本語</p>
+                            <p>チャット: クイックチャット</p>
                             <p>現在はこれ! {!!roomcode ? (
                                 <p>{roomcode}</p>
                             ) : (
