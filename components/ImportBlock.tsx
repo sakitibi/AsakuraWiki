@@ -58,8 +58,7 @@ export async function resolveImports(content: string, context: Context): Promise
         context.letContext = context.letContext ?? {};
 
         for (const { name, value, kind } of varData) {
-            context.variables[name] = value;
-
+            context.variables![name] = value;
             if (kind === 'const') {
                 if (!(name in context.constContext)) {
                     context.constContext[name] = value;
