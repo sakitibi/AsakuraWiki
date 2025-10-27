@@ -12,7 +12,7 @@ import { DATEDIF, DATEVALUE } from '@/utils/dateFunctions';
 import type { Context } from "@/components/parsePluginTypes";
 import versions from "@/utils/version";
 import type { ReactNode } from "react";
-import FunctionCallRenderer from "./functionCall";
+import FunctionCallRenderer from "@/components/functionCall";
 
 interface parseInlineProps{
     text: string;
@@ -564,11 +564,11 @@ export function parseOtherInline(
         }
         else if (token.startsWith('&function-call(')) {
             console.log("&function-call( matched");
-            const name = m[48]?.trim();
-            const argsRaw = m[49];
+            const name = m[49]?.trim();
+            const argsRaw = m[50];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
 
-            console.log('[ParseInline] function-call via m[48]:', { name, args });
+            console.log('[ParseInline] function-call via m[49]:', { name, args });
 
             nodes.push(
                 <FunctionCallRenderer
