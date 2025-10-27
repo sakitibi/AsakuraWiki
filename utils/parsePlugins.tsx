@@ -8,7 +8,6 @@ import ImportBlock, { resolveImports } from '@/components/ImportBlock';
 import type { designColor } from '@/utils/wiki_settings';
 import Fold from '@/components/Fold';
 import styles from '@/css/wikis.min.module.css';
-import FunctionCallRenderer from '@/components/functionCall';
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<designColor | null>(null);
@@ -169,33 +168,6 @@ function tokenize(src: string): Token[] {
                 continue;
             }
         }
-        // &function-call(name,arg1,arg2);
-        const functionCallMatch = src.slice(i).match(/^&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/);
-
-        console.log('[tokenize] 検索位置:', i);
-        console.log('[tokenize] 検索対象文字列:', src.slice(i, i + 50)); // 先頭50文字だけ表示
-
-        if (functionCallMatch) {
-            console.log('[tokenize] function-call マッチ:', functionCallMatch);
-
-            const name = functionCallMatch[1]?.trim() ?? '';
-            const argsRaw = functionCallMatch[2];
-            const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
-
-            console.log('[tokenize] 関数名:', name);
-            console.log('[tokenize] 引数Raw:', argsRaw);
-            console.log('[tokenize] 引数配列:', args);
-
-            tokens.push({
-                type: 'functionCall',
-                name,
-                args,
-            });
-
-            i += functionCallMatch[0].length;
-            console.log('[tokenize] 次の位置へ移動:', i);
-            continue;
-        }
         // それ以外はテキスト１文字ずつ
         tokens.push({ type: 'text', content: src[i++] });
     }
@@ -280,15 +252,6 @@ function buildAST(src: string, context: Context): ASTNode[] {
                 body: tk.body
             };
         }
-        else if (tk.type === 'functionCall') {
-            const node: ASTNode = {
-                type: 'functionCall',
-                name: tk.name,
-                args: tk.args,
-            };
-            console.log("functionCallnode: ", node);
-            curr.push(node);
-        }
     }
     return root;
 }
@@ -359,15 +322,6 @@ function renderAST(
                     <pre>{node.body}</pre>
                     <div>Return: {node.returnValue}</div>
                 </div>
-            );
-        }
-        else if (node.type === 'functionCall') {
-            return (
-                <FunctionCallRenderer
-                    name={node.name}
-                    args={node.args}
-                    context={context}
-                />
             );
         }
         // 他のノード型は無視するか、別途処理

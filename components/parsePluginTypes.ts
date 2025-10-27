@@ -57,7 +57,6 @@ export type Token =
     | { type: 'export'; scope: 'global' | 'local'; variables: string[] }
     | { type: 'import'; slug: string; page: string; variables: string[] }
     | { type: 'function'; name: string; args: any[]; body: string, returnValue: any }
-    | { type: 'functionCall'; name: string; args: any[]; };
 export type ASTNode =
     | { type: 'text'; content: string }
     | { type: 'accordion'; title: string; level: '*' | '**' | '***'; isOpen: boolean; children: ASTNode[] }
@@ -65,4 +64,3 @@ export type ASTNode =
     | { type: 'export'; scope: 'global' | 'local'; variables: string[]; }
     | { type: 'import'; slug: string; page: string; variables: string[]; }
     | { type: 'function'; name: string; args: any[]; body: string; returnValue: any }
-    | { type: 'functionCall'; name: string; args: any[]; };
