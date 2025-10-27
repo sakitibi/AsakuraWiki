@@ -170,11 +170,11 @@ function tokenize(src: string): Token[] {
             }
         }
         // &function-call(name,arg1,arg2);
-        const functionCallMatch = src.slice(i).match(/^&function-call\(\s*([a-zA-Z0-9_]+)(?:\s*,\s*([^)]+))?\s*\);/);
+        const functionCallMatch = src.slice(i).match(/^&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/);
         if (functionCallMatch) {
             const name = functionCallMatch[1].trim();
             const argsRaw = functionCallMatch[2];
-            const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : []; // ← 空配列を保証
+            const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
             console.log("functionCallDatas: ", {name,args})
             tokens.push({
                 type: 'functionCall',
