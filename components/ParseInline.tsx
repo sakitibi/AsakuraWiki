@@ -563,24 +563,22 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&function-call(')) {
-            console.log("&function-call( token matched");
-            const match = token.match(/&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/);
-            if (match) {
-                const name = match[1].trim();
-                const argsRaw = match[2];
-                const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
-                console.log('[ParseInline] function-call match:', { name, args });
-                nodes.push(
-                    <FunctionCallRenderer
-                        key={key}
-                        name={name}
-                        args={args}
-                        context={context}
-                    />
-                );
-                last = m.index + token.length;
-                continue;
-            }
+            const name = m[48]?.trim();
+            const argsRaw = m[49];
+            const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
+
+            console.log('[ParseInline] function-call via m[48]:', { name, args });
+
+            nodes.push(
+                <FunctionCallRenderer
+                    key={key}
+                    name={name}
+                    args={args}
+                    context={context}
+                />
+            );
+            last = m.index + token.length;
+            continue;
         }
     }
     // 最後に残ったテキスト
