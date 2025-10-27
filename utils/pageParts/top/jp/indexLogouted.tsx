@@ -3,8 +3,12 @@ export default function LogoutedUI(){
         <>
             <div className="text-dark">
                 <strong className="masthead-notice rounded-3 p-2">あさクラWikiの新機能</strong>
-                <p>newプラグイン</p>
-                <p>インラインプラグイン</p>
+                <h2>functionプラグイン</h2>
+                <p>ブロック型プラグイン</p>
+                <h2>returnプラグイン</h2>
+                <p>ブロック型プラグイン</p>
+                <h2>function-callプラグイン</h2>
+                <p>インライン型プラグイン</p>
             </div>
             <h1 className="mb-3 fw-semibold lh-1">あさクラWikiのたくさんの機能で<br/>自分だけのWikiを作成しよう。</h1>
             <p className="lead mb-4">
