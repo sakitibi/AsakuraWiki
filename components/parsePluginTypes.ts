@@ -1,3 +1,10 @@
+export interface extractBracedBlockProps{
+    body: string;
+    end: number;
+    success: boolean;
+    unmatchedDepth?: number;
+}
+
 export type Context = {
     wikiSlug?: string;
     pageSlug?: string;

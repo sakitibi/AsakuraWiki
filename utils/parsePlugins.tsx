@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Accordion from '@/components/Accordion';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import parseInline from '@/components/ParseInline';
-import { Context, Token, ASTNode } from '@/components/parsePluginTypes';
+import { Context, Token, ASTNode, extractBracedBlockProps } from '@/components/parsePluginTypes';
 import ExportBlock from '@/components/ExportBlock';
 import ImportBlock, { resolveImports } from '@/components/ImportBlock';
 import type { designColor } from '@/utils/wiki_settings';
@@ -44,25 +44,26 @@ export function extractBracedBlock(
     source: string,
     startIdx: number,
     braceCount: number
-): {
-    body: string;
-    end: number;
-    success: boolean;
-    unmatchedDepth?: number;
-} {
-    let depth:number = braceCount;
-    let i:number = startIdx + braceCount;
+): extractBracedBlockProps {
+    let depth = 1;
+    let i = startIdx + braceCount;
+    const openBrace = '{'.repeat(braceCount);
+    const closeBrace = '}'.repeat(braceCount);
 
     while (i < source.length) {
-        const char = source[i];
-        if (char === '{') {
+        if (source.slice(i).startsWith(openBrace)) {
             depth++;
-        } else if (char === '}') {
+            i += braceCount;
+            continue;
+        }
+        if (source.slice(i).startsWith(closeBrace)) {
             depth--;
+            i += braceCount;
             if (depth === 0) {
-                const body:string = source.slice(startIdx + braceCount, i);
-                return { body, end: i + 1, success: true };
+                const body = source.slice(startIdx + braceCount, i - braceCount);
+                return { body, end: i, success: true };
             }
+            continue;
         }
         i++;
     }
