@@ -140,27 +140,34 @@ function tokenize(src: string): Token[] {
             continue;
         }
         // #function(name,arg1,arg2){{ #return value }}
-        const functionMatch = src.slice(i).match(/^#function\(\s*([a-zA-Z0-9_]+)(?:\s*,\s*([^)]+))?\)\s*\{{2}/);
+        // #function(name,arg1,arg2){{{ ... #return value }}}
+        const functionMatch = src.slice(i).match(/^#function\(\s*([a-zA-Z0-9_]+)?(?:\s*,\s*([^)]+))?\)\s*(\{+)/);
         if (functionMatch) {
-            const name = functionMatch[1].trim();
+            const name = functionMatch[1]?.trim() ?? '';
             const argsRaw = functionMatch[2];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
-            const block = extractBracedBlock(src, i + functionMatch[0].length - 2, 2);
+            const braceCount = functionMatch[3].length;
+
+            const blockStart = i + functionMatch[0].length - braceCount;
+            const block = extractBracedBlock(src, blockStart, braceCount);
+
             if (block.success) {
                 const returnMatch = block.body.match(/#return\s*(.*)/);
                 const returnValue = returnMatch ? returnMatch[1].trim() : null;
+                const body = returnMatch ? block.body.replace(returnMatch[0], '').trim() : block.body.trim();
+
                 tokens.push({
                     type: 'function',
                     name,
                     args,
-                    body: block.body.replace(/#return.*/, '').trim(),
+                    body,
                     returnValue
                 });
-                i += functionMatch[0].length + block.body.length + 4;
+
+                i = blockStart + block.end;
                 continue;
             }
         }
-
         // &function-call(name,arg1,arg2);
         const functionCallMatch = src.slice(i).match(/^&function-call\(\s*([a-zA-Z0-9_]+)(?:\s*,\s*([^)]+))?\);/);
         if (functionCallMatch) {
