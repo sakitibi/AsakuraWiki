@@ -180,7 +180,6 @@ function tokenize(src: string): Token[] {
                 name,
                 args,
             });
-
             i += functionCallMatch[0].length;
             continue;
         }
