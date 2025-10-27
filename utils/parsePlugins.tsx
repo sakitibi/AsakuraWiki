@@ -8,6 +8,7 @@ import ImportBlock, { resolveImports } from '@/components/ImportBlock';
 import type { designColor } from '@/utils/wiki_settings';
 import Fold from '@/components/Fold';
 import styles from '@/css/wikis.min.module.css';
+import FunctionCallRenderer from '@/components/functionCall';
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<designColor | null>(null);
@@ -188,7 +189,7 @@ function tokenize(src: string): Token[] {
     return tokens;
 }
 
-function buildAST(src: string): ASTNode[] {
+function buildAST(src: string, context: Context): ASTNode[] {
     const tokens = tokenize(src);
     const root: ASTNode[] = [];
     const stack: ASTNode[][] = [root];
@@ -256,6 +257,13 @@ function buildAST(src: string): ASTNode[] {
                 returnValue: tk.returnValue
             };
             curr.push(node);
+
+            // 関数定義を context に保存
+            if (!context.functions) context.functions = {};
+            context.functions[tk.name] = {
+                args: tk.args,
+                returnValue: tk.returnValue
+            };
         }
         else if (tk.type === 'functionCall') {
             const node: ASTNode = {
@@ -339,9 +347,11 @@ function renderAST(
         }
         else if (node.type === 'functionCall') {
             return (
-                <div key={`fc${idx}`} className={styles.functionCall}>
-                    <strong>Function Call:</strong> {node.name}({node.args.join(', ')})
-                </div>
+                <FunctionCallRenderer
+                    name={node.name}
+                    args={node.args}
+                    context={context}
+                />
             );
         }
         // 他のノード型は無視するか、別途処理
@@ -355,7 +365,7 @@ export async function parseWikiContent(
 ): Promise<React.ReactNode[]> {
     await resolveImports(content, context); // ← import変数を注入
     // トークン→AST化
-    const ast = buildAST(content);
+    const ast = buildAST(content, context);
     // AST→React ノード
     return renderAST(ast, context);
 }

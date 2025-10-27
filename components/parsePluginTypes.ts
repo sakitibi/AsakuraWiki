@@ -1,9 +1,10 @@
 export type Context = {
-    wikiSlug: string;
-    pageSlug: string;
-    variables: Record<string, string>;
+    wikiSlug?: string;
+    pageSlug?: string;
+    variables?: Record<string, string>;
     constContext?: Record<string, string>; // ← 追加
     letContext?: Record<string, string>;   // ← 追加
+    functions?: Record<string, {args: any[]; returnValue: any}>;
 };
 
 export interface AccordionBlock {
