@@ -175,6 +175,7 @@ function tokenize(src: string): Token[] {
             const name = functionCallMatch[1].trim();
             const argsRaw = functionCallMatch[2];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : []; // ← 空配列を保証
+            console.log("functionCallDatas: ", {name,args})
             tokens.push({
                 type: 'functionCall',
                 name,
