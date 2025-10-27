@@ -147,15 +147,12 @@ function tokenize(src: string): Token[] {
             const argsRaw = functionMatch[2];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
             const braceCount = functionMatch[3].length;
-
-            const blockStart = i + functionMatch[0].length - braceCount;
-            const block = extractBracedBlock(src, blockStart, braceCount);
-
+            const braceStart = i + src.slice(i).indexOf(functionMatch[3]);
+            const block = extractBracedBlock(src, braceStart, braceCount);
             if (block.success) {
                 const returnMatch = block.body.match(/#return\s*(.*)/);
                 const returnValue = returnMatch ? returnMatch[1].trim() : null;
-                const body = returnMatch ? block.body.replace(returnMatch[0], '').trim() : block.body.trim();
-
+                const body = returnMatch ? block.body.slice(0, returnMatch.index).trim() : block.body.trim();
                 tokens.push({
                     type: 'function',
                     name,
@@ -164,7 +161,7 @@ function tokenize(src: string): Token[] {
                     returnValue
                 });
 
-                i = blockStart + block.end;
+                i = braceStart + block.end;
                 continue;
             }
         }
