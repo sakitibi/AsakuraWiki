@@ -68,7 +68,7 @@ export function parseOtherInline(
     let last:number = 0
     let m: RegExpExecArray | null
     // 各プラグインを順次キャプチャする正規表現
-    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&new(?:\(([^)]*)\))?\{([^\}]+)\};|^&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
+    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&new(?:\(([^)]*)\))?\{([^\}]+)\};|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
 
     while ((m = re.exec(line))) {
         const token:string = m[0];
@@ -563,7 +563,7 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&function-call(')) {
-            const match = token.match(/^&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/);
+            const match = token.match(/&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/);
             if (match) {
                 const name = match[1].trim();
                 const argsRaw = match[2];
