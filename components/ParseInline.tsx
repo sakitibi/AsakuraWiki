@@ -577,6 +577,7 @@ export function parseOtherInline(
             );
             last = m.index + token.length;
         }
+    }
     // 最後に残ったテキスト
     if (last < line.length) {
         const rest:string = line.slice(last).trim()
