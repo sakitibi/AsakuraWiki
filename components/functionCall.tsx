@@ -19,12 +19,15 @@ export default function FunctionCallRenderer({ name, args, context }: FunctionCa
             return;
         }
 
-        const argMap = Object.fromEntries(func.args.map((argName, i) => [argName, args[i] ?? '']));
+        const argMap = Object.fromEntries((func.args ?? []).map((argName, i) => [argName, args[i] ?? '']));
 
-        // 関数本体のテンプレートを引数で置換
-        const renderedBody = func.body.replace(/{{\s*(\w+)\s*}}/g, (_, key) => argMap[key] ?? '');
+        // #return の内容を抽出（なければ body 全体を使う）
+        const returnMatch = func.body.match(/#return\s*(.*)/);
+        const returnExpr = returnMatch ? returnMatch[1].trim() : func.body;
 
-        parseWikiContent(renderedBody, context).then(res => {
+        const rendered = returnExpr.replace(/{{\s*(\w+)\s*}}/g, (_, key) => argMap[key] ?? '');
+
+        parseWikiContent(rendered, context).then(res => {
             setResult(<>{res}</>);
         });
     }, [name, args, context]);

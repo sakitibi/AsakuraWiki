@@ -150,10 +150,12 @@ function tokenize(src: string): Token[] {
             const braceCount = functionMatch[3].length;
             const braceStart = i + src.slice(i).indexOf(functionMatch[3]);
             const block = extractBracedBlock(src, braceStart, braceCount);
+
             if (block.success) {
                 const returnMatch = block.body.match(/#return\s*(.*)/);
                 const returnValue = returnMatch ? returnMatch[1].trim() : null;
-                const body = returnMatch ? block.body.slice(0, returnMatch.index).trim() : block.body.trim();
+                const body = block.body.trim(); // ← #return含めて保持
+
                 tokens.push({
                     type: 'function',
                     name,
