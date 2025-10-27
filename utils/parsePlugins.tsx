@@ -139,7 +139,7 @@ function tokenize(src: string): Token[] {
             i += importMatch[0].length;
             continue;
         }
-        // #function(name,[args]){{ body #return value }}
+        // #function(name,arg1,arg2){{ #return value }}
         const functionMatch = src.slice(i).match(/^#function\(\s*([a-zA-Z0-9_]+)(?:\s*,\s*([^)]+))?\)\s*\{{2}/);
         if (functionMatch) {
             const name = functionMatch[1].trim();
@@ -161,7 +161,7 @@ function tokenize(src: string): Token[] {
             }
         }
 
-        // &function-call(name,[args]);
+        // &function-call(name,arg1,arg2);
         const functionCallMatch = src.slice(i).match(/^&function-call\(\s*([a-zA-Z0-9_]+)(?:\s*,\s*([^)]+))?\);/);
         if (functionCallMatch) {
             const name = functionCallMatch[1].trim();
