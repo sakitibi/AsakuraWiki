@@ -131,46 +131,50 @@ function tokenize(src: string): Token[] {
         }
 
         const importMatch = src.slice(i).match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};/);
-            if (importMatch) {
-                const slug = importMatch[1];
-                const page = importMatch[2];
-                const variables = importMatch[3].split(',').map(v => v.trim());
-                tokens.push({ type: 'import', slug, page, variables });
-                i += importMatch[0].length;
-                continue;
-            }
-
-            const functionDefMatch = src.slice(i).match(/^#function\(([^,]+),\s*\[([^\]]*)\]\)\s*\{{2}/);
-            if (functionDefMatch) {
-                const name = functionDefMatch[1].trim();
-                const args = functionDefMatch[2].split(',').map(s => s.trim());
-                const block = extractBracedBlock(src, i + functionDefMatch[0].length - 2, 2);
-                if (block.success) {
-                    const returnMatch = block.body.match(/#return\s+(.+)/);
-                    const returnValue = returnMatch ? returnMatch[1].trim() : null;
-                    tokens.push({
-                        type: 'function',
-                        name,
-                        args,
-                        body: block.body.replace(/#return.+/, '').trim(),
-                        returnValue
-                    });
-                    i += functionDefMatch[0].length + block.body.length + 4; // 4 accounts for closing braces
-                    continue;
-                }
-            }
-            const functionCallMatch = src.slice(i).match(/^&function-call\(([^,]+),\s*\[([^\]]*)\]\);/);
-            if (functionCallMatch) {
-                const name = functionCallMatch[1].trim();
-                const args = functionCallMatch[2].split(',').map(s => s.trim());
+        if (importMatch) {
+            const slug = importMatch[1];
+            const page = importMatch[2];
+            const variables = importMatch[3].split(',').map(v => v.trim());
+            tokens.push({ type: 'import', slug, page, variables });
+            i += importMatch[0].length;
+            continue;
+        }
+        // #function(name,[args]){{ body #return value }}
+        const functionMatch = src.slice(i).match(/^#function\(\s*([a-zA-Z0-9_]+)(?:\s*,\s*([^)]+))?\)\s*\{{2}/);
+        if (functionMatch) {
+            const name = functionMatch[1].trim();
+            const argsRaw = functionMatch[2];
+            const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
+            const block = extractBracedBlock(src, i + functionMatch[0].length - 2, 2);
+            if (block.success) {
+                const returnMatch = block.body.match(/#return\s*(.*)/);
+                const returnValue = returnMatch ? returnMatch[1].trim() : null;
                 tokens.push({
-                    type: 'functionCall',
+                    type: 'function',
                     name,
-                    args
+                    args,
+                    body: block.body.replace(/#return.*/, '').trim(),
+                    returnValue
                 });
-                i += functionCallMatch[0].length;
+                i += functionMatch[0].length + block.body.length + 4;
                 continue;
             }
+        }
+
+        // &function-call(name,[args]);
+        const functionCallMatch = src.slice(i).match(/^&function-call\(\s*([a-zA-Z0-9_]+)(?:\s*,\s*([^)]+))?\);/);
+        if (functionCallMatch) {
+            const name = functionCallMatch[1].trim();
+            const argsRaw = functionCallMatch[2];
+            const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
+            tokens.push({
+                type: 'functionCall',
+                name,
+                args
+            });
+            i += functionCallMatch[0].length;
+            continue;
+        }
         // それ以外はテキスト１文字ずつ
         tokens.push({ type: 'text', content: src[i++] });
     }
