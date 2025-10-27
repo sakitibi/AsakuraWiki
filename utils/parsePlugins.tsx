@@ -172,11 +172,10 @@ function tokenize(src: string): Token[] {
             const name = functionCallMatch[1].trim();
             const argsRaw = functionCallMatch[2];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
-
             tokens.push({
                 type: 'functionCall',
                 name,
-                args
+                args,
             });
 
             i += functionCallMatch[0].length;
@@ -262,14 +261,15 @@ function buildAST(src: string, context: Context): ASTNode[] {
             if (!context.functions) context.functions = {};
             context.functions[tk.name] = {
                 args: tk.args,
-                returnValue: tk.returnValue
+                returnValue: tk.returnValue,
+                body: tk.body
             };
         }
         else if (tk.type === 'functionCall') {
             const node: ASTNode = {
                 type: 'functionCall',
                 name: tk.name,
-                args: tk.args
+                args: tk.args,
             };
             curr.push(node);
         }

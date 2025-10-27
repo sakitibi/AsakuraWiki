@@ -19,17 +19,19 @@ export default function FunctionCallRenderer({ name, args, context }: FunctionCa
             return;
         }
 
-        const argMap = Object.fromEntries(func.args.map((argName:string, i:any) => [argName, args[i] ?? '']));
-        const returnText = argMap[func.returnValue ?? ''] ?? '';
+        const argMap = Object.fromEntries(func.args.map((argName, i) => [argName, args[i] ?? '']));
 
-        parseWikiContent(returnText, context).then(res => {
-        setResult(<>{res}</>);
+        // 関数本体のテンプレートを引数で置換
+        const renderedBody = func.body.replace(/{{\s*(\w+)\s*}}/g, (_, key) => argMap[key] ?? '');
+
+        parseWikiContent(renderedBody, context).then(res => {
+            setResult(<>{res}</>);
         });
     }, [name, args, context]);
 
     return (
         <div className={styles.functionCall}>
-        <strong>{name}:</strong> {result}
+            <strong>{name}:</strong> {result}
         </div>
     );
 }
