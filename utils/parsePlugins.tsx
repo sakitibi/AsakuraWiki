@@ -171,17 +171,29 @@ function tokenize(src: string): Token[] {
         }
         // &function-call(name,arg1,arg2);
         const functionCallMatch = src.slice(i).match(/^&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/);
+
+        console.log('[tokenize] 検索位置:', i);
+        console.log('[tokenize] 検索対象文字列:', src.slice(i, i + 50)); // 先頭50文字だけ表示
+
         if (functionCallMatch) {
-            const name = functionCallMatch[1].trim();
+            console.log('[tokenize] function-call マッチ:', functionCallMatch);
+
+            const name = functionCallMatch[1]?.trim() ?? '';
             const argsRaw = functionCallMatch[2];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
-            console.log("functionCallDatas: ", [name, args])
+
+            console.log('[tokenize] 関数名:', name);
+            console.log('[tokenize] 引数Raw:', argsRaw);
+            console.log('[tokenize] 引数配列:', args);
+
             tokens.push({
                 type: 'functionCall',
                 name,
                 args,
             });
+
             i += functionCallMatch[0].length;
+            console.log('[tokenize] 次の位置へ移動:', i);
             continue;
         }
         // それ以外はテキスト１文字ずつ
@@ -274,6 +286,7 @@ function buildAST(src: string, context: Context): ASTNode[] {
                 name: tk.name,
                 args: tk.args,
             };
+            console.log("functionCallnode: ", node);
             curr.push(node);
         }
     }
