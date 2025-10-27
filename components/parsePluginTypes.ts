@@ -47,10 +47,14 @@ export type Token =
     | { type: 'open' | 'openFolds'; title: string; level?: '*' | '**' | '***'; isOpen: boolean }
     | { type: 'close' | 'closeFolds' }
     | { type: 'export'; scope: 'global' | 'local'; variables: string[] }
-    | { type: 'import'; slug: string; page: string; variables: string[] };
+    | { type: 'import'; slug: string; page: string; variables: string[] }
+    | { type: 'function'; name: string; args: any[]; body: string, returnValue: any }
+    | { type: 'functionCall'; name: string; args: any[] };
 export type ASTNode =
     | { type: 'text'; content: string }
     | { type: 'accordion'; title: string; level: '*' | '**' | '***'; isOpen: boolean; children: ASTNode[] }
     | { type: 'fold'; title: string; isOpen: boolean; children: ASTNode[] }
     | { type: 'export'; scope: 'global' | 'local'; variables: string[]; }
-    | { type: 'import'; slug: string; page: string; variables: string[]; };
+    | { type: 'import'; slug: string; page: string; variables: string[]; }
+    | { type: 'function'; name: string; args: any[]; body: string, returnValue: any }
+    | { type: 'functionCall'; name: string; args: any[] };

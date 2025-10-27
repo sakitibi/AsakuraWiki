@@ -7,6 +7,7 @@ import ExportBlock from '@/components/ExportBlock';
 import ImportBlock, { resolveImports } from '@/components/ImportBlock';
 import type { designColor } from '@/utils/wiki_settings';
 import Fold from '@/components/Fold';
+import styles from '@/css/wikis.min.module.css';
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<designColor | null>(null);
@@ -130,15 +131,46 @@ function tokenize(src: string): Token[] {
         }
 
         const importMatch = src.slice(i).match(/^#import\(([^:]+):([^)]+)\)\{(.+?)\};/);
-        if (importMatch) {
-            const slug = importMatch[1];
-            const page = importMatch[2];
-            const variables = importMatch[3].split(',').map(v => v.trim());
-            tokens.push({ type: 'import', slug, page, variables });
-            i += importMatch[0].length;
-            continue;
-        }
+            if (importMatch) {
+                const slug = importMatch[1];
+                const page = importMatch[2];
+                const variables = importMatch[3].split(',').map(v => v.trim());
+                tokens.push({ type: 'import', slug, page, variables });
+                i += importMatch[0].length;
+                continue;
+            }
 
+            const functionDefMatch = src.slice(i).match(/^#function\(([^,]+),\s*\[([^\]]*)\]\)\s*\{{2}/);
+            if (functionDefMatch) {
+                const name = functionDefMatch[1].trim();
+                const args = functionDefMatch[2].split(',').map(s => s.trim());
+                const block = extractBracedBlock(src, i + functionDefMatch[0].length - 2, 2);
+                if (block.success) {
+                    const returnMatch = block.body.match(/#return\s+(.+)/);
+                    const returnValue = returnMatch ? returnMatch[1].trim() : null;
+                    tokens.push({
+                        type: 'function',
+                        name,
+                        args,
+                        body: block.body.replace(/#return.+/, '').trim(),
+                        returnValue
+                    });
+                    i += functionDefMatch[0].length + block.body.length + 4; // 4 accounts for closing braces
+                    continue;
+                }
+            }
+            const functionCallMatch = src.slice(i).match(/^&function-call\(([^,]+),\s*\[([^\]]*)\]\);/);
+            if (functionCallMatch) {
+                const name = functionCallMatch[1].trim();
+                const args = functionCallMatch[2].split(',').map(s => s.trim());
+                tokens.push({
+                    type: 'functionCall',
+                    name,
+                    args
+                });
+                i += functionCallMatch[0].length;
+                continue;
+            }
         // それ以外はテキスト１文字ずつ
         tokens.push({ type: 'text', content: src[i++] });
     }
@@ -205,8 +237,25 @@ function buildAST(src: string): ASTNode[] {
             };
             curr.push(node);
         }
+        else if (tk.type === 'function') {
+            const node: ASTNode = {
+                type: 'function',
+                name: tk.name,
+                args: tk.args,
+                body: tk.body,
+                returnValue: tk.returnValue
+            };
+            curr.push(node);
+        }
+        else if (tk.type === 'functionCall') {
+            const node: ASTNode = {
+                type: 'functionCall',
+                name: tk.name,
+                args: tk.args
+            };
+            curr.push(node);
+        }
     }
-
     return root;
 }
 
@@ -268,7 +317,23 @@ function renderAST(
                 </ImportBlock>
             );
         }
-
+        else if (node.type === 'function') {
+            return (
+                <div key={`fd${idx}`} className={styles.functionBlock}>
+                    <strong>Function: {node.name}</strong>
+                    <div>Args: {node.args.join(', ')}</div>
+                    <pre>{node.body}</pre>
+                    <div>Return: {node.returnValue}</div>
+                </div>
+            );
+        }
+        else if (node.type === 'functionCall') {
+            return (
+                <div key={`fc${idx}`} className={styles.functionCall}>
+                    <strong>Function Call:</strong> {node.name}({node.args.join(', ')})
+                </div>
+            );
+        }
         // 他のノード型は無視するか、別途処理
         return null;
     });
