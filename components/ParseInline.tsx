@@ -563,6 +563,7 @@ export function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&function-call(')) {
+            console.log("&function-call( token matched");
             const match = token.match(/&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/);
             if (match) {
                 const name = match[1].trim();
