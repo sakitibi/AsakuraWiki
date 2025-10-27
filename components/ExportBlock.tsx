@@ -10,7 +10,7 @@ interface ExportBlockProps{
 interface ExportedVariable {
     name: string;
     value: string;
-    kind: 'const' | 'let';
+    kind: 'const' | 'let' | 'function';
     scope: 'global' | 'local';
     type: string;
 }
@@ -26,7 +26,7 @@ export const getExportedVariables = async (wikiSlug: string, pageSlug: string) =
     const exportMatch:string = data?.content.match(/#export\((global|local)\)\{(.+?)\}/);
     if (!exportMatch) return [];
 
-    const [, scope, vars] = exportMatch;
+    const [, _scope, vars] = exportMatch;
     return vars.split(',').map((v: string) => v.trim());
 };
 

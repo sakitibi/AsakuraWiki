@@ -66,7 +66,7 @@ export async function resolveImports(content: string, context: Context): Promise
                 }
             } else if (kind === 'let') {
                 context.letContext[name] = value; // ← 再代入OK
-            }
+            } else if(kind === 'function') {/*TODO: functionをimportした時の処理を書く*/}
         }
 
         // content に挿入
