@@ -84,7 +84,7 @@ export function parseOtherInline(
             // 🔍 ログ: プレーンテキスト部分
             console.log(`[text] before plugin: "${plainText}"`);
         }
-        //console.table(m);
+        console.table(m);
 
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
