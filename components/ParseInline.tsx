@@ -84,6 +84,7 @@ export function parseOtherInline(
             console.log(`[text] before plugin: "${plainText}"`);
         }
         //console.table(m);
+        console.log('[debug] raw line:', JSON.stringify(line));
         if (line.trim().includes('&function-call(')) {
             console.log('[debug] line includes &function-call');
         } else {
