@@ -24,6 +24,7 @@ export default function parseInline({text, context}: parseInlineProps): React.Re
     const { wikiSlug, pageSlug } = context;
     const nodes: React.ReactNode[] = [];
     let nodeKey:number = 0;
+    console.log("text: ", text);
     text.split(/\r?\n/).forEach((line) => {
         // 1) 見出しか?（*テキスト [anchor] に対応）
         console.log('[line]', JSON.stringify(line));
