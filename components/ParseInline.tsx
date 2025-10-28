@@ -566,13 +566,12 @@ export function parseOtherInline(
 
             last = m.index + token.length;
         }
-        else if (token.startsWith('&function-call(')) {
-            console.log("&function-call( matched");
-            const name = m[48]?.trim();
+        else if (m[48]) {
+            const name = m[48].trim();
             const argsRaw = m[49];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
 
-            console.log('[ParseInline] function-call via m[48]:', name);
+            console.log('[ParseInline] function-call via m[48]:', { name, args });
 
             nodes.push(
                 <FunctionCallRenderer
@@ -583,6 +582,7 @@ export function parseOtherInline(
                 />
             );
             last = m.index + token.length;
+            continue;
         }
     }
     // 最後に残ったテキスト
