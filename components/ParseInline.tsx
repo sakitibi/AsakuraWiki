@@ -86,6 +86,8 @@ export function parseOtherInline(
         //console.table(m);
         if (line.includes('&function-call(')) {
             console.log('[debug] line includes &function-call');
+        } else {
+            console.log('[debug] line not includes &function-call');
         }
         // --- plugin branches ---
         // #calendar2(Y,M,off?)
