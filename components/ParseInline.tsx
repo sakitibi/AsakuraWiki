@@ -582,7 +582,6 @@ export function parseOtherInline(
                 />
             );
             last = m.index + token.length;
-            continue;
         }
     }
     // 最後に残ったテキスト
