@@ -26,6 +26,7 @@ export default function parseInline({text, context}: parseInlineProps): React.Re
     let nodeKey:number = 0;
     text.split(/\r?\n/).forEach((line) => {
         // 1) 見出しか?（*テキスト [anchor] に対応）
+        console.log('[line]', JSON.stringify(line));
         const headingMatch = line.match(/^(\*{1,3})\s*(.+?)(?:\s*\[(.+?)\])?$/);
         if (headingMatch) {
             const stars:"*" | "**" | "***" = headingMatch[1] as "*" | "**" | "***";
