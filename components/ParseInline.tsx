@@ -84,7 +84,7 @@ export function parseOtherInline(
             console.log(`[text] before plugin: "${plainText}"`);
         }
         //console.table(m);
-        if (line.includes('&function-call(')) {
+        if (line.trim().includes('&function-call(')) {
             console.log('[debug] line includes &function-call');
         } else {
             console.log('[debug] line not includes &function-call');
