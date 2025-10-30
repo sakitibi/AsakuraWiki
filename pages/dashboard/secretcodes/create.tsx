@@ -60,7 +60,7 @@ export default function CreateSecretCode() {
                     <main style={{ padding: '2rem', maxWidth: 600 }}>
                         <h1>403 Forbidden</h1>
                         <p>あさクラシークレットコードを作成する権限が有りません</p>
-                        <p><a href="/login/email">他のアカウントにログイン</a></p>
+                        <p><a href="/login/13nin/email">他のアカウントにログイン</a></p>
                     </main>
                 </>
             )}
