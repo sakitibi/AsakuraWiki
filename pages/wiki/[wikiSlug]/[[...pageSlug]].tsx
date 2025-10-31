@@ -180,16 +180,14 @@ export default function WikiPage() {
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (content !== editContent) {
+                const message = "サイトから移動しますか?\n変更内容が保存されない可能性があります。"
                 e.preventDefault();
-                e.returnValue = "サイトから移動しますか?\n変更内容が保存されない可能性があります。";
+                e.returnValue = message;
+                return message;
             }
         };
 
         window.addEventListener("beforeunload", handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
     }, [content, editContent]);
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
