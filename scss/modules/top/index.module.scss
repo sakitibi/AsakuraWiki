@@ -32,14 +32,14 @@
 }
 
 .lFooter {
-    background-color: /*#cce19b*/#aa71dc;
+    background-color: #cce19b;
     & .c-copyright {
         margin-top: 24px;
     }
 }
 
 .cCopyright {
-    background-color: /*#b2c780*/#9209d6;
+    background-color: #b2c780;
     color: #fff;
     font-size: 10px;
     padding: .5em 0;
@@ -55,7 +55,7 @@
 
 .pFooterNav__item {
     display: inline-block;
-    $link_color: /*#6c803d*/#60038b;
+    $link_color: #6c803d;
     font-size: 10px;
     line-height: 1;
     margin: 0;
