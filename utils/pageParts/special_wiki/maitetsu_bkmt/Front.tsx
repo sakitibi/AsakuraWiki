@@ -46,7 +46,7 @@ export default function BKMT_Front(){
             <div id="about-terms">
                 <h3 style="${H3Styles}">利用規約について</h3>
                 <p>事情により当委員会の利用規約を設定することが可決されました、</p>
-                <p><a href="https://sakitibi.github.io/selects/e3839ee382a4e98984e3838de38383e38388e692b2e6bb85e5a794e593a1e4bc9a?pattern=vercel-asakura-wiki">ここから同意して下さい</a></p>
+                <p><a href="https://sakitibi.github.io/selects/e3839ee382a4e98984e3838de38383e38388e692b2e6bb85e5a794e593a1e4bc9a">ここから同意して下さい</a></p>
             </div>
         `);
     }
@@ -131,6 +131,7 @@ export default function BKMT_Front(){
                     <li>依存関係が複雑すぎるのでクラウドファンディングは没<br/>広告とYoutubeで稼ぎましょう -- さきちび 2025-07-11 (金) 13:45:59</li>
                     <li>明日の作戦の成功基準は警告文ページに<br/>訪問人数25以上です -- みぞれ 2025-07-23 (水) 22:12:05</li>
                     <li>朗報です!、マイ鉄ネットワークを誰かが攻撃してくれました! -- みぞれ 2025-08-17 (日) 18:31:06</li>
+                    <li>マイ鉄ネットワークの参加者がどんどん増えて来ちゃってる..&br;これどうしよ -- みぞれ 2025-11-01 (土) 16:50:21</li>
                 </ul>
                 <p><a href="/wiki/maitetsu_bkmt/comment" target="_blank">こちらでコメントする</a></p>
             </div>
