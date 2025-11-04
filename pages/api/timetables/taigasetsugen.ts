@@ -8,7 +8,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
         "minamitaisetsu", "iemon_house", "hinanii_house", "minamitaisetsu", "hinanii_house",
         "mangroverin", "hinanii_house", "seisomura", "hinanii_house", "hinanii_house",
         "seisomura", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house",
-        "hinanii_house", "hinanii_house", "hinanii_house", "seisomura", "hinanii_house"
+        "hinanii_house", "hinanii_house", "hinanii_house", "minamitaisetsu", "hinanii_house"
     ];
     const hinanii_house_for_seisomura_typetable:string[] = [
         "local",  "local",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid", 
