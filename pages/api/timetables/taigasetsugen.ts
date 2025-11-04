@@ -39,7 +39,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     const minamitaisetsu_for_seisomura_fortable:string[] = [
         "suikabocha_batake", "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami",
         "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake",
-        "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake", "suikabocha_batake",
+        "yukinami", "yukinami", "yukinami", "suikabocha_batake", "suikabocha_batake",
         "yukinami", "hinanii_house",
     ];
     let pillager_for_yukinami = [];
