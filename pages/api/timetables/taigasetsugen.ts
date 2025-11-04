@@ -27,6 +27,8 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 {
                     type: "local",
                     time: `${i < 22 ? "0" : ""}${hour + 4}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
+                    weekday: true,
+                    holiday: true,
                     bound_for: i === 18 ? "mangroverin": "yukinami"
                 }
             );
@@ -35,6 +37,8 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                     {
                         type: "local",
                         time: `${i < 22 ? "0" : ""}${hour + 4}:${timeflugrush[(i + 2) % 4] < 10 ? `0${timeflugrush[(i + 2) % 4]}` : timeflugrush[(i + 2) % 4]}`,
+                        weekday: true,
+                        holiday: false,
                         bound_for: "yukinami"
                     }
                 );
@@ -50,6 +54,8 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 {
                     type: i % 2 === 0 && (i + 4) % 4 === 0 ? "rapid" : i % 2 === 1 && i <= 71 ? "rapid" : "local",
                     time: `${i < 22 ? "0" : ""}${hour + 4}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
+                    weekday: true,
+                    holiday: true,
                     bound_for: i % 2 === 0 && (i + 4) % 4 === 0 && i <= 72 ? "daiichi_kyoten" : 
                         i <= 76 && i % 2 === 0 ? "hananomori" : i % 2 === 0 ? "pillager_zensyokiti" :
                         i <= 71 ? "seikishi" : i <= 73 ? "hanamori_airport" : i <= 75 ? "akatenboudai" :
@@ -61,6 +67,8 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                     {
                         type: "local",
                         time: `0${hour + 4}:${timeflugrush[(i + 2) % 4] < 10 ? `0${timeflugrush[(i + 2) % 4]}` : timeflugrush[(i + 2) % 4]}`,
+                        weekday: true,
+                        holiday: false,
                         bound_for: i % 2 === 0 ? "hananomori" : "hanamori_airport"
                     }
                 );
@@ -74,6 +82,8 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 {
                     type: "local",
                     time: `${i < 6 ? "0" : ""}${i + 4}:30`,
+                    weekday: true,
+                    holiday: true,
                     bound_for: i === 3 ? "pillager_zensyokiti" : "yukinami"
                 }
             );
@@ -86,6 +96,8 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 {
                     type: hinanii_house_for_seisomura_typetable[i],
                     time: `${i < 6 ? "0" : ""}${i + 4}:${hinanii_house_for_seisomura_typetable[i] === "rapid" ? "25" : "32"}`,
+                    weekday: true,
+                    holiday: true,
                     bound_for: hinanii_house_for_seisomura_fortable[i]
                 }
             );
