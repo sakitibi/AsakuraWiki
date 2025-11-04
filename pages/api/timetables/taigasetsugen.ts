@@ -37,8 +37,8 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
         "local"
     ];
     const minamitaisetsu_for_seisomura_fortable:string[] = [
-        "suikabocha_batake", "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake",
-        "yukinami", "yukinami", "suikabocha_batake", "suikabocha_batake",
+        "suikabocha_batake", "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami",
+        "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake",
         "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake", "suikabocha_batake",
         "yukinami", "hinanii_house",
     ];
@@ -189,7 +189,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     if(minamitaisetsu_for_seisomura.length === 0){
         for(let i = 0;i < 19;i++){
             // パターンダイヤ
-            if(i === 7 || i === 10 || i === 13){
+            if(i === 10 || i === 13 || i === 16){
                 continue;
             }
             if(minamitaisetsu_for_seisomura_typetable[i] === "rapid"){
