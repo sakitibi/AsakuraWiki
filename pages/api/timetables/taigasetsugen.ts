@@ -187,6 +187,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
         }
     }
     if(minamitaisetsu_for_seisomura.length === 0){
+        let j = 0;
         for(let i = 0;i < 19;i++){
             // パターンダイヤ
             if(i === 10 || i === 13 || i === 16){
@@ -199,7 +200,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                         time: `${i < 6 ? "0" : ""}${(i + 4) % 24}:42`,
                         weekday: true,
                         holiday: true,
-                        bound_for: minamitaisetsu_for_seisomura_fortable[i]
+                        bound_for: minamitaisetsu_for_seisomura_fortable[j]
                     }
                 );
             } else {
@@ -209,10 +210,11 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                         time: `${i < 6 ? "0" : ""}${(i + 4) % 24}:49`,
                         weekday: true,
                         holiday: true,
-                        bound_for: minamitaisetsu_for_seisomura_fortable[i]
+                        bound_for: minamitaisetsu_for_seisomura_fortable[j]
                     }
                 );
             }
+            j++;
         }
     }
     if (req.method === 'GET') {
