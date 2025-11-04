@@ -167,7 +167,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 seisomura_for_hinanii_house.push(
                     {
                         type: "rapid",
-                        time: `${i >= 19 ? "00" : i < 5 ? "0" : ""}${(i + 5) % 24}:06`,
+                        time: `${i >= 19 || i < 5 ? "0" : ""}${(i + 5) % 24}:06`,
                         weekday: true,
                         holiday: true,
                         bound_for: seisomura_for_hinanii_house_fortable[i]
@@ -177,7 +177,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 seisomura_for_hinanii_house.push(
                     {
                         type: "local",
-                        time: `${i >= 19 ? "00" : i < 5 ? "0" : ""}${(i + 5) % 24}:13`,
+                        time: `${i >= 19 || i < 5 ? "0" : ""}${(i + 5) % 24}:13`,
                         weekday: true,
                         holiday: true,
                         bound_for: seisomura_for_hinanii_house_fortable[i]
