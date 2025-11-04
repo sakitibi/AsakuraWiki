@@ -1,47 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import {
+    yukinami_for_hinanii_house_fortable,
+    hinanii_house_for_seisomura_fortable,
+    hinanii_house_for_seisomura_typetable,
+    seisomura_for_hinanii_house_fortable,
+    seisomura_for_hinanii_house_typetable,
+    minamitaisetsu_for_seisomura_fortable,
+    minamitaisetsu_for_seisomura_typetable
+} from '@/components/timetables/taigasetsugen';
 
 export default function handler(req:NextApiRequest, res: NextApiResponse) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    const yukinami_for_hinanii_house_fortable:string[] = [
-        "minamitaisetsu", "iemon_house", "hinanii_house", "minamitaisetsu", "hinanii_house",
-        "mangroverin", "hinanii_house", "seisomura", "hinanii_house", "hinanii_house",
-        "seisomura", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house",
-        "hinanii_house", "hinanii_house", "hinanii_house", "minamitaisetsu", "hinanii_house"
-    ];
-    const hinanii_house_for_seisomura_typetable:string[] = [
-        "local",  "local",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid", 
-        "rapid",  "local",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "local", 
-    ];
-    const seisomura_for_hinanii_house_typetable:string[] = [
-        "rapid",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid", 
-        "rapid",  "local",  "local",  "rapid",  "local",  "local",  "rapid",  "rapid",  "local",  "local", 
-    ];
-    const hinanii_house_for_seisomura_fortable:string[] = [
-        "mangroverin", "minamitaisetsu", "iemon_house", "mangroverin", "minamitaisetsu", "seisomura",
-        "mangroverin", "minamitaisetsu", "seisomura", "mangroverin", "minamitaisetsu", "seisomura",
-        "mangroverin", "minamitaisetsu", "iemon_house", "minamitaisetsu", "iemon_house", "mangroverin",
-        "minamitaisetsu", "minamitaisetsu",
-    ];
-    const seisomura_for_hinanii_house_fortable:string[] = [
-        "suikabocha_batake", "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake",
-        "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake", "suikabocha_batake", "yukinami",
-        "yukinami", "suikabocha_batake", "yukinami", "yukinami", "suikabocha_batake", "suikabocha_batake",
-        "yukinami", "hinanii_house",
-    ];
-    const minamitaisetsu_for_seisomura_typetable:string[] = [
-        "rapid",  "local",  "rapid",  "local",  "rapid",
-        "local",  "rapid",  "local",  "local",  "rapid",
-        "local",  "local",  "rapid",  "rapid",  "local",
-        "local"
-    ];
-    const minamitaisetsu_for_seisomura_fortable:string[] = [
-        "suikabocha_batake", "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami",
-        "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake",
-        "yukinami", "yukinami", "yukinami", "suikabocha_batake", "suikabocha_batake",
-        "yukinami", "hinanii_house",
-    ];
     let pillager_for_yukinami = [];
     let yukinami_for_pillager = [];
     let yukinami_for_hinanii_house = [];
