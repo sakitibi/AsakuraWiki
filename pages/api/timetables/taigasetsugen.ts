@@ -30,12 +30,25 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
         "yukinami", "suikabocha_batake", "yukinami", "yukinami", "suikabocha_batake", "suikabocha_batake",
         "yukinami", "hinanii_house",
     ];
+    const minamitaisetsu_for_seisomura_typetable:string[] = [
+        "rapid",  "local",  "rapid",  "local",  "rapid",
+        "local",  "rapid",  "local",  "local",  "rapid",
+        "local",  "local",  "rapid",  "rapid",  "local",
+        "local"
+    ];
+    const minamitaisetsu_for_seisomura_fortable:string[] = [
+        "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake",
+        "yukinami", "suikabocha_batake", "yukinami", "yukinami", "suikabocha_batake",
+        "yukinami", "yukinami", "suikabocha_batake", "suikabocha_batake", "yukinami",
+        "hinanii_house",
+    ];
     let pillager_for_yukinami = [];
     let yukinami_for_pillager = [];
     let yukinami_for_hinanii_house = [];
     let hinanii_house_for_yukinami = [];
     let hinanii_house_for_seisomura = [];
     let seisomura_for_hinanii_house = [];
+    let minamitaisetsu_for_seisomura = [];
     if(pillager_for_yukinami.length === 0){
         for(let i = 0;i < 79;i++){
             const timeflug = [0,15,30,45];
@@ -173,6 +186,35 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
             }
         }
     }
+    if(minamitaisetsu_for_seisomura.length === 0){
+        for(let i = 0;i < 20;i++){
+            // パターンダイヤ
+            /*if(i === ){
+                continue;
+            }*/
+            if(minamitaisetsu_for_seisomura_typetable[i] === "rapid"){
+                minamitaisetsu_for_seisomura.push(
+                    {
+                        type: "rapid",
+                        time: `${i < 6 ? "0" : ""}${(i + 5) % 24}:42`,
+                        weekday: true,
+                        holiday: true,
+                        bound_for: minamitaisetsu_for_seisomura_fortable[i]
+                    }
+                );
+            } else {
+                minamitaisetsu_for_seisomura.push(
+                    {
+                        type: "local",
+                        time: `${i < 6 ? "0" : ""}${(i + 5) % 24}:49`,
+                        weekday: true,
+                        holiday: true,
+                        bound_for: minamitaisetsu_for_seisomura_fortable[i]
+                    }
+                );
+            }
+        }
+    }
     if (req.method === 'GET') {
         return res.status(200).json({
             pillager: pillager_for_yukinami,
@@ -185,7 +227,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 for_seisomura: hinanii_house_for_seisomura
             },
             seisomura: seisomura_for_hinanii_house,
-            minamitaisetsu: []
+            minamitaisetsu: minamitaisetsu_for_seisomura
         });
     } else {
         res.setHeader('Allow', ['GET']);
