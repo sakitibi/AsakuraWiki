@@ -14,8 +14,31 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         "mangroverin", "minamitaisetsu", "iemon_house", "minamitaisetsu", "iemon_house", "mangroverin",
         "minamitaisetsu", "seisomura",
     ];
+    let pillager_for_yukinami = [];
     let hinanii_house_for_yukinami = [];
     let hinanii_house_for_seisomura = [];
+    if(pillager_for_yukinami.length === 0){
+        for(let i = 0;i < 69;i++){
+            const timeflug = [0,15,30,45];
+            const timeflugrush = [7,22,37,52];
+            pillager_for_yukinami.push(
+                {
+                    type: "local",
+                    time: `${i < 22 ? "0" : ""}${i + 4}:${timeflug[i + 2 % 4]}`,
+                    bound_for: i === 18 ? "mangroverin": "yukinami"
+                }
+            );
+            if(i >= 13 && i <= 22){
+                pillager_for_yukinami.push(
+                    {
+                        type: "local",
+                        time: `${i < 22 ? "0" : ""}${i + 4}:${timeflugrush[i + 2 % 4]}`,
+                        bound_for: "yukinami"
+                    }
+                )
+            }
+        }
+    }
     if(hinanii_house_for_yukinami.length === 0){
         for(let i = 0;i < 20;i++){
             // パターンダイヤ
