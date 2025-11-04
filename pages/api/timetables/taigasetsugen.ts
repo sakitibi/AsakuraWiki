@@ -18,7 +18,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     let hinanii_house_for_yukinami = [];
     let hinanii_house_for_seisomura = [];
     if(pillager_for_yukinami.length === 0){
-        for(let i = 0;i < 69;i++){
+        for(let i = 0;i < 79;i++){
             const timeflug = [0,15,30,45];
             const timeflugrush = [7,22,37,52];
             const hour = Math.floor((2 + i) * 15 / 60);
