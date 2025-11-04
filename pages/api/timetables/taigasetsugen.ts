@@ -4,6 +4,12 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    const yukinami_for_hinanii_house_fortable = [
+        "mangroverin", "minamitaisetsu", "iemon_house", "hinanii_house", "minamitaisetsu", "hinanii_house",
+        "mangroverin", "hinanii_house", "seisomura", "hinanii_house", "hinanii_house", "seisomura",
+        "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house",
+        "hinanii_house", "seisomura",
+    ];
     const hinanii_house_for_seisomura_typetable = [
         "local",  "local",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid", 
         "rapid",  "local",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "local", 
@@ -16,6 +22,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     ];
     let pillager_for_yukinami = [];
     let yukinami_for_pillager = [];
+    let yukinami_for_hinanii_house = [];
     let hinanii_house_for_yukinami = [];
     let hinanii_house_for_seisomura = [];
     if(pillager_for_yukinami.length === 0){
@@ -85,6 +92,20 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                     weekday: true,
                     holiday: true,
                     bound_for: i === 3 ? "pillager_zensyokiti" : "yukinami"
+                }
+            );
+        }
+    }
+    if(yukinami_for_hinanii_house.length === 0){
+        for(let i = 0;i < 19;i++){
+            // パターンダイヤ
+            yukinami_for_hinanii_house.push(
+                {
+                    type: "local",
+                    time: `${i < 6 ? "0" : ""}${i + 4}:59`,
+                    weekday: true,
+                    holiday: true,
+                    bound_for: yukinami_for_hinanii_house_fortable[i]
                 }
             );
         }
