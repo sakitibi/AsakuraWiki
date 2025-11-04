@@ -65,7 +65,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     }
     if (req.method === 'GET') {
         return res.status(200).json({
-            pillager: [],
+            pillager: pillager_for_yukinami,
             yukinami: {
                 for_pillager: [],
                 for_hinanii: []
