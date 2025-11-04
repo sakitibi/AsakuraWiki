@@ -188,7 +188,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     }
     if(minamitaisetsu_for_seisomura.length === 0){
         let j = 0;
-        for(let i = 0;i < 19;i++){
+        for(let i = 0;i < 20;i++){
             // パターンダイヤ
             if(i === 10 || i === 13 || i === 16){
                 continue;
