@@ -21,7 +21,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         for(let i = 0;i < 79;i++){
             const timeflug = [0,15,30,45];
             const timeflugrush = [7,22,37,52];
-            const hour = Math.floor((2 + i) * 15 / 60);
+            const hour = Math.floor((2 + i) * 15 / 60 % 24);
             pillager_for_yukinami.push(
                 {
                     type: "local",
