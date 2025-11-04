@@ -113,15 +113,27 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     if(hinanii_house_for_seisomura.length === 0){
         for(let i = 0;i < 20;i++){
             // パターンダイヤ
-            hinanii_house_for_seisomura.push(
-                {
-                    type: hinanii_house_for_seisomura_typetable[i],
-                    time: `${i < 6 ? "0" : ""}${i + 4}:${hinanii_house_for_seisomura_typetable[i] === "rapid" ? "25" : "32"}`,
-                    weekday: true,
-                    holiday: true,
-                    bound_for: hinanii_house_for_seisomura_fortable[i]
-                }
-            );
+            if(hinanii_house_for_seisomura_typetable[i] === "rapid"){
+                hinanii_house_for_seisomura.push(
+                    {
+                        type: "local",
+                        time: `${i < 6 ? "0" : ""}${i + 4}:25`,
+                        weekday: true,
+                        holiday: true,
+                        bound_for: hinanii_house_for_seisomura_fortable[i]
+                    }
+                );
+            } else {
+                hinanii_house_for_seisomura.push(
+                    {
+                        type: "local",
+                        time: `${i < 6 ? "0" : ""}${i + 4}:32`,
+                        weekday: true,
+                        holiday: true,
+                        bound_for: hinanii_house_for_seisomura_fortable[i]
+                    }
+                );
+            }
         }
     }
     if (req.method === 'GET') {
