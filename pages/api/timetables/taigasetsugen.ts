@@ -129,7 +129,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
             pillager: pillager_for_yukinami,
             yukinami: {
                 for_pillager: yukinami_for_pillager,
-                for_hinanii: []
+                for_hinanii: yukinami_for_hinanii_house
             },
             hinanii_house: {
                 for_yukinami: hinanii_house_for_yukinami,
