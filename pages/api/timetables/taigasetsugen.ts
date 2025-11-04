@@ -34,7 +34,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             hinanii_house_for_seisomura.push(
                 {
                     type: hinanii_house_for_seisomura_typetable[i],
-                    time: `${i < 6 ? "0" : ""}${i + 4}:32`,
+                    time: `${i < 6 ? "0" : ""}${i + 4}:${hinanii_house_for_seisomura_typetable[i] === "rapid" ? "25" : "32"}`,
                     bound_for: hinanii_house_for_seisomura_fortable[i]
                 }
             );
