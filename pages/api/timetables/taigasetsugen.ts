@@ -154,10 +154,10 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 seisomura_for_hinanii_house.push(
                     {
                         type: "rapid",
-                        time: `${i < 5 ? "0" : ""}${i + 5}:06`,
+                        time: `${i < 5 || i >= 19 ? "0" : ""}${i + 5 % 24}:06`,
                         weekday: true,
                         holiday: true,
-                        bound_for: hinanii_house_for_seisomura_fortable[i]
+                        bound_for: seisomura_for_hinanii_house_fortable[i]
                     }
                 );
             } else {
@@ -167,7 +167,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                         time: `${i < 5 ? "0" : ""}${i + 5}:13`,
                         weekday: true,
                         holiday: true,
-                        bound_for: hinanii_house_for_seisomura_fortable[i]
+                        bound_for: seisomura_for_hinanii_house_fortable[i]
                     }
                 );
             }
