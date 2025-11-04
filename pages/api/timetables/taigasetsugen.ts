@@ -48,11 +48,11 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
             const hour = Math.floor((2 + i) * 15 / 60 % 24);
             yukinami_for_pillager.push(
                 {
-                    type: i % 2 === 0 && (i + 4) % 4 === 0 ? "rapid" : i % 2 === 1 && i <= 81 ? "rapid" : "local",
+                    type: i % 2 === 0 && (i + 4) % 4 === 0 ? "rapid" : i % 2 === 1 && i <= 71 ? "rapid" : "local",
                     time: `${i < 22 ? "0" : ""}${hour + 4}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
                     bound_for: i % 2 === 0 && (i + 4) % 4 === 0 ? "daiichi_kyoten" : 
-                        i <= 84 && i % 2 === 0 ? "hananomori" : i % 2 === 0 ? "pillager_zensyokiti" :
-                        i <= 81 ? "seikishi" : i <= 83 ? "hanamori_airport" : i <= 85 ? "akatenboudai" :
+                        i <= 74 && i % 2 === 0 ? "hananomori" : i % 2 === 0 ? "pillager_zensyokiti" :
+                        i <= 71 ? "seikishi" : i <= 73 ? "hanamori_airport" : i <= 75 ? "akatenboudai" :
                         "pillager_zensyokiti"
                 }
             );
