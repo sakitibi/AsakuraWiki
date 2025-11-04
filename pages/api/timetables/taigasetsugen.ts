@@ -5,10 +5,10 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     const yukinami_for_hinanii_house_fortable = [
-        "mangroverin", "minamitaisetsu", "iemon_house", "hinanii_house", "minamitaisetsu", "hinanii_house",
-        "mangroverin", "hinanii_house", "seisomura", "hinanii_house", "hinanii_house", "seisomura",
-        "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house",
-        "hinanii_house", "seisomura",
+        "minamitaisetsu", "iemon_house", "hinanii_house", "minamitaisetsu", "hinanii_house",
+        "mangroverin", "hinanii_house", "seisomura", "hinanii_house", "hinanii_house",
+        "seisomura", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house",
+        "hinanii_house", "hinanii_house", "hinanii_house", "seisomura", "hinanii_house"
     ];
     const hinanii_house_for_seisomura_typetable = [
         "local",  "local",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid", 
@@ -97,7 +97,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
         }
     }
     if(yukinami_for_hinanii_house.length === 0){
-        for(let i = 0;i < 19;i++){
+        for(let i = 0;i < 20;i++){
             // パターンダイヤ
             yukinami_for_hinanii_house.push(
                 {
