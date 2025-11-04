@@ -44,7 +44,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
             pillager_for_yukinami.push(
                 {
                     type: "local",
-                    time: `${i < 22 ? "0" : ""}${hour + 4 % 24}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
+                    time: `${i < 22 || i >= 79 ? "0" : ""}${(hour + 4) % 24}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
                     weekday: true,
                     holiday: true,
                     bound_for: i === 18 ? "mangroverin": "yukinami"
@@ -71,7 +71,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
             yukinami_for_pillager.push(
                 {
                     type: i % 2 === 0 && (i + 4) % 4 === 0 && i <= 72 ? "rapid" : i % 2 === 1 && i <= 71 ? "rapid" : "local",
-                    time: `${i < 22 ? "0" : ""}${(hour + 4) % 24}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
+                    time: `${i < 22 || i >= 79 ? "0" : ""}${(hour + 4) % 24}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
                     weekday: true,
                     holiday: true,
                     bound_for: i % 2 === 0 && (i + 4) % 4 === 0 && i <= 72 ? "daiichi_kyoten" : 
