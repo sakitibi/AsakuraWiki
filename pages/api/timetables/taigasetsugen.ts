@@ -4,27 +4,38 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    const yukinami_for_hinanii_house_fortable = [
+    const yukinami_for_hinanii_house_fortable:string[] = [
         "minamitaisetsu", "iemon_house", "hinanii_house", "minamitaisetsu", "hinanii_house",
         "mangroverin", "hinanii_house", "seisomura", "hinanii_house", "hinanii_house",
         "seisomura", "hinanii_house", "hinanii_house", "hinanii_house", "hinanii_house",
         "hinanii_house", "hinanii_house", "hinanii_house", "seisomura", "hinanii_house"
     ];
-    const hinanii_house_for_seisomura_typetable = [
+    const hinanii_house_for_seisomura_typetable:string[] = [
         "local",  "local",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid", 
         "rapid",  "local",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "rapid",  "local", 
     ];
-    const hinanii_house_for_seisomura_fortable = [
+    const seisomura_for_hinanii_house_typetable:string[] = [
+        "rapid",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid",  "local",  "rapid", 
+        "rapid",  "local",  "local",  "rapid",  "local",  "local",  "rapid",  "rapid",  "local",  "local", 
+    ];
+    const hinanii_house_for_seisomura_fortable:string[] = [
         "mangroverin", "minamitaisetsu", "iemon_house", "mangroverin", "minamitaisetsu", "seisomura",
         "mangroverin", "minamitaisetsu", "seisomura", "mangroverin", "minamitaisetsu", "seisomura",
         "mangroverin", "minamitaisetsu", "iemon_house", "minamitaisetsu", "iemon_house", "mangroverin",
         "minamitaisetsu", "seisomura",
+    ];
+    const seisomura_for_hinanii_house_fortable:string[] = [
+        "suikabocha_batake", "suikabocha_batake", "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake",
+        "yukinami", "suikabocha_batake", "yukinami", "suikabocha_batake", "suikabocha_batake", "yukinami",
+        "yukinami", "suikabocha_batake", "yukinami", "yukinami", "suikabocha_batake", "suikabocha_batake",
+        "yukinami", "hinanii_house",
     ];
     let pillager_for_yukinami = [];
     let yukinami_for_pillager = [];
     let yukinami_for_hinanii_house = [];
     let hinanii_house_for_yukinami = [];
     let hinanii_house_for_seisomura = [];
+    let seisomura_for_hinanii_house = [];
     if(pillager_for_yukinami.length === 0){
         for(let i = 0;i < 79;i++){
             const timeflug = [0,15,30,45];
@@ -136,6 +147,32 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
             }
         }
     }
+    if(seisomura_for_hinanii_house.length === 0){
+        for(let i = 0;i < 20;i++){
+            // パターンダイヤ
+            if(seisomura_for_hinanii_house_typetable[i] === "rapid"){
+                seisomura_for_hinanii_house.push(
+                    {
+                        type: "rapid",
+                        time: `${i < 5 ? "0" : ""}${i + 5}:06`,
+                        weekday: true,
+                        holiday: true,
+                        bound_for: hinanii_house_for_seisomura_fortable[i]
+                    }
+                );
+            } else {
+                seisomura_for_hinanii_house.push(
+                    {
+                        type: "local",
+                        time: `${i < 5 ? "0" : ""}${i + 5}:13`,
+                        weekday: true,
+                        holiday: true,
+                        bound_for: hinanii_house_for_seisomura_fortable[i]
+                    }
+                );
+            }
+        }
+    }
     if (req.method === 'GET') {
         return res.status(200).json({
             pillager: pillager_for_yukinami,
@@ -147,7 +184,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 for_yukinami: hinanii_house_for_yukinami,
                 for_seisomura: hinanii_house_for_seisomura
             },
-            seisomura: [],
+            seisomura: seisomura_for_hinanii_house,
             minamitaisetsu: []
         });
     } else {
