@@ -60,7 +60,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                 yukinami_for_pillager.push(
                     {
                         type: "local",
-                        time: `${i < 22 ? "0" : ""}${hour + 4}:${timeflugrush[(i + 2) % 4] < 10 ? `0${timeflugrush[(i + 2) % 4]}` : timeflugrush[(i + 2) % 4]}`,
+                        time: `0${hour + 4}:${timeflugrush[(i + 2) % 4] < 10 ? `0${timeflugrush[(i + 2) % 4]}` : timeflugrush[(i + 2) % 4]}`,
                         bound_for: i % 2 === 0 ? "hananomori" : "hanamori_airport"
                     }
                 );
