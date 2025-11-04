@@ -25,7 +25,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             pillager_for_yukinami.push(
                 {
                     type: "local",
-                    time: `${i < 22 ? "0" : ""}${hour + 4}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
+                    time: `${i < 22 ? "0" : ""}${hour * 60 + 4}:${timeflug[(i + 2) % 4] < 10 ? `0${timeflug[(i + 2) % 4]}` : timeflug[(i + 2) % 4]}`,
                     bound_for: i === 18 ? "mangroverin": "yukinami"
                 }
             );
@@ -33,7 +33,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 pillager_for_yukinami.push(
                     {
                         type: "local",
-                        time: `${i < 22 ? "0" : ""}${hour + 4}:${timeflugrush[(i + 2) % 4] < 10 ? `0${timeflugrush[(i + 2) % 4]}` : timeflugrush[(i + 2) % 4]}`,
+                        time: `${i < 22 ? "0" : ""}${hour * 60 + 4}:${timeflugrush[(i + 2) % 4] < 10 ? `0${timeflugrush[(i + 2) % 4]}` : timeflugrush[(i + 2) % 4]}`,
                         bound_for: "yukinami"
                     }
                 )
