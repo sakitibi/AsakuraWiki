@@ -56,7 +56,7 @@ export default function handler(req:NextApiRequest, res: NextApiResponse) {
                         "pillager_zensyokiti"
                 }
             );
-            if(i >= 13 && i <= 22){
+            if(i >= 7 && i <= 16){
                 yukinami_for_pillager.push(
                     {
                         type: "local",
