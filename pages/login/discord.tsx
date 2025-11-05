@@ -6,7 +6,7 @@ export default function DiscordLogin() {
         supabaseServer.auth.signInWithOAuth({
             provider: 'discord',
             options: {
-                redirectTo: `${window.location.origin}/dashboard`,
+                redirectTo: `${window.location.origin}/login/inputs/`,
             },
         });
     }, []);

@@ -6,7 +6,7 @@ export default function GitLabLogin() {
         supabaseServer.auth.signInWithOAuth({
             provider: 'gitlab',
             options: {
-                redirectTo: `${window.location.origin}/dashboard`,
+                redirectTo: `${window.location.origin}/login/inputs/`,
             },
         });
     }, []);
