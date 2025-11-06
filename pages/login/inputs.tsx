@@ -53,6 +53,7 @@ export default function AccountsSetup(){
                 });
                 const newItem = await res.json();
                 setUserMeta([...userMeta, newItem]);
+                window.location.href = '/dashboard';
             }
         } catch (e) {
             console.error("メタデータ送信エラー: ", e);
@@ -60,9 +61,7 @@ export default function AccountsSetup(){
             setLoading(false);
             return;
         }
-
         setLoading(false);
-        window.location.href = '/dashboard';
     };
     const UserFetched = async() => {
         try{
