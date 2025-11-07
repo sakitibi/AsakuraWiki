@@ -53,7 +53,7 @@ export default function AccountsSetup(){
                 });
                 const newItem = await res.json();
                 setUserMeta([...userMeta, newItem]);
-                window.location.href = '/dashboard';
+                //window.location.replace('/dashboard');
             }
         } catch (e) {
             console.error("メタデータ送信エラー: ", e);
@@ -72,11 +72,11 @@ export default function AccountsSetup(){
                 .select('metadatas')
                 .eq('id', user?.id)
                 .maybeSingle()
-            if(!data || error){
+            if(error){
                 console.error("error: ", error);
                 return;
             }
-            if(!!data.metadatas){
+            if(data!.metadatas){
                 setIsSetuped(true);
             }
         }catch(e){
