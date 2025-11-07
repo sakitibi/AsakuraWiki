@@ -71,11 +71,12 @@ export default function AccountsSetup(){
                 .from('user_metadatas')
                 .select('metadatas')
                 .eq('id', user?.id)
+                .maybeSingle()
             if(!data || error){
                 console.error("error: ", error);
                 return;
             }
-            if(!!data[0].metadatas){
+            if(!!data.metadatas){
                 setIsSetuped(true);
             }
         }catch(e){
