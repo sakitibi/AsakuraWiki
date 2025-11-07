@@ -71,7 +71,7 @@ export default function AccountsSetup(){
                 .from('user_metadatas')
                 .select('metadatas')
                 .eq('id', user?.id)
-            if(error){
+            if(!data || error){
                 console.error("error: ", error);
                 return;
             }
