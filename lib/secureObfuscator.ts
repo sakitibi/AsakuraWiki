@@ -9,7 +9,7 @@ import {
 
 function secureRandomString(length:number) {
     const characters = `!?"#$%&',._;:+\`[{}]-=@^~()/|\\abcdefghijklmnopqrstuvwxyz
-    ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`.replace(/\n\t/gu, "");
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`.replaceAll(/[\n]|[    ]/gu, "");
     const array = new Uint8Array(length);
     crypto.getRandomValues(array);
     return Array.from(array, (byte) => characters[byte % characters.length]).join('');
