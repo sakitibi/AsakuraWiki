@@ -57,7 +57,7 @@ export default function AccountsSetup(){
                     return;
                 }
                 setUserMeta([...userMeta, newItem]);
-                //window.location.replace('/dashboard');
+                window.location.replace('/dashboard');
             }
         } catch (e) {
             console.error("メタデータ送信エラー: ", e);
