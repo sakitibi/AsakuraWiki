@@ -178,17 +178,19 @@ export default function WikiPage() {
         setEditContent(content);
     }, [content]);
     useEffect(() => {
-        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (content !== editContent) {
-                const message = "あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。"
-                e.preventDefault();
-                e.returnValue = message;
-                return message;
-            }
-        };
+        if(cmdStr === "edit"){
+            const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+                if (content !== editContent) {
+                    const message = "あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。"
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
+            };
 
-        window.addEventListener("beforeunload", handleBeforeUnload);
-    }, [content, editContent]);
+            window.addEventListener("beforeunload", handleBeforeUnload);
+        }
+    }, [content, editContent, cmdStr]);
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
