@@ -52,6 +52,10 @@ export default function AccountsSetup(){
                     body: JSON.stringify({ metadatas: filtered }),
                 });
                 const newItem = await res.json();
+                if(!res.ok){
+                    console.error("Error: ", newItem);
+                    return;
+                }
                 setUserMeta([...userMeta, newItem]);
                 //window.location.replace('/dashboard');
             }
