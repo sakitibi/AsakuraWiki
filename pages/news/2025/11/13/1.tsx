@@ -20,7 +20,7 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/11/13 あさクラ西部の雪原地帯で大雪観測</title>
+                <title>2025/11/13 Наблюдение за сильным снегопадом в районе снежного поля на западе Асакуры</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -28,9 +28,9 @@ export default function NewsPage() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/news/2025/11/13"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/11/13 あさクラ西部の雪原地帯で大雪観測</h1>
-                        <p>あさクラ西部の雪原地帯で大雪が観測されたため</p>
-                        <p>多くの鉄道線で遅れや運転取り止めが起きています、</p>
+                        <h1>2025/11/13 Наблюдение за сильным снегопадом<br/> в районе снежного поля на западе Асакуры</h1>
+                        <p>Потому что сильный снегопад наблюдался<br/> в районе снежного поля на западе Асакуры</p>
+                        <p>Многие железнодорожные линии сталкиваются<br/> с задержками и приостановками.</p>
                     </main>
                     <RightMenuJp/>
                 </div>
