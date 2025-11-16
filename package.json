@@ -1,6 +1,6 @@
 {
   "name": "AsakuraWiki",
-  "version": "2.0.46",
+  "version": "2.0.47",
   "main": "main/.Scripts/index.js",
   "description": "",
   "author": {
@@ -36,7 +36,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "concurrently": "^8.2.0",
-    "electron": "^39.0.0",
+    "electron": "^39.2.1",
     "electron-builder": "^26.0.12",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
