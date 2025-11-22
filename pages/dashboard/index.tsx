@@ -61,7 +61,11 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 ) : (
-                    <p>401 ログインが必要です</p>
+                    <>
+                        <p>401 ログインが必要です</p>
+                        <p><a href="/login">ここからログインして下さい</a></p>
+                        <p><a href="/login/13nin/signup">13ninアカウントが無い場合は新規作成して下さい</a></p>
+                    </>
                 )}
             </main>
             <FooterJp/>
