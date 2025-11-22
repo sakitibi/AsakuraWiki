@@ -137,14 +137,14 @@ export default function WikiPage() {
                                         ⬅︎東 西➡︎
                                     </span>
                                     <br/>
-                                    {/* TODO マップ画像を入れる*/}
+                                    <img src="https://sakitibi.github.io/AsakuraWiki-Images/Countries/12-29-1.png" alt="地図" />
                                 </div>
                                 <div className='center'>
                                     <span style={{ fontSize: '15px', color: 'yellow' }}>
                                         ⬅︎西 東➡︎
                                     </span>
                                     <br/>
-                                    {/* TODO マップ画像を入れる*/}
+                                    <img src="https://sakitibi.github.io/AsakuraWiki-Images/Countries/1-11-1.png" alt="あさクラ周辺マップ" />
                                 </div>
                                 {navfold.map((flag:boolean, index:number) => (
                                     <>
