@@ -14,11 +14,7 @@ import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
 import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/wiki_handler';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import deletePage from '@/utils/pageParts/wiki/deletePage';
-
-interface Page {
-    title: string;
-    content: string;
-}
+import wikiFetch, { Page } from '@/utils/wikiFetch';
 
 export default function WikiPage() {
     const router:NextRouter = useRouter()
@@ -76,50 +72,17 @@ export default function WikiPage() {
     // URL取得（編集モード判定用）
     useEffect(() => {
         if (!wikiSlugStr || !pageSlugStr) return;
-
         setLoading(true);
-
-        (async () => {
-            try {
-                // Wiki情報取得
-                const { data: wikiData, error: wikiError } = await supabaseServer
-                    .from('wikis')
-                    .select('edit_mode')
-                    .eq('slug', wikiSlugStr)
-                    .maybeSingle();
-
-                if (wikiError || !wikiData) {
-                    setError('Wikiの情報取得に失敗しました');
-                    setLoading(false);
-                    return;
-                }
-
-                setEditMode(wikiData.edit_mode);
-
-                // ページ情報取得
-                const { data: pageData, error: pageError } = await supabaseServer
-                    .from('wiki_pages')
-                    .select('title, content')
-                    .eq('wiki_slug', wikiSlugStr)
-                    .eq('slug', pageSlugStr)
-                    .maybeSingle();
-
-                if (pageError || !pageData) {
-                    setError('ページの読み込みに失敗しました');
-                    setPage(null);
-                } else {
-                    setPage(pageData);
-                    setTitle(pageData.title);
-                    setContent(pageData.content);
-                    setError(null);
-                }
-            } catch (err) {
-                console.error(err);
-                setError('ページ読み込み中にエラーが発生しました');
-            } finally {
-                setLoading(false);
-            }
-        })();
+        wikiFetch(
+            wikiSlugStr,
+            pageSlugStr,
+            setError,
+            setLoading,
+            setEditMode,
+            setPage,
+            setTitle,
+            setContent
+        );
     }, [wikiSlugStr, pageSlugStr]);
 
     useEffect(() => {
