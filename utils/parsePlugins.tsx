@@ -1,29 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { supabaseServer } from 'lib/supabaseClientServer';
 import { Context, Token, extractBracedBlockProps } from '@/components/parsePluginTypes';
 import { resolveImports } from '@/components/ImportBlock';
 import type { designColor } from '@/utils/wiki_settings';
 import { buildAST, renderAST } from '@/utils/AST';
+import { fetchColorParsePlugin } from '@/utils/fetchColor';
 
 export function useDesignColor(slug: string) {
     const [color, setColor] = useState<designColor | null>(null);
     useEffect(() => {
-        async function fetchColor() {
-            const { data, error } = await supabaseServer
-                .from('wikis')
-                .select('design_color')
-                .eq('slug', slug)
-                .single();
-
-            if (error || !data) {
-                setColor('default');
-                return;
-            }
-
-            setColor(data.design_color);
-        }
-
-        fetchColor();
+        fetchColorParsePlugin(
+            slug,
+            setColor
+        );
     }, [slug]);
 
     return color;

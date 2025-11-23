@@ -15,6 +15,7 @@ import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/wiki_handler';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import deletePage from '@/utils/pageParts/wiki/deletePage';
 import wikiFetch, { Page } from '@/utils/wikiFetch';
+import fetchColor from '@/utils/fetchColor';
 
 export default function WikiPage() {
     const router:NextRouter = useRouter()
@@ -48,25 +49,10 @@ export default function WikiPage() {
 
     useEffect(() => {
         if (!wikiSlugStr) return;
-
-        async function fetchColor() {
-            const { data, error } = await supabaseServer
-            .from('wikis')
-            .select('design_color')
-            .eq('slug', wikiSlugStr)
-            .single();
-
-            if (error) {
-                console.error('デザインカラー取得エラー:', error);
-                return;
-            }
-
-            setDesignColor(data.design_color as any);
-            console.log('wikiSlugStr:', wikiSlugStr); // ← これが undefined や空文字なら原因！
-            console.log('取得したdesign_color:', data?.design_color);
-        }
-
-        fetchColor();
+        fetchColor(
+            wikiSlugStr,
+            setDesignColor
+        );
     }, [wikiSlugStr]);
 
     // URL取得（編集モード判定用）
