@@ -23,7 +23,7 @@ interface CustomAppProps {
     pageProps: CustomPageProps;
 }
 
-export default function MyApp({Component, pageProps}: CustomAppProps) {
+export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
     const router = useRouter();
     const user = useUser();
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
