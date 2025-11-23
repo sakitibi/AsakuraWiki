@@ -45,7 +45,7 @@ export default function WikiPage() {
                             <h1>Amongus部屋コード募集</h1>
                             <p>サーバー: アジア</p>
                             <p>言語: 日本語</p>
-                            <p>チャット: クイックチャット</p>
+                            <p>チャット: フリーチャット</p>
                             <p>現在はこれ! {!!roomcode ? (
                                 <p>{roomcode}</p>
                             ) : (
