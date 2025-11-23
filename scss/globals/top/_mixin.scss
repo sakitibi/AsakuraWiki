@@ -28,6 +28,12 @@
     @include background;
 }
 
+@mixin snowly{
+    background-image: linear-gradient(to right, #7ad4e8, #33fcff, #1ecefa, #6bc4c6, #5fc4d6, #58bfca);
+    font-size: 15px;
+    @include background;
+}
+
 @mixin menubar($bgcolor){
     background-color: $bgcolor;
     border: 1px solid #000;

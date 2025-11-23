@@ -16,7 +16,7 @@ body {
             overflow: hidden;
 
             &::before {
-                @include mixin.position(#1ce369, #076727); // 緑系
+                @include mixin.position(/*#1ce369, #076727*/#d1faff, #6eecff); // 緑系
             }
 
             &:active::before {
@@ -83,7 +83,7 @@ body {
             @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
         }
         &.default button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(#1ce369, #076727);
+            @include mixin.position(/*#1ce369, #076727*/#d1faff, #6eecff);
         }
     }
 

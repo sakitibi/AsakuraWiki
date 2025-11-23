@@ -39,7 +39,7 @@ body{
     }
     &:not(.wiki-font){
         font-family: Noto Sans Japanese, sans-serif !important;
-        @include mixin.defaultGreen;
+        @include mixin.snowly;
         & ul{
             &:not(
                 #p-footer-nav,
@@ -180,7 +180,7 @@ body{
         .columnCenter {
             grid-column: 2 / span 1;
         }
-        &:not(.pink,.blue,.yellow){
+        &:not(.pink,.blue,.yellow,.purple){
             @include mixin.defaultGreen;
         }
         &.pink {
@@ -213,7 +213,7 @@ body{
         &.purple {
             @include mixin.purple;
             & button::before {
-                @include mixin.position(#1ce369, #076727);
+                @include mixin.position(/*#1ce369, #076727*/#d1faff, #6eecff);
             }
             & .columnLeft {
                 @include mixin.menubar(#fdedff);
