@@ -98,7 +98,7 @@ export default function Store() {
                     console.error("Error: ", error.message);
                 }
                 alert("公開成功!");
-                location.href = `/store/${developerId}`;
+                //location.href = `/store/developer/${developerId}`;
                 return;
             } else if(item.appid === appId){
                 const { error } = await supabaseServer
@@ -121,14 +121,14 @@ export default function Store() {
                     console.error("Error: ", error.message);
                 }
                 alert("公開成功!");
-                location.href = `/store/${developerId}`;
+                location.href = `/store/developer/${developerId}`;
                 return;
             } else {
                 continue;
             }
         }
         alert("公開失敗");
-        location.href = `/store/${developerId}`;
+        location.href = `/store/developer/${developerId}`;
         return;
     });
     return !isSetup && user ? (
