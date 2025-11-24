@@ -98,9 +98,9 @@ export default function Store() {
                     console.error("Error: ", error.message);
                 }
                 alert("公開成功!");
-                //location.href = `/store/developer/${developerId}`;
+                location.href = `/store/developer/${developerId}`;
                 return;
-            } else if(item.appid === appId){
+            } else if(item.appid === appId && item.id === user?.id){
                 const { error } = await supabaseServer
                 .from("store.apps")
                 .update([{
