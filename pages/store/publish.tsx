@@ -23,7 +23,7 @@ export default function Store() {
     const targetDate = new Date('2025-12-18');
     useEffect(() => {
         const currentDate = new Date();
-        setIsSetup(currentDate < targetDate);
+        setIsSetup(currentDate > targetDate);
     }, []);
     const IdCheck = (async(userId: string, developerName:string) => {
         const { data, error } = await supabaseServer
