@@ -3,7 +3,6 @@ import { NextRouter, useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { User, useUser } from '@supabase/auth-helpers-react';
-import { supabaseServer } from 'lib/supabaseClientServer';
 import { usePageLikeHandlers } from '@/utils/pageParts/wiki/like/page';
 import { useWikiLikeHandlers } from '@/utils/pageParts/wiki/like/wiki';
 import Script from 'next/script';

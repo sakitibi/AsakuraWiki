@@ -3,6 +3,7 @@ import { NextRouter, useRouter } from 'next/router';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import { ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import Head from 'next/head';
+import { User, useUser } from '@supabase/auth-helpers-react';
 
 export default function CreateWikiPage() {
     const [wikiId, setWikiId] = useState<string>('');
@@ -12,7 +13,7 @@ export default function CreateWikiPage() {
     const [agree13nin, setAgree13nin] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const router:NextRouter = useRouter();
-
+    const user:User | null = useUser();
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!agreeASKR || !agree13nin) {
@@ -22,7 +23,6 @@ export default function CreateWikiPage() {
         setLoading(true);
 
         // ログインユーザー取得
-        const { data: { user } } = await supabaseServer.auth.getUser();
         if (!user) {
             alert('ログインしてください');
             setLoading(false);
