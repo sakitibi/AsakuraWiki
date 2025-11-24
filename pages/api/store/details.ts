@@ -15,7 +15,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     if (req.method === 'POST') {
         const body:string = req.body;
         // データ取得
-        if(body.split(".")[2]){
+        if(body.split(".")[2] && !body.split(".")[3]){
             const { data, error } = await supabaseServer
                 .from('store.apps')
                 .select('*')

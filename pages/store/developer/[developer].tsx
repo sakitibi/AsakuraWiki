@@ -62,6 +62,9 @@ export default function Store() {
                             <h1>{apps.length > 0 ? apps[0].developer : null}</h1>
                             {apps.length > 0 ? apps.map((data, index) => (
                                 <div id="developers-container" key={index}>
+                                    {data.developer_siteurl !== null ? (
+                                        <p><a href={data.developer_siteurl}>このデベロッパのサイト</a></p>
+                                    ) : null}
                                     <div style={{ display: 'flex', gap: '20px' }}>
                                         {data.isChecked ? (
                                             <a

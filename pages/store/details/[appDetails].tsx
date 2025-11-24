@@ -11,6 +11,7 @@ import Custom404 from '@/pages/404';
 import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 
 export interface AppProps {
+    id: string;
     app_title: string;
     developer: string;
     review: number;
