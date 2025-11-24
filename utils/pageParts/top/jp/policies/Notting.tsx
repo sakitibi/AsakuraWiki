@@ -42,10 +42,6 @@ export default function PoliciesNotting(){
                         <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
                         などの荒らしを擁護、支援、宣伝などをする行為
                     </strong>
-                    <br/>
-                    <strong>
-                        <a href="https://www.e-kokusei.go.jp">{kokuseiChousaStr}</a>を支援、宣伝などをする行為
-                    </strong>
                 </li>
                 <li className="danger_list">
                     <strong>
