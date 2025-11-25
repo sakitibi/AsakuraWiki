@@ -15,6 +15,8 @@ export default function CreateSecretCode() {
     }, [provider]);
     const handleClick = async () => {
         setLoading(true);
+        setSecretCode("");
+        localStorage.removeItem("secretcodeSessions");
         // ログインユーザー取得
         if (!user) {
             alert('ログインしてください');
@@ -75,7 +77,7 @@ export default function CreateSecretCode() {
                         </button>
                         {secretCode ? (
                             <>
-                                <button onClick={fileDownload}>
+                                <button onClick={fileDownload} disabled={loading}>
                                     <span>シークレットコード付きのファイルをダウンロードする</span>
                                 </button>
                             </>
