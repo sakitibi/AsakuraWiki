@@ -77,7 +77,8 @@ export const adminerUserId:string[] = [ // 管理者のuser_idリスト
     "0e7e8c35-8fb7-4c17-b154-4fe397a84d37",
     "ba159f68-814f-4564-935f-cea46624fd53",
     "96b00cd8-d43b-4a5b-b473-84433c0b3c98",
-    "ca5713c6-97e9-4704-9633-22c92316fd73"
+    "ca5713c6-97e9-4704-9633-22c92316fd73",
+    "a82a5ff2-6918-4205-8b00-a443df1e65da"
 ];
 
 export const asakuraMenberUserId:string[] = [
@@ -86,5 +87,6 @@ export const asakuraMenberUserId:string[] = [
     "d2a4ba8d-dc6c-450b-9e8b-6eb3813540e2",
     "ba159f68-814f-4564-935f-cea46624fd53",
     "96b00cd8-d43b-4a5b-b473-84433c0b3c98",
-    "ca5713c6-97e9-4704-9633-22c92316fd73"
+    "ca5713c6-97e9-4704-9633-22c92316fd73",
+    "a82a5ff2-6918-4205-8b00-a443df1e65da"
 ]
