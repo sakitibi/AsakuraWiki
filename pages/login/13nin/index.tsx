@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import Link from 'next/link';
+import Head from 'next/head';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -31,40 +32,45 @@ export default function LoginPage() {
     };
 
     return (
-        <main style={{ padding: '2rem', maxWidth: 500 }}>
-            <h1>13ninアカウントでログイン</h1>
-            <form onSubmit={handleLogin}>
-                <input
-                    type="email"
-                    placeholder="メールアドレス"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '0.5rem' }}
-                />
-                <br /><br />
-                <input
-                    type="password"
-                    placeholder="パスワード"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    style={{ width: '100%', padding: '0.5rem' }}
-                />
-                <br /><br />
-                {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-                <button type="submit" disabled={loading}>
-                    <span>
-                        {loading ? 'ログイン中…' : 'ログイン'}
-                    </span>
-                </button>
-            </form>
-            <h2>まだアカウントを持っていませんか?</h2>
-            <Link href="/login/13nin/signup">
-                <a>
-                    <button><span>新規登録</span></button>
-                </a>
-            </Link>
-        </main>
+        <>
+            <Head>
+                <title>13ninアカウントでログイン</title>
+            </Head>
+            <main style={{ padding: '2rem', maxWidth: 500 }}>
+                <h1>13ninアカウントでログイン</h1>
+                <form onSubmit={handleLogin}>
+                    <input
+                        type="email"
+                        placeholder="メールアドレス"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '0.5rem' }}
+                    />
+                    <br /><br />
+                    <input
+                        type="password"
+                        placeholder="パスワード"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        style={{ width: '100%', padding: '0.5rem' }}
+                    />
+                    <br /><br />
+                    {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
+                    <button type="submit" disabled={loading}>
+                        <span>
+                            {loading ? 'ログイン中…' : 'ログイン'}
+                        </span>
+                    </button>
+                </form>
+                <h2>まだアカウントを持っていませんか?</h2>
+                <Link href="/login/13nin/signup">
+                    <a>
+                        <button><span>新規登録</span></button>
+                    </a>
+                </Link>
+            </main>
+        </>
     );
 }
