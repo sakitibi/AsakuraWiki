@@ -83,7 +83,6 @@ export default function SignUpPage() {
         }
 
         setLoading(false);
-        alert("メールを確認してください、\n来ない場合はしばらく待って下さい\nメールのリンクをクリックした後に\nこのアラートのOKを押してください");
         window.location.href = '/dashboard';
     };
 
