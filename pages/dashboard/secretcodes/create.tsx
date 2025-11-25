@@ -22,8 +22,6 @@ export default function CreateSecretCode() {
         }
         const session = await supabaseServer.auth.getSession();
         const token = session?.data?.session?.access_token;
-        console.log("session: ", session);
-        console.log("token: ", token);
         const res:Response = await fetch("/api/accounts/secretcode", {
             method: 'POST',
             headers: {
