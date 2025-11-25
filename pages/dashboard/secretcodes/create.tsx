@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabaseServer } from 'lib/supabaseClientServer';
 import Head from 'next/head';
 import { asakuraMenberUserId } from '@/utils/user_list';
@@ -9,6 +9,9 @@ export default function CreateSecretCode() {
     const user:User | null = useUser();
     const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const provider = user?.app_metadata.provider;
+    useEffect(() => {
+        console.log("provider: ", provider);
+    }, [provider]);
     const handleClick = async () => {
         setLoading(true);
         // ログインユーザー取得
@@ -60,7 +63,7 @@ export default function CreateSecretCode() {
                     <main style={{ padding: '2rem', maxWidth: 600 }}>
                         <h1>403 Forbidden</h1>
                         <p>あさクラシークレットコードを作成する権限が有りません</p>
-                        <p><a href="/login/13nin/email">他のアカウントにログイン</a></p>
+                        <p><a href="/login/13nin">他のアカウントにログイン</a></p>
                     </main>
                 </>
             )}
