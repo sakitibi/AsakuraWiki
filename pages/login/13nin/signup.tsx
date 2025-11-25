@@ -83,7 +83,8 @@ export default function SignUpPage() {
         }
 
         setLoading(false);
-        window.location.href = '/dashboard';
+        alert("メールを確認してください、\n来ない場合はしばらく待って下さい");
+        //window.location.href = '/dashboard';
     };
 
     return (
