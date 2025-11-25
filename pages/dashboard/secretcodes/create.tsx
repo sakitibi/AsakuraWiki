@@ -6,6 +6,7 @@ import { User, useUser } from '@supabase/auth-helpers-react';
 
 export default function CreateSecretCode() {
     const [loading, setLoading] = useState<boolean>(false);
+    const [secretCode, setSecretCode] = useState<string>("");
     const user:User | null = useUser();
     const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const provider = user?.app_metadata.provider;
@@ -36,9 +37,28 @@ export default function CreateSecretCode() {
             return;
         }
         const data = await res.json();
-        localStorage.setItem("secretcodeSessions", data.jwt);
+        setSecretCode(data.jwt);
         setLoading(false);
     };
+
+    const fileDownload = () => {
+        if(!secretCode) return;
+        const bytes = new TextEncoder().encode(secretCode);
+        const blob = new Blob([bytes], {
+            "type": "application/octet-stream"
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "secretcode.txt";
+        a.click();
+    }
+
+    useEffect(() => {
+        if(secretCode){
+            localStorage.setItem("secretcodeSessions", secretCode);
+        }
+    }, [secretCode]);
 
     return (
         <>
@@ -53,6 +73,13 @@ export default function CreateSecretCode() {
                         <button onClick={async() => await handleClick()} disabled={loading}>
                             <span>{loading ? '作成中…' : 'あさクラシークレットコードを作成'}</span>
                         </button>
+                        {secretCode ? (
+                            <>
+                                <button onClick={fileDownload}>
+                                    <span>シークレットコード付きのファイルをダウンロードする</span>
+                                </button>
+                            </>
+                        ) : null}
                     </main>
                 </>
             ) : (
