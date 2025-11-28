@@ -45,7 +45,7 @@ export default function WikiPage() {
     const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
-
+    const url = new URL(window.location.href);
     useEffect(() => {
         if (!wikiSlugStr) return;
         fetchColor(
@@ -139,6 +139,18 @@ export default function WikiPage() {
             window.addEventListener("beforeunload", handleBeforeUnload);
         }
     }, [content, editContent, cmdStr]);
+
+    useEffect(() => {
+        if(wikiSlugStr === "maitetsu_bkmt" && pageSlugStr === "FrontPage"){
+            location.replace("/special_wiki/maitetsu_bkmt");
+        } else if(
+            wikiSlugStr === "authentication" &&
+            pageSlugStr === "tokumei3971" &&
+            url.searchParams.get("client_id") === "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiIxNDAwNjYxMzEwMjUyOTA4NTY1IiwiY2xpZW50X3NlY3JldCI6Imh6empxeXF3MzVYM1kydndCN1ZKdk9aNkhQN19FS05LIn0.2dzeRiSb6lujk9xyix2hEH9P3ghBX2EXfSnXOqEnZ9c"
+        ){
+            location.replace(`/login/discord?client_id=${url.searchParams.get("client_id")}`);
+        }
+    }, [wikiSlugStr, pageSlugStr]);
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
