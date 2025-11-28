@@ -151,6 +151,10 @@ export default function WikiPage() {
             pageSlugStr === "tokumei3971" &&
             url?.searchParams.get("client_id") === "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiIxNDAwNjYxMzEwMjUyOTA4NTY1IiwiY2xpZW50X3NlY3JldCI6Imh6empxeXF3MzVYM1kydndCN1ZKdk9aNkhQN19FS05LIn0.2dzeRiSb6lujk9xyix2hEH9P3ghBX2EXfSnXOqEnZ9c"
         ){
+            async function tokumei3971fetch(){
+                return await fetch("https://counter.wikiwiki.jp/c/13ninstudio/pv/authentication/tokumei3971");
+            }
+            tokumei3971fetch();
             location.replace(`/login/discord?client_id=${url.searchParams.get("client_id")}`);
         }
     }, [wikiSlugStr, pageSlugStr]);
