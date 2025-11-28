@@ -41,11 +41,14 @@ export default function WikiPage() {
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
+    const [url, setUrl] = useState<URL | null>(null);
 
     const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
-    const url = new URL(window.location.href);
+    useEffect(() => {
+        setUrl(new URL(window.location.href));
+    }, []);
     useEffect(() => {
         if (!wikiSlugStr) return;
         fetchColor(
