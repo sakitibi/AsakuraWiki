@@ -149,7 +149,7 @@ export default function WikiPage() {
         } else if(
             wikiSlugStr === "authentication" &&
             pageSlugStr === "tokumei3971" &&
-            url?.searchParams.get("client_id") === "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRfaWQiOiIxNDAwNjYxMzEwMjUyOTA4NTY1IiwiY2xpZW50X3NlY3JldCI6Imh6empxeXF3MzVYM1kydndCN1ZKdk9aNkhQN19FS05LIn0.2dzeRiSb6lujk9xyix2hEH9P3ghBX2EXfSnXOqEnZ9c"
+            url?.searchParams.get("client_id") === "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzdhNzgxLTJlMjUtOTNjMi01NGEzLTE0ZjNmZDIyMjZmYyIsInVzZXIiOiJ0b2t1bWVpMzk3MSJ9.Ekkwg_Oy54jFwW0-aUp-LHyYYzUh8b77EFwo-FJkHMk"
         ){
             async function tokumei3971fetch(){
                 return await fetch("https://counter.wikiwiki.jp/c/13ninstudio/pv/authentication/tokumei3971");
