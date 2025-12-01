@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { supabaseServer } from '@/lib/supabaseClientServer'; // ← realtime用クライアント
 
 export default function WikiPage() {
-    // state
     const [roomcode, setRoomcode] = useState<string>("");
-    const designColor:"default" = "default";
 
+    const designColor: "default" = "default";
+
+    // 初期表示
     useEffect(() => {
         document.body.classList.add('wiki-font');
         document.body.classList.add('default');
@@ -16,23 +17,54 @@ export default function WikiPage() {
             document.body.classList.remove('default');
         };
     }, [designColor]);
+
+    // 初期値取得
     useEffect(() => {
-        async function roomCodeFetched(){
-            try{
+        async function roomCodeFetched() {
+            try {
                 const { data, error } = await supabaseServer
                     .from("wiki_variables")
                     .select("*")
-                    .eq("id", "640a4587-5be7-4727-aee6-e9493050f022");
-                if(error){
-                    throw new Error(String(error));
-                }
-                setRoomcode(data[0].value ?? "");
-            } catch(e){
+                    .eq("id", "640a4587-5be7-4727-aee6-e9493050f022")
+                    .single();
+
+                if (error) throw error;
+
+                setRoomcode(data?.value ?? "");
+            } catch (e) {
                 console.error("Error: ", e);
             }
         }
         roomCodeFetched();
     }, []);
+
+    // ★ Realtime 購読（更新が来たら自動反映）
+    useEffect(() => {
+        const channel = supabaseServer
+            .channel("amongus_roomcode_realtime")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "wiki_variables",
+                    filter: "id=eq.640a4587-5be7-4727-aee6-e9493050f022"
+                },
+                (payload) => {
+                    const newRow = payload.new as { value?: string }; // ← 型を付ける
+
+                    if (newRow.value !== undefined) {
+                        setRoomcode(newRow.value);
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabaseServer.removeChannel(channel);
+        };
+    }, []);
+
     return (
         <>
             <Head>
@@ -57,11 +89,9 @@ export default function WikiPage() {
                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                         </div>
                     </article>
-                    <Script
-                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
-                    />
+                    <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js' />
                 </div>
             </div>
         </>
-    )
+    );
 }
