@@ -1,34 +1,52 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from "next";
 
-let items: string[] = []; // Base64文字列として保存
+export const config = {
+    api: {
+        bodyParser: false, // バイナリそのまま扱う
+    },
+};
+
+let items: Buffer[] = []; // +50 加工されたバイナリを保存
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    res.setHeader('Access-Control-Allow-Origin', "*");
-    res.setHeader('Access-Control-Allow-Methods', 'POST,GET');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST,GET");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
     if (req.method === "POST") {
-        // req.body を UTF-8 → Uint8Array に変換
-        let u8 = new TextEncoder().encode(req.body);
+        const chunks: Buffer[] = [];
 
-        // 各バイトを +50 する
-        for (let i = 0; i < u8.length; i++) {
-            u8[i] += 50;
+        for await (const chunk of req) {
+            chunks.push(chunk as Buffer);
         }
 
-        // ------- Base64 に変換 -------
-        const base64 = Buffer.from(u8).toString("base64");
+        const buf = Buffer.concat(chunks);
 
-        items.push(base64);
+        // --- POST: バイナリの各バイト +50 ---
+        const edited = Buffer.from(buf.map((v) => v + 50));
 
-        return res.status(201).json({ base64 });
+        items.push(edited);
+
+        return res.status(201).send("OK");
     }
 
     if (req.method === "GET") {
-        // Base64 のまま返す
-        return res.status(200).json({ items });
+        if (items.length === 0) {
+            return res.status(200).send(Buffer.alloc(0));
+        }
+
+        // 保存されたバイナリを全て結合
+        const merged = Buffer.concat(items);
+
+        // --- GET: 各バイト -50 して元に戻す ---
+        const restored = Buffer.from(merged.map((v) => v - 50));
+
+        res.setHeader("Content-Type", "application/octet-stream");
+        res.setHeader("Content-Length", restored.length);
+
+        return res.status(200).send(restored);
     }
 
-    res.setHeader('Allow', ['POST','GET']);
+    res.setHeader("Allow", ["POST", "GET"]);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
 }
