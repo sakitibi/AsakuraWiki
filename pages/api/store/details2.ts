@@ -1,3 +1,5 @@
+import { supabaseServer } from "@/lib/supabaseClientServer";
+import { adminerUserId } from "@/utils/user_list";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
@@ -31,20 +33,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (req.method === "GET") {
-        if (items.length === 0) {
-            return res.status(200).send(Buffer.alloc(0));
+        // ====== 認証ユーザー取得 ======
+        let userId: string | null = null
+        const authHeader = req.headers.authorization
+        if (authHeader?.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1]
+            const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
+            if (authError) console.error('Supabase auth error:', authError)
+            if (user) userId = user.id
         }
+        const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
+        if(adminer_user_id_list){
+            if (items.length === 0) {
+                return res.status(200).send(Buffer.alloc(0));
+            }
 
-        // 保存されたバイナリを全て結合
-        const merged = Buffer.concat(items);
+            // 保存されたバイナリを全て結合
+            const merged = Buffer.concat(items);
 
-        // --- GET: 各バイト -50 して元に戻す ---
-        const restored = Buffer.from(merged.map((v) => v - 50));
+            // --- GET: 各バイト -50 して元に戻す ---
+            const restored = Buffer.from(merged.map((v) => v - 50));
 
-        res.setHeader("Content-Type", "application/octet-stream");
-        res.setHeader("Content-Length", restored.length);
+            res.setHeader("Content-Type", "application/octet-stream");
+            res.setHeader("Content-Length", restored.length);
 
-        return res.status(200).send(restored);
+            return res.status(200).send(restored);
+        } else {
+            return res.status(403).send({});
+        }
     }
 
     res.setHeader("Allow", ["POST", "GET"]);
