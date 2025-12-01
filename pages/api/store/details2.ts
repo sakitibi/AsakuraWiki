@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-let items:Uint8Array<ArrayBufferLike>[] = [];
+let items:any[] = [];
 
 export default async function handler(req:NextApiRequest, res: NextApiResponse) {
     res.setHeader('Access-Control-Allow-Origin', "*");
@@ -12,7 +12,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             body[i]+=50;
         }
         items.push(body);
-        return res.status(201).json({});
+        return res.status(201).json({body});
     } else if(req.method === "GET") {
         return new Response(JSON.stringify({ items }), {
             status: 200,
