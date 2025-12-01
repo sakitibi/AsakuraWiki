@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
 
-const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -109,13 +107,6 @@ export default async function handler(
         // ======================
         if (req.method === 'PUT') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-            for(let i = 0; i > ALLOWED_ORIGINS.length; i++){
-                if(origin !== ALLOWED_ORIGINS[i]){
-                    return JSON.stringify({ error: `do not permissions`});
-                } else {
-                    i = ALLOWED_ORIGINS.length;
-                }
-            }
             const { content, title } = req.body
             if (typeof content !== 'string' || typeof title !== 'string') {
                 return res.status(400).json({ error: 'Invalid request body' })
@@ -162,13 +153,6 @@ export default async function handler(
         // ======================
         if (req.method === 'DELETE') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-            for(let i = 0; i > ALLOWED_ORIGINS.length; i++){
-                if(origin !== ALLOWED_ORIGINS[i]){
-                    return JSON.stringify({ error: `do not permissions`});
-                } else {
-                    i = ALLOWED_ORIGINS.length;
-                }
-            }
             // まず対象ページが存在するか確認
             const { data: existingPage, error: existingErr } = await supabaseServer
                 .from('wiki_pages')
@@ -215,13 +199,6 @@ export default async function handler(
         // ======================
         if (req.method === 'POST') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
-            for(let i = 0; i > ALLOWED_ORIGINS.length; i++){
-                if(origin !== ALLOWED_ORIGINS[i]){
-                    return JSON.stringify({ error: `do not permissions`});
-                } else {
-                    i = ALLOWED_ORIGINS.length;
-                }
-            }
             const { slug, title, content } = req.body
             if (!slug || !title || !content) {
                 return res.status(400).json({ error: 'Missing parameters' })
