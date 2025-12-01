@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-let items:Uint8Array<ArrayBuffer>[] = [];
+let items:Uint8Array<ArrayBufferLike>[] = [];
 
 export default async function handler(req:NextApiRequest, res: NextApiResponse) {
     res.setHeader('Access-Control-Allow-Origin', "*");
