@@ -2,7 +2,6 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import { adminerUserId } from '@/utils/user_list';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 let items:obj[] = [];
 
 export interface obj{
@@ -15,12 +14,7 @@ export interface obj{
 }
 
 export default async function handler(req:NextApiRequest, res: NextApiResponse) {
-    const origin = req.headers.origin;
-    if (origin && ALLOWED_ORIGINS.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    } else {
-        res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
-    }
+    res.setHeader('Access-Control-Allow-Origin', '*'); // 許可しない場合
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'POST') {
