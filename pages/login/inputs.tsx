@@ -9,11 +9,11 @@ import { User, useUser } from "@supabase/auth-helpers-react";
 import type { JenderTypes } from "@/pages/login/13nin/signup";
 
 export default function AccountsSetup(){
-    const [birthday, setBirthday] = useState<string>('unknown');
+    const [birthday, setBirthday] = useState<string>('');
     const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
     const [jender, setJender] = useState<JenderTypes>('men');
     const [username, setUsername] = useState<string>('');
-    const [shimei, setShimei] = useState<string>('unknown');
+    const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [isSetuped, setIsSetuped] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
@@ -109,7 +109,8 @@ export default function AccountsSetup(){
                             placeholder="氏名"
                             value={shimei}
                             onChange={e => setShimei(e.target.value)}
-                            style={{ width: '100%', padding: '0.5rem', display: "none" }}
+                            required
+                            style={{ width: '100%', padding: '0.5rem' }}
                         />
                         <br /><br />
                         <label>
@@ -126,12 +127,13 @@ export default function AccountsSetup(){
                             </select>
                         </label>
                         <br /><br />
-                        <label style={{display: "none"}}>
+                        <label>
                             生年月日
                             <input
                                 type="date"
                                 value={birthday}
                                 onChange={e => setBirthday(e.target.value)}
+                                required
                                 style={{ width: '100%', padding: '0.5rem' }}
                             />
                         </label>
