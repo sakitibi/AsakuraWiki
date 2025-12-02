@@ -71,6 +71,7 @@ export default function UserDataGet(){
                         {adminer_user_id_list ? (
                             <>
                                 <h1>ユーザー取得管理画面</h1>
+                                <p>出て来た情報はすぐに保存してね</p>
                                 <button onClick={async() => await FetchUserMetaData()}>
                                     <span>ユーザー情報再取得</span>
                                 </button>
