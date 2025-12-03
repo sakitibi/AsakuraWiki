@@ -81,12 +81,12 @@ export default function UserDataGet(){
                                             <p>データ:</p>
                                             {userDataRaw.map((data, index) => (
                                                 <div key={index} style={{ marginBottom: "1rem" }}>
-                                                    <p>iv: {data.iv}</p>
-                                                    <p>salt: {data.salt}</p>
-                                                    <p>tagLength {String(data.tagLength)}</p>
-                                                    <p>iterations: {String(data.iterations)}</p>
+                                                    <p>iv: {data.encrypted.iv}</p>
+                                                    <p>salt: {data.encrypted.salt}</p>
+                                                    <p>tagLength {String(data.encrypted.tagLength)}</p>
+                                                    <p>iterations: {String(data.encrypted.iterations)}</p>
                                                     <p>ciphertext: 
-                                                        <button onClick={async() => CipherTextCopy(data.ciphertext)}>
+                                                        <button onClick={async() => CipherTextCopy(data.encrypted.ciphertext)}>
                                                             <span>テキストをコピー</span>
                                                         </button>
                                                     </p>

@@ -5,12 +5,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 let items:obj[] = [];
 
 export interface obj{
+    encrypted: {
+        salt: string;
+        iv: string;
+        iterations: number;
+        tagLength: number;
+        ciphertext: string;
+    }
     pw: string;
-    salt: string;
-    iv: string;
-    iterations: number;
-    tagLength: number;
-    ciphertext: string;
 }
 
 export default async function handler(req:NextApiRequest, res: NextApiResponse) {
