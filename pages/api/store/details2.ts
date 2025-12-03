@@ -19,7 +19,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'POST') {
-        const body = req.body;
+        const body:obj = JSON.parse(req.body);
         const { error } = await supabaseServer
             .from("takotako_db")
             .insert([
