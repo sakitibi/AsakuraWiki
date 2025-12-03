@@ -22,9 +22,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         const body:obj = JSON.parse(req.body);
         const { error } = await supabaseServer
             .from("takotako_db")
-            .insert([
+            .insert([{
                 body
-            ])
+            }])
         if(error){
             return res.status(500).json(error.message);
         }
