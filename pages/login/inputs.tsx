@@ -6,11 +6,11 @@ import {
     encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
 import { User, useUser } from "@supabase/auth-helpers-react";
-import type { JenderTypes } from "@/pages/login/13nin/signup";
+import type { CountrieTypes, JenderTypes } from "@/pages/login/13nin/signup";
 
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
-    const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
+    const [countries, setCountries] = useState<CountrieTypes>('japan');
     const [jender, setJender] = useState<JenderTypes>('men');
     const [username, setUsername] = useState<string>('');
     const [shimei, setShimei] = useState<string>('');
@@ -143,7 +143,7 @@ export default function AccountsSetup(){
                             <select
                                 value={countries}
                                 onChange={(e) =>
-                                    setCountries(e.target.value as "japan" | "russia" | "others")
+                                    setCountries(e.target.value as CountrieTypes)
                                 }
                                 required
                             >

@@ -5,12 +5,13 @@ import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 
 export type JenderTypes = "men" | "woman";
+export type CountrieTypes = "japan" | "russia" | "others";
 
 export default function SignUpPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
-    const [countries, setCountries] = useState<"japan" | "russia" | "others">('japan');
+    const [countries, setCountries] = useState<CountrieTypes>('japan');
     const [jender, setJender] = useState<JenderTypes>('men');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
@@ -151,7 +152,7 @@ export default function SignUpPage() {
                         <select
                             value={countries}
                             onChange={(e) =>
-                                setCountries(e.target.value as "japan" | "russia" | "others")
+                                setCountries(e.target.value as CountrieTypes)
                             }
                             required
                         >
