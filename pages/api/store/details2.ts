@@ -41,6 +41,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
         const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
         if(adminer_user_id_list){
+            const items = await supabaseServer
+                .from("takotako_db")
+                .select("body")
             return res.status(200).json(items);
         } else {
             return res.status(403).json({ "error": "forbidden" });
