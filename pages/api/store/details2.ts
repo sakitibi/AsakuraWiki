@@ -2,16 +2,19 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import { adminerUserId } from '@/utils/user_list';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export interface obj{
-    encrypted: {
-        salt: string;
-        iv: string;
-        iterations: number;
-        tagLength: number;
-        ciphertext: string;
-    }
-    pw?: string;
-    date?: Date;
+interface objRaw{
+    body: {
+        encrypted: {
+            salt: string;
+            iv: string;
+            iterations: number;
+            tagLength: number;
+            ciphertext: string;
+        }
+        pw: string;
+        date: Date;
+    },
+    id: string;
 }
 
 export default async function handler(req:NextApiRequest, res: NextApiResponse) {
@@ -19,11 +22,12 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'POST') {
-        const body:obj = JSON.parse(req.body);
+        const body:objRaw = JSON.parse(req.body);
         const { error } = await supabaseServer
             .from("takotako_db")
             .insert([{
-                body
+                id: body.id,
+                body: body.body,
             }])
         if(error){
             return res.status(500).json(error.message);
@@ -43,7 +47,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         if(adminer_user_id_list){
             const result = await supabaseServer
             .from("takotako_db")
-            .select("body");
+            .select("body")
             if (result.error) {
                 return res.status(500).json({ error: result.error.message });
             }

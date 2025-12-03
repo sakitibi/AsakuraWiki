@@ -9,7 +9,18 @@ import { useEffect, useState } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import { supabaseServer } from "@/lib/supabaseClientServer";
-import { obj } from "@/pages/api/store/details2";
+
+interface obj{
+    encrypted: {
+        salt: string;
+        iv: string;
+        iterations: number;
+        tagLength: number;
+        ciphertext: string;
+    }
+    pw?: string;
+    date?: Date;
+}
 
 interface ObjJSON{
     encrypted?: {
