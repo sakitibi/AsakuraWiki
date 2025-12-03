@@ -20,9 +20,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'POST') {
-        const body:obj = req.body;
+        const body:obj = JSON.parse(req.body);
         items.push(body);
-        return res.status(201).json({body});
+        return res.status(201).json(body);
     } else if (req.method === "GET"){
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
