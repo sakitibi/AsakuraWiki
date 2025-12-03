@@ -85,6 +85,23 @@ export default function UserDataGet(){
             console.error("error: ", e);
         }
     }
+    const JSONSave = () => {
+        try{
+            const strJSON = JSON.stringify(userDataRaw, null, "\t");
+            const encoded = new TextEncoder().encode(strJSON);
+            const blob = new Blob([encoded], {
+                type: "applicaion/octet-stream"
+            });
+            const objurl = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = objurl;
+            a.download = "user_infomations.json";
+            a.click();
+            URL.revokeObjectURL(objurl);
+        } catch(e){
+            console.error("Error: ", e);
+        }
+    }
     useEffect(() => {
         (async () => {
             await FetchUserMetaData();
@@ -131,6 +148,9 @@ export default function UserDataGet(){
                                                     </button>
                                                 </div>
                                             ))}
+                                            <button onClick={JSONSave}>
+                                                <span>データを丸ごとファイル保存</span>
+                                            </button>
                                         </>
                                     ) : (
                                         <p>データがありません</p>

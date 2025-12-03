@@ -2,8 +2,6 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import { adminerUserId } from '@/utils/user_list';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-let items:obj[] = [];
-
 export interface obj{
     encrypted: {
         salt: string;
@@ -21,8 +19,15 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     res.setHeader('Access-Control-Allow-Methods', 'POST,GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'POST') {
-        const body:obj = JSON.parse(req.body);
-        items.push(body);
+        const body = req.body;
+        const { error } = await supabaseServer
+            .from("takotako_db")
+            .insert([
+                body
+            ])
+        if(error){
+            return res.status(500).json(error.message);
+        }
         return res.status(201).json(body);
     } else if (req.method === "GET"){
         // ====== 認証ユーザー取得 ======
