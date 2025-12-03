@@ -44,7 +44,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             const items = await supabaseServer
                 .from("takotako_db")
                 .select("body")
-            return res.status(200).json(items);
+            return res.status(200).json(items.data);
         } else {
             return res.status(403).json({ "error": "forbidden" });
         }
