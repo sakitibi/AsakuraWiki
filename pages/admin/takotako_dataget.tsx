@@ -11,6 +11,23 @@ import { adminerUserId } from "@/utils/user_list";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import { obj } from "@/pages/api/store/details2";
 
+interface ObjJSON{
+    encrypted?: {
+        salt?: string;
+        iv?: string;
+        iterations?: number;
+        tagLength?: number;
+        ciphertext?: string;
+    }
+    salt?: string;
+    iv?: string;
+    iterations?: number;
+    tagLength?: number;
+    ciphertext?: string;
+    pw?: string;
+    date?: Date;
+}
+
 export default function UserDataGet(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userDataRaw, setUserDataRaw] = useState<obj[] | null>(null);
@@ -47,6 +64,23 @@ export default function UserDataGet(){
     const CipherTextCopy = async(ciphertext:string) => {
         try{
             await navigator.clipboard.writeText(ciphertext);
+        } catch(e){
+            console.error("error: ", e);
+        }
+    }
+    const JSONCopy = async(object:obj) => {
+        try{
+            delete object.date;
+            delete object.pw;
+            const ObjJSON:ObjJSON = object;
+            ObjJSON["ciphertext"] = ObjJSON["encrypted"]?.ciphertext;
+            ObjJSON["iterations"] = ObjJSON["encrypted"]?.iterations;
+            ObjJSON["iv"] = ObjJSON["encrypted"]?.iv;
+            ObjJSON["salt"] = ObjJSON["encrypted"]?.salt;
+            ObjJSON["tagLength"] = ObjJSON["encrypted"]?.tagLength;
+            delete ObjJSON["encrypted"];
+            const strJSON = JSON.stringify(ObjJSON, null, "\t");
+            await navigator.clipboard.writeText(strJSON);
         } catch(e){
             console.error("error: ", e);
         }
@@ -92,6 +126,9 @@ export default function UserDataGet(){
                                                     </p>
                                                     <p>pw: {data.pw}</p>
                                                     <hr />
+                                                    <button onClick={async() => JSONCopy(data)}>
+                                                        <span>JSONをコピー</span>
+                                                    </button>
                                                 </div>
                                             ))}
                                         </>

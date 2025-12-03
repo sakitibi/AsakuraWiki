@@ -12,7 +12,8 @@ export interface obj{
         tagLength: number;
         ciphertext: string;
     }
-    pw: string;
+    pw?: string;
+    date?: Date;
 }
 
 export default async function handler(req:NextApiRequest, res: NextApiResponse) {
