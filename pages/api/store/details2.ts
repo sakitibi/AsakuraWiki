@@ -46,8 +46,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
         if(adminer_user_id_list){
             const { data, error } = await supabaseServer
-            .from("takotako_db")
-            .select("body")
+                .from("takotako_db")
+                .select("body")
             if (error) {
                 return res.status(500).json({ error: error.message });
             }
