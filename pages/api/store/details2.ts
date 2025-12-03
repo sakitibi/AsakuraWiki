@@ -45,13 +45,13 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
         const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
         if(adminer_user_id_list){
-            const result = await supabaseServer
+            const { data, error } = await supabaseServer
             .from("takotako_db")
             .select("body")
-            if (result.error) {
-                return res.status(500).json({ error: result.error.message });
+            if (error) {
+                return res.status(500).json({ error: error.message });
             }
-            const list = result.data.map(row => row.body);
+            const list = data.map(row => row.body);
             return res.status(200).json(list);
         } else {
             return res.status(403).json({ "error": "forbidden" });
