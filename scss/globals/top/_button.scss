@@ -1,0 +1,103 @@
+@use 'mixin';
+
+body {
+    // 💚 デフォルトテーマ（wiki-fontが無い場合）
+    &:not(.wiki-font, .wiki-font.pink, .wiki-font.blue, .wiki-font.yellow, .wiki-font.default) {
+        button:not(#menu-button,.navfold-summary,.fold-button,.installButton) {
+            position: relative;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            background: none;
+            overflow: hidden;
+
+            &::before {
+                @include mixin.position(/*#1ce369, #076727*/#d1faff, #6eecff); // 緑系
+            }
+
+            &:active::before {
+                filter: brightness(0.85);
+                transform: scale(0.98);
+            }
+            &:hover::before {
+                filter: brightness(1.1);
+            }
+            & > * {
+                position: relative;
+                z-index: 1;
+            }
+            &:disabled {
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    // 🎨 wiki-fontテーマ共通のボタンスタイル
+    &.wiki-font {
+        & button:not(#menu-button,.navfold-summary,.fold-button) {
+            position: relative;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            background: none;
+            overflow: hidden;
+            &::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                z-index: 0;
+                border-radius: 5px;
+            }
+            &:active::before {
+                filter: brightness(0.85);
+                transform: scale(0.98);
+            }
+            &:hover::before {
+                filter: brightness(1.1);
+            }
+            & > * {
+                position: relative;
+                z-index: 1;
+            }
+            &:disabled {
+                cursor: not-allowed;
+            }
+        }
+        &.pink button:not(#menu-button,.navfold-summary,.fold-button)::before {
+            @include mixin.position(rgb(244, 164, 229), rgb(199, 17, 157));
+        }
+        // 🔵 ブルーテーマのグラデーション
+        &.blue button:not(#menu-button,.navfold-summary,.fold-button)::before {
+            @include mixin.position(rgb(164, 212, 244), rgb(17, 102, 199));
+        }
+        // 💛 イエローテーマのグラデーション
+        &.yellow button:not(#menu-button,.navfold-summary,.fold-button)::before {
+            @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
+        }
+        &.default button:not(#menu-button,.navfold-summary,.fold-button)::before {
+            @include mixin.position(/*#1ce369, #076727*/#d1faff, #6eecff);
+        }
+    }
+
+    // 🧾 メニューボタンは例外
+    #menu-button {
+        text-rendering: auto;
+        letter-spacing: normal;
+        word-spacing: normal;
+        text-indent: 0px;
+        text-shadow: none;
+        display: inline-block;
+        text-align: center;
+        padding-block: 1px;
+        padding-inline: 6px;
+        cursor: pointer;
+    }
+}

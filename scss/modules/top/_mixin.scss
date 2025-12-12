@@ -1,0 +1,27 @@
+@mixin pLikedWiki{
+    align-items: center;
+    background-color: /*#cce19b*/#9be1d6;
+    background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white2.png");
+    color: /*#566b1c*/#6cd3cc;
+    display: flex;
+    font-size: 20px;
+    font-weight: 700;
+    justify-content: center;
+    padding: .5em 1em;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: .5rem;
+    margin-top: 0;
+}
+
+@mixin pLikedMixinBefore($BeforeImageURL){
+    background-image: url($BeforeImageURL);
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: "";
+    display: inline-block;
+    height: 34px;
+    margin-left: -70px;
+    margin-right: 10px;
+    width: 33px;
+}

@@ -1,0 +1,56 @@
+@use 'top/mixin';
+@use 'top/button';
+@use 'top/marquee';
+@use 'top/body';
+@use 'wiki/MinecraftMetro';
+
+input:not([type=submit],[type=checkbox]) {
+    width: 100%;
+}
+
+a, a:active, a:focus, a:hover {
+    color: #ef8688;
+    -webkit-text-decoration: underline;
+    text-decoration: underline;
+}
+a {
+    color: #337ab7;
+}
+
+@keyframes bg-color{
+    from{
+        background-position: 0% 0%;
+    }
+    12.5%{
+        background-position: 75% 0%;
+    }
+    25%{
+        background-position: 150% 0%;
+    }
+    37.5%{
+        background-position: 225% 0%;
+    }
+    50%{
+        background-position: 300% 0%;
+    }
+    67.5%{
+        background-position: 225% 0%;
+    }
+    75%{
+        background-position: 150% 0%;
+    }
+    87.5%{
+        background-position: 75% 0%;
+    }
+    to{
+        background-position: 0% 0%;
+    }
+}
+
+header{
+    text-align: center;
+}
+
+#sanninnsenn{
+    font-weight: bold;
+}

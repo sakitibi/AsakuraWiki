@@ -1,0 +1,14 @@
+@use 'notice-wiki-removal';
+@use 'plugins';
+
+.list{
+    .list1 {
+        list-style-type: disc !important;
+    }
+    .list3 {
+        list-style-type: square !important;
+    }
+    :not(.list1,.list3){
+        list-style-type: circle;
+    }
+}

@@ -1,0 +1,185 @@
+.MC_Core_HeadingStyle {
+  .MC_Layout_Article .MC_Theme_Vanilla .MC_Heading_1, .MC_Link_Style_RichText h1, .MC_Theme_Vanilla .MC_Link_Style_RichText h1, .MC_Heading_1 {
+    font-size: 2.25rem;
+    letter-spacing: -.54px;
+    line-height: 2.25rem;
+  }
+}
+
+.MC_Layout_Article .MC_Theme_Vanilla {
+  .MC_Heading_1, .MC_Link_Style_RichText h1 {
+    font-size: 2.25rem;
+    letter-spacing: -.54px;
+    line-height: 2.25rem;
+  }
+}
+
+@media screen and (max-width: 1199.98px) {
+  .MC_Theme_Core .MC_Heading_1, .MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Marketplace .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Vanilla .MC_Heading_1 {
+    font-size: 4rem;
+    line-height: 4rem;
+  }
+}
+
+.MC_Theme_Core .MC_Heading_1, .MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Vanilla .MC_Heading_1 {
+  font-size: 4.5rem;
+  letter-spacing: -.015em;
+  line-height: 4.5rem;
+}
+
+.MC_Theme_Dungeons .MC_Theme_Vanilla, .MC_Theme_Legends .MC_Theme_Vanilla, .MC_Theme_Realms .MC_Theme_Vanilla, .MC_Theme_Vanilla {
+  font-family: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
+}
+
+.MC_articleHeroA_header_container > * {
+  flex-basis: 100%;
+}
+
+.MC_articleHeroA_header_subheadline {
+  margin-top: 8px;
+}
+
+.MC_AEM_Wrapper {
+  position: relative;
+  z-index: 20;
+}
+
+.MC_articleGridA .MC_Link_Style_RichText {
+  word-wrap: break-word;
+  color: #fff, inherit;
+  margin-top: 24px;
+  word-break: break-word;
+}
+
+.MC_articleGridA_sectionRef {
+  height: 1px;
+  width: 100%;
+}
+
+.MC_Bg_Inherit {
+  color: #fff, #000;
+}
+
+.MC_Theme_Vanilla .MC_Link_Style_RichText {
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 400;
+        margin: 0;
+    }
+
+    a {
+        &:not(.MC_Button, .MC_Link_Accent) {
+            color: #6cc349, #2a641c !important;
+        }
+
+        color: #6cc349, #2a641c !important;
+        font-weight: 700;
+        text-decoration: underline;
+
+        &:hover {
+            color: #6cc349, #2a641c !important;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+    }
+
+    h1, h2, h3, h4 {
+        font-family: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif" !important;
+    }
+
+    h2 {
+        font-size: 3.5rem;
+        letter-spacing: -.015em;
+        line-height: 3.5rem;
+    }
+}
+
+.MC_Theme_Core a:not(.MC_Button, .MC_Link_Accent), .MC_Theme_Vanilla a:not(.MC_Button, .MC_Link_Accent) {
+    color: #6cc349, #2a641c !important;
+    text-decoration: underline !important;
+}
+
+.MC_Layout_Article {
+    .MC_CarouselD {
+        padding: 16px 0 !important;
+    }
+
+    .MC_articleGridA .MC_Link_Style_RichText [style*=font-family] {
+        font-family: "Noto Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif" !important;
+        font-size: 1rem !important;
+    }
+
+    .MC_Link_Style_RichText h2 {
+        margin-top: 24px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .MC_CarouselD {
+        padding: 80px 0 86px;
+    }
+}
+
+.MC_Link_Style_RichText table {
+    background-color: #262423;
+}
+
+.MC_Carousel {
+    margin: 0 auto;
+    overflow: hidden;
+    width: 100%;
+    .MC_Carousel_thumbs_wrapper, .MC_Carousel_track_wrapper, .MC_Carousel_track_slide_media {
+        position: relative;
+    }
+}
+
+.MC_CarouselD {
+    max-width: 1920px;
+    padding: 48px 0 54px;
+
+    .MC_Carousel_header {
+        margin: 0 auto 48px;
+        max-width: 1040px;
+        padding: 0 10px;
+        text-align: center;
+    }
+
+    .MC_Carousel_track {
+        left: 50%;
+        position: relative;
+        transform-origin: center;
+        width: max-content;
+    }
+
+    .MC_Carousel_track_slide_media_img {
+        aspect-ratio: 280 / 168;
+        display: block;
+        position: relative;
+        width: 100%;
+    }
+
+    .MC_Carousel_track_slide {
+        &.MC_Carousel_track_slide__active {
+            opacity: 1;
+        }
+        margin: 0 8px;
+        opacity: .75;
+        transition: opacity 1s;
+        width: 280px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .MC_CarouselD {
+        .MC_Carousel_track_slide_media_img {
+            aspect-ratio: 640 / 384;
+        }
+        .MC_Carousel_track_slide {
+            margin: 0 12px;
+            width: 640px;
+        }
+    }
+}
+
+.MC_Carousel_thumbs_slide, .MC_Carousel_track_slide {
+    flex: 0 0 auto;
+}

@@ -1,0 +1,80 @@
+/* pForBeginner系統 */
+
+.pForBeginner {
+    background-color: #abf1b6;
+    background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white.png");
+    border-radius: 10px;
+    padding: 18px;
+    & li::marker{
+        content: none;
+    }
+}
+
+.lContents__aside {
+    margin: 0 0 0 auto;
+    margin-top: 25px;
+    padding: 0 15px;
+    margin-left:10px;
+    width: 480px;
+    height:200px;
+    float: right;
+}
+
+.childrenSpaced>*+* {
+    margin-top: 25px;
+}
+
+.dNone {
+    display: none !important;
+}
+
+.pForBeginner__title {
+    border-bottom: 1px solid #9f4548 !important;
+    color: #9f4548 !important;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 14px;
+    padding: 0 0 14px;
+    text-align: center;
+}
+
+.pForBeginner__list {
+    list-style: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+.pForBeginner__item {
+    margin: 0;
+    padding: 0;
+}
+
+.pForBeginner__item:not(:first-child) {
+    margin-top: 10px;
+}
+
+.pForBeginner__item>a {
+    align-items: center;
+    background-color: #fff;
+    border-radius: 5px;
+    color: #9f4548 !important;
+    display: flex;
+    font-size: 13px;
+    font-weight: 700;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
+    &::before{
+        background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/right_arrow_red.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        content: "";
+        display: inline-block;
+        height: 12px;
+        margin-left: -16px;
+        margin-right: 10px;
+        width: 6px;
+    }
+}

@@ -1,0 +1,251 @@
+
+@use 'media';
+@use 'mb';
+
+:root{
+    --background-default: 0deg 0% 7.1%;
+    --foreground-default: 0deg 0% 98%;
+    --brand-default: 153.1deg 60.2% 52.7%;
+    --bd-accent: #3ee593;
+    --bs-body-color-rgb: 33, 41, 37;
+    --bs-body-bg-rgb: 255, 255, 255;
+    --bs-dark-rgb: 33, 41, 39;
+    --bs-emphasis-color: #000;
+    --bs-secondary-color: rgba(33, 37, 41, 0.75);
+    --brand-500: 154.9deg 100% 19.2%;
+    --brand-400: 155.5deg 100% 9.6%;
+    --brand-default: 153.1deg 60.2% 52.7%;
+    --bs-border-radius-lg: 0.5rem;
+}
+
+html{
+    color-scheme: dark !important;
+}
+
+body {
+    $tw-bg-opacity: 1;
+    background-color: hsl(var(--background-default / $tw-bg-opacity)) !important;
+    $tw-text-opacity: 1;
+    color: hsl(var(--foreground-default) / $tw-text-opacity);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    line-height: inherit;
+}
+
+.text-dark {
+    $bs-text-opacity: 1;
+    color: rgba(var(--bs-dark-rgb), $bs-text-opacity) !important;
+}
+
+.masthead-notice {
+    background-color: var(--bd-accent);
+    box-shadow: inset 0 -1px 1px rgba(
+        var(--bs-body-color-rgb), 0.15
+    ),
+    0 0.25rem 1.5rem rgba(
+        var(--bs-body-bg-rgb),
+        0.75
+    );
+}
+
+h1:not(.overwrite),
+h2:not(.overwrite),
+h3:not(.overwrite),
+h4:not(.overwrite),
+h5:not(.overwrite),
+h6:not(.overwrite) {
+    scroll-margin-top: 90px;
+}
+
+.bd-masthead h1 {
+    $bs-heading-color: --bs-emphasis-color;
+    font-size: calc(1.525rem + 3.3vw);
+}
+
+.lh-1 {
+    line-height: 1 !important;
+}
+
+.fw-semibold {
+    font-weight: 600 !important;
+}
+
+.bd-masthead .lead {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--bs-secondary-color);
+}
+
+.lead {
+    font-size: 1.25rem;
+    font-weight: 300;
+}
+
+:is([data-theme*=dark] .dark\:hover\:bg-brand\/50:hover) {
+    background-color: hsl(var(--brand-default) / .5);
+}
+
+:is([data-theme*=dark] .dark\:hover\:border-brand:hover) {
+    $tw-border-opacity: 1;
+    border-color: hsl(var(--brand-default) / $tw-border-opacity);
+}
+
+.text-brand {
+    $tw-text-opacity: 1;
+    color: hsl(var(--brand-default / $tw-text-opacity));
+}
+
+.text-ellipsis, .truncate {
+    text-overflow: ellipsis;
+}
+
+.truncate {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.text-foreground {
+    $tw-text-opacity: 1;
+    color: hsl(var(--foreground-default / $tw-text-opacity));
+}
+
+.block {
+    display: block;
+}
+
+.gap-2 {
+    gap: .5rem;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.flex {
+    display: flex;
+}
+
+:is([data-theme*=dark] .dark\:bg-brand-500) {
+    $tw-bg-opacity: 1;
+    background-color: hsl(var(--brand-500) / $tw-bg-opacity);
+}
+
+:is([data-theme*=dark] .dark\:border-brand\/30) {
+    border-color: hsl(var(--brand-default) / .3);
+}
+
+.ease-out {
+    animation-timing-function: cubic-bezier(0, 0, .2, 1);
+}
+
+.duration-200 {
+    animation-duration: .2s;
+}
+
+.ease-out {
+    transition-timing-function: cubic-bezier(0, 0, .2, 1);
+}
+
+.duration-200 {
+    transition-duration: .2s;
+}
+
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+    transition-duration: .15s;
+}
+
+.outline-0 {
+    outline-width: 0;
+}
+
+.outline-none {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+.text-foreground {
+    $tw-text-opacity: 1;
+    color: hsl(var(--foreground-default) / $tw-text-opacity);
+}
+
+.text-sm {
+    font-size: .875rem;
+    line-height: 1.25rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.py-2 {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.bg-brand-400 {
+    $tw-bg-opacity: 1;
+    background-color: hsl(var(--brand-400) / $tw-bg-opacity);
+}
+
+.border-brand-500\/75 {
+    border-color: hsl(var(--brand-500) / .75);
+}
+
+.border {
+    border-width: 1px;
+}
+
+.rounded-md {
+    border-radius: .375rem;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.h-\[38px\] {
+    height: 38px;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.relative {
+    position: relative;
+}
+
+[type=button], [type=reset], [type=submit], button {
+    -webkit-appearance: button;
+    background-color: transparent;
+    background-image: none;
+}
+
+a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.rounded-3 {
+    border-radius: var(--bs-border-radius-lg) !important;
+}
+
+.p-2 {
+    padding: .5rem !important;
+}

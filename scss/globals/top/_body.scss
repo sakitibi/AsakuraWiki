@@ -1,0 +1,236 @@
+@use 'mixin';
+
+body{
+    ul{
+        &.list1{
+            list-style-type: disc !important;
+        }
+        &.list2{
+            list-style-type: circle !important;
+        }
+    }
+    .noticeWikiRemoval__icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        width: 2.5em;
+        height: 2.5em;
+        margin: 0 1em 0 -0.8em;
+        & svg{
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+            transform: translateX(-4%);
+        }
+    }
+
+    .noticeWikiRemoval__text {
+        min-width: 0;
+        word-break: break-word;
+        line-height: 1.5;
+        & a{
+            color: #842029;
+            text-decoration: underline;
+            transition: color 0.2s ease-in-out;
+            &:hover{
+                color: #58151c;
+            }
+        }
+    }
+    &:not(.wiki-font){
+        font-family: Noto Sans Japanese, sans-serif !important;
+        @include mixin.snowly;
+        & ul{
+            &:not(
+                #p-footer-nav,
+                #menu-list
+            ) {
+                display: block;
+                list-style-type: disc;
+                margin-block-start: 1em;
+                margin-block-end: 1em;
+                padding-inline-start: 40px;
+                unicode-bidi: isolate;
+            }
+            &#menu-list{
+                list-style: none;
+            }
+        }
+        & *, :after, :before {
+            box-sizing: border-box;
+        }
+        & aside {
+            display: block;
+            unicode-bidi: isolate;
+        }
+        & a:not(.AdSupport__link), a:not(.AdSupport__link):active, a:not(.AdSupport__link):focus, a:not(.AdSupport__link):hover {
+            color: #ef8688;
+            -webkit-text-decoration: underline;
+            text-decoration: underline;
+        }
+        li {
+            display: list-item;
+            unicode-bidi: isolate;
+        }
+        /* pEntry関連 */
+        .pEntry__header {
+            margin-bottom: 25px;
+            & h1 {
+                background-color: #eaeaea;
+                background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white2.png");
+                color: #6a6a6a;
+                font-size: 20px;
+                font-weight: 700;
+                margin-top: 0;
+                padding: 15px;
+                text-align: center;
+            }
+        }
+        .pEntry__content {
+            color: #444;
+            font-size: 13px;
+            & .danger_list{
+                color: red;
+            }
+            & h2 {
+                background-color: #f6f6f6;
+                font-size: 16px;
+                margin-bottom: 10px;
+                margin-top: 20px;
+                padding: 15px 10px;
+            }
+            & li{
+                margin: 4px auto;
+            }
+            & ol{
+                &>li::marker{
+                    unicode-bidi: isolate;
+                    font-variant-numeric: tabular-nums;
+                    text-transform: none;
+                    text-indent: 0px !important;
+                    text-align: start !important;
+                    text-align-last: auto !important;
+                }
+                display: block;
+                margin-block-start: 1em;
+                margin-block-end: 1em;
+                padding-inline-start: 40px;
+                unicode-bidi: isolate;
+                margin-bottom: 1rem;
+                margin-top: 0;
+                padding-left: 2rem;
+                & ol{
+                    counter-reset: subsection;
+                    list-style-type: none;
+                    list-style: none;
+                    margin: 8px auto;
+                    &>li{
+                        position: relative;
+                        &::before{
+                            content: "(" counter(subsection) ") ";
+                            counter-increment: subsection;
+                            left: -40px;
+                            position: absolute;
+                            text-align: right;
+                            width: 38px;
+                        }
+                    }
+                }
+            }
+        }
+        @media (min-width: 768px) {
+            .container, .container-md, .container-sm {
+                max-width: 720px;
+            }
+        }
+
+        @media (min-width: 576px) {
+            .container, .container-sm {
+                max-width: 540px;
+            }
+        }
+        .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+            $bs-gutter-x: 1.5rem;
+            $bs-gutter-y: 0;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: calc($bs-gutter-x * .5);
+            padding-right: calc($bs-gutter-x * .5);
+            width: 100%;
+        }
+    }
+
+    &.wiki-font{
+        font-family: Verdana, Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif !important;
+        font-size: 12px;
+        font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
+        @include mixin.background;
+        .columnsContainer.hasLeftColumn:not(.hasRightColumn) .columnLeft {
+            grid-column: 1 / span 1;
+        }
+        .wiki-font.default{
+            & .columnLeft {
+                @include mixin.menubar(#f1fddf);
+            }
+        }
+        .columnCenter, .columnLeft, .columnRight {
+            grid-row: 1 / span 1;
+            min-width: 0;
+        }
+        .columnCenter {
+            grid-column: 2 / span 1;
+        }
+        &:not(.pink,.blue,.yellow,.purple){
+            @include mixin.defaultGreen;
+        }
+        &.pink {
+            background-image: linear-gradient(to right, rgb(233, 120, 203), rgb(231, 110, 185), rgb(217, 70, 195), rgb(185, 21, 164), rgb(217, 75, 198), rgb(215, 113, 221)) !important;
+            & button::before {
+                @include mixin.position(rgb(244, 164, 229 ), rgb(199, 17, 157));
+            }
+            & .columnLeft {
+                @include mixin.menubar(#feeef6);
+            }
+        }
+        &.blue {
+            background-image: linear-gradient(to right, rgb(146, 221, 244), rgb(45, 161, 200), rgb(29, 75, 192), rgb(43, 91, 235), rgb(75, 139, 217), rgb(113, 183, 221)) !important;
+            & button::before {
+                @include mixin.position(rgb(164, 212, 244), rgb(17, 102, 199));
+            }
+            & .columnLeft {
+                @include mixin.menubar(#f0f8ff);
+            }
+        }
+        &.yellow {
+            background-image: linear-gradient(to right, rgb(237, 187, 25), rgb(197, 153, 20), rgb(149, 106, 12), rgb(162, 119, 11), rgb(209, 142, 19), rgb(234, 191, 73)) !important;
+            & button::before {
+                @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
+            }
+            & .columnLeft {
+                @include mixin.menubar(#fffbed);
+            }
+        }
+        &.purple {
+            @include mixin.purple;
+            & button::before {
+                @include mixin.position(/*#1ce369, #076727*/#d1faff, #6eecff);
+            }
+            & .columnLeft {
+                @include mixin.menubar(#fdedff);
+            }
+        }
+        & hr{
+            background-color: #777;
+            border: 0;
+            color: #777;
+            height: 1px;
+            display: block;
+            margin-block-start: 0.5em;
+            margin-inline-start: auto;
+            unicode-bidi: isolate;
+            overflow: visible;
+            border-style: inset;
+            border-width: 1px;
+        }
+    }
+}

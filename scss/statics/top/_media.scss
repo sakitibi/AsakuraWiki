@@ -1,0 +1,24 @@
+@media (min-width: 640px) {
+    .sm\:leading-none {
+        line-height: 1;
+    }
+}
+
+@media (min-width: 640px) {
+    .sm\:text-5xl {
+        font-size: 3rem;
+        line-height: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .md\:ml-0 {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    .bd-masthead .lead {
+        font-size: calc(1.275rem + .3vw);
+    }
+}

@@ -1,0 +1,42 @@
+/* @mixin系統は早めに */
+@mixin background{
+    background-size: 300% 100%;
+    background-attachment: fixed;
+    animation: bg-color 150s linear infinite;
+    font-style: normal;
+    font-weight: bold;
+}
+
+@mixin position($bgcolor1, $bgcolor2){
+    background-image: linear-gradient(to left, $bgcolor1, $bgcolor2);
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: filter 0.3s ease, transform 0.1s ease;
+}
+
+@mixin defaultGreen{
+    background-image: linear-gradient(to right, #09b94d, #00892e, #0f9d45, #0a9739, #05be4c, #16f25f);
+    font-size: 15px;
+    @include background;
+}
+
+@mixin purple{
+    background-image: linear-gradient(to right, #5b1ebe, #440478, #000000, #5c1075, #7a05be, #6004e1);
+    font-size: 15px;
+    @include background;
+}
+
+@mixin snowly{
+    background-image: linear-gradient(to right, #7ad4e8, #33fcff, #1ecefa, #6bc4c6, #5fc4d6, #58bfca);
+    font-size: 15px;
+    @include background;
+}
+
+@mixin menubar($bgcolor){
+    background-color: $bgcolor;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    padding: 5px;
+}

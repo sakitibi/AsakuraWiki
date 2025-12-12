@@ -1,0 +1,47 @@
+.marqueeBase {
+    display: inline-block;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+/* スライド */
+@keyframes scroll-slide-once-xl {
+    0% { transform: translateX(1300%); }
+    100% { transform: translateX(0%); }
+}
+@keyframes scroll-slide-once-md {
+    0% { transform: translateX(1000%); }
+    100% { transform: translateX(0%); }
+}
+@keyframes scroll-slide-once-sm {
+    0% { transform: translateX(700%); }
+    100% { transform: translateX(0%); }
+}
+
+/* 通常スクロール */
+@keyframes scroll-default-xl {
+    0% { transform: translateX(1300%); }
+    100% { transform: translateX(-100%); }
+}
+@keyframes scroll-default-md {
+    0% { transform: translateX(1000%); }
+    100% { transform: translateX(-100%); }
+}
+@keyframes scroll-default-sm {
+    0% { transform: translateX(700%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* 往復スクロール */
+@keyframes scroll-alternate-xl {
+    0% { transform: translateX(1300%); }
+    100% { transform: translateX(-100%); }
+}
+@keyframes scroll-alternate-md {
+    0% { transform: translateX(1000%); }
+    100% { transform: translateX(-100%); }
+}
+@keyframes scroll-alternate-sm {
+    0% { transform: translateX(700%); }
+    100% { transform: translateX(-100%); }
+}
