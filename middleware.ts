@@ -13,6 +13,7 @@ export function middleware(_: NextRequest) {
         https://sakitibi.github.io
         https://www.googletagmanager.com
         https://counter.wikiwiki.jp
+        https://www.google-analytics.com
         https://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
         script-src * 'unsafe-inline' 'unsafe-eval';
