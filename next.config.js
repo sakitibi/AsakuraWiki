@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const CSP = `
-    default-src 'self';
+    default-src
+        'self'
+        https://asakura-wiki.vercel.app
+        https://sakitibi.github.io;
     connect-src
         'self'
         https://asakura-wiki.vercel.app
