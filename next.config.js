@@ -5,11 +5,18 @@ const CSP = `
         'self'
         https://asakura-wiki.vercel.app
         https://sakitibi.github.io
+        https://www.googletagmanager.com
         https://counter.wikiwiki.jp
         https://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
-    script-src 'self';
-    style-src 'self';
+    script-src 'self'
+        https://asakura-wiki.vercel.app
+        https://sakitibi.github.io
+        https://www.googletagmanager.com;
+    style-src
+        'self'
+        https://sakitibi.github.io
+        https://asakura-wiki.vercel.app;
 `;
 
 const nextConfig = {
