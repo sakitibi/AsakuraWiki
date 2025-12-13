@@ -12,7 +12,8 @@
     "dev": "concurrently \"next dev\" \"electron .\"",
     "build": "next build && tsc -p tsconfig.json",
     "start": "electron .",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.5",

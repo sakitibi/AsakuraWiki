@@ -74,7 +74,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>8:30</td>
                                             <td style={TdStyles}>
-                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/"></a>(ここから応募!)
+                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -98,13 +98,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>9:30</td>
                                             <td style={TdStyles}>
-                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/"></a>(ここから応募!)
+                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>9:45</td>
                                             <td style={TdStyles}>
-                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/"></a>(ここから応募!)
+                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -116,7 +116,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>10:15</td>
                                             <td style={TdStyles}>
-                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/"></a>(ここから応募!)
+                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -146,7 +146,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>11:30</td>
                                             <td style={TdStyles}>
-                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/"></a>(ここから応募!)
+                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -183,6 +183,24 @@ export default function MinecraftRelayManyManyMany(){
                                             <td style={TdStyles}>13:00</td>
                                             <td style={TdStyles}>
                                                 <a href="https://youtube.com/channel/UCh7bThzNArch6TgoHB1HVhA">カラフルピーチ</a>
+                                            </td>
+                                        </tr>
+                                        <tr style={{height: '21.0px'}}>
+                                            <td style={TdStyles}>13:15</td>
+                                            <td style={TdStyles}>
+                                                <a href="https://youtube.com/channel/UCM3yhFc0-fBFuvqx1Vg2YNQ">まいぜんシスターズ</a>
+                                            </td>
+                                        </tr>
+                                        <tr style={{height: '21.0px'}}>
+                                            <td style={TdStyles}>13:30</td>
+                                            <td style={TdStyles}>
+                                                <a href="https://youtube.com/channel/UCj4PjeVMnNTHIR5EeoNKPAw">ドズル社</a>
+                                            </td>
+                                        </tr>
+                                        <tr style={{height: '21.0px'}}>
+                                            <td style={TdStyles}>13:45</td>
+                                            <td style={TdStyles}>
+                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
                                             </td>
                                         </tr>
                                     </tbody>
