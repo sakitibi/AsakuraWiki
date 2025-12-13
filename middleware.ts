@@ -7,7 +7,6 @@ export function middleware(_: NextRequest) {
         'self'
         https://asakura-wiki.vercel.app
         https://sakitibi.github.io;
-
         connect-src
         'self'
         https://asakura-wiki.vercel.app
@@ -16,12 +15,12 @@ export function middleware(_: NextRequest) {
         https://counter.wikiwiki.jp
         https://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
-
-        script-src *
-
-        style-src *
-
-        img-src *
+        script-src * 'unsafe-inline' 'unsafe-eval';
+        style-src * 'unsafe-inline';
+        font-src * data:;
+        img-src *;
+        media-src *;
+        frame-src *;
     `.replace(/\n/g, ' ').trim();
     const res = NextResponse.next();
     res.headers.set('Content-Security-Policy', csp);
