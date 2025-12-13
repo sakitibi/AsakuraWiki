@@ -21,6 +21,11 @@ const CSP = `
         'self'
         https://sakitibi.github.io
         https://asakura-wiki.vercel.app;
+    img-src
+        'self'
+        https://sakitibi.github.io
+        https://asakura-wiki.vercel.app
+        https://yt3.googleusercontent.com;
 `;
 
 const nextConfig = {
