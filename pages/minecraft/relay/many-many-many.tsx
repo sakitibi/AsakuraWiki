@@ -227,10 +227,29 @@ export default function MinecraftRelayManyManyMany(){
                                                 <a href="https://youtube.com/channel/UCi2kiw8hMo0vMAh5lXiafug">じゃじゃーん菊池 GAME</a>
                                             </td>
                                         </tr>
+                                        <tr style={{height: '21.0px'}}>
+                                            <td style={TdStyles}>15:00</td>
+                                            <td style={TdStyles}>
+                                                <a href="https://youtube.com/channel/UC-Cuw7QXLjJd1lFQzp5AP-w">さんちゃんく！</a>
+                                            </td>
+                                        </tr>
+                                        <tr style={{height: '21.0px'}}>
+                                            <td style={TdStyles}>15:15</td>
+                                            <td style={TdStyles}>
+                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
+                                            </td>
+                                        </tr>
+                                        <tr style={{height: '21.0px'}}>
+                                            <td style={TdStyles}>15:30</td>
+                                            <td style={TdStyles}>
+                                                <a href="https://youtube.com/channel/UC7sUlNSccxFX_XksV6z2Ozg">おちびCH</a>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </section>
+                        <p>タイムテーブルの通り 12 月 30 日 (火) は午前 7 時 30 分より 10 時間以上連続でマインクラフト実況を楽しんでいただけます。<br/>間に休憩も挟みつつ見るようにしましょう！</p>
                     </main>
                     <RightMenuJp/>
                 </div>
