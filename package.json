@@ -37,6 +37,7 @@
     "concurrently": "^8.2.0",
     "electron": "^39.2.1",
     "electron-builder": "^26.0.11",
+    "next-sitemap": "^4.2.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
