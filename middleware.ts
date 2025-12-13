@@ -2,10 +2,6 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(_: NextRequest) {
-    const nonce = Buffer.from(
-        crypto.getRandomValues(new Uint8Array(16))
-    ).toString('base64');
-
     const csp = `
         default-src
         'self'
@@ -21,27 +17,14 @@ export function middleware(_: NextRequest) {
         https://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
 
-        script-src
-        'self'
-        'nonce-${nonce}'
-        https://asakura-wiki.vercel.app
-        https://sakitibi.github.io
-        https://www.googletagmanager.com;
+        script-src *
 
-        style-src
-        'self'
-        'nonce-${nonce}'
-        https://sakitibi.github.io
-        https://asakura-wiki.vercel.app;
+        style-src *
 
-        img-src
-        'self'
-        https://sakitibi.github.io
-        https://asakura-wiki.vercel.app
-        https://yt3.googleusercontent.com;
+        img-src *
     `.replace(/\n/g, ' ').trim();
     const res = NextResponse.next();
     res.headers.set('Content-Security-Policy', csp);
-    res.headers.set('x-nonce', nonce);
+
     return res
 }
