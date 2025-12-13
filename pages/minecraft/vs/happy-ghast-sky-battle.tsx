@@ -16,6 +16,25 @@ interface TeamTableProps{
     score: number;
 }
 
+export const TableStyles: React.CSSProperties = {
+    borderStyle: 'none',
+    tableLayout: 'fixed',
+    fontSize: '10.0pt',
+    fontFamily: 'Arial',
+    width: '0.0px'
+}
+export const TdStyles: React.CSSProperties = {
+    paddingRight: '3.0px',
+    paddingLeft: '3.0px',
+    borderWidth: '1.0px',
+    borderStyle: 'solid',
+    borderColor: '#000 #000 #ccc',
+    overflow: 'hidden',
+    verticalAlign: 'bottom',
+    color: '#15c',
+    textAlign: 'center'
+}
+
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<Object>([]);
@@ -88,24 +107,6 @@ export default function MinecraftVS(){
     const RuleImgRemoves = () => {
         setRuleBookImg((prev) => (prev - 1) < 0 ? MAX_INDEX : prev - 1);
     };
-    const TableStyles: React.CSSProperties = {
-        borderStyle: 'none',
-        tableLayout: 'fixed',
-        fontSize: '10.0pt',
-        fontFamily: 'Arial',
-        width: '0.0px'
-    }
-    const TdStyles: React.CSSProperties = {
-        paddingRight: '3.0px',
-        paddingLeft: '3.0px',
-        borderWidth: '1.0px',
-        borderStyle: 'solid',
-        borderColor: '#000 #000 #ccc',
-        overflow: 'hidden',
-        verticalAlign: 'bottom',
-        color: '#15c',
-        textAlign: 'center'
-    }
     return(
         <>
             <Head>
@@ -137,7 +138,7 @@ export default function MinecraftVS(){
                                 {Object.entries(userlists).map(([team, users]: [string, TeamTableProps[]]) => (
                                     <>
                                         <li key={team}>
-                                        <h2 style={{ textAlign: 'center' }}>&nbsp;【{team}チーム】</h2>
+                                            <h2 style={{ textAlign: 'center' }}>&nbsp;【{team}チーム】</h2>
                                             <div className={styles.MC_articleGridA_sectionRef}></div>
                                             <div className={styles.MC_Link_Style_RichText}>
                                                 <table style={TableStyles}>

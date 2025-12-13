@@ -34,9 +34,9 @@ export default function MinecraftRelay(){
                         <h1>マイクラリレー</h1>
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>次回のマイクラリレーは</p>
-                        <p><strong>マイクラリレー 〜 メリー! メリー! メリー! 〜</strong></p>
+                        <p><strong>マイクラリレー 〜 メニー! メニー! メニー! 〜</strong></p>
                         <p>に決定!</p>
-                        <p><a href="/minecraft/relay/merry-merry-merry">詳しくはこちらで</a></p>
+                        <p><a href="/minecraft/relay/many-many-many">詳しくはこちらで</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>
