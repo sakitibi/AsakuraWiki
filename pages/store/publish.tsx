@@ -7,7 +7,7 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 import { supabaseServer } from '@/lib/supabaseClientServer';
-import { DeveloperProps } from './developer/[developer]';
+import { DeveloperProps } from '@/pages/store/developer/[developer]';
 import type { User } from '@supabase/supabase-js';
 import { useUser } from '@supabase/auth-helpers-react';
 
@@ -99,7 +99,7 @@ export default function Store() {
     const targetDate = new Date('2025-12-18 00:00:00');
     useEffect(() => {
         const currentDate = new Date();
-        setIsSetup(currentDate > targetDate);
+        setIsSetup(currentDate < targetDate);
     }, []);
 
     return !isSetup ? (

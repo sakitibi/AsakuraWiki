@@ -14,7 +14,7 @@ export interface DeveloperProps{
     user_id: string;
     developer_id: string;
     developer_name: string;
-    developer_siteurl: string;
+    developer_siteurl: string | null;
     official: boolean;
 }
 
@@ -42,7 +42,7 @@ export default function Store() {
     const targetDate = new Date('2025-12-18 00:00:00');
     useEffect(() => {
         const currentDate = new Date();
-        setIsSetup(currentDate < targetDate);
+        setIsSetup(currentDate > targetDate);
     }, []);
     useEffect(() => {
         const AppDataFetch = async () => {
@@ -89,7 +89,7 @@ export default function Store() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick} />
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/store/developer/" rupages='false' />
+                    <LeftMenuJp URL={`/store/developer/${DevelopersStr}`} rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
                             {apps.length > 0 ? apps.map((data, index) => (
@@ -100,7 +100,7 @@ export default function Store() {
                                             {data.isChecked ? (
                                                 <a
                                                     className={styles.developersApplinks}
-                                                    href={`/store/details/${developers!.developer_id}.${data.appid}`}
+                                                    href={`/store/details/${data.appid}`}
                                                 >
                                                     <img
                                                         src={data.appicon_url}

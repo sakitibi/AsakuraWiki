@@ -37,6 +37,7 @@ export default function NewsPage() {
                         <p>前からもありましたが、公開が基本できませんでした</p>
                         <p>が2025年12月18日〜誰でも13ninアカウントがあれば</p>
                         <p>誰でも公開が出来ます</p>
+                        <p><a href="/store">詳しくはこちら</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>
