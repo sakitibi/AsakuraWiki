@@ -36,7 +36,7 @@ export default function Store() {
         setMenuStatus(prev => !prev);
     };
 
-    const targetDate = new Date('2025-12-18');
+    const targetDate = new Date('2025-12-18 00:00:00');
     useEffect(() => {
         const currentDate = new Date();
         setIsSetup(currentDate < targetDate);

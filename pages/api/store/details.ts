@@ -13,6 +13,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 .from('store.apps')
                 .select('*')
                 .eq("appid", body)
+                .maybeSingle()
             if (error) return res.status(500).json({ error: error.message });
             return res.status(201).json(data);
         } else {
