@@ -14,7 +14,6 @@ export interface AppProps {
     id: string;
     app_title: string;
     developer: string;
-    review: number;
     appicon_url: string;
     app_description: string | null;
     appid: string;
@@ -118,7 +117,6 @@ export default function Store() {
                                                         height="50"
                                                     />
                                                 </p>
-                                                <p>{apps.review}</p>
                                             </div>
                                             <p>{apps.download_counter}ダウンロード</p>
                                             <div style={{ display: 'flex' }}>

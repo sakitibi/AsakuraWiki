@@ -109,7 +109,6 @@ export default function Store() {
                                                         height="50"
                                                     />
                                                     <h2>{data.app_title}</h2>
-                                                    <p>{data.review}</p>
                                                 </a>
                                             ) : null}
                                         </div>
