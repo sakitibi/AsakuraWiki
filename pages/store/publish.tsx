@@ -144,7 +144,7 @@ export default function Store() {
                                 <br/><br/>
                                 <label>
                                     アプリバージョン
-                                    <input type="text" id="appversion" value="1.0.0" required/>
+                                    <input type="text" id="appversion" placeholder='1.0.0' required/>
                                 </label>
                                 <br/><br/>
                                 <button type="submit" disabled={loading}>
