@@ -71,10 +71,14 @@ export async function fetchLikedWikis(
 export async function fetched13ninstudioCounter(
     setWiki13ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
 ) {
-    const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
-    const response:Response = await fetch(requestURL);
-    console.log("responseURL: ", response.url);
     try {
+        const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
+        const response:Response = await fetch(requestURL);
+        if(!response.ok){
+            alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
+            opendns("ja");
+        }
+        console.log("responseURL: ", response.url);
         const userData = await response.json();
         setWiki13ninstudioCounter(userData);
     } catch (error) {
