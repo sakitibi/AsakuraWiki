@@ -125,7 +125,7 @@ export default function Store() {
                                                 <button
                                                     id={styles.installButton}
                                                     className="installButton"
-                                                    onClick={async() => await InstallHandler(apps.download_url, apps.download_counter)}
+                                                    onClick={async() => await InstallHandler(apps.download_url, apps.download_counter + 1)}
                                                 >
                                                     <span
                                                         style={{
