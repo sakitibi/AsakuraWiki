@@ -47,11 +47,15 @@ export default function DeveloperConsoleRegister() {
         }
     }
 
-    const StorePublish = async(e:React.FormEvent) => {
+    const DevConsoleRegister = async(e:React.FormEvent) => {
         e.preventDefault();
         if(!document) return;
         setLoading(true);
         try{
+            if(!user){
+                alert("Error: 13ninアカウントが未登録です");
+                throw new Error("Error: 13ninアカウントが未登録です");
+            }
             const developerData:DeveloperProps[] | undefined = await devFetch();
             if(!developerData || developerData.length === 0){
                 throw new Error("Error: developerData is undefined");
@@ -64,6 +68,7 @@ export default function DeveloperConsoleRegister() {
                     developerid === developerData[i].developer_id ||
                     developername === developerData[i].developer_name
                 ){
+                    alert("Error: このデベロッパはすでに存在しています");
                     throw new Error("Error: このデベロッパはすでに存在しています");
                 } else {
                     continue;
@@ -84,6 +89,8 @@ export default function DeveloperConsoleRegister() {
                 console.error("Error: ", error.message);
                 return;
             }
+            alert("13ninDeveloperConsole登録完了!");
+            location.replace(`/store/developer/${developerid}`);
         } catch(e){
             console.error("Error: ", e);
         } finally {
@@ -94,7 +101,7 @@ export default function DeveloperConsoleRegister() {
     const targetDate = new Date('2025-12-18 00:00:00');
     useEffect(() => {
         const currentDate = new Date();
-        setIsSetup(currentDate > targetDate);
+        setIsSetup(currentDate < targetDate);
     }, []);
 
     return !isSetup ? (
@@ -111,7 +118,7 @@ export default function DeveloperConsoleRegister() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
                             <h1>13ninデベロッパコンソール新規登録</h1>
-                            <form onSubmit={StorePublish}>
+                            <form onSubmit={DevConsoleRegister}>
                                 <label>
                                     デベロッパID
                                     <input type="text" id="developerid" required/>
@@ -128,7 +135,7 @@ export default function DeveloperConsoleRegister() {
                                 </label>
                                 <br/><br/>
                                 <button type="submit" disabled={loading}>
-                                    <span>アプリケーションを公開</span>
+                                    <span>13ninデベロッパコンソール新規登録</span>
                                 </button>
                             </form>
                         </>
