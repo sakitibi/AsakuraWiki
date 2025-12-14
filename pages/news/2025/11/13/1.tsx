@@ -30,7 +30,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news/2025/11/13"/>
+                    <LeftMenuJp URL="/news/2025/11/13/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>
                             <i

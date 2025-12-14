@@ -30,7 +30,7 @@ export default function NewsPage() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news/2025/12/14"/>
+                    <LeftMenuJp URL="/news/2025/12/14/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/12/14 18-е — 13ninGamesStore в полном разгаре!</h1>
                         <p>Причина в том, что Закон о смартфонах<br/> вступит в силу с 18 декабря 2025 года</p>
