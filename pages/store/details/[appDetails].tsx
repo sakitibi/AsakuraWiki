@@ -19,7 +19,7 @@ export interface AppProps {
     app_description: string | null;
     appid: string;
     download_url: string;
-    developer_siteurl: string;
+    developer_siteurl: string | null;
     official: boolean;
     app_version: string;
     isChecked: boolean;
@@ -30,7 +30,7 @@ export interface AppProps {
 
 export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
-    const [apps, setApps] = useState<AppProps[]>([]);
+    const [apps, setApps] = useState<AppProps | null>(null);
     const [isSetup, setIsSetup] = useState(false);
     const router:NextRouter = useRouter();
     const { appDetails } = router.query;
@@ -96,36 +96,36 @@ export default function Store() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick} />
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/store/details/" rupages='false' />
+                    <LeftMenuJp URL={`/store/details/${appDetailsStr}`} rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
-                            {!!apps ? apps.map((data, index) => (
-                                <div id="details-container" key={index}>
-                                    {data.isChecked ? (
+                            {!!apps ? (
+                                <div id="details-container">
+                                    {apps.isChecked ? (
                                         <div id="details-contents">
-                                            <h1 id={styles.appTitle}>{data.app_title}</h1>
+                                            <h1 id={styles.appTitle}>{apps.app_title}</h1>
                                             <p>
-                                                <a id={styles.appDeveloper} href={`/store/developer/${data.developer_id}`}>
-                                                    {data.developer}
+                                                <a id={styles.appDeveloper} href={`/store/developer/${apps.developer_id}`}>
+                                                    {apps.developer}
                                                 </a>
                                             </p>
                                             <div id={styles.appIconContainer}>
                                                 <p>
                                                     <img
-                                                        src={data.appicon_url}
-                                                        alt={`${data.app_title}_icon`}
+                                                        src={apps.appicon_url}
+                                                        alt={`${apps.app_title}_icon`}
                                                         width="50"
                                                         height="50"
                                                     />
                                                 </p>
-                                                <p>{data.review}</p>
+                                                <p>{apps.review}</p>
                                             </div>
-                                            <p>{data.download_counter}ダウンロード</p>
+                                            <p>{apps.download_counter}ダウンロード</p>
                                             <div style={{ display: 'flex' }}>
                                                 <button
                                                     id={styles.installButton}
                                                     className="installButton"
-                                                    onClick={async() => await InstallHandler(data.download_url, data.download_counter)}
+                                                    onClick={async() => await InstallHandler(apps.download_url, apps.download_counter)}
                                                 >
                                                     <span
                                                         style={{
@@ -138,14 +138,14 @@ export default function Store() {
                                                 </button>
                                             </div>
                                             <h3>このゲームについて</h3>
-                                            <p style={{ maxWidth: '600px' }}>{data.app_description ?? ""}</p>
+                                            <p style={{ maxWidth: '600px' }}>{apps.app_description ?? ""}</p>
                                             <p>最終更新日: {
-                                                `${data.update_at.split("-")[0]}/${data.update_at.split("-")[1]}/${data.update_at.split("-")[2].split(" ")[0]}`
+                                                `${apps.update_at.split("-")[0]}/${apps.update_at.split("-")[1]}/${apps.update_at.split("-")[2].split(" ")[0]}`
                                             }</p>
                                         </div>
                                     ) : null}
                                 </div>
-                            )) : (
+                            ) : (
                                 <Custom404/>
                             )}
                         </>

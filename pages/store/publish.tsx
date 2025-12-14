@@ -74,6 +74,7 @@ export default function Store() {
                     developer: developerData.developer_name,
                     developer_siteurl: developerData.developer_siteurl,
                     official: false,
+                    developer_id: developerData.developer_id,
                     review: 3,
                     appicon_url: appicon,
                     download_url: appdownload,
