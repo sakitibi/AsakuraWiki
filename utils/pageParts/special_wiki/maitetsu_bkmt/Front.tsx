@@ -135,6 +135,7 @@ export default function BKMT_Front(){
                     <li>朗報です!、マイ鉄ネットワークを誰かが攻撃してくれました! -- みぞれ 2025-08-17 (日) 18:31:06</li>
                     <li>マイ鉄ネットワークの参加者がどんどん増えて来ちゃってる..&br;これどうしよ -- みぞれ 2025-11-01 (土) 16:50:21</li>
                     <li><a href="https://wikiwiki.jp/p/information/view?id=8">これwikiwikiに警戒されてるんじゃ..</a> -- みぞれ 2025-12-08 (日) 12:21:53</li>
+                    <li>やっぱ警戒されてそう -- さきちび 2025-12-15 (月) 17:56:32</li>
                 </ul>
                 <p><a href="/wiki/maitetsu_bkmt/comment" target="_blank">こちらでコメントする</a></p>
             </div>
