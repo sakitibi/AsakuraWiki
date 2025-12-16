@@ -9,6 +9,12 @@ export default function FooterRu(){
                     <li className={styles.pFooterNav__item}>
                         <a href="/policies">условия обслуживания</a>
                     </li>
+                    <li className={styles.pFooterNav__item}>
+                        <a href="/privacy">политика конфиденциальности</a>
+                    </li>
+                    <li className={styles.pFooterNav__item}>
+                        <a href="/about/ad">О рекламе</a>
+                    </li>
                 </ul>
             </div>
             <div style={{ textAlign: 'center' }} className={styles.cCopyright}>

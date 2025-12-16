@@ -9,6 +9,12 @@ export default function FooterJp(){
                     <li className={styles.pFooterNav__item}>
                         <a href="/policies">利用規約</a>
                     </li>
+                    <li className={styles.pFooterNav__item}>
+                        <a href="/privacy">プライバシーポリシー</a>
+                    </li>
+                    <li className={styles.pFooterNav__item}>
+                        <a href="/about/ad">広告について</a>
+                    </li>
                 </ul>
             </div>
             <div style={{textAlign: "center"}} className={styles.cCopyright}>
