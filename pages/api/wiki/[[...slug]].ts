@@ -98,7 +98,7 @@ export default async function handler(
 
             if (pageErr) return res.status(500).json({ error: pageErr.message })
             if (!page) return res.status(404).json({ error: 'Page not found' })
-            const decompressedContent = Pako.ungzip(page.content, { to: "string" });
+            const decompressedContent = Pako.ungzip(Uint8Array.from(atob(page.content), c => c.charCodeAt(0)), { to: "string" })
             const pageResult = {
                 ...page,
                 content: decompressedContent

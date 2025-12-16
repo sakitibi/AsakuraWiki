@@ -1,4 +1,3 @@
-import { decodeBase64Unicode } from "@/lib/base64";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import type { editMode } from '@/utils/wiki_settings';
 import Pako from "pako";
@@ -46,9 +45,13 @@ export default async function wikiFetch(
             setError('ページの読み込みに失敗しました');
             setPage(null);
         } else {
-            setPage(pageData);
-            setTitle(pageData.title);
-            setContent(Pako.ungzip(Uint8Array.from(atob(pageData.content), c => c.charCodeAt(0)), { to: "string" }));
+            const pageDataResult = {
+                ...pageData,
+                content: Pako.ungzip(Uint8Array.from(atob(pageData.content), c => c.charCodeAt(0)), { to: "string" })
+            }
+            setPage(pageDataResult);
+            setTitle(pageDataResult.title);
+            setContent(pageDataResult.content);
             setError(null);
         }
     } catch (err) {
