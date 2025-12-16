@@ -2,6 +2,7 @@ import { editMode } from "@/utils/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import { NextRouter } from "next/router";
+import Pako from "pako";
 
 export const handleUpdate = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -23,14 +24,14 @@ export const handleUpdate = async (
     try {
         const { data: { session } } = await supabaseServer.auth.getSession();
         const token = session?.access_token;
-
+        const compressedContent = Pako.gzip(content, { level: 9 });
         const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ title, content }),
+            body: JSON.stringify({ title, content: compressedContent }),
         });
 
         if (!res.ok) {

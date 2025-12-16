@@ -1,5 +1,7 @@
+import { decodeBase64Unicode } from "@/lib/base64";
 import { supabaseServer } from "@/lib/supabaseClientServer";
-import type { editMode, designColor } from '@/utils/wiki_settings';
+import type { editMode } from '@/utils/wiki_settings';
+import Pako from "pako";
 
 export interface Page {
     title: string;
@@ -46,7 +48,7 @@ export default async function wikiFetch(
         } else {
             setPage(pageData);
             setTitle(pageData.title);
-            setContent(pageData.content);
+            setContent(Pako.ungzip(Uint8Array.from(atob(pageData.content), c => c.charCodeAt(0)), { to: "string" }));
             setError(null);
         }
     } catch (err) {

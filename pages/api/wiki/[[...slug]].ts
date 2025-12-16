@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
+import Pako from 'pako';
 
 export default async function handler(
     req: NextApiRequest,
@@ -97,8 +98,12 @@ export default async function handler(
 
             if (pageErr) return res.status(500).json({ error: pageErr.message })
             if (!page) return res.status(404).json({ error: 'Page not found' })
-
-            return res.status(200).json(page)
+            const decompressedContent = Pako.ungzip(page.content, { to: "string" });
+            const pageResult = {
+                ...page,
+                content: decompressedContent
+            }
+            return res.status(200).json(pageResult);
         }
 
         // ======================
