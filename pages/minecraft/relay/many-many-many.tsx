@@ -104,7 +104,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>9:45</td>
                                             <td style={TdStyles}>
-                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
+                                                <a href="https://youtube.com/channel/UCE_37rY8dXnzWAWhFXsg5FQ">ななっし～</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -200,7 +200,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>13:45</td>
                                             <td style={TdStyles}>
-                                                空き枠<a href="https://sakitibi-com9.webnode.jp/page/15/minecraft/relay/d769b702-f1c4-508d-c15d-8d12f24276e0/">(ここから応募!)</a>
+                                                <a style={{ color: "yellow" }} href="https://youtube.com/channel/UCQOkMREmJU1KbbbnHWhkzxg">あげるくん</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
