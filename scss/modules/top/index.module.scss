@@ -53,8 +53,8 @@
 }
 
 .pFooterNav__item {
-    display: inline-block;
     $link_color: #6c803d;
+    display: inline-block !important;
     font-size: 10px;
     line-height: 1;
     margin: 0;
