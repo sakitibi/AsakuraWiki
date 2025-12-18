@@ -11,7 +11,6 @@ import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 interface AppProps {
     app_title: string;
     developer: string;
-    review: number;
     appicon_url: string;
     app_description: string | null;
     appid: string;
@@ -115,7 +114,6 @@ export default function Store() {
                                                     <h2>{data.app_title}</h2>
                                                     <p>{data.app_description}</p>
                                                     <p><small>{data.developer}</small></p>
-                                                    <p><small>{data.review}</small></p>
                                                 </a>
                                             </div>
                                         </div>

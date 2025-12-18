@@ -16,7 +16,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         // データ取得
         const { data, error } = await supabaseServer
             .from('store.apps')
-            .select('app_title,developer,review,appicon_url,app_description,appid')
+            .select('app_title,developer,appicon_url,app_description,appid')
         if (error) return res.status(500).json({ error: error.message });
         return res.status(200).json(data);
     } else {
