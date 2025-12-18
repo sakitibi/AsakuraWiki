@@ -20,6 +20,7 @@ export default function ModifyPage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [userMeta, setUserMeta] = useState<any[]>([]);
     const user:User | null = useUser();
+    const provider = user?.app_metadata.provider;
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const handleModify = async (e: React.FormEvent) => {
@@ -86,7 +87,7 @@ export default function ModifyPage() {
         window.location.href = '/dashboard';
     };
 
-    return (
+    return provider === "email" ? (
         <>
             <Head>
                 <title>13ninアカウントを情報変更</title>
@@ -174,6 +175,17 @@ export default function ModifyPage() {
                         <span>{loading ? '登録中…' : '新規登録'}</span>
                     </button>
                 </form>
+            </main>
+        </>
+    ) : (
+        <>
+            <Head>
+                <title>403 Forbidden</title>
+            </Head>
+            <main style={{ padding: '2rem', maxWidth: 600 }}>
+                <h1>403 Forbidden</h1>
+                <p>13ninアカウントを情報変更する権限が有りません</p>
+                <p><a href="/login/13nin">他のアカウントにログイン</a></p>
             </main>
         </>
     );
