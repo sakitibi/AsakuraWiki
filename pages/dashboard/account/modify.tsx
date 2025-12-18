@@ -18,7 +18,6 @@ export default function ModifyPage() {
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
-    const [userMeta, setUserMeta] = useState<any[]>([]);
     const user:User | null = useUser();
     const provider = user?.app_metadata.provider;
 
@@ -45,23 +44,33 @@ export default function ModifyPage() {
         );
 
         // Supabase にユーザー変更（email/passwordは平文でOK）
-        const { data, error } = await supabaseServer.auth.updateUser({
-            email,
-            password
-        });
+        const updateAuth: {
+            email?: string
+            password?: string
+        } = {}
 
-        if (error || !data.user) {
-            setErrorMsg(error?.message || '変更失敗');
-            setLoading(false);
-            return;
+        if (email.trim() !== '') {
+            updateAuth.email = email
         }
 
+        if (password.trim() !== '') {
+            updateAuth.password = password
+        }
+
+        if (Object.keys(updateAuth).length > 0) {
+            const { error } = await supabaseServer.auth.updateUser(updateAuth)
+            if (error) {
+                setErrorMsg(error.message)
+                setLoading(false)
+                return
+            }
+        }
         // 暗号化メタデータ送信
         try {
             const filtered = updatedInputs.filter(i => i && i.trim() !== '');
             console.log("filtered: ", filtered);
             if (filtered.length > 0) {
-                const { data, error } = await supabaseServer
+                const { error } = await supabaseServer
                     .from("user_metadatas")
                     .update({
                         metadatas: filtered,
@@ -73,7 +82,6 @@ export default function ModifyPage() {
                     setErrorMsg(error.message);
                     return;
                 }
-                setUserMeta([...userMeta, data]);
             }
         } catch (e) {
             console.error("メタデータ送信エラー: ", e);
