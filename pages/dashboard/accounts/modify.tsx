@@ -75,7 +75,8 @@ export default function ModifyPage() {
                         metadatas: filtered,
                     })
                     .eq("id", user!.id)
-                    .select();
+                    .select()
+                    .single();
                 if(error){
                     console.error("Error: ", error.message);
                     setErrorMsg(error.message);

@@ -69,6 +69,7 @@ export default function Store() {
             .update({
                 download_counter
             })
+            .eq("appid", appDetailsStr)
         if(error){
             console.error("error: ", error.message);
             return;
