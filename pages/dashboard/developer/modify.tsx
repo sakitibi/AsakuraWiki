@@ -8,14 +8,9 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import type { User } from '@supabase/supabase-js';
 import { useUser } from '@supabase/auth-helpers-react';
+import { DeveloperProps } from '@/pages/dashboard/developer/register';
 
-export interface DeveloperProps{
-    developer_id?: string;
-    developer_name?: string;
-    user_id?: string;
-}
-
-export default function DeveloperConsoleRegister() {
+export default function DeveloperConsoleModify() {
     const [loading, setLoading] = useState<boolean>(false);
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const user:User | null = useUser();
@@ -35,7 +30,7 @@ export default function DeveloperConsoleRegister() {
         try{
             const { data, error } = await supabaseServer
                 .from("store.developers")
-                .select("developer_id,developer_name,user_id")
+                .select("developer_id,developer_name")
             if(error){
                 console.error("Error: ", error.message);
                 return;
@@ -65,7 +60,7 @@ export default function DeveloperConsoleRegister() {
             const developername = (document.getElementById("developername") as HTMLInputElement).value;
             for(let i = 0;i < developerData.length;i++){
                 if(
-                    user.id === developerData[i].user_id ||
+                    user?.id === developerData[i].user_id ||
                     developerid === developerData[i].developer_id ||
                     developername === developerData[i].developer_name
                 ){
@@ -77,20 +72,20 @@ export default function DeveloperConsoleRegister() {
             }
             const { error } = await supabaseServer
                 .from("store.developers")
-                .insert([{
-                    user_id: user!.id,
+                .update({
                     developer_id: `${developerTopLevelDomain}.${developerid}`,
                     developer_siteurl: developersiteurl,
                     developer_name: developername
-                }])
+                })
+                .eq("user_id", user?.id)
                 .select()
                 .single();
             if(error){
-                alert("エラー デベロッパ登録失敗");
+                alert("エラー デベロッパ変更失敗");
                 console.error("Error: ", error.message);
                 return;
             }
-            alert("13ninDeveloperConsole登録完了!");
+            alert("13ninDeveloperConsole変更完了!");
             location.replace(`/store/developer/${developerid}`);
         } catch(e){
             console.error("Error: ", e);
@@ -102,16 +97,16 @@ export default function DeveloperConsoleRegister() {
         <>
             <Head>
                 <meta charSet='UTF-8' />
-                <title>13ninデベロッパコンソール新規登録</title>
+                <title>13ninデベロッパコンソール変更</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick} />
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/dashboard/developer/register" rupages='false' />
+                    <LeftMenuJp URL="/dashboard/developer/modify" rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
-                            <h1>13ninデベロッパコンソール新規登録</h1>
+                            <h1>13ninデベロッパコンソール変更</h1>
                             <form onSubmit={DevConsoleRegister}>
                                 <label>
                                     デベロッパID
@@ -141,7 +136,7 @@ export default function DeveloperConsoleRegister() {
                                 </label>
                                 <br/><br/>
                                 <button type="submit" disabled={loading}>
-                                    <span>13ninデベロッパコンソール新規登録</span>
+                                    <span>13ninデベロッパコンソール変更</span>
                                 </button>
                             </form>
                         </>
