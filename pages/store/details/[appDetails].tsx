@@ -29,7 +29,6 @@ export interface AppProps {
 export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps | null>(null);
-    const [isSetup, setIsSetup] = useState(false);
     const router:NextRouter = useRouter();
     const { appDetails } = router.query;
     // クエリ→文字列化
