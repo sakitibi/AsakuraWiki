@@ -49,3 +49,16 @@
         width: 33.33333333%;
     }
 }
+
+@media (min-width: 992px) {
+    .pFooterNav__item {
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 992px) {
+    .pLikedWiki__title,.pHotWiki__title,.pRecentWiki__title {
+        font-size: 30px;
+        padding: .25em 1em;
+    }
+}
