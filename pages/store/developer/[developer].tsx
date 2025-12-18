@@ -76,7 +76,7 @@ export default function Store() {
         <>
             <Head>
                 <meta charSet='UTF-8' />
-                <title>13ninGamesStore</title>
+                <title>{developers?.developer_name} 13ninGamesStore</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
             <div className={styles.contentsWrapper}>
