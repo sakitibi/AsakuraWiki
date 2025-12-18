@@ -77,7 +77,7 @@ export default function DeveloperConsoleModify() {
                     developer_siteurl: developersiteurl,
                     developer_name: developername
                 })
-                .eq("user_id", user?.id)
+                .eq("id", user?.id)
                 .select()
                 .single();
             if(error){
