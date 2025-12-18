@@ -45,8 +45,8 @@ export default function ModifyPage() {
 
         // Supabase にユーザー変更（email/passwordは平文でOK）
         const updateAuth: {
-            email?: string
-            password?: string
+        email?: string
+        password?: string
         } = {}
 
         if (email.trim() !== '') {
@@ -58,9 +58,15 @@ export default function ModifyPage() {
         }
 
         if (Object.keys(updateAuth).length > 0) {
-            const { error } = await supabaseServer.auth.updateUser(updateAuth)
-            if (error) {
-                setErrorMsg(error.message)
+            const res = await fetch('/api/accounts/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateAuth),
+            })
+
+            const result = await res.json();
+            if (!res.ok) {
+                setErrorMsg(result.error)
                 setLoading(false)
                 return
             }
