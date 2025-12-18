@@ -60,6 +60,7 @@ export default function ModifyPage() {
         if (Object.keys(updateAuth).length > 0) {
             const res = await fetch('/api/accounts/update', {
                 method: 'POST',
+                credentials: 'include', // ← ★必須
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updateAuth),
             })
