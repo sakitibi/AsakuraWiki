@@ -5,7 +5,6 @@ import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import type { User } from '@supabase/supabase-js';
 import { useUser } from '@supabase/auth-helpers-react';
@@ -18,7 +17,6 @@ interface DeveloperProps{
 export default function DeveloperConsoleRegister() {
     const [loading, setLoading] = useState<boolean>(false);
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [isSetup, setIsSetup] = useState<boolean>(false);
     const user:User | null = useUser();
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -97,14 +95,7 @@ export default function DeveloperConsoleRegister() {
             setLoading(false);
         }
     }
-
-    const targetDate = new Date('2025-12-18 00:00:00');
-    useEffect(() => {
-        const currentDate = new Date();
-        setIsSetup(currentDate < targetDate);
-    }, []);
-
-    return !isSetup ? (
+    return(
         <>
             <Head>
                 <meta charSet='UTF-8' />
@@ -144,7 +135,5 @@ export default function DeveloperConsoleRegister() {
                 <FooterJp/>
             </div>
         </>
-    ) : (
-        <StoreUnopened/>
-    );
+    )
 }

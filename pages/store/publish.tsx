@@ -5,7 +5,6 @@ import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { DeveloperProps } from '@/pages/store/developer/[developer]';
 import type { User } from '@supabase/supabase-js';
@@ -108,6 +107,7 @@ export default function Store() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
                             <h1>アプリケーションの公開</h1>
+                            <p>審査が通るまで公開されません</p>
                             <form onSubmit={StorePublish}>
                                 <label>
                                     アプリID
