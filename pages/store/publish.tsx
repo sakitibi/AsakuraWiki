@@ -14,7 +14,6 @@ import { useUser } from '@supabase/auth-helpers-react';
 export default function Store() {
     const [loading, setLoading] = useState<boolean>(false);
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [isSetup, setIsSetup] = useState<boolean>(false);
     const user:User | null = useUser();
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -95,14 +94,7 @@ export default function Store() {
             setLoading(false);
         }
     }
-
-    const targetDate = new Date('2025-12-18 00:00:00');
-    useEffect(() => {
-        const currentDate = new Date();
-        setIsSetup(currentDate < targetDate);
-    }, []);
-
-    return !isSetup ? (
+    return(
         <>
             <Head>
                 <meta charSet='UTF-8' />
@@ -157,7 +149,5 @@ export default function Store() {
                 <FooterJp/>
             </div>
         </>
-    ) : (
-        <StoreUnopened/>
-    );
+    )
 }

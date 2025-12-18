@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { hasDuplicates } from '@/utils/array';
-import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 
 interface AppProps {
     app_title: string;
@@ -19,7 +18,6 @@ interface AppProps {
 export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps[]>([]);
-    const [isSetup, setIsSetup] = useState(false);
     const [osusume, setOsusume] = useState<AppProps[]>([]);
     const [osusumeData, setOsusumeData] = useState<AppProps[]>([]);
 
@@ -34,13 +32,6 @@ export default function Store() {
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-
-    const targetDate = new Date('2025-12-18 00:00:00');
-    useEffect(() => {
-        const currentDate = new Date();
-        setIsSetup(currentDate < targetDate);
-    }, []);
-
     useEffect(() => {
         const AppDataFetch = async () => {
             const res = await fetch("/api/store/osusume_app");
@@ -81,7 +72,7 @@ export default function Store() {
         }
     }, [osusume]);
 
-    return !isSetup ? (
+    return(
         <>
             <Head>
                 <meta charSet='UTF-8' />
@@ -126,7 +117,5 @@ export default function Store() {
                 <FooterJp />
             </div>
         </>
-    ) : (
-        <StoreUnopened/>
-    );
+    )
 }

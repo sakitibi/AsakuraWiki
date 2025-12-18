@@ -7,7 +7,6 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { NextRouter, useRouter } from 'next/router';
 import Custom404 from '@/pages/404';
-import StoreUnopened from '@/utils/pageParts/top/jp/storeunOpened';
 import type { AppProps } from '@/pages/store/details/[appDetails]';
 
 export interface DeveloperProps{
@@ -22,7 +21,6 @@ export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps[]>([]);
     const [developers, setDevelopers] = useState<DeveloperProps | null>(null);
-    const [isSetup, setIsSetup] = useState(false);
     const router:NextRouter = useRouter();
     const { developer } = router.query;
     // クエリ→文字列化
@@ -39,11 +37,6 @@ export default function Store() {
         setMenuStatus(prev => !prev);
     };
 
-    const targetDate = new Date('2025-12-18 00:00:00');
-    useEffect(() => {
-        const currentDate = new Date();
-        setIsSetup(currentDate < targetDate);
-    }, []);
     useEffect(() => {
         const AppDataFetch = async () => {
             console.log("developer: ", developer);
@@ -79,7 +72,7 @@ export default function Store() {
         DevDataFetch();
     }, [DevelopersStr]);
 
-    return !isSetup ? (
+    return(
         <>
             <Head>
                 <meta charSet='UTF-8' />
@@ -124,7 +117,5 @@ export default function Store() {
                 <FooterJp/>
             </div>
         </>
-    ) : (
-        <StoreUnopened/>
-    );
+    )
 }

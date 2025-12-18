@@ -31,6 +31,11 @@ export default function LeftMenuJp({ URL, rupages }: Props){
                             <button><span>ログイン/新規登録</span></button>
                         </Link>
                     </li>
+                    <li>
+                        <Link href="/store">
+                            <button><span>13ninGamesStore</span></button>
+                        </Link>
+                    </li>
                     {rupages !== "false" ? (
                         <li>
                             <Link href={`/ru${URL}`}>
