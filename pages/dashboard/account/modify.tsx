@@ -58,18 +58,9 @@ export default function ModifyPage() {
         }
 
         if (Object.keys(updateAuth).length > 0) {
-            const res = await fetch('/api/accounts/update', {
-                method: 'POST',
-                credentials: 'include', // ← ★必須
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updateAuth),
-            })
-
-            const result = await res.json();
-            if (!res.ok) {
-                console.log("result: ", result);
-                setErrorMsg(result.error)
-                setLoading(false)
+            const { error } = await supabaseServer.auth.updateUser(updateAuth)
+            if (error) {
+                setErrorMsg(error.message)
                 return
             }
         }
