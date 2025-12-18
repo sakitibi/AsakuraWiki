@@ -64,7 +64,6 @@ export default function ModifyPage() {
                 const { data, error } = await supabaseServer
                     .from("user_metadatas")
                     .update({
-                        id: user!.id,
                         metadatas: filtered,
                     })
                     .eq("id", user!.id)
@@ -172,7 +171,7 @@ export default function ModifyPage() {
                     <br /><br />
                     {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
                     <button type="submit" disabled={loading}>
-                        <span>{loading ? '登録中…' : '新規登録'}</span>
+                        <span>{loading ? '情報変更中…' : '情報変更'}</span>
                     </button>
                 </form>
             </main>
