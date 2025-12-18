@@ -88,7 +88,7 @@ export default function Store() {
                         <div id="osusume-apps">
                             <p>おすすめアプリ</p>
                             <>
-                                {osusume.map((data, index) => (
+                                {osusume.length > 0 ? osusume.map((data, index) => (
                                     <>
                                         <div className='osusume' key={index} style={{ display: 'flex' }}>
                                             <img
@@ -109,7 +109,11 @@ export default function Store() {
                                             </div>
                                         </div>
                                     </>
-                                ))}
+                                )) : (
+                                    <>
+                                        <p>おすすめアプリ読み込み中</p>
+                                    </>
+                                )}
                             </>
                         </div>
                     </main>
