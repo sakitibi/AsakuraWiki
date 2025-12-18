@@ -79,6 +79,7 @@ export default function ModifyPage() {
                 if(error){
                     console.error("Error: ", error.message);
                     setErrorMsg(error.message);
+                    setLoading(false);
                     return;
                 }
             }
