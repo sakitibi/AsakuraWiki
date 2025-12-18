@@ -59,6 +59,7 @@ export default function DeveloperConsoleRegister() {
                 throw new Error("Error: developerData is undefined");
             }
             const developerid = (document.getElementById("developerid") as HTMLInputElement).value;
+            const developerTopLevelDomain = (document.getElementById("developertopleveldomain") as HTMLSelectElement).value;
             const developersiteurl = (document.getElementById("developersiteurl") as HTMLInputElement).value;
             const developername = (document.getElementById("developername") as HTMLInputElement).value;
             for(let i = 0;i < developerData.length;i++){
@@ -76,7 +77,7 @@ export default function DeveloperConsoleRegister() {
                 .from("store.developers")
                 .insert([{
                     user_id: user!.id,
-                    developer_id: developerid,
+                    developer_id: `${developerTopLevelDomain}.${developerid}`,
                     developer_siteurl: developersiteurl,
                     developer_name: developername
                 }])
@@ -113,6 +114,18 @@ export default function DeveloperConsoleRegister() {
                                 <label>
                                     デベロッパID
                                     <input type="text" id="developerid" required/>
+                                </label>
+                                <br/><br/>
+                                <label>
+                                    デベロッパトップレベルドメイン
+                                    <select id="developertopleveldomain" required>
+                                        <option value="com" selected>com</option>
+                                        <option value="jp">jp</option>
+                                        <option value="ru">ru</option>
+                                        <option value="org">org</option>
+                                        <option value="dev">dev</option>
+                                        <option value="app">app</option>
+                                    </select>
                                 </label>
                                 <br/><br/>
                                 <label>
