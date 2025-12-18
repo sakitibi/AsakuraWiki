@@ -45,8 +45,8 @@ export default function ModifyPage() {
 
         // Supabase にユーザー変更（email/passwordは平文でOK）
         const updateAuth: {
-        email?: string
-        password?: string
+            email?: string
+            password?: string
         } = {}
 
         if (email.trim() !== '') {

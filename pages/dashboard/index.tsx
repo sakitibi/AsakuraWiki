@@ -30,6 +30,10 @@ export default function DashboardPage() {
         if (loading || !asakura_menber_found || provider !== "email") return;
         window.location.href = "/dashboard/secretcodes/create";
     }
+    const AccountModify = () => {
+        if (loading || !asakura_menber_found || provider !== "email") return;
+        window.location.href = "/dashboard/accounts/modify";
+    }
     useEffect(() => {
         setLoading(false);
     }, []);
@@ -56,6 +60,14 @@ export default function DashboardPage() {
                             >
                                 <span>あさクラシークレットコードの作成
                                     {!asakura_menber_found || provider !== "email" ? "(使用不可)" : null}
+                                </span>
+                            </button>
+                            <button
+                                disabled={loading || provider !== "email"}
+                                onClick={AccountModify}
+                            >
+                                <span>13ninアカウント情報変更
+                                    {provider !== "email" ? "(使用不可)" : null}
                                 </span>
                             </button>
                         </div>
