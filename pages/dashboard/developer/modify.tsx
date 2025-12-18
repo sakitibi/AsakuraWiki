@@ -86,7 +86,7 @@ export default function DeveloperConsoleModify() {
                 return;
             }
             alert("13ninDeveloperConsole変更完了!");
-            location.replace(`/store/developer/${developerid}`);
+            location.replace(`/store/developer/${developerTopLevelDomain}.${developerid}`);
         } catch(e){
             console.error("Error: ", e);
         } finally {
