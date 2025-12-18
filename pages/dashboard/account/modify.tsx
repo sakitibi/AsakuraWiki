@@ -67,6 +67,7 @@ export default function ModifyPage() {
 
             const result = await res.json();
             if (!res.ok) {
+                console.log("result: ", result);
                 setErrorMsg(result.error)
                 setLoading(false)
                 return
