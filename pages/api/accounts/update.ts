@@ -60,7 +60,13 @@ export default async function handler(
         } = await supabase.auth.getUser()
 
         if (!user || userError) {
-            return res.status(401).json({ error: 'Unauthorized' })
+            return res.status(401).json({
+                error: 'Unauthorized',
+                data: {
+                    cookie: req.cookies,
+                    body: req.body
+                }
+            })
         }
 
         const { email, password } = req.body as {
