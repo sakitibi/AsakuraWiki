@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
 import Pako from 'pako';
-import { base64ToUint8Array } from '@/utils/wikiFetch';
+import { hexByteaToUint8Array } from '@/utils/wikiFetch';
 
 export default async function handler(
     req: NextApiRequest,
@@ -99,7 +99,7 @@ export default async function handler(
 
             if (pageErr) return res.status(500).json({ error: pageErr.message })
             if (!page) return res.status(404).json({ error: 'Page not found' })
-            const compressed = base64ToUint8Array(page.content);
+            const compressed = hexByteaToUint8Array(page.content);
             const decompressedContent = Pako.ungzip(compressed, { to: "string" });
             const pageResult = {
                 ...page,

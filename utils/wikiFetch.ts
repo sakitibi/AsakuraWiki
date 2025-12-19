@@ -7,23 +7,21 @@ export interface Page {
     content: string;
 }
 
-export function base64ToUint8Array(input: string | Uint8Array | ArrayBuffer): Uint8Array {
-    if (input instanceof Uint8Array) {
-        return input
+export function hexByteaToUint8Array(hex: string): Uint8Array {
+    if (!hex.startsWith("\\x")) {
+        throw new Error("Not a bytea hex string")
     }
 
-    if (input instanceof ArrayBuffer) {
-        return new Uint8Array(input)
+    const clean = hex.slice(2) // \x を除去
+    const bytes = new Uint8Array(clean.length / 2)
+
+    for (let i = 0; i < clean.length; i += 2) {
+        bytes[i / 2] = parseInt(clean.substr(i, 2), 16)
     }
 
-    // string のときだけ base64
-    const binary = atob(input)
-    const bytes = new Uint8Array(binary.length)
-    for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i)
-    }
     return bytes
 }
+
 
 export default async function wikiFetch(
     wikiSlugStr: string,
@@ -63,9 +61,8 @@ export default async function wikiFetch(
             setError('ページの読み込みに失敗しました');
             setPage(null);
         } else {
-            console.log("pageData.content: ", pageData.content);
             // bytea(base64) → Uint8Array → gunzip
-            const compressed = base64ToUint8Array(pageData.content);
+            const compressed = hexByteaToUint8Array(pageData.content);
             const decompressed = Pako.ungzip(compressed, { to: "string" });
 
             const pageDataResult = {
