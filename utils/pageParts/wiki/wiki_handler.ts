@@ -2,7 +2,6 @@ import { editMode } from "@/utils/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import { NextRouter } from "next/router";
-import Pako from "pako";
 
 export const handleUpdate = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,

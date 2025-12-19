@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from 'lib/supabaseClientServer';
 import Pako from 'pako';
+import { base64ToUint8Array } from '@/utils/wikiFetch';
 
 export default async function handler(
     req: NextApiRequest,
@@ -98,7 +99,8 @@ export default async function handler(
 
             if (pageErr) return res.status(500).json({ error: pageErr.message })
             if (!page) return res.status(404).json({ error: 'Page not found' })
-            const decompressedContent = Pako.ungzip(page.content, { to: "string" })
+            const compressed = base64ToUint8Array(page.content);
+            const decompressedContent = Pako.ungzip(compressed, { to: "string" });
             const pageResult = {
                 ...page,
                 content: decompressedContent
@@ -112,7 +114,7 @@ export default async function handler(
         if (req.method === 'PUT') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
             const { content, title } = req.body
-            if (typeof content !== 'object' || typeof title !== 'string') {
+            if (typeof content !== 'string' || typeof title !== 'string') {
                 return res.status(400).json({ error: 'Invalid request body' })
             }
 

@@ -7,6 +7,16 @@ export interface Page {
     content: string;
 }
 
+export function base64ToUint8Array(base64: string): Uint8Array {
+    const binary = atob(base64);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes;
+}
+
 export default async function wikiFetch(
     wikiSlugStr: string,
     pageSlugStr: string,
@@ -45,10 +55,15 @@ export default async function wikiFetch(
             setError('ページの読み込みに失敗しました');
             setPage(null);
         } else {
+            // bytea(base64) → Uint8Array → gunzip
+            const compressed = base64ToUint8Array(pageData.content);
+            const decompressed = Pako.ungzip(compressed, { to: "string" });
+
             const pageDataResult = {
                 ...pageData,
-                content: Pako.ungzip(pageData.content, { to: "string" })
-            }
+                content: decompressed
+            };
+
             setPage(pageDataResult);
             setTitle(pageDataResult.title);
             setContent(pageDataResult.content);
