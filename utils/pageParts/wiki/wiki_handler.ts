@@ -24,14 +24,13 @@ export const handleUpdate = async (
     try {
         const { data: { session } } = await supabaseServer.auth.getSession();
         const token = session?.access_token;
-        const compressedContent = Pako.gzip(content, { level: 9 });
         const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ title, content: compressedContent }),
+            body: JSON.stringify({ title, content }),
         });
 
         if (!res.ok) {

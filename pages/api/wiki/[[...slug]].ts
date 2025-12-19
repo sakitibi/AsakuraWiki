@@ -98,7 +98,7 @@ export default async function handler(
 
             if (pageErr) return res.status(500).json({ error: pageErr.message })
             if (!page) return res.status(404).json({ error: 'Page not found' })
-            const decompressedContent = Pako.ungzip(Uint8Array.from(atob(page.content), c => c.charCodeAt(0)), { to: "string" })
+            const decompressedContent = Pako.ungzip(page.content, { to: "string" })
             const pageResult = {
                 ...page,
                 content: decompressedContent
@@ -112,7 +112,7 @@ export default async function handler(
         if (req.method === 'PUT') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
             const { content, title } = req.body
-            if (typeof content !== 'string' || typeof title !== 'string') {
+            if (typeof content !== 'object' || typeof title !== 'string') {
                 return res.status(400).json({ error: 'Invalid request body' })
             }
 
@@ -141,10 +141,10 @@ export default async function handler(
             if (wiki.edit_mode === 'private' && !userId) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
             }
-
+            const compressedContent = Pako.gzip(content, { level: 9 });
             const { error } = await supabaseServer
                 .from('wiki_pages')
-                .update({ content, title, updated_at: new Date() })
+                .update({ content: compressedContent, title, updated_at: new Date() })
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
 

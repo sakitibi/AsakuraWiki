@@ -47,7 +47,7 @@ export default async function wikiFetch(
         } else {
             const pageDataResult = {
                 ...pageData,
-                content: Pako.ungzip(Uint8Array.from(atob(pageData.content), c => c.charCodeAt(0)), { to: "string" })
+                content: Pako.ungzip(pageData.content, { to: "string" })
             }
             setPage(pageDataResult);
             setTitle(pageDataResult.title);

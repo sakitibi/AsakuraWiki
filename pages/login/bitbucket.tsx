@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 
-export default function GitLabLogin() {
+export default function BitbucketLogin() {
     useEffect(() => {
         if(typeof window !== "undefined"){
             supabaseServer.auth.signInWithOAuth({
