@@ -145,7 +145,9 @@ export default async function handler(
             }
 
             // gzip 圧縮して \x?? 形式の文字列に変換
-            const compressedBytes = Pako.gzip(Buffer.from(content), { level: 9 })
+            const compressedBytes = Buffer.from(
+                Pako.gzip(content, { level: 9 })
+            )
 
             // Supabase に保存
             const { error } = await supabaseServer
@@ -214,7 +216,9 @@ export default async function handler(
                 return res.status(400).json({ error: 'Missing parameters' })
             }
             // gzip 圧縮して \x?? 形式の文字列に変換
-            const compressedBytes = Pako.gzip(Buffer.from(content), { level: 9 })
+            const compressedBytes = Buffer.from(
+                Pako.gzip(content, { level: 9 })
+            )
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wiki_pages')
                 .insert([{ wiki_slug: wikiSlug, slug, title, content: compressedBytes, author_id: userId }])
