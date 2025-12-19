@@ -3,10 +3,6 @@ import { supabaseServer } from 'lib/supabaseClientServer';
 import Pako from 'pako';
 import { hexByteaToUint8Array } from '@/utils/wikiFetch';
 
-function objectToUint8Array(obj: Record<string, number>): Uint8Array {
-    return Uint8Array.from(Object.values(obj))
-}
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -150,15 +146,11 @@ export default async function handler(
 
             // gzip 圧縮して \x?? 形式の文字列に変換
             const compressedBytes = Pako.gzip(content, { level: 9 })
-            let escaped = ''
-            for (const byte of compressedBytes) {
-                escaped += '\\x' + byte.toString(16).padStart(2, '0')
-            }
 
             // Supabase に保存
             const { error } = await supabaseServer
                 .from('wiki_pages')
-                .update({ content: escaped, title, updated_at: new Date() })
+                .update({ content: compressedBytes, title, updated_at: new Date() })
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
 
@@ -223,13 +215,9 @@ export default async function handler(
             }
             // gzip 圧縮して \x?? 形式の文字列に変換
             const compressedBytes = Pako.gzip(content, { level: 9 })
-            let escaped = ''
-            for (const byte of compressedBytes) {
-                escaped += '\\x' + byte.toString(16).padStart(2, '0')
-            }
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wiki_pages')
-                .insert([{ wiki_slug: wikiSlug, slug, title, content: escaped, author_id: userId }])
+                .insert([{ wiki_slug: wikiSlug, slug, title, content: compressedBytes, author_id: userId }])
                 .select()
                 .maybeSingle()
 
