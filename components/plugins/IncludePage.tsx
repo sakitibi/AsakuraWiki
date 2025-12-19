@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
+import { hexByteaToUint8Array } from '@/utils/wikiFetch'
+import Pako from 'pako'
 
 interface IncludePageProps {
     wikiSlug: string
@@ -34,8 +36,10 @@ export default function IncludePage({
             return res.json()
         })
         .then(async data => {
-            let content: string = data.content || ''
-            const lines:string[] = content.split('\n')
+            const content: string = data.content || ''
+            const compressed = hexByteaToUint8Array(content);
+            let decompressedContent = Pako.ungzip(compressed, { to: "string" });
+            const lines:string[] = decompressedContent.split('\n')
 
             if (lineRange) {
                 const [startRaw = '', endRaw = ''] = lineRange.split('-')
@@ -47,7 +51,7 @@ export default function IncludePage({
                         setError('無効な行範囲です')
                         return
                     }
-                    content = lines.slice(start - 1, end).join('\n')
+                    decompressedContent = lines.slice(start - 1, end).join('\n')
                 }
             }
             const context = {
@@ -56,7 +60,7 @@ export default function IncludePage({
                 variables: {},
             }
 
-            const nodes:React.ReactNode[] = await parseWikiContent(content, context)
+            const nodes:React.ReactNode[] = await parseWikiContent(decompressedContent, context)
             setParsedNodes(nodes)
         })
         .catch(err => {
