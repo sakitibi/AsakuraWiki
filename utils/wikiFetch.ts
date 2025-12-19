@@ -63,6 +63,7 @@ export default async function wikiFetch(
             setError('ページの読み込みに失敗しました');
             setPage(null);
         } else {
+            console.log("pageData.content: ", pageData.content);
             // bytea(base64) → Uint8Array → gunzip
             const compressed = base64ToUint8Array(pageData.content);
             const decompressed = Pako.ungzip(compressed, { to: "string" });
