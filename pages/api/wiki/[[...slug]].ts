@@ -148,11 +148,11 @@ export default async function handler(
             const compressedBytes = Buffer.from(
                 Pako.gzip(content, { level: 9 })
             )
-
+            const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
             // Supabase に保存
             const { error } = await supabaseServer
                 .from('wiki_pages')
-                .update({ content: compressedBytes, title, updated_at: new Date() })
+                .update({ content: bytea, title, updated_at: new Date() })
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
 
@@ -219,9 +219,10 @@ export default async function handler(
             const compressedBytes = Buffer.from(
                 Pako.gzip(content, { level: 9 })
             )
+            const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wiki_pages')
-                .insert([{ wiki_slug: wikiSlug, slug, title, content: compressedBytes, author_id: userId }])
+                .insert([{ wiki_slug: wikiSlug, slug, title, content: bytea, author_id: userId }])
                 .select()
                 .maybeSingle()
 
