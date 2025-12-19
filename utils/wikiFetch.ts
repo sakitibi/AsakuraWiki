@@ -7,14 +7,22 @@ export interface Page {
     content: string;
 }
 
-export function base64ToUint8Array(base64: string): Uint8Array {
-    const binary = atob(base64);
-    const len = binary.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binary.charCodeAt(i);
+export function base64ToUint8Array(input: string | Uint8Array | ArrayBuffer): Uint8Array {
+    if (input instanceof Uint8Array) {
+        return input
     }
-    return bytes;
+
+    if (input instanceof ArrayBuffer) {
+        return new Uint8Array(input)
+    }
+
+    // string のときだけ base64
+    const binary = atob(input)
+    const bytes = new Uint8Array(binary.length)
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i)
+    }
+    return bytes
 }
 
 export default async function wikiFetch(
