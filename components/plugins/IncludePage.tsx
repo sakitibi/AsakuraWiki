@@ -37,8 +37,7 @@ export default function IncludePage({
         })
         .then(async data => {
             const content: string = data.content || ''
-            const compressed = hexByteaToUint8Array(content);
-            let decompressedContent = Pako.ungzip(compressed, { to: "string" });
+            let decompressedContent = content;
             const lines:string[] = decompressedContent.split('\n')
 
             if (lineRange) {

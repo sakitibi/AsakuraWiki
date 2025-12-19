@@ -35,8 +35,7 @@ export async function resolveImports(content: string, context: Context): Promise
             .single();
 
         if (pageError || !pageData?.content) continue;
-        const compressed = hexByteaToUint8Array(pageData?.content);
-        let decompressedContent = Pako.ungzip(compressed, { to: "string" });
+        let decompressedContent = content;
         const exportMatch:RegExpMatchArray | null = decompressedContent.match(/#export\((global|local)\)\{(.+?)\};/);
         if (!exportMatch) continue;
         const exportScope:string = exportMatch[1]; // ← global or local
