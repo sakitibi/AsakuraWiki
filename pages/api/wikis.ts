@@ -12,7 +12,19 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     }
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    // ====== 認証ユーザー取得 ======
+    let userId: string | null = null
+    const authHeader = req.headers.authorization
+    if (authHeader?.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1]
+        const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
+        if (authError) console.error('Supabase auth error:', authError)
+        if (user) userId = user.id
+    }
     if (req.method === 'GET') {
+        if(!userId){
+            return res.status(401).json({ error: "unauthorized" })
+        }
         // データ取得
         const { data, error } = await supabaseServer
         .from('wikis')

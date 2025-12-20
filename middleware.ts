@@ -15,6 +15,7 @@ export function middleware(_: NextRequest) {
         https://counter.wikiwiki.jp
         https://www.google-analytics.com
         https://gppjfculpjyjqzfuqfev.supabase.co
+        wss://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
         script-src * 'unsafe-inline' 'unsafe-eval';
         style-src * 'unsafe-inline';
