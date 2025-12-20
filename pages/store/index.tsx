@@ -5,7 +5,6 @@ import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import { hasDuplicates } from '@/utils/array';
 
 interface AppProps {
     app_title: string;
@@ -19,7 +18,6 @@ export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps[]>([]);
     const [osusume, setOsusume] = useState<AppProps[]>([]);
-    const [osusumeData, setOsusumeData] = useState<AppProps[]>([]);
 
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -44,21 +42,11 @@ export default function Store() {
 
     const osusumeCheck = () => {
         const count = Math.min(apps.length, 5);
-        const firstDatas = Array.from({ length: count }, () => {
-            return apps[Math.floor(Math.random() * apps.length)];
-        });
 
-        console.log("firstDatas: ", firstDatas);
+        const shuffled = [...apps].sort(() => Math.random() - 0.5);
+        const result = shuffled.slice(0, count);
 
-        if (apps.length > 1 && hasDuplicates(osusumeData)) {
-            const nextDatas = Array.from({ length: osusumeData.length }, () => {
-                return apps[Math.floor(Math.random() * apps.length)];
-            });
-            setOsusumeData(nextDatas);
-            setTimeout(osusumeCheck, 500);
-        } else {
-            setOsusume(firstDatas);
-        }
+        setOsusume(result);
     };
 
     useEffect(() => {
