@@ -85,30 +85,34 @@ export default function Store() {
                     <LeftMenuJp URL={`/store/developer/${DevelopersStr}`} rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
-                            {apps.length > 0 ? apps.map((data, index) => (
+                            {apps.length > 0 ? (
                                 <>
-                                    <h1>{apps.length > 0 ? developers?.developer_name : null}</h1>
-                                    <div id="developers-container" key={index}>
-                                        <div style={{ display: 'flex', gap: '20px' }}>
-                                            {data.isChecked ? (
-                                                <a
-                                                    className={styles.developersApplinks}
-                                                    href={`/store/details/${data.appid}`}
-                                                >
-                                                    <img
-                                                        src={data.appicon_url}
-                                                        alt={`${data.app_title}_icon`}
-                                                        width="50"
-                                                        height="50"
-                                                    />
-                                                    <h2>{data.app_title}</h2>
-                                                </a>
-                                            ) : null}
-                                        </div>
-                                    </div>
+                                    <h1>{developers?.developer_name}</h1>
+                                    {apps.map((data, index) => (
+                                        <>
+                                            <div id="developers-container" key={index}>
+                                                <div style={{ display: 'flex', gap: '20px' }}>
+                                                    {data.isChecked ? (
+                                                        <a
+                                                            className={styles.developersApplinks}
+                                                            href={`/store/details/${data.appid}`}
+                                                        >
+                                                            <img
+                                                                src={data.appicon_url}
+                                                                alt={`${data.app_title}_icon`}
+                                                                width="50"
+                                                                height="50"
+                                                            />
+                                                            <h2>{data.app_title}</h2>
+                                                        </a>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        </>
+                                    ))}
                                     {developers?.developer_siteurl ? <p><a href={developers!.developer_siteurl}>このデベロッパのサイト</a></p> : null}
                                 </>
-                            )) : (
+                            ) : (
                                 <Custom404 isEmbed="true"/>
                             )}
                         </>
