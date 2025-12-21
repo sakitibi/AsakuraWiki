@@ -7,6 +7,7 @@ import Script from 'next/script';
 import Head from 'next/head';
 import type { WikiCounter, IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { adminerUserId, blockedIP } from '@/utils/user_list';
+import Pako from 'pako';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 export const blockedDomains = [
@@ -150,6 +151,25 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
         }
         fetchedipwho();
     }, []); // ← 初回だけ実行
+
+    useEffect(() => {
+        if(!ipaddress) return;
+        async function ipSupabaseFetch(){
+            const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
+            const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
+            const { error } = await supabaseServer
+                .from("analytics")
+                .upsert([{
+                    data: bytea
+                }])
+                .single()
+            if(error){
+                console.error("Error: ", error.message);
+                return;
+            }
+        }
+        ipSupabaseFetch();
+    }, [ipaddress]);
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
