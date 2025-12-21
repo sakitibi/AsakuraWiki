@@ -174,7 +174,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             ipSupabaseFetch();
         } else {
             async function ipSupabaseFetch(){
-                if(getCookieValueByRegex("unique_logouted_id")){
+                if(getCookieValueByRegex("unique_logouted_id") !== "\x00"){
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
                     const { error } = await supabaseServer
@@ -195,10 +195,10 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
                     const { error } = await supabaseServer
                         .from("analytics_withlogouted")
-                        .insert([{
+                        .insert({
                             id: randomString,
                             data: bytea
-                        }])
+                        })
                         .single()
                     if(error){
                         console.error("Error: ", error.message);
