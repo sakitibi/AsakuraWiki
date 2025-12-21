@@ -173,6 +173,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             ipSupabaseFetch();
         } else {
             async function ipSupabaseFetch(){
+                console.log("unique_logouted_id: ", getCookieValueByRegex("unique_logouted_id"))
                 if(getCookieValueByRegex("unique_logouted_id") !== "\x00"){
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
