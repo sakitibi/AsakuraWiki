@@ -164,6 +164,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     .upsert([{
                         data: bytea
                     }])
+                    .eq("id", user?.id)
                     .single()
                 if(error){
                     console.error("Error: ", error.message);
@@ -181,6 +182,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         .update({
                             data: bytea
                         })
+                        .eq("id", getCookieValueByRegex("unique_logouted_id"))
                         .single()
                     if(error){
                         console.error("Error: ", error.message);
