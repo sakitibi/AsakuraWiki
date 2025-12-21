@@ -174,7 +174,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
         } else {
             async function ipSupabaseFetch(){
                 console.log("unique_logouted_id: ", localStorage.getItem("unique_logouted_id"))
-                if(localStorage.getItem("unique_logouted_id") !== "\x00"){
+                if(localStorage.getItem("unique_logouted_id")){
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
                     const { error } = await supabaseServer
