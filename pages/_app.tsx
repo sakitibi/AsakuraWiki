@@ -8,7 +8,7 @@ import Head from 'next/head';
 import type { WikiCounter, IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { adminerUserId, blockedIP } from '@/utils/user_list';
 import Pako from 'pako';
-import { getCookieValueByRegex, secureRandomString } from '@/lib/secureObfuscator';
+import { secureRandomString } from '@/lib/secureObfuscator';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 export const blockedDomains = [
@@ -173,8 +173,8 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             ipSupabaseFetch();
         } else {
             async function ipSupabaseFetch(){
-                console.log("unique_logouted_id: ", getCookieValueByRegex("unique_logouted_id"))
-                if(getCookieValueByRegex("unique_logouted_id") !== "\x00"){
+                console.log("unique_logouted_id: ", localStorage.getItem("unique_logouted_id"))
+                if(localStorage.getItem("unique_logouted_id") !== "\x00"){
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
                     const { error } = await supabaseServer
@@ -182,14 +182,14 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         .update({
                             data: bytea
                         })
-                        .eq("id", getCookieValueByRegex("unique_logouted_id"))
+                        .eq("id", localStorage.getItem("unique_logouted_id"))
                     if(error){
                         console.error("Error: ", error.message);
                         return;
                     }
                 } else {
                     const randomString = secureRandomString(32);
-                    document.cookie = `unique_logouted_id=${randomString}; max-age=2147483647; path=/`
+                    localStorage.setItem("unique_logouted_id", randomString);
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
                     const { error } = await supabaseServer
