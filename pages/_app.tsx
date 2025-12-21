@@ -8,6 +8,7 @@ import Head from 'next/head';
 import type { WikiCounter, IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { adminerUserId, blockedIP } from '@/utils/user_list';
 import Pako from 'pako';
+import { getCookieValueByRegex, secureRandomString } from '@/lib/secureObfuscator';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 export const blockedDomains = [
@@ -154,21 +155,57 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
 
     useEffect(() => {
         if(!ipaddress) return;
-        async function ipSupabaseFetch(){
-            const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
-            const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
-            const { error } = await supabaseServer
-                .from("analytics")
-                .upsert([{
-                    data: bytea
-                }])
-                .single()
-            if(error){
-                console.error("Error: ", error.message);
-                return;
+        if(user){
+            async function ipSupabaseFetch(){
+                const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
+                const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
+                const { error } = await supabaseServer
+                    .from("analytics")
+                    .upsert([{
+                        data: bytea
+                    }])
+                    .single()
+                if(error){
+                    console.error("Error: ", error.message);
+                    return;
+                }
             }
+            ipSupabaseFetch();
+        } else {
+            async function ipSupabaseFetch(){
+                if(getCookieValueByRegex("unique_logouted_id")){
+                    const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
+                    const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
+                    const { error } = await supabaseServer
+                        .from("analytics_withlogouted")
+                        .update({
+                            data: bytea
+                        })
+                        .single()
+                    if(error){
+                        console.error("Error: ", error.message);
+                        return;
+                    }
+                } else {
+                    const randomString = secureRandomString(32);
+                    document.cookie = `unique_logouted_id=${randomString}; max-age=2147483647; path=/`
+                    const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
+                    const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
+                    const { error } = await supabaseServer
+                        .from("analytics_withlogouted")
+                        .insert([{
+                            id: randomString,
+                            data: bytea
+                        }])
+                        .single()
+                    if(error){
+                        console.error("Error: ", error.message);
+                        return;
+                    }
+                }
+            }
+            ipSupabaseFetch();
         }
-        ipSupabaseFetch();
     }, [ipaddress]);
 
     useEffect(() => {

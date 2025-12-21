@@ -7,7 +7,13 @@ import {
     hexToUtf8 as HexDecode
 } from "@/lib/base64";
 
-function secureRandomString(length:number) {
+// 正規表現でCookie値を取得
+export function getCookieValueByRegex(key: string) {
+    const match = document.cookie.match(new RegExp(`${key}=([^;]*)`));
+    return match ? match[1] : null;
+}
+
+export function secureRandomString(length:number) {
     const characters = `!?"#$%&',._;:+\`[{}]-=@^~()/|\\abcdefghijklmnopqrstuvwxyz
     ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`.replaceAll(/[\n]|[    ]/gu, "");
     const array = new Uint8Array(length);
