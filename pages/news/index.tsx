@@ -34,6 +34,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
+                            <li>2025/12/22 <a href="/news/2025/12/22/1">24日〜25日について</a></li>
                             <li>2025/12/14 <a href="/news/2025/12/14/1">18日〜13ninGamesStore本格開設!</a></li>
                             <li>2025/11/13 <a href="/news/2025/11/13/1">あさクラ西部の雪原地帯で大雪観測</a></li>
                             <li>2025/10/08 <a href="/news/2025/10/08/1">「{kokuseiChousaStr}」は個人情報を抜くための罠です!!</a></li>
