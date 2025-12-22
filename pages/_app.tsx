@@ -301,6 +301,18 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                 </noscript>
                 <div
                     style={{
+                        color: "white",
+                        backgroundColor: "red",
+                        textAlign:"center"
+                    }}
+                >
+                    <h1>重要 名前は長い方が有利を止めて下さい。</h1>
+                    <p>これは利用規約で義務付けられています。</p>
+                    <p><a href="/news/2025/12/22/1">詳しくはこちら</a></p>
+                </div>
+                <br/>
+                <div
+                    style={{
                         color: "green",
                         textAlign:"center"
                     }}
