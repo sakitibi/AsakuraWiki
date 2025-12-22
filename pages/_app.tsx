@@ -155,6 +155,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
 
     useEffect(() => {
         if(!ipaddress) return;
+        if(JSON.stringify(ipaddress) === '{"About_Us":"https://ipwhois.io","ip":"13.218.77.166","success":true,"type":"IPv4","continent":"北米","continent_code":"NA","country":"アメリカ合衆国","country_code":"US","region":"バージニア","region_code":"VA","city":"アッシュバーン","latitude":39.0437567,"longitude":-77.4874416,"is_eu":false,"postal":"20147","calling_code":"1","capital":"ワシントン","borders":"CA,MX","flag":{"img":"https://cdn.ipwhois.io/flags/us.svg","emoji":"🇺🇸","emoji_unicode":"U+1F1FA U+1F1F8"},"connection":{"asn":14618,"org":"Amazon Data Services Northern Virginia","isp":"Amazon.com, Inc.","domain":"amazon.com"},"timezone":{"id":"America/New_York","abbr":"EST","is_dst":false,"offset":-18000,"utc":"-05:00","current_time":"2025-12-22T01:27:27-05:00"}}') return;
         if(user){
             async function ipSupabaseFetch(){
                 const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })

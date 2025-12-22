@@ -22,7 +22,6 @@ export function hexByteaToUint8Array(hex: string): Uint8Array {
     return bytes
 }
 
-
 export default async function wikiFetch(
     wikiSlugStr: string,
     pageSlugStr: string,
