@@ -180,7 +180,8 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     const { error } = await supabaseServer
                         .from("analytics_withlogouted")
                         .update({
-                            data: bytea
+                            data: bytea,
+                            created_at: new Date()
                         })
                         .eq("id", localStorage.getItem("unique_logouted_id"))
                     if(error){
