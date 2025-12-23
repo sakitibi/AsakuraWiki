@@ -18,6 +18,13 @@ export default function MinecraftRelayManyManyMany(){
             };
         }
     }, [menuStatus]);
+    useEffect(() => {
+        if(!document) return;
+        const video_link = document.getElementsByClassName("video_link") as HTMLCollectionOf<HTMLAnchorElement>;
+        for(let i = 0;i < video_link.length;i++){
+            video_link[i].href = video_link[i].href + `&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM&index=${i + 1}`
+        }
+    }, []);
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
@@ -61,7 +68,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>8:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/RpCez-l0N5k&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">しろくる【マイクラ】</a>
+                                                <a className="video_link" href="https://youtu.be/RpCez-l0N5k">しろくる【マイクラ】</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -97,7 +104,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>9:30</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UCMP7QuS4suoONg47Nbi-wrg">まぐにぃゲーム実況本館</a>
+                                                <a className="video_link" href="https://youtu.be/tdlANO8JxMk">まぐにぃゲーム実況本館</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -145,7 +152,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>11:30</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/7_Wzi5ycVu0&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">ゆっくりなるたく</a>
+                                                <a className="video_link" href="https://youtu.be/7_Wzi5ycVu0">ゆっくりなるたく</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -169,7 +176,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>12:30</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/Kqme5at7UjQ&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">あかさかの箱</a>
+                                                <a className="video_link" href="https://youtu.be/Kqme5at7UjQ">あかさかの箱</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -187,13 +194,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>13:15</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/FNXZP-RRuDg&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">まいぜんシスターズ</a>
+                                                <a className="video_link" href="https://youtu.be/FNXZP-RRuDg">まいぜんシスターズ</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>13:30</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/9Z-c_ZV2Agw&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">ドズル社</a>
+                                                <a className="video_link" href="https://youtu.be/9Z-c_ZV2Agw">ドズル社</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -205,13 +212,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>14:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/K22z6Ey7iAE&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">さかいさんだー</a>
+                                                <a className="video_link" href="https://youtu.be/K22z6Ey7iAE">さかいさんだー</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>14:15</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/_nDsk80dDaM&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">カズゲームズ/Gaming Kazu</a>
+                                                <a className="video_link" href="https://youtu.be/_nDsk80dDaM">カズゲームズ/Gaming Kazu</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -223,13 +230,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>14:45</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/1Gyyamu43z4&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">じゃじゃーん菊池 GAME</a>
+                                                <a className="video_link" href="https://youtu.be/1Gyyamu43z4">じゃじゃーん菊池 GAME</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>15:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/mXxDjrMrnak&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">さんちゃんく！</a>
+                                                <a className="video_link" href="https://youtu.be/mXxDjrMrnak">さんちゃんく！</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -247,7 +254,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>15:45</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/Vv2vw74iC-4&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">大人のマイクラ企画室 / 大人企画</a>
+                                                <a className="video_link" href="https://youtu.be/Vv2vw74iC-4">大人のマイクラ企画室 / 大人企画</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -259,7 +266,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>16:15</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/yrU99jgNduQ&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">ユイネルch</a>
+                                                <a className="video_link" href="https://youtu.be/yrU99jgNduQ">ユイネルch</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -277,13 +284,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>17:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/H7EINcdtebA&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">おんりー / ドズル社</a>
+                                                <a className="video_link" href="https://youtu.be/H7EINcdtebA">おんりー / ドズル社</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>17:15</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/XSu_4rY6sjs&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">赤髪のとものゲーム実況チャンネル!!</a>
+                                                <a className="video_link" href="https://youtu.be/XSu_4rY6sjs">赤髪のとものゲーム実況チャンネル!!</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -295,13 +302,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>17:45</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/cisHw6BysW0&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">いんく</a>
+                                                <a className="video_link" href="https://youtu.be/cisHw6BysW0">いんく</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>18:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtu.be/kyEU5jp2Ga4&list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">かーぼん</a>
+                                                <a className="video_link" href="https://youtu.be/kyEU5jp2Ga4">かーぼん</a>
                                             </td>
                                         </tr>
                                     </tbody>
