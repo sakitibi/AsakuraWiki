@@ -36,7 +36,7 @@ export default function MinecraftRelayManyManyMany(){
                         <h1 className={styles.MC_Heading_1}>マイクラリレー メニー! メニー! メニー!</h1>
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>開催時間: 2025年12月30日(火) 7:30〜</p>
-                        <p>再生リスト: まだ非公開</p>
+                        <p>再生リスト: <a href="https://youtube.com/playlist?list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">ここ</a></p>
                         <p>参加者:</p>
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <div className={styles.MC_articleGridA_sectionRef}></div>
@@ -296,7 +296,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>17:45</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UCe_h1ez2EFYYpCi011nxt1w">いんく</a>
+                                                <a href="https://youtu.be/cisHw6BysW0">いんく</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
