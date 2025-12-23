@@ -309,7 +309,7 @@ export default function MinecraftRelayManyManyMany(){
                             </div>
                         </section>
                         <p>タイムテーブルの通り 12 月 30 日 (火) は午前 7 時 30 分より 10 時間以上連続でマインクラフト実況を楽しんでいただけます。<br/>間に休憩も挟みつつ見るようにしましょう！</p>
-                        <p>注意 <a href="https://youtube.com/channel/UC7bshUGQaibnoHEs-_tat8A">マミムンぶーぶー / HSstudio</a> さんは前回マイクラリレーでお題にそぐわない動画を公開した為、<br/>今回の参加権は無効となっています、次回からは有効に戻します。</p>
+                        <p>注意 <a href="https://youtube.com/channel/UC7bshUGQaibnoHEs-_tat8A">マミムンぶーぶー / HSstudio</a> さんは<a href="https://sakitibi-com9.webnode.jp/page/23/">前回マイクラリレー</a>でお題にそぐわない動画を公開した為、<br/>今回の参加権は<strong>無効となっています、</strong>次回からは有効に戻します。</p>
                         <p>元々12月27日(土)の予定でしたが、<a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>の影響で12 月 30 日 (火)に延期しています。</p>
                     </main>
                     <RightMenuJp/>
