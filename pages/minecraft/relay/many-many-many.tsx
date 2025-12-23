@@ -32,8 +32,7 @@ export default function MinecraftRelayManyManyMany(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/minecraft/relay/many-many-many" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>マイクラリレー</h1>
-                        <h1 className={styles.MC_Heading_1}>マイクラリレー メニー! メニー! メニー!</h1>
+                        <h1 className={styles.MC_Heading_1}>マイクラリレー 〜 メニー! メニー! メニー! 〜</h1>
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>開催時間: 2025年12月30日(火) 7:30〜</p>
                         <p>再生リスト: <a href="https://youtube.com/playlist?list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">ここ</a></p>
