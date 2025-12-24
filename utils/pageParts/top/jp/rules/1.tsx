@@ -4,7 +4,7 @@ export default function RulesComponents1(){
             <h2>1. 公的秩序・法律に関する内容</h2>
             <ul>
                 <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="data-bs-toggle collapsed" href="#rules1-1" aria-expanded="false">
+                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-1" aria-expanded="false">
                         公的秩序に反する内容
                         <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
                     </a>
@@ -21,7 +21,7 @@ export default function RulesComponents1(){
                     </div>
                 </div>
                 <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="data-bs-toggle collapsed" href="#rules1-2" aria-expanded="false">
+                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-2" aria-expanded="false">
                         著作権、財産、プライバシー等を侵害する内容
                         <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
                     </a>
@@ -45,7 +45,7 @@ export default function RulesComponents1(){
                     </div>
                 </div>
                 <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="data-bs-toggle collapsed" href="#rules1-3" aria-expanded="false">
+                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-3" aria-expanded="false">
                         第三者に危害や損害を与える内容(例外有り)
                         <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
                     </a>
@@ -68,7 +68,7 @@ export default function RulesComponents1(){
                     </div>
                 </div>
                 <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="data-bs-toggle collapsed" href="#rules1-4" aria-expanded="false">
+                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-4" aria-expanded="false">
                         <strong style={{ color: "red" }}>ネットワークやシステムに過度な負荷をかける行為</strong>
                         <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
                     </a>
@@ -86,7 +86,7 @@ export default function RulesComponents1(){
                     </div>
                 </div>
                 <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="data-bs-toggle collapsed" href="#rules1-5" aria-expanded="false">
+                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-5" aria-expanded="false">
                         荒らし行為
                         <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
                     </a>

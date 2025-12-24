@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import styles from 'css/index.min.module.css';
 import RulesComponents1 from "@/utils/pageParts/top/jp/rules/1";
+import Script from "next/script";
 
 export default function Rules(){
     const [menuStatus, setMenuStatus] = useState(false);
@@ -23,7 +24,7 @@ export default function Rules(){
     };
     useEffect(() => {
         if(!document) return;
-        const el = document.getElementsByClassName("data-bs-toggle");
+        const el = document.getElementsByClassName("collapsed");
         for(let i = 0;i < el.length;i++){
             el[i].setAttribute("data-bs-toggle", "collapse");
         }
@@ -52,6 +53,10 @@ export default function Rules(){
                 </div>
                 <FooterJp/>
             </div>
+            <Script
+                src="https://sakitibi.github.io/static.asakurawiki.com/js/app-342b4e71117d974a1648.min.static.js"
+                defer
+            />
         </>
     )
 }
