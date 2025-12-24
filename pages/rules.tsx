@@ -9,6 +9,7 @@ import styles from 'css/index.min.module.css';
 import RulesComponents1 from "@/utils/pageParts/top/jp/rules/1";
 import Script from "next/script";
 import RulesComponents2 from "@/utils/pageParts/top/jp/rules/2";
+import RulesComponents3 from "@/utils/pageParts/top/jp/rules/3";
 
 export default function Rules(){
     const [menuStatus, setMenuStatus] = useState(false);
@@ -49,6 +50,7 @@ export default function Rules(){
                         <div className="pEntry__content">
                             <RulesComponents1/>
                             <RulesComponents2/>
+                            <RulesComponents3/>
                         </div>
                     </main>
                     <RightMenuJp/>
