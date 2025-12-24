@@ -1,7 +1,7 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { Context, ImportBlockProps, injectConstBlocksProps } from '@/components/plugins/parsePluginTypes';
-import Pako from 'pako';
 import { hexByteaToUint8Array } from '@/utils/wikiFetch';
+import Pako from 'pako';
 
 // 例: #import(13ninstudio:module){ninki,kitikura-world}
 export const parseImport = (line: string) => {
@@ -33,9 +33,8 @@ export async function resolveImports(content: string, context: Context): Promise
             .eq('wiki_slug', wikiSlug)
             .eq('slug', pageSlug)
             .single();
-
         if (pageError || !pageData?.content) continue;
-        let decompressedContent = content;
+        let decompressedContent = Pako.ungzip(hexByteaToUint8Array(pageData.content), { to: "string" });
         const exportMatch:RegExpMatchArray | null = decompressedContent.match(/#export\((global|local)\)\{(.+?)\};/);
         if (!exportMatch) continue;
         const exportScope:string = exportMatch[1]; // ← global or local
