@@ -242,7 +242,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>15:15</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UCglQWY_cZKJI4m3CxjNrUxg">ぴくとはうす</a>
+                                                <a className="video_link" href="https://youtu.be/4tkn9zkacRE">ぴくとはうす</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>

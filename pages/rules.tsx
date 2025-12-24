@@ -8,6 +8,7 @@ import Head from "next/head";
 import styles from 'css/index.min.module.css';
 import RulesComponents1 from "@/utils/pageParts/top/jp/rules/1";
 import Script from "next/script";
+import RulesComponents2 from "@/utils/pageParts/top/jp/rules/2";
 
 export default function Rules(){
     const [menuStatus, setMenuStatus] = useState(false);
@@ -47,6 +48,7 @@ export default function Rules(){
                         <p>ルールの中には内容が重複する場合もございますが、利用者の皆さまが安心してご利用いただけるよう、サービスの安全性と健全な運営を守るためにご協力をお願いいたします。</p>
                         <div className="pEntry__content">
                             <RulesComponents1/>
+                            <RulesComponents2/>
                         </div>
                     </main>
                     <RightMenuJp/>
