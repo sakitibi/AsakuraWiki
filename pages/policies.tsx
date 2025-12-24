@@ -35,7 +35,7 @@ export default function Policies(){
             <div className={styles.contentsWrapper} style={{ fontFamily: 'Noto Sans Japanese,sans-serif' }}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/policies"/>
+                    <LeftMenuJp URL="/policies" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <header className="pEntry__header">
                             <h1>利用規約</h1>

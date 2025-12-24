@@ -8,7 +8,7 @@ import Head from "next/head";
 import styles from 'css/index.min.module.css';
 import { company } from "@/utils/version";
 
-export default function Policies(){
+export default function Privacy(){
     const [menuStatus, setMenuStatus] = useState(false);
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -30,7 +30,7 @@ export default function Policies(){
             <div className={styles.contentsWrapper} style={{ fontFamily: 'Noto Sans Japanese,sans-serif' }}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/policies"/>
+                    <LeftMenuJp URL="/policies" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <header className="pEntry__header">
                             <h1>プライバシーポリシー</h1>

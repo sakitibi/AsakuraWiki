@@ -3,7 +3,6 @@ import { Context, ImportBlockProps, injectConstBlocksProps } from '@/components/
 import { hexByteaToUint8Array } from '@/utils/wikiFetch';
 import Pako from 'pako';
 
-// 例: #import(13ninstudio:module){ninki,kitikura-world}
 export const parseImport = (line: string) => {
     const match:RegExpMatchArray | null = line.match(/#import\((.+?):(.+?)\)\{(.+?)\}/);
     if (!match) return null;
