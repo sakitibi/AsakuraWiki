@@ -80,13 +80,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>8:30</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UC4n3W09rhSxiujb79v2Hqjw">ぜんこぱす</a>
+                                                <a className="video_link" href="https://youtu.be/y2_03RMgo3k">ぜんこぱす</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>8:45</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UCg-4SxdOSuaBXNFXuWudLKQ">あふぇりる</a>
+                                                <a className="video_link" href="https://youtu.be/x35wt7VA9ao">あふぇりる</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -116,7 +116,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>10:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UCSSKXEFwXiEcUjZKYGSvyPg">ぷちぷち【ぷちひな】</a>
+                                                <a className="video_link" href="https://youtu.be/5hUpAcuHgoY">ぷちぷち【ぷちひな】</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -164,13 +164,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>12:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UC_AoeaCVUk5afzONHvqFRjQ">ゆっくりウパパロン</a>
+                                                <a className="video_link" href="https://youtu.be/XKksKqwkdSw">ゆっくりウパパロン</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>12:15</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UC61K1rlTcu3whbzjlHIa2dA">さんど。【よろずや】</a>
+                                                <a className="video_link" href="https://youtu.be/ADpig-Zd7Mc">さんど。【よろずや】</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
