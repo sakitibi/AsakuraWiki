@@ -49,14 +49,12 @@ export default function Home() {
     }, [wiki13ninstudioCounter]);
 
     useEffect(() => {
-        const html = document.getElementsByTagName("html");
-        for(let i = 0; i < html.length; i++){
-            if(!user){
-                html[i].setAttribute("data-theme", "dark");
-            } else {
-                if(html[i].getAttribute("data-theme") === "dark"){
-                    html[i].removeAttribute("data-theme");
-                }
+        const html = document.querySelector("html");
+        if(!user){
+            html?.setAttribute("data-theme", "dark");
+        } else {
+            if(html?.getAttribute("data-theme") === "dark"){
+                html?.removeAttribute("data-theme");
             }
         }
     }, [user]);
