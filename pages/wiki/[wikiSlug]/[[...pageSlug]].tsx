@@ -10,7 +10,7 @@ import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wik
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { WikiBanned, WikiDeleted } from '@/utils/pageParts/wiki/wiki_notfound';
 import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
-import { handleDelete, handleEdit } from '@/utils/pageParts/wiki/wiki_handler';
+import { handleDelete, handleEdit, handleFreeze } from '@/utils/pageParts/wiki/wiki_handler';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import deletePage from '@/utils/pageParts/wiki/deletePage';
 import wikiFetch, { Page } from '@/utils/wikiFetch';
@@ -210,13 +210,13 @@ export default function WikiPage() {
                                                 router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)
                                             }
                                             >
-                                            <span>リダイレクトされない場合はこちら</span>
+                                                <span>リダイレクトされない場合はこちら</span>
                                             </button>
                                         )}
                                         <button onClick={() => 
                                             handleEdit(router, wikiSlugStr, pageSlugStr)
                                         } style={{ marginLeft: 8 }}>
-                                        <span>このページを編集</span>
+                                            <span>このページを編集</span>
                                         </button>
                                         <button onClick={async() => await handleDelete(
                                             special_wiki_list_found,
@@ -224,7 +224,7 @@ export default function WikiPage() {
                                             pageSlugStr,
                                             router
                                         )}>
-                                        <span>このページを削除</span>
+                                            <span>このページを削除</span>
                                         </button>
                                         <br />
                                         <Link href={`/dashboard/${wikiSlugStr}/new`}>
@@ -232,11 +232,14 @@ export default function WikiPage() {
                                                 <span>新しいページを作成</span>
                                             </button>
                                         </Link>
+                                        <button onClick={() => handleFreeze(wikiSlugStr, pageSlugStr, user)}>
+                                            <span>このページを凍結 凍結解除</span>
+                                        </button>
                                         <button onClick={handlePageLike} style={{ marginTop: 12 }}>
-                                        <span>このページを高く評価</span>
+                                            <span>このページを高く評価</span>
                                         </button>
                                         <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
-                                        <span>このページを低く評価</span>
+                                            <span>このページを低く評価</span>
                                         </button>
                                         <br/>
                                         <button onClick={handleWikiLike} style={{ marginLeft: 12}}>

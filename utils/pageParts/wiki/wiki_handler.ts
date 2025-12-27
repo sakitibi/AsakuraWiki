@@ -90,3 +90,43 @@ export const handleDelete = async (
         }
     }
 };
+
+export const handleFreeze = async(
+    wikiSlugStr:string,
+    pageSlugStr:string,
+    user: User | null
+) => {
+    const { data: pageData, error: pageSelectError} = await supabaseServer
+        .from("wiki_pages")
+        .select("slug,freeze")
+        .eq("slug", pageSlugStr)
+        .single()
+    if(pageSelectError){
+        console.error("SelectError: ", pageSelectError.message);
+        return;
+    }
+    const { data: wikiData, error: wikiSelectError} = await supabaseServer
+        .from("wiki_pages")
+        .select("owner_id")
+        .eq("slug", wikiSlugStr)
+        .single()
+    if(wikiSelectError){
+        console.error("SelectError: ", wikiSelectError.message);
+        return;
+    }
+    if(user?.id !== wikiData.owner_id){
+        console.error("Error 403 Forbidden");
+        return;
+    }
+    const { error: updateError } = await supabaseServer
+        .from("wiki_pages")
+        .update({
+            freeze: !pageData?.freeze
+        })
+        .eq("slug", pageSlugStr)
+    if(updateError){
+        console.error("InsertError: ", updateError.message)
+        return;
+    }
+    alert(`${pageData.freeze ? "凍結解除成功!" : "凍結成功!"}`);
+}

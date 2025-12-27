@@ -121,7 +121,7 @@ export default async function handler(
             // まず対象ページが存在するか確認
             const { data: existingPage, error: existingErr } = await supabaseServer
                 .from('wiki_pages')
-                .select('id')
+                .select('id,freeze')
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
                 .maybeSingle()
@@ -140,7 +140,7 @@ export default async function handler(
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if (wiki.edit_mode === 'private' && !userId) {
+            if ((wiki.edit_mode === 'private' && !userId) || (wiki.owner_id !== userId && existingPage.freeze)) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
             }
 
@@ -168,7 +168,7 @@ export default async function handler(
             // まず対象ページが存在するか確認
             const { data: existingPage, error: existingErr } = await supabaseServer
                 .from('wiki_pages')
-                .select('id')
+                .select('id,freeze')
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
                 .maybeSingle()
@@ -192,7 +192,7 @@ export default async function handler(
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if (wiki.edit_mode === 'private' && !userId) {
+            if ((wiki.edit_mode === 'private' && !userId) || (wiki.owner_id !== userId && existingPage.freeze)) {
                 return res.status(403).json({ error: 'Forbidden' })
             }
 
@@ -220,9 +220,25 @@ export default async function handler(
                 Pako.gzip(content, { level: 9 })
             )
             const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
+            const { data: owner, error: owner_error } = await supabaseServer
+                .from("wikis")
+                .select("id,owner_id")
+                .eq("slug", wikiSlug)
+                .maybeSingle()
+            if(!owner || owner_error){
+                return res.status(500).json({ error: owner_error?.message });
+            }
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wiki_pages')
-                .insert([{ wiki_slug: wikiSlug, slug, title, content: bytea, author_id: userId }])
+                .insert([{
+                    wiki_slug: wikiSlug,
+                    slug,
+                    title,
+                    content: bytea,
+                    author_id: userId,
+                    owner_id: owner.owner_id,
+                    wiki_id: owner.id
+                }])
                 .select()
                 .maybeSingle()
 
