@@ -100,21 +100,21 @@ export const handleFreeze = async(
         .from("wiki_pages")
         .select("slug,freeze")
         .eq("slug", pageSlugStr)
-        .single()
+        .maybeSingle()
     if(pageSelectError){
-        console.error("SelectError: ", pageSelectError.message);
+        console.error("PageSelectError: ", pageSelectError.message);
         return;
     }
     const { data: wikiData, error: wikiSelectError} = await supabaseServer
-        .from("wiki_pages")
+        .from("wikis")
         .select("owner_id")
         .eq("slug", wikiSlugStr)
-        .single()
+        .maybeSingle()
     if(wikiSelectError){
-        console.error("SelectError: ", wikiSelectError.message);
+        console.error("WikiSelectError: ", wikiSelectError.message);
         return;
     }
-    if(user?.id !== wikiData.owner_id){
+    if(user?.id !== wikiData?.owner_id){
         console.error("Error 403 Forbidden");
         return;
     }
@@ -128,5 +128,5 @@ export const handleFreeze = async(
         console.error("InsertError: ", updateError.message)
         return;
     }
-    alert(`${pageData.freeze ? "凍結解除成功!" : "凍結成功!"}`);
+    alert(`${pageData?.freeze ? "凍結解除成功!" : "凍結成功!"}`);
 }
