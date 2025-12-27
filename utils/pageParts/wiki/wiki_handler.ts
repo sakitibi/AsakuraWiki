@@ -121,7 +121,8 @@ export const handleFreeze = async(
     const { error: updateError } = await supabaseServer
         .from("wiki_pages")
         .update({
-            freeze: !pageData?.freeze
+            freeze: !pageData?.freeze,
+            updated_at: new Date()
         })
         .eq("slug", pageSlugStr)
     if(updateError){
