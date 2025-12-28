@@ -47,6 +47,7 @@ export default async function handler(
 
             if (error) throw new Error('Failed to fetch wiki cli_used: ' + error.message)
             if (!wiki) throw { status: 404, message: 'Wiki not found' }
+            if (!userId) throw { status: 401, message: 'unauthorized' }
             return wiki
         }
 
