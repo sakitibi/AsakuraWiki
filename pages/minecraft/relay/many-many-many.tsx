@@ -56,13 +56,13 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>7:30</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UC--oTE32O37NvGS_4rS2cRg">アットおどろく:マルベロス</a>
+                                                <a className="video_link" href="https://youtu.be/zZJAoCzc2d8">アットおどろく:マルベロス</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>7:45</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UCKRZPvdUvIm1PsQ1nla2uCg">ぐさお / ぐさりん</a>
+                                                <a className="video_link" href="https://youtu.be/n4D5XSiwoUg">ぐさお / ぐさりん</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -92,7 +92,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>9:00</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UChDD-mCbqd4182eI-T5wGbA">Latte</a>
+                                                <a className="video_link" href="https://youtu.be/G0cfUr6lsP0">Latte</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
