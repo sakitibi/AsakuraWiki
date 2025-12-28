@@ -1,12 +1,13 @@
 export default function LogoutedUI(){
     return(
         <>
+            <h1>あさクラWikiへようこそ!</h1>
             <div className="text-dark">
                 <strong className="masthead-notice rounded-3 p-2">あさクラWikiの新機能</strong>
                 <h2>newプラグイン</h2>
                 <p>インライン型プラグイン</p>
             </div>
-            <h1 className="mb-3 fw-semibold lh-1">あさクラWikiのたくさんの機能で<br/>自分だけのWikiを作成しよう。</h1>
+            <h2 className="mb-3 fw-semibold lh-1">あさクラWikiのたくさんの機能で<br/>自分だけのWikiを作成しよう。</h2>
             <p className="lead mb-4">
                 <strong className="text-brand block md:ml-0">パワフルで拡張性の高い、機能満載のレンタルWikiサービスです。</strong><br/>
                 <span className="block text-foreground">askrEditorでビルドしてカスタマイズし、あらかじめ用意されたグリッドシステムとコンポーネントを利用し、</span><br/>
