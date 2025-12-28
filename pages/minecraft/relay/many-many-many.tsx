@@ -146,7 +146,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>11:15</td>
                                             <td style={TdStyles}>
-                                                <a href="https://youtube.com/channel/UCX1xppLvuj03ubLio8jslyA">HikakinGames</a>
+                                                <a className="video_link" href="https://youtu.be/U-M3gS7JBr8">HikakinGames</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
@@ -164,7 +164,7 @@ export default function MinecraftRelayManyManyMany(){
                                         <tr style={{height: '21.0px'}}>
                                             <td style={TdStyles}>12:00</td>
                                             <td style={TdStyles}>
-                                                <a className="video_link" href="https://youtu.be/XKksKqwkdSw">ゆっくりウパパロン</a>
+                                                <a className="video_link" href="https://youtu.be/nwgX8xrwps4">ゆっくりウパパロン</a>
                                             </td>
                                         </tr>
                                         <tr style={{height: '21.0px'}}>
