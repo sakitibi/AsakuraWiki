@@ -43,6 +43,38 @@ export default function ModifyPage() {
             jender, shimei
         );
 
+        // 暗号化メタデータ送信
+        try {
+            if (!updatedInputs) {
+                setErrorMsg("暗号化に失敗しました");
+                setLoading(false);
+                return;
+            }
+
+            const filtered = updatedInputs.filter(i => i && i.trim() !== '');
+
+            if (filtered.length > 0) {
+                const { error } = await supabaseServer
+                    .from("user_metadatas")
+                    .update({
+                        metadatas: filtered,
+                        version: 2
+                    })
+                    .eq("id", user.id);
+
+                if (error) {
+                    setErrorMsg(error.message);
+                    setLoading(false);
+                    return;
+                }
+            }
+        } catch (e) {
+            console.error("メタデータ送信エラー: ", e);
+            setErrorMsg('メタデータの送信に失敗しました');
+            setLoading(false);
+            return;
+        }
+
         // Supabase にユーザー変更（email/passwordは平文でOK）
         const updateAuth: {
             email?: string
@@ -64,33 +96,6 @@ export default function ModifyPage() {
                 return
             }
         }
-        // 暗号化メタデータ送信
-        try {
-            const filtered = updatedInputs?.filter(i => i && i.trim() !== '');
-            console.log("filtered: ", filtered);
-            if (filtered!.length > 0) {
-                const { error } = await supabaseServer
-                    .from("user_metadatas")
-                    .update({
-                        metadatas: filtered,
-                        version: 2
-                    })
-                    .eq("id", user!.id)
-                    .single();
-                if(error){
-                    console.error("Error: ", error.message);
-                    setErrorMsg(error.message);
-                    setLoading(false);
-                    return;
-                }
-            }
-        } catch (e) {
-            console.error("メタデータ送信エラー: ", e);
-            setErrorMsg('メタデータの送信に失敗しました');
-            setLoading(false);
-            return;
-        }
-
         setLoading(false);
         window.location.href = '/dashboard';
     };
