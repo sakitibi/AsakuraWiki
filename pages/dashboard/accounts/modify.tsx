@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { notuseUsername } from '@/utils/user_list';
 import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
-import { User, useUser } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
 
 export type JenderTypes = "men" | "woman";
 export type CountrieTypes = "japan" | "russia" | "others";
@@ -18,8 +18,16 @@ export default function ModifyPage() {
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
-    const user:User | null = useUser();
-    const provider = user?.app_metadata.provider;
+    const [user, setUser] = useState<User | null>(null);
+    const [provider, setProvider] = useState<string | undefined>();
+    useEffect(() => {
+        supabaseServer.auth.getUser().then(({ data }) => {
+            if (data.user) {
+                setUser(data.user);
+                setProvider(data.user.app_metadata.provider);
+            }
+        });
+    }, []);
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const handleModify = async (e: React.FormEvent) => {
