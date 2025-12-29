@@ -38,7 +38,7 @@ export default function ModifyPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string[] = secureEncrypt(
+        const updatedInputs:string[] = await secureEncrypt(
             email, password, birthday, username, countries,
             jender, shimei
         );

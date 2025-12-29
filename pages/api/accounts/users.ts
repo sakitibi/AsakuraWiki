@@ -25,10 +25,11 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
         const adminer_user_id_list:boolean = Boolean(adminerUserId.find(value => value === userId));
         if(adminer_user_id_list){
-            // データ取得
+            // データ取得(legacy)
             const { data, error } = await supabaseServer
             .from('user_metadatas')
             .select('*')
+            .eq("version", 1)
             if (error) return res.status(500).json({ error: error.message });
             return res.status(200).json(data);
         } else {

@@ -33,7 +33,7 @@ export default function AccountsSetup(){
                 return;
             }
             // メタデータ暗号化
-            const updatedInputs:string[] = secureEncrypt(
+            const updatedInputs:string[] = await secureEncrypt(
                 user?.email!, "null", birthday, username, countries,
                 jender, shimei
             );
