@@ -23,81 +23,88 @@ export default function ModifyPage() {
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const handleModify = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setErrorMsg('');
-        if (!user){
-            setErrorMsg('未ログインです');
-            setLoading(false);
-            return;
-        }
-        if (!!notuseUser_list_found) {
-            setErrorMsg('このユーザー名は使用出来ません。');
-            setLoading(false);
-            return;
-        }
-
-        // メタデータ暗号化
-        const updatedInputs:string[] | undefined = await secureEncrypt(
-            email, password, birthday, username, countries,
-            jender, shimei
-        );
-
-        // 暗号化メタデータ送信
-        try {
-            if (!updatedInputs) {
-                setErrorMsg("暗号化に失敗しました");
+        const initialEmail = user?.email ?? '';
+        try{
+            e.preventDefault();
+            setLoading(true);
+            setErrorMsg('');
+            if (!user){
+                setErrorMsg('未ログインです');
+                setLoading(false);
+                return;
+            }
+            if (!!notuseUser_list_found) {
+                setErrorMsg('このユーザー名は使用出来ません。');
                 setLoading(false);
                 return;
             }
 
-            const filtered = updatedInputs.filter(i => i && i.trim() !== '');
+            // メタデータ暗号化
+            const updatedInputs:string[] | undefined = await secureEncrypt(
+                email, password, birthday, username, countries,
+                jender, shimei
+            );
 
-            if (filtered.length > 0) {
-                const { error } = await supabaseServer
-                    .from("user_metadatas")
-                    .update({
-                        metadatas: filtered,
-                        version: 2
-                    })
-                    .eq("id", user.id);
+            // 暗号化メタデータ送信
+            try {
+                if (!updatedInputs) {
+                    setErrorMsg("暗号化に失敗しました");
+                    setLoading(false);
+                    return;
+                }
 
+                const filtered = updatedInputs.filter(i => i && i.trim() !== '');
+
+                if (filtered.length > 0) {
+                    const { error } = await supabaseServer
+                        .from("user_metadatas")
+                        .update({
+                            metadatas: filtered,
+                            version: 2
+                        })
+                        .eq("id", user.id);
+
+                    if (error) {
+                        setErrorMsg(error.message);
+                        setLoading(false);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error("メタデータ送信エラー: ", e);
+                setErrorMsg('メタデータの送信に失敗しました');
+                setLoading(false);
+                return;
+            }
+
+            const updateAuth: {
+                email?: string;
+                password?: string;
+            } = {};
+
+            if (email && email !== initialEmail) {
+                updateAuth.email = email;
+            }
+
+            if (password && password.length >= 6) {
+                updateAuth.password = password;
+            }
+
+            if (Object.keys(updateAuth).length > 0) {
+                const { error } = await supabaseServer.auth.updateUser(updateAuth);
                 if (error) {
                     setErrorMsg(error.message);
                     setLoading(false);
                     return;
                 }
             }
-        } catch (e) {
-            console.error("メタデータ送信エラー: ", e);
-            setErrorMsg('メタデータの送信に失敗しました');
+            setLoading(false);
+            window.location.href = '/dashboard';
+        } catch(e){
+            console.error("Error: ", e);
             setLoading(false);
             return;
         }
-
-        // Supabase にユーザー変更（email/passwordは平文でOK）
-        const updateAuth: {
-            email?: string
-            password?: string
-        } = {}
-
-        if (email.trim() !== '') {
-            updateAuth.email = email
-        }
-
-        if (password.trim() !== '') {
-            updateAuth.password = password
-        }
-
-        if (Object.keys(updateAuth).length > 0) {
-            const { error } = await supabaseServer.auth.updateUser(updateAuth)
-            if (error) {
-                setErrorMsg(error.message)
-                return
-            }
-        }
-        setLoading(false);
-        window.location.href = '/dashboard';
     };
 
     return provider === "email" ? (
