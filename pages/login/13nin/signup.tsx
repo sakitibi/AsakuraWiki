@@ -32,7 +32,7 @@ export default function SignUpPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string[] = await secureEncrypt(
+        const updatedInputs:string[] | undefined = await secureEncrypt(
             email, password, birthday, username, countries,
             jender, shimei
         );
@@ -60,9 +60,9 @@ export default function SignUpPage() {
 
         // 暗号化メタデータ送信
         try {
-            const filtered = updatedInputs.filter(i => i && i.trim() !== '');
+            const filtered = updatedInputs?.filter(i => i && i.trim() !== '');
             console.log("filtered: ", filtered);
-            if (filtered.length > 0) {
+            if (filtered!.length > 0) {
                 const session = await supabaseServer.auth.getSession();
                 const token = session?.data?.session?.access_token;
                 const res = await fetch('/api/accounts/users', {

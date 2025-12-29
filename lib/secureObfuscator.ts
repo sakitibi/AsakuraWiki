@@ -75,20 +75,24 @@ export async function encrypt(
     contries: string,
     jender: string,
     shimei: string
-): Promise<string[]> {
-    const encryptedArray:encryptedDataProps[] = [
-        await encryptText(email, email, 100000, 128),
-        await encryptText(password, email, 100000, 128),
-        await encryptText(birthday, email, 100000, 128),
-        await encryptText(username, email, 100000, 128),
-        await encryptText(contries, email, 100000, 128),
-        await encryptText(jender, email, 100000, 128),
-        await encryptText(shimei, email, 100000, 128),
-    ];
-    console.log("encryptedArray: ", encryptedArray);
-    return encryptedArray.map((data) => {
-        return JSON.stringify(data);
-    });
+): Promise<string[] | undefined> {
+    try{
+        const encryptedArray:encryptedDataProps[] = [
+            await encryptText(email, email, 100000, 128),
+            await encryptText(password, email, 100000, 128),
+            await encryptText(birthday, email, 100000, 128),
+            await encryptText(username, email, 100000, 128),
+            await encryptText(contries, email, 100000, 128),
+            await encryptText(jender, email, 100000, 128),
+            await encryptText(shimei, email, 100000, 128),
+        ];
+        console.log("encryptedArray: ", encryptedArray);
+        return encryptedArray.map((data) => {
+            return JSON.stringify(data);
+        });
+    } catch(e:any){
+        console.error("EncryptedError: ", e);
+    }
 }
 
 export function decrypt(

@@ -38,7 +38,7 @@ export default function ModifyPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string[] = await secureEncrypt(
+        const updatedInputs:string[] | undefined = await secureEncrypt(
             email, password, birthday, username, countries,
             jender, shimei
         );
@@ -66,16 +66,16 @@ export default function ModifyPage() {
         }
         // 暗号化メタデータ送信
         try {
-            const filtered = updatedInputs.filter(i => i && i.trim() !== '');
+            const filtered = updatedInputs?.filter(i => i && i.trim() !== '');
             console.log("filtered: ", filtered);
-            if (filtered.length > 0) {
+            if (filtered!.length > 0) {
                 const { error } = await supabaseServer
                     .from("user_metadatas")
                     .update({
                         metadatas: filtered,
+                        version: 2
                     })
                     .eq("id", user!.id)
-                    .select()
                     .single();
                 if(error){
                     console.error("Error: ", error.message);
