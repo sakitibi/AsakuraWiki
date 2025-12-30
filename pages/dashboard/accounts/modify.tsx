@@ -103,9 +103,22 @@ export default function ModifyPage() {
             }
 
             if (Object.keys(updateAuth).length > 0) {
-                const { error } = await supabaseClient.auth.updateUser(updateAuth)
-                if (error) {
-                    setErrorMsg(error.message)
+                const res = await fetch('/api/accounts/update-auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: user.id,
+                        email: updateAuth.email,
+                        password: updateAuth.password,
+                    }),
+                })
+
+                const json = await res.json();
+
+                if (!res.ok) {
+                    setErrorMsg(json.error ?? 'Auth更新に失敗しました')
                     setLoading(false)
                     return
                 }

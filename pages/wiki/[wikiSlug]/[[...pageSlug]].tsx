@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NextRouter, useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
-import { User, useUser } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
 import { usePageLikeHandlers } from '@/utils/pageParts/wiki/like/page';
 import { useWikiLikeHandlers } from '@/utils/pageParts/wiki/like/wiki';
 import Script from 'next/script';
@@ -16,10 +16,20 @@ import deletePage from '@/utils/pageParts/wiki/deletePage';
 import wikiFetch, { Page } from '@/utils/wikiFetch';
 import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function WikiPage() {
     const router:NextRouter = useRouter()
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;
     const cmdStr:string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
 
