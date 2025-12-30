@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { supabaseClient } from '@/lib/supabaseClient';
 import { notuseUsername } from '@/utils/user_list';
 import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
@@ -21,7 +21,7 @@ export default function ModifyPage() {
     const [user, setUser] = useState<User | null>(null);
     const [provider, setProvider] = useState<string | undefined>();
     useEffect(() => {
-        supabaseServer.auth.getUser().then(({ data, error }) => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
 
             if (data.user) {
@@ -36,6 +36,7 @@ export default function ModifyPage() {
         console.log('handleModify fired');
         const initialEmail = user?.email ?? '';
         try{
+            console.log('[modify] user.id:', user?.id);
             e.preventDefault();
             setLoading(true);
             setErrorMsg('');
@@ -67,7 +68,7 @@ export default function ModifyPage() {
                 const filtered = updatedInputs.filter(i => i && i.trim() !== '');
 
                 if (filtered.length > 0) {
-                    const { error } = await supabaseServer
+                    const { error } = await supabaseClient
                         .from("user_metadatas")
                         .update({
                             metadatas: filtered,
@@ -102,7 +103,18 @@ export default function ModifyPage() {
             }
 
             if (Object.keys(updateAuth).length > 0) {
-                const { error } = await supabaseServer.auth.updateUser(updateAuth);
+                const { data: sessionData, error: sessionError } =
+                    await supabaseClient.auth.getSession();
+                    console.log('[modify] session:', sessionData?.session);
+                    console.log('[modify] access_token:',
+                        sessionData?.session?.access_token?.slice(0, 10)
+                    );
+                if(sessionError){
+                    setErrorMsg(sessionError.message);
+                    setLoading(false);
+                    return;
+                }
+                const { error } = await supabaseClient.auth.updateUser(updateAuth);
                 if (error) {
                     setErrorMsg(error.message);
                     setLoading(false);
