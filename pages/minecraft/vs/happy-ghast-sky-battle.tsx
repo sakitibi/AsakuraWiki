@@ -6,8 +6,9 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import React, { useState, useEffect } from "react";
-import { useUser } from "@supabase/auth-helpers-react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
+import { supabaseClient } from "@/lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
 
 interface TeamTableProps{
     user_name:string;
@@ -61,7 +62,16 @@ export default function MinecraftVS(){
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-    const user = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     useEffect(() => {
         const fetchUsers = async () => {
             const { data, error } = await supabaseServer

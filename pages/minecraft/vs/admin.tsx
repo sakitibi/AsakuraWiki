@@ -6,9 +6,9 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import React, { useState, useEffect } from "react";
-import { useUser } from "@supabase/auth-helpers-react";
-import { supabaseServer } from "@/lib/supabaseClientServer";
 import { adminerUserId } from "@/utils/user_list";
+import { supabaseClient } from "@/lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
 
 export default function MinecraftVSAdminer(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -31,12 +31,21 @@ export default function MinecraftVSAdminer(){
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-    const user = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
     useEffect(() => {
         if (!Teams) return; // null のときは fetch しない
         const fetchData = async () => {
-            const { data, error } = await supabaseServer
+            const { data, error } = await supabaseClient
                 .from("minecraft_vs_happy-ghast-sky-battle")
                 .select("team_total")
                 .eq("team", Teams)
@@ -61,7 +70,7 @@ export default function MinecraftVSAdminer(){
             if (EditMode === "add") {
                 // チーム合計を取得（既存ユーザー分）
                 let newTeamScore = Score ?? 0;
-                const { data: teamData, error: teamError } = await supabaseServer
+                const { data: teamData, error: teamError } = await supabaseClient
                     .from("minecraft_vs_happy-ghast-sky-battle")
                     .select("team_total")
                     .eq("team", Teams);
@@ -73,7 +82,7 @@ export default function MinecraftVSAdminer(){
                 }
 
                 // 新規ユーザー追加
-                const { data, error } = await supabaseServer
+                const { data, error } = await supabaseClient
                     .from("minecraft_vs_happy-ghast-sky-battle")
                     .insert([{
                         user_name: UserName,
@@ -91,7 +100,7 @@ export default function MinecraftVSAdminer(){
             } else { // edit モード
                 // 現在のチーム合計から対象ユーザーの古い score を除く
                 let newTeamScore = Score ?? 0;
-                const { data: teamData, error: teamError } = await supabaseServer
+                const { data: teamData, error: teamError } = await supabaseClient
                     .from("minecraft_vs_happy-ghast-sky-battle")
                     .select("user_name, score, team_total")
                     .eq("team", Teams);
@@ -105,7 +114,7 @@ export default function MinecraftVSAdminer(){
                 }
 
                 // ユーザー更新
-                const { error } = await supabaseServer
+                const { error } = await supabaseClient
                     .from("minecraft_vs_happy-ghast-sky-battle")
                     .update({
                         user_name: UserName,

@@ -5,8 +5,9 @@ import { notuseUsername } from "@/utils/user_list";
 import {
     encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
-import { User, useUser } from "@supabase/auth-helpers-react";
+import { User } from "@supabase/auth-helpers-react";
 import type { CountrieTypes, JenderTypes } from "@/pages/login/13nin/signup";
+import { supabaseClient } from "@/lib/supabaseClient";
 
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
@@ -20,7 +21,16 @@ export default function AccountsSetup(){
     const [userMeta, setUserMeta] = useState<any[]>([]);
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         if(typeof window !== "undefined"){

@@ -8,9 +8,10 @@ import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
 import FooterRu from '@/utils/pageParts/top/ru/Footer';
 import type { WikiPage, LikedWiki, WikiCounter } from '@/utils/pageParts/top/indexInterfaces';
 import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/ru/indexfetchs';
-import { useUser, User } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
 import LoginedUI from '@/utils/pageParts/top/ru/indexLogined';
 import LogoutedUI from '@/utils/pageParts/top/ru/indexLogouted';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -19,7 +20,16 @@ export default function Home() {
     const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
     const [loadingLiked, setLoadingLiked] = useState<boolean>(true);
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const H2Styles:React.CSSProperties = {
         marginBlockStart: '0.83em',
         marginBlockEnd: '0.83em',

@@ -90,44 +90,24 @@ export default function ModifyPage() {
             }
 
             const updateAuth: {
-                email?: string;
-                password?: string;
-            } = {};
-
-            if (email && email !== initialEmail) {
-                updateAuth.email = email;
-            }
+                email?: string
+                password?: string
+            } = {}
 
             if (password && password.length >= 6) {
-                updateAuth.password = password;
+                updateAuth.password = password
+            }
+
+            if (email && email !== initialEmail) {
+                updateAuth.email = email
             }
 
             if (Object.keys(updateAuth).length > 0) {
-                const { data: sessionData, error: sessionError } =
-                    await supabaseClient.auth.getSession();
-                    console.log('[modify] session:', sessionData?.session);
-                    console.log('[modify] access_token:',
-                        sessionData?.session?.access_token?.slice(0, 10)
-                    );
-                if(sessionError){
-                    setErrorMsg(sessionError.message);
-                    setLoading(false);
-                    return;
-                }
-                // ① password を先に
-                if (password) {
-                    const { error } = await supabaseClient.auth.updateUser({
-                        password,
-                    });
-                    if (error) throw error;
-                }
-
-                // ② email は別で
-                if (email && email !== initialEmail) {
-                    const { error } = await supabaseClient.auth.updateUser({
-                        email,
-                    });
-                    if (error) throw error;
+                const { error } = await supabaseClient.auth.updateUser(updateAuth)
+                if (error) {
+                    setErrorMsg(error.message)
+                    setLoading(false)
+                    return
                 }
             }
             setLoading(false);

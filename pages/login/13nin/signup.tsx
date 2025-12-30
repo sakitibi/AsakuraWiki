@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { supabaseClient } from '@/lib/supabaseClient';
 import { notuseUsername } from '@/utils/user_list';
 import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
@@ -38,7 +38,7 @@ export default function SignUpPage() {
         );
 
         // Supabase にユーザー登録（email/passwordは平文でOK）
-        const { data, error } = await supabaseServer.auth.signUp({
+        const { data, error } = await supabaseClient.auth.signUp({
             email,
             password,
             options: {
@@ -63,7 +63,7 @@ export default function SignUpPage() {
             const filtered = updatedInputs?.filter(i => i && i.trim() !== '');
             console.log("filtered: ", filtered);
             if (filtered!.length > 0) {
-                const session = await supabaseServer.auth.getSession();
+                const session = await supabaseClient.auth.getSession();
                 const token = session?.data?.session?.access_token;
                 const res = await fetch('/api/accounts/users', {
                     method: 'POST',

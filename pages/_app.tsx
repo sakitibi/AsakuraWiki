@@ -309,16 +309,6 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
-                <div
-                    style={{
-                        color: "green",
-                        textAlign:"center"
-                    }}
-                >
-                    <h1>マイクラリレー 〜 メニー! メニー! メニー! 〜</h1>
-                    <p>が2025年12月30日(火)午前7時30分〜公開!</p>
-                    <p><a href="/minecraft/relay/many-many-many">詳しくはこちら</a></p>
-                </div>
                 <Component {...pageProps} />
             </SessionContextProvider>
         </>
