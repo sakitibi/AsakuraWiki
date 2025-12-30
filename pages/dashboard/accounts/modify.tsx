@@ -33,6 +33,7 @@ export default function ModifyPage() {
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const handleModify = async (e: React.FormEvent) => {
+        console.log('handleModify fired');
         const initialEmail = user?.email ?? '';
         try{
             e.preventDefault();
