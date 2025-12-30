@@ -21,7 +21,9 @@ export default function ModifyPage() {
     const [user, setUser] = useState<User | null>(null);
     const [provider, setProvider] = useState<string | undefined>();
     useEffect(() => {
-        supabaseServer.auth.getUser().then(({ data }) => {
+        supabaseServer.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
             if (data.user) {
                 setUser(data.user);
                 setProvider(data.user.app_metadata.provider);
