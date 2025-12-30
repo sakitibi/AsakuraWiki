@@ -2,13 +2,22 @@ import { useEffect, useState } from 'react';
 import { NextRouter, useRouter } from 'next/router';
 import { useUser, User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
-import { supabaseServer } from 'lib/supabaseClientServer';
 import type { editMode, designColor } from '@/utils/wiki_settings';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function WikiSettingsPage() {
     const router:NextRouter = useRouter();
     const { wikiSlug } = router.query;
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
 
     // slug を文字列に正規化
     const slugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
@@ -25,7 +34,7 @@ export default function WikiSettingsPage() {
 
         const fetchWiki = async () => {
             setLoading(true);
-            const { data, error } = await supabaseServer
+            const { data, error } = await supabaseClient
             .from('wikis')
             .select('name, description, owner_id, edit_mode, design_color, cli_used')
             .eq('slug', slugStr)
@@ -69,7 +78,7 @@ export default function WikiSettingsPage() {
         e.preventDefault();
         setLoading(true);
 
-        const { error } = await supabaseServer
+        const { error } = await supabaseClient
         .from('wikis')
         .update({
             name,
@@ -97,18 +106,18 @@ export default function WikiSettingsPage() {
 
         // 1. 子ページ（wiki_pages）を削除
         // wiki_pages 削除時は wiki_slug で親Wikiのページを一括削除
-        const { error: pageError } = await supabaseServer
+        const { error: pageError } = await supabaseClient
             .from('wiki_pages')
             .delete()
             .eq('wiki_slug', slugStr);  // ← 親Wikiのslugをキーに削除
 
         // wikis 削除はこれでOK
-        const { error: wikiError } = await supabaseServer
+        const { error: wikiError } = await supabaseClient
             .from('wikis')
             .delete()
             .eq('slug', slugStr);
 
-        const { error: deletionError } = await supabaseServer
+        const { error: deletionError } = await supabaseClient
             .from('deleted_wikis')
             /*.delete()
             .eq('slug', slugStr)*/

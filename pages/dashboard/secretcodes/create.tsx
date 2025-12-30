@@ -1,15 +1,25 @@
 import { useEffect, useState } from 'react';
-import { supabaseServer } from 'lib/supabaseClientServer';
 import Head from 'next/head';
 import { asakuraMenberUserId } from '@/utils/user_list';
-import { User, useUser } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function CreateSecretCode() {
     const [loading, setLoading] = useState<boolean>(false);
     const [secretCode, setSecretCode] = useState<string>("");
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    const [provider, setProvider] = useState<string | undefined>();
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+                setProvider(data.user.app_metadata.provider);
+            }
+        });
+    }, []);
     const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
-    const provider = user?.app_metadata.provider;
     useEffect(() => {
         console.log("provider: ", provider);
     }, [provider]);
@@ -24,7 +34,7 @@ export default function CreateSecretCode() {
             setLoading(false);
             return;
         }
-        const session = await supabaseServer.auth.getSession();
+        const session = await supabaseClient.auth.getSession();
         const token = session?.data?.session?.access_token;
         const res:Response = await fetch("/api/accounts/secretcode", {
             method: 'POST',

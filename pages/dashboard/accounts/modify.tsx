@@ -114,11 +114,20 @@ export default function ModifyPage() {
                     setLoading(false);
                     return;
                 }
-                const { error } = await supabaseClient.auth.updateUser(updateAuth);
-                if (error) {
-                    setErrorMsg(error.message);
-                    setLoading(false);
-                    return;
+                // ① password を先に
+                if (password) {
+                    const { error } = await supabaseClient.auth.updateUser({
+                        password,
+                    });
+                    if (error) throw error;
+                }
+
+                // ② email は別で
+                if (email && email !== initialEmail) {
+                    const { error } = await supabaseClient.auth.updateUser({
+                        email,
+                    });
+                    if (error) throw error;
                 }
             }
             setLoading(false);
