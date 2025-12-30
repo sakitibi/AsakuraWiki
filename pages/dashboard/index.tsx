@@ -29,6 +29,7 @@ export default function DashboardPage() {
         try{
             setLoading(true);
             await supabaseClient.auth.signOut();
+            location.reload();
         } catch(e:any){
             console.error("error: ", e);
         } finally{
