@@ -82,6 +82,7 @@ export default function UserDataGet(){
                         {adminer_user_id_list ? (
                             <>
                                 <h1>ユーザー取得管理画面</h1>
+                                <p>legacyのみです、最新版は<a href="https://sakitibi.github.io/13nin.com/aesgcm">こちらで</a>(emailをPassphraseにする)</p>
                                 <button onClick={async() => await FetchUserMetaData()}>
                                     <span>ユーザー情報再取得</span>
                                 </button>
