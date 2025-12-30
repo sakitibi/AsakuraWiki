@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NextRouter, useRouter } from 'next/router';
-import { supabaseServer } from 'lib/supabaseClientServer';
+import { supabaseClient } from 'lib/supabaseClient';
 import { ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import Head from 'next/head';
-import { User, useUser } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
 
 export default function CreateWikiPage() {
     const [wikiId, setWikiId] = useState<string>('');
@@ -13,7 +13,16 @@ export default function CreateWikiPage() {
     const [agree13nin, setAgree13nin] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const router:NextRouter = useRouter();
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!agreeASKR || !agree13nin) {
@@ -39,7 +48,7 @@ export default function CreateWikiPage() {
         }
 
         // 1) wikis テーブルに挿入
-        const {error: wikiError} = await supabaseServer
+        const {error: wikiError} = await supabaseClient
             .from('wikis')
             .insert([{
                 slug,
@@ -63,7 +72,7 @@ export default function CreateWikiPage() {
         // 2) wiki_pages テーブルに「ホーム」ページを挿入（お好みで）
         // 例：ホームページのslugは固定で "FrontPage" にする
         // ホームページを作成する例
-        const { error: pageError } = await supabaseServer
+        const { error: pageError } = await supabaseClient
         .from('wiki_pages')
         .insert([{
             wiki_slug: slug,    // 親Wikiのslugを外部キーで指定

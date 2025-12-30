@@ -6,9 +6,9 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from "react";
-import { useUser } from "@supabase/auth-helpers-react";
+import { User } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
-import { supabaseServer } from "@/lib/supabaseClientServer";
+import { supabaseClient } from "@/lib/supabaseClient";
 
 interface obj{
     encrypted: {
@@ -54,12 +54,21 @@ export default function UserDataGet(){
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-    const user = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
     const FetchUserMetaData = async() => {
         try{
             setLoading(true);
-            const session = await supabaseServer.auth.getSession();
+            const session = await supabaseClient.auth.getSession();
             const token = session?.data?.session?.access_token;
             const res = await fetch("/api/store/details2", {
                 method: 'GET',

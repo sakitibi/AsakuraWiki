@@ -8,13 +8,14 @@ import styles from 'css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
 import LoginedUI from '@/utils/pageParts/top/jp/indexLogined';
-import { User, useUser } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
 import LogoutedUI from '@/utils/pageParts/top/jp/indexLogouted';
 import {
     fetchRecentPages,
     fetchLikedWikis,
     fetched13ninstudioCounter
 } from '@/utils/pageParts/top/jp/indexfetchs';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([])
@@ -25,7 +26,16 @@ export default function Home() {
     const [loadingLiked, setLoadingLiked] = useState<boolean>(true)
     const [loadingRecent, setLoadingRecent] = useState<boolean>(true)
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const H2Styles:React.CSSProperties = {
         marginBlockStart: '0.83em',
         marginBlockEnd: '0.83em',

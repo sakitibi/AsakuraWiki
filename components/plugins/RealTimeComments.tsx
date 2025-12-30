@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { supabaseServer } from 'lib/supabaseClientServer';
-import { User, useUser } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
 import { PostgrestSingleResponse, RealtimeChannel } from '@supabase/supabase-js';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 interface Comment {
     id: number
@@ -22,14 +22,23 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
     const [name, setName] = useState<string>('')
     const [body, setBody] = useState<string>('')
     const [isSending, setIsSending] = useState<boolean>(false)
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
 
     useEffect(() => {
         if (!wikiSlug || !pageSlug) return
 
         // ── 初回ロード ──
         ;(async () => {
-            const res:PostgrestSingleResponse<any[]> = await supabaseServer
+            const res:PostgrestSingleResponse<any[]> = await supabaseClient
                 .from('comments')
                 .select('*')
                 .eq('wiki_slug', wikiSlug)
@@ -41,7 +50,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         })()
 
         // ── リアルタイム購読 ──
-        const channel:RealtimeChannel = supabaseServer
+        const channel:RealtimeChannel = supabaseClient
             .channel(`comments-${wikiSlug}-${pageSlug}`)
             .on(
                 'postgres_changes',
@@ -65,7 +74,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
             });
 
         return () => {
-            supabaseServer.removeChannel(channel)
+            supabaseClient.removeChannel(channel)
         }
     }, [wikiSlug, pageSlug])
 
@@ -77,7 +86,7 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
         }
 
         setIsSending(true);
-        const res:PostgrestSingleResponse<null> = await supabaseServer.from('comments').insert({
+        const res:PostgrestSingleResponse<null> = await supabaseClient.from('comments').insert({
             name,
             body,
             wiki_slug: wikiSlug,

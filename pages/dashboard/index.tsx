@@ -1,12 +1,21 @@
-import { useUser, User } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import { supabaseServer } from '@/lib/supabaseClientServer';
 import { useEffect, useState } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function DashboardPage() {
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const [loading, setLoading] = useState<boolean>(true);
     const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const name:string =
@@ -19,7 +28,7 @@ export default function DashboardPage() {
     const handleLogout = async() => {
         try{
             setLoading(true);
-            await supabaseServer.auth.signOut();
+            await supabaseClient.auth.signOut();
         } catch(e:any){
             console.error("error: ", e);
         } finally{

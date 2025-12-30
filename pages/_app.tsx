@@ -1,5 +1,5 @@
-import { SessionContextProvider, useUser } from '@supabase/auth-helpers-react';
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { SessionContextProvider, User } from '@supabase/auth-helpers-react';
+import { supabaseClient } from '@/lib/supabaseClient';
 import '@/css/index.min.globals.css';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -27,7 +27,16 @@ interface CustomAppProps {
 
 export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
     const router = useRouter();
-    const user = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
     const [ipaddress, setIpaddress] = useState<IPAddress | null>(null);
     const blockedIP_list_found = blockedIP.find(value => ipaddress?.ip.match(value));
@@ -160,7 +169,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             async function ipSupabaseFetch(){
                 const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                 const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
-                const { error } = await supabaseServer
+                const { error } = await supabaseClient
                     .from("analytics")
                     .upsert([{
                         data: bytea
@@ -178,7 +187,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                 if(localStorage.getItem("unique_logouted_id")){
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
-                    const { error } = await supabaseServer
+                    const { error } = await supabaseClient
                         .from("analytics_withlogouted")
                         .update({
                             data: bytea,
@@ -194,7 +203,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     localStorage.setItem("unique_logouted_id", randomString);
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
-                    const { error } = await supabaseServer
+                    const { error } = await supabaseClient
                         .from("analytics_withlogouted")
                         .insert({
                             id: randomString,
@@ -267,7 +276,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
                 <link rel='stylesheet' href="https://sakitibi.github.io/static.asakurawiki.com/css/fontawesomepro.min.static.css"/>
             </Head>
-            <SessionContextProvider supabaseClient={supabaseServer}>
+            <SessionContextProvider supabaseClient={supabaseClient}>
                 {/* gtag.js の読み込み */}
                 <Script
                     strategy="afterInteractive"

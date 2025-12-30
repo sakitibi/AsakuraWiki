@@ -1,11 +1,20 @@
 import { NextRouter, useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useUser, useSession, User, Session } from '@supabase/auth-helpers-react';
-import { supabaseServer } from 'lib/supabaseClientServer';
+import { useSession, User, Session } from '@supabase/auth-helpers-react';
+import { supabaseClient } from 'lib/supabaseClient';
 
 export default function NewPage() {
     const router:NextRouter = useRouter();
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const session:Session | null = useSession();
     const { wikiSlug } = router.query; // ✅ 変数名統一
     const wikiSlugStr:string = typeof wikiSlug === 'string' ? wikiSlug : '';
@@ -23,7 +32,7 @@ export default function NewPage() {
         if (!wikiSlugStr) return;
 
         const fetchWiki = async() => {
-            const { data, error } = await supabaseServer
+            const { data, error } = await supabaseClient
             .from('wikis')
             .select('name, description, owner_id, edit_mode, design_color')
             .eq('slug', wikiSlugStr)
@@ -38,7 +47,7 @@ export default function NewPage() {
         }
 
         const fetchEditMode = async () => {
-            const { data, error } = await supabaseServer
+            const { data, error } = await supabaseClient
                 .from('wikis')
                 .select('edit_mode')
                 .eq('slug', wikiSlugStr)

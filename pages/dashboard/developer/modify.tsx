@@ -5,15 +5,23 @@ import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import { supabaseServer } from '@/lib/supabaseClientServer';
 import type { User } from '@supabase/supabase-js';
-import { useUser } from '@supabase/auth-helpers-react';
 import { DeveloperProps } from '@/pages/dashboard/developer/register';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function DeveloperConsoleModify() {
     const [loading, setLoading] = useState<boolean>(false);
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const user:User | null = useUser();
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     useEffect(() => {
         if(typeof document !== "undefined"){
             document.body.style.overflow = menuStatus ? "hidden" : "";
@@ -28,7 +36,7 @@ export default function DeveloperConsoleModify() {
 
     const devFetch = async() => {
         try{
-            const { data, error } = await supabaseServer
+            const { data, error } = await supabaseClient
                 .from("store.developers")
                 .select("developer_id,developer_name")
             if(error){
@@ -70,7 +78,7 @@ export default function DeveloperConsoleModify() {
                     continue;
                 }
             }
-            const { error } = await supabaseServer
+            const { error } = await supabaseClient
                 .from("store.developers")
                 .update({
                     developer_id: `${developerTopLevelDomain}.${developerid}`,
