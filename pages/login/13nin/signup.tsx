@@ -32,7 +32,7 @@ export default function SignUpPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string[] | undefined = await secureEncrypt(
+        const updatedInputs:string | undefined = await secureEncrypt(
             email, password, birthday, username, countries,
             jender, shimei
         );
@@ -60,7 +60,12 @@ export default function SignUpPage() {
 
         // 暗号化メタデータ送信
         try {
-            const filtered = updatedInputs?.filter(i => i && i.trim() !== '');
+            if (!updatedInputs) {
+                setErrorMsg("暗号化に失敗しました");
+                setLoading(false);
+                return;
+            }
+            const filtered = JSON.parse(updatedInputs.split("^")[1]).filter((i:any) => i && i.trim() !== '');
             console.log("filtered: ", filtered);
             if (filtered!.length > 0) {
                 const session = await supabaseClient.auth.getSession();
@@ -71,7 +76,7 @@ export default function SignUpPage() {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ metadatas: filtered }),
+                    body: JSON.stringify({ metadatas: email + filtered }),
                 });
                 const newItem = await res.json();
                 setUserMeta([...userMeta, newItem]);

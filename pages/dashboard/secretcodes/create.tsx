@@ -53,7 +53,7 @@ export default function CreateSecretCode() {
         }
         const data = await res.json();
         console.log("data: ", data);
-        setSecretCode(data.jwt);
+        setSecretCode(user.email + "^" + data.jwt);
         setLoading(false);
     };
 

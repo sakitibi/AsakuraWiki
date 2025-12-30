@@ -52,7 +52,7 @@ export default function ModifyPage() {
             }
 
             // メタデータ暗号化
-            const updatedInputs:string[] | undefined = await secureEncrypt(
+            const updatedInputs:string | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
                 jender, shimei
             );
@@ -65,13 +65,13 @@ export default function ModifyPage() {
                     return;
                 }
 
-                const filtered = updatedInputs.filter(i => i && i.trim() !== '');
+                const filtered = JSON.parse(updatedInputs.split("^")[1]).filter((i:any) => i && i.trim() !== '');
 
                 if (filtered.length > 0) {
                     const { error } = await supabaseClient
                         .from("user_metadatas")
                         .update({
-                            metadatas: filtered,
+                            metadatas: email + filtered,
                             version: 2
                         })
                         .eq("id", user.id);

@@ -43,13 +43,18 @@ export default function AccountsSetup(){
                 return;
             }
             // メタデータ暗号化
-            const updatedInputs:string[] | undefined = await secureEncrypt(
+            const updatedInputs:string | undefined = await secureEncrypt(
                 user?.email!, "null", birthday, username, countries,
                 jender, shimei
             );
             // 暗号化メタデータ送信
             try {
-                const filtered = updatedInputs?.filter(i => i && i.trim() !== '');
+                if (!updatedInputs) {
+                    setErrorMsg("暗号化に失敗しました");
+                    setLoading(false);
+                    return;
+                }
+                const filtered = JSON.parse(updatedInputs.split("^")[1]).filter((i:any) => i && i.trim() !== '');
                 console.log("filtered: ", filtered);
                 if (filtered!.length > 0) {
                     const session = await supabaseServer.auth.getSession();

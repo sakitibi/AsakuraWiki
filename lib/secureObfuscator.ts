@@ -59,6 +59,22 @@ async function encryptText(plainText:string, passphrase:string, iterations:numbe
     };
 }
 
+async function decryptObject(obj:encryptedDataProps, passphrase:string){
+    const dec = new TextDecoder();
+    try{
+        const salt = b64ToBuf(obj.salt);
+        const iv = b64ToBuf(obj.iv);
+        const iterations = Number(obj.iterations) || 100000;
+        const tagLength = Number(obj.tagLength) || 128;
+        const ct = b64ToBuf(obj.ciphertext).buffer;
+        const key = await deriveKeyFromPassphrase(passphrase, salt as any, iterations);
+        const plainBuf = await crypto.subtle.decrypt({name:'AES-GCM', iv, tagLength: tagLength}, key, ct);
+        return dec.decode(plainBuf);
+    }catch(e:any){
+        throw new Error('復号に失敗しました: ' + e.message);
+    }
+}
+
 export function secureRandomString(length:number) {
     const characters = `!?"#$%&',._;:+\`[{}]-=@^~()/|\\abcdefghijklmnopqrstuvwxyz
     ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789`.replaceAll(/[\n]|[    ]/gu, "");
@@ -75,7 +91,7 @@ export async function encrypt(
     contries: string,
     jender: string,
     shimei: string
-): Promise<string[] | undefined> {
+): Promise<string | undefined> {
     try{
         const encryptedArray:encryptedDataProps[] = [
             await encryptText(email, email, 100000, 128),
@@ -87,9 +103,9 @@ export async function encrypt(
             await encryptText(shimei, email, 100000, 128),
         ];
         console.log("encryptedArray: ", encryptedArray);
-        return encryptedArray.map((data) => {
+        return JSON.stringify(encryptedArray.map((data) => {
             return JSON.stringify(data);
-        });
+        }) + email);
     } catch(e:any){
         console.error("EncryptedError: ", e);
     }
@@ -107,5 +123,19 @@ export function decrypt(
     } catch(e:any){
         console.error("error: ", e);
         return String(e)
+    }
+}
+
+export async function decryptV2(
+    encrypted: string
+){
+    try{
+        const encryptedArray = encrypted.split('^');
+        const decrypted = await decryptObject(JSON.parse(encryptedArray[1]), encryptedArray[0]);
+        console.log("decrypted: ", decrypted);
+        return decrypted
+    } catch(e){
+        console.error("Error: ", e);
+        return;
     }
 }

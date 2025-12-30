@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { decrypt } from '@/lib/secureObfuscator';
+import { decryptV2 } from '@/lib/secureObfuscator';
 import Head from 'next/head';
 
 export default function LoginPage() {
@@ -61,8 +61,8 @@ export default function LoginPage() {
                 return;
             }
             const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: decrypt(fetched[0]!.metadatas[0]),
-                password: decrypt(fetched[0]!.metadatas[1]),
+                email: await decryptV2(fetched[0]!.metadatas[0]) ?? "",
+                password: await decryptV2(fetched[0]!.metadatas[1]) ?? "",
             });
             console.log('Login Data:', data);
             console.log('Login Error:', error);
