@@ -81,32 +81,38 @@ export default async function handler(
 
             const { data: page, error: pageErr } = await supabaseServer
                 .from('wiki_pages')
-                .select(`
-                    id,
-                    wiki_id,
-                    slug,
-                    wiki_slug,
-                    title,
-                    content,
-                    description,
-                    owner_id,
-                    author_id,
-                    created_at,
-                    updated_at
-                `)
+                .select("*")
                 .eq('wiki_slug', wikiSlug)
                 .eq('slug', pageSlug)
                 .maybeSingle()
 
             if (pageErr) return res.status(500).json({ error: pageErr.message })
             if (!page) return res.status(404).json({ error: 'Page not found' })
-            const compressed = hexByteaToUint8Array(page.content);
-            const decompressedContent = Pako.ungzip(compressed, { to: "string" });
+
+            // ★ ここが修正点
+            let decompressedContent: string
+            const raw = page.content
+
+            if (typeof raw === 'string' && raw.startsWith('\\x')) {
+                // hex bytea
+                const compressed = hexByteaToUint8Array(raw)
+                decompressedContent = Pako.ungzip(compressed, { to: 'string' })
+            } else if (raw instanceof Uint8Array || Buffer.isBuffer(raw)) {
+                // バイナリで返るケース（Vercel）
+                decompressedContent = Pako.ungzip(raw, { to: 'string' })
+            } else if (typeof raw === 'string') {
+                // すでに展開済み
+                decompressedContent = raw
+            } else {
+                return res.status(500).json({ error: 'Invalid page content format' })
+            }
+
             const pageResult = {
                 ...page,
-                content: decompressedContent
+                content: decompressedContent,
             }
-            return res.status(200).json(pageResult);
+
+            return res.status(200).json(pageResult)
         }
 
         // ======================
