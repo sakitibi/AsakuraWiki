@@ -18,56 +18,69 @@ export default function IncludePage({
 }: IncludePageProps) {
     const [error, setError] = useState<string | null>(null)
     const [parsedNodes, setParsedNodes] = useState<React.ReactNode[]>([])
-    try{
-        useEffect(() => {
-            if (typeof document === "undefined") return; // SSR回避
-            if (stylesheetURL) {
-                const link:HTMLLinkElement = document.createElement('link')
-                link.rel = 'stylesheet'
-                link.href = stylesheetURL
-                document.head.appendChild(link)
-            }
 
-            fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`)
+    useEffect(() => {
+        if (typeof document === "undefined") return
+
+        if (stylesheetURL) {
+            const link = document.createElement('link')
+            link.rel = 'stylesheet'
+            link.href = stylesheetURL
+            document.head.appendChild(link)
+        }
+
+        fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`)
             .then(res => {
                 if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
                 return res.json()
             })
             .then(async data => {
-                const content: string = data.content || ''
-                let decompressedContent = content;
-                const lines:string[] = decompressedContent.split('\n')
+                try {
+                    const content: string = data.content ?? ''
+                    let text = content
 
-                if (lineRange) {
-                    const [startRaw = '', endRaw = ''] = lineRange.split('-')
-                    const start:number = startRaw ? parseInt(startRaw) : 1
-                    const end:number = endRaw ? parseInt(endRaw) : lines.length
+                    const lines = text.split('\n')
 
-                    if (startRaw || endRaw) {
-                        if (isNaN(start) || isNaN(end) || start < 1 || end > lines.length || start > end) {
+                    if (lineRange) {
+                        const [startRaw = '', endRaw = ''] = lineRange.split('-')
+                        const start = startRaw ? parseInt(startRaw) : 1
+                        const end = endRaw ? parseInt(endRaw) : lines.length
+
+                        if (
+                            isNaN(start) ||
+                            isNaN(end) ||
+                            start < 1 ||
+                            end > lines.length ||
+                            start > end
+                        ) {
                             setError('無効な行範囲です')
                             return
                         }
-                        decompressedContent = lines.slice(start - 1, end).join('\n')
-                    }
-                }
-                const context = {
-                    wikiSlug,
-                    pageSlug: page,
-                    variables: {},
-                }
 
-                const nodes:React.ReactNode[] = await parseWikiContent(decompressedContent, context)
-                setParsedNodes(nodes)
+                        text = lines.slice(start - 1, end).join('\n')
+                    }
+
+                    const nodes = await parseWikiContent(text, {
+                        wikiSlug,
+                        pageSlug: page,
+                        variables: {},
+                    })
+
+                    setParsedNodes(nodes)
+                    setError(null)
+                } catch (e) {
+                    console.error(e)
+                    setError('ページ解析に失敗しました')
+                }
             })
             .catch(err => {
                 console.error(err)
                 setError(err.message)
             })
-        }, [wikiSlug, page, stylesheetURL, lineRange])
+    }, [wikiSlug, page, stylesheetURL, lineRange])
 
-        return (
-            <div className="include-page">
+    return (
+        <div className="include-page">
             {showTitle && <h2 className="include-page__title">{page}</h2>}
             {error ? (
                 <p style={{ color: 'red' }}>読み込み失敗: {error}</p>
@@ -76,9 +89,6 @@ export default function IncludePage({
                     <React.Fragment key={i}>{node}</React.Fragment>
                 ))
             )}
-            </div>
-        )
-    } catch(e){
-        console.error("IncludeError: ", e);
-    }
+        </div>
+    )
 }
