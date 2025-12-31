@@ -1,7 +1,6 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminerUserId } from '@/utils/user_list';
-import { encodeBase64Unicode } from '@/lib/base64';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -56,7 +55,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         .from('user_metadatas')
         .insert([{
             id: userId,
-            metadatas: encodeBase64Unicode(dataArray),
+            metadatas: dataArray,
             secretcode: null,
             email: userEmail
         }])

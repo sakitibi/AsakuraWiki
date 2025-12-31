@@ -4,7 +4,7 @@ import { notuseUsername } from '@/utils/user_list';
 import { encryptedDataProps, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 import { User } from '@supabase/auth-helpers-react';
-import { encodeBase64Unicode, gzipAndBase64 } from '@/lib/base64';
+import { gzipAndBase64 } from '@/lib/base64';
 
 export type JenderTypes = "men" | "woman";
 export type CountrieTypes = "japan" | "russia" | "others";
@@ -71,7 +71,7 @@ export default function ModifyPage() {
                     const { error } = await supabaseClient
                         .from("user_metadatas")
                         .update({
-                            metadatas: encodeBase64Unicode(compressed),
+                            metadatas: compressed,
                             email,
                             version: 2
                         })

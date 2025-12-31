@@ -33,9 +33,13 @@ export default function LoginPage() {
         }
     }
     useEffect(() => {
-        const session = localStorage.getItem("secretcodeSessions") ?? null;
-        if(session){
-            setSecretCode(session);
+        try{
+            const session = localStorage.getItem("secretcodeSessions") ?? null;
+            if(session){
+                setSecretCode(session);
+            }
+        } catch(e){
+            console.error("SessionRestoreError: ", e);
         }
     }, []);
     const handleLogin = async (e: React.FormEvent) => {
