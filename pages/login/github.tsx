@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function GitHubLogin() {
     useEffect(() => {
         const Signin = async() => {
-            await supabaseServer.auth.signInWithOAuth({
+            await supabaseClient.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
                     redirectTo: `${window.location.origin}/login/inputs/`,

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function BitbucketLogin() {
     useEffect(() => {
         if(typeof window !== "undefined"){
-            supabaseServer.auth.signInWithOAuth({
+            supabaseClient.auth.signInWithOAuth({
                 provider: 'bitbucket',
                 options: {
                     redirectTo: `${window.location.origin}/login/inputs/`,

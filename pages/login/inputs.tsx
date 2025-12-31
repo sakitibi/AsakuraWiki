@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { supabaseServer } from "@/lib/supabaseClientServer";
 import { notuseUsername } from "@/utils/user_list";
 import {
     encrypt as secureEncrypt
@@ -57,7 +56,7 @@ export default function AccountsSetup(){
                 const filtered = JSON.parse(updatedInputs.split("^")[1]).filter((i:any) => i && i.trim() !== '');
                 console.log("filtered: ", filtered);
                 if (filtered!.length > 0) {
-                    const session = await supabaseServer.auth.getSession();
+                    const session = await supabaseClient.auth.getSession();
                     const token = session?.data?.session?.access_token;
                     const res = await fetch('/api/accounts/users', {
                         method: 'POST',
@@ -88,7 +87,7 @@ export default function AccountsSetup(){
         try{
             console.log("user: ", user);
             if(!user) return;
-            const { data, error } = await supabaseServer
+            const { data, error } = await supabaseClient
                 .from('user_metadatas')
                 .select('metadatas')
                 .eq('id', user?.id)

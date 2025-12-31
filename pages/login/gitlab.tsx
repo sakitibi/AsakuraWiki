@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function GitLabLogin() {
     useEffect(() => {
-        supabaseServer.auth.signInWithOAuth({
+        supabaseClient.auth.signInWithOAuth({
             provider: 'gitlab',
             options: {
                 redirectTo: `${window.location.origin}/login/inputs/`,
