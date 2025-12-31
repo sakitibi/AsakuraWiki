@@ -61,8 +61,6 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                     data: secretcode
                 });
             }
-            console.log("data: ", data);
-            data.metadatas = decodeBase64Unicode(data.metadatas);
             return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json({
