@@ -136,7 +136,7 @@ export async function decryptV2(
         console.log("decrypted: ", decrypted);
         return decrypted;
     } catch(e){
-        console.error("Error: ", e);
+        console.error("DecryptV2Error: ", e);
         return;
     }
 }

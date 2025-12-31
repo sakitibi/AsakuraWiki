@@ -60,7 +60,7 @@ export default function LoginPage() {
             const raw = fetched!.metadatas; // Supabaseから取得
             const jsonString = ungzipFromBase64(raw);
             const parsed = JSON.parse(jsonString);
-            const decrypted = await decryptV2(JSON.parse(parsed), fetched!.metadatas)
+            const decrypted = await decryptV2(JSON.parse(parsed), fetched!.email)
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],
                 password: decrypted![1],
