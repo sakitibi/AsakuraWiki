@@ -2,11 +2,13 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { notuseUsername } from "@/utils/user_list";
 import {
+    encryptedDataProps,
     encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
 import { User } from "@supabase/auth-helpers-react";
 import type { CountrieTypes, JenderTypes } from "@/pages/login/13nin/signup";
 import { supabaseClient } from "@/lib/supabaseClient";
+import { gzipAndBase64 } from "@/lib/base64";
 
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
@@ -42,7 +44,7 @@ export default function AccountsSetup(){
                 return;
             }
             // メタデータ暗号化
-            const updatedInputs:string | undefined = await secureEncrypt(
+            const updatedInputs:encryptedDataProps[] | undefined = await secureEncrypt(
                 user?.email!, "null", birthday, username, countries,
                 jender, shimei
             );
@@ -53,9 +55,9 @@ export default function AccountsSetup(){
                     setLoading(false);
                     return;
                 }
-                const filtered = JSON.parse(updatedInputs.split("^")[1]).filter((i:any) => i && i.trim() !== '');
-                console.log("filtered: ", filtered);
-                if (filtered!.length > 0) {
+
+                const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
+                if (updatedInputs) {
                     const session = await supabaseClient.auth.getSession();
                     const token = session?.data?.session?.access_token;
                     const res = await fetch('/api/accounts/users', {
@@ -64,7 +66,7 @@ export default function AccountsSetup(){
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
-                        body: JSON.stringify({ metadatas: filtered }),
+                        body: JSON.stringify({ metadatas: compressed }),
                     });
                     const newItem = await res.json();
                     if(!res.ok){

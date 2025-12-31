@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { notuseUsername } from '@/utils/user_list';
-import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
+import { encryptedDataProps, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 import { User } from '@supabase/auth-helpers-react';
+import { encodeBase64Unicode, gzipAndBase64 } from '@/lib/base64';
 
 export type JenderTypes = "men" | "woman";
 export type CountrieTypes = "japan" | "russia" | "others";
@@ -52,7 +53,7 @@ export default function ModifyPage() {
             }
 
             // メタデータ暗号化
-            const updatedInputs:string | undefined = await secureEncrypt(
+            const updatedInputs: encryptedDataProps[] | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
                 jender, shimei
             );
@@ -65,13 +66,13 @@ export default function ModifyPage() {
                     return;
                 }
 
-                const filtered = JSON.parse(updatedInputs.split("^")[1]).filter((i:any) => i && i.trim() !== '');
-
-                if (filtered.length > 0) {
+                const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
+                if (updatedInputs) {
                     const { error } = await supabaseClient
                         .from("user_metadatas")
                         .update({
-                            metadatas: email + filtered,
+                            metadatas: encodeBase64Unicode(email + compressed),
+                            email,
                             version: 2
                         })
                         .eq("id", user.id);

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { decryptV2 } from '@/lib/secureObfuscator';
+import { ungzipFromBase64 } from "@/lib/base64";
 import Head from 'next/head';
 
 export default function LoginPage() {
@@ -44,25 +45,25 @@ export default function LoginPage() {
             setErrorMsg('');
             const fetched = await secretCodeAPIFetched();
             console.log("fetched: ", fetched);
-            if (!Array.isArray(fetched) || fetched.length === 0) {
+            if (!fetched) {
                 setErrorMsg("ログイン情報が取得できませんでした");
                 setLoading(false);
                 return;
             }
             if (
-                !Array.isArray(fetched) ||
-                fetched.length === 0 ||
-                !fetched ||
-                !fetched[0]?.metadatas?.[0] ||
-                !fetched[0]?.metadatas?.[1]
+                !fetched
             ) {
                 setErrorMsg("ログイン情報が取得できませんでした");
                 setLoading(false);
                 return;
             }
+            const raw = fetched!.metadatas; // Supabaseから取得
+            const jsonString = ungzipFromBase64(raw);
+            const parsed = JSON.parse(jsonString);
+            const decrypted = await decryptV2(JSON.parse(parsed), fetched!.metadatas)
             const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: await decryptV2(fetched[0]!.metadatas[0]) ?? "",
-                password: await decryptV2(fetched[0]!.metadatas[1]) ?? "",
+                email: decrypted![0],
+                password: decrypted![1],
             });
             console.log('Login Data:', data);
             console.log('Login Error:', error);

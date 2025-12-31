@@ -1,6 +1,7 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminerUserId } from '@/utils/user_list';
+import { encodeBase64Unicode } from '@/lib/base64';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -42,19 +43,22 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
+        let userEmail: string | null = null;
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
             const token = authHeader.split(' ')[1]
             const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
             if (authError) console.error('Supabase auth error:', authError)
             if (user) userId = user.id
+            if (user) userEmail = user.email!
         }
         const { data, error } = await supabaseServer
         .from('user_metadatas')
         .insert([{
             id: userId,
-            metadatas: dataArray,
-            secretcode: null
+            metadatas: encodeBase64Unicode(dataArray[0] + dataArray[1]),
+            secretcode: null,
+            email: userEmail
         }])
         .select();
 

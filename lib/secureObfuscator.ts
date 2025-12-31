@@ -5,7 +5,7 @@ import {
     hexToUtf8 as HexDecode
 } from "@/lib/base64";
 
-interface encryptedDataProps{
+export interface encryptedDataProps{
     salt: string;
     iv: string;
     iterations: number;
@@ -91,7 +91,7 @@ export async function encrypt(
     contries: string,
     jender: string,
     shimei: string
-): Promise<string | undefined> {
+): Promise<encryptedDataProps[] | undefined> {
     try{
         const encryptedArray:encryptedDataProps[] = [
             await encryptText(email, email, 100000, 128),
@@ -103,9 +103,7 @@ export async function encrypt(
             await encryptText(shimei, email, 100000, 128),
         ];
         console.log("encryptedArray: ", encryptedArray);
-        return JSON.stringify(encryptedArray.map((data) => {
-            return JSON.stringify(data);
-        }) + email);
+        return encryptedArray;
     } catch(e:any){
         console.error("EncryptedError: ", e);
     }
@@ -127,13 +125,16 @@ export function decrypt(
 }
 
 export async function decryptV2(
-    encrypted: string
-){
+    encrypted: encryptedDataProps[],
+    passphrase: string
+): Promise<string[] | undefined> {
     try{
-        const encryptedArray = encrypted.split('^');
-        const decrypted = await decryptObject(JSON.parse(encryptedArray[1]), encryptedArray[0]);
+        let decrypted:string[] = [];
+        for(let i = 0; i < encrypted.length;i++){
+            decrypted!.push(await decryptObject(encrypted[i], passphrase));
+        }
         console.log("decrypted: ", decrypted);
-        return decrypted
+        return decrypted;
     } catch(e){
         console.error("Error: ", e);
         return;

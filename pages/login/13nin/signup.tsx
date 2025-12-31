@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { notuseUsername } from '@/utils/user_list';
-import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
+import { encryptedDataProps, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
+import { gzipAndBase64 } from '@/lib/base64';
 
 export type JenderTypes = "men" | "woman";
 export type CountrieTypes = "japan" | "russia" | "others";
@@ -32,7 +33,7 @@ export default function SignUpPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string | undefined = await secureEncrypt(
+        const updatedInputs:encryptedDataProps[] | undefined = await secureEncrypt(
             email, password, birthday, username, countries,
             jender, shimei
         );
@@ -65,9 +66,8 @@ export default function SignUpPage() {
                 setLoading(false);
                 return;
             }
-            const filtered = JSON.parse(updatedInputs.split("^")[1]).filter((i:any) => i && i.trim() !== '');
-            console.log("filtered: ", filtered);
-            if (filtered!.length > 0) {
+            const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
+            if (updatedInputs) {
                 const session = await supabaseClient.auth.getSession();
                 const token = session?.data?.session?.access_token;
                 const res = await fetch('/api/accounts/users', {
@@ -76,7 +76,7 @@ export default function SignUpPage() {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ metadatas: email + filtered }),
+                    body: JSON.stringify({ metadatas: compressed }),
                 });
                 const newItem = await res.json();
                 setUserMeta([...userMeta, newItem]);

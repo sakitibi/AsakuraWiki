@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { JWTPayload, SignJWT } from 'jose';
 import { supabaseServer } from '@/lib/supabaseClientServer';
+import { decodeBase64Unicode } from '@/lib/base64';
 
 function RandomRange(){
     return Math.floor(Math.random() * 2147483647).toString(36);
@@ -50,17 +51,19 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             console.log("secretcode: ", secretcode);
             const { data, error } = await supabaseServer
                 .from('user_metadatas')
-                .select('metadatas')
+                .select('metadatas,email')
                 .eq("secretcode", secretcode)
+                .maybeSingle();
             if (error) return res.status(500).json({ error: error.message });
-            if (data.length === 0) {
+            if (!data) {
                 return res.status(404).json({
                     error: "No matching user found",
                     data: secretcode
                 });
             }
             console.log("data: ", data);
-            return res.status(200).json(data)
+            data.metadatas = decodeBase64Unicode(data.metadatas);
+            return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json({
                 error: 'JWT生成エラー',
