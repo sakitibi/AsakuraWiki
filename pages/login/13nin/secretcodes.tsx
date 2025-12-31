@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { decryptV2 } from '@/lib/secureObfuscator';
+import { decryptV2, encryptedDataProps } from '@/lib/secureObfuscator';
 import { ungzipFromBase64 } from "@/lib/base64";
 import Head from 'next/head';
 
@@ -59,8 +59,8 @@ export default function LoginPage() {
             }
             const raw = fetched!.metadatas; // Supabaseから取得
             const jsonString = ungzipFromBase64(raw);
-            const parsed = JSON.parse(jsonString);
-            const decrypted = await decryptV2(JSON.parse(parsed), fetched!.email)
+            const parsed:encryptedDataProps[] = JSON.parse(jsonString);
+            const decrypted = await decryptV2(parsed, fetched!.email)
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],
                 password: decrypted![1],
