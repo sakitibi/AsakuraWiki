@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
-import { hexByteaToUint8Array } from '@/utils/wikiFetch'
-import Pako from 'pako'
 
 interface IncludePageProps {
     wikiSlug: string
@@ -20,64 +18,67 @@ export default function IncludePage({
 }: IncludePageProps) {
     const [error, setError] = useState<string | null>(null)
     const [parsedNodes, setParsedNodes] = useState<React.ReactNode[]>([])
+    try{
+        useEffect(() => {
+            if (typeof document === "undefined") return; // SSR回避
+            if (stylesheetURL) {
+                const link:HTMLLinkElement = document.createElement('link')
+                link.rel = 'stylesheet'
+                link.href = stylesheetURL
+                document.head.appendChild(link)
+            }
 
-    useEffect(() => {
-        if (typeof document === "undefined") return; // SSR回避
-        if (stylesheetURL) {
-            const link:HTMLLinkElement = document.createElement('link')
-            link.rel = 'stylesheet'
-            link.href = stylesheetURL
-            document.head.appendChild(link)
-        }
+            fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`)
+            .then(res => {
+                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+                return res.json()
+            })
+            .then(async data => {
+                const content: string = data.content || ''
+                let decompressedContent = content;
+                const lines:string[] = decompressedContent.split('\n')
 
-        fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`)
-        .then(res => {
-            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-            return res.json()
-        })
-        .then(async data => {
-            const content: string = data.content || ''
-            let decompressedContent = content;
-            const lines:string[] = decompressedContent.split('\n')
+                if (lineRange) {
+                    const [startRaw = '', endRaw = ''] = lineRange.split('-')
+                    const start:number = startRaw ? parseInt(startRaw) : 1
+                    const end:number = endRaw ? parseInt(endRaw) : lines.length
 
-            if (lineRange) {
-                const [startRaw = '', endRaw = ''] = lineRange.split('-')
-                const start:number = startRaw ? parseInt(startRaw) : 1
-                const end:number = endRaw ? parseInt(endRaw) : lines.length
-
-                if (startRaw || endRaw) {
-                    if (isNaN(start) || isNaN(end) || start < 1 || end > lines.length || start > end) {
-                        setError('無効な行範囲です')
-                        return
+                    if (startRaw || endRaw) {
+                        if (isNaN(start) || isNaN(end) || start < 1 || end > lines.length || start > end) {
+                            setError('無効な行範囲です')
+                            return
+                        }
+                        decompressedContent = lines.slice(start - 1, end).join('\n')
                     }
-                    decompressedContent = lines.slice(start - 1, end).join('\n')
                 }
-            }
-            const context = {
-                wikiSlug,
-                pageSlug: page,
-                variables: {},
-            }
+                const context = {
+                    wikiSlug,
+                    pageSlug: page,
+                    variables: {},
+                }
 
-            const nodes:React.ReactNode[] = await parseWikiContent(decompressedContent, context)
-            setParsedNodes(nodes)
-        })
-        .catch(err => {
-            console.error(err)
-            setError(err.message)
-        })
-    }, [wikiSlug, page, stylesheetURL, lineRange])
+                const nodes:React.ReactNode[] = await parseWikiContent(decompressedContent, context)
+                setParsedNodes(nodes)
+            })
+            .catch(err => {
+                console.error(err)
+                setError(err.message)
+            })
+        }, [wikiSlug, page, stylesheetURL, lineRange])
 
-    return (
-        <div className="include-page">
-        {showTitle && <h2 className="include-page__title">{page}</h2>}
-        {error ? (
-            <p style={{ color: 'red' }}>読み込み失敗: {error}</p>
-        ) : (
-            parsedNodes.map((node, i) => (
-                <React.Fragment key={i}>{node}</React.Fragment>
-            ))
-        )}
-        </div>
-    )
+        return (
+            <div className="include-page">
+            {showTitle && <h2 className="include-page__title">{page}</h2>}
+            {error ? (
+                <p style={{ color: 'red' }}>読み込み失敗: {error}</p>
+            ) : (
+                parsedNodes.map((node, i) => (
+                    <React.Fragment key={i}>{node}</React.Fragment>
+                ))
+            )}
+            </div>
+        )
+    } catch(e){
+        console.error("IncludeError: ", e);
+    }
 }
