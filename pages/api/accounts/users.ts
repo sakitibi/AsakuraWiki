@@ -38,8 +38,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
     } else if (req.method === 'POST') {
         const { metadatas: dataArray } = req.body; // ここで配列を受け取る
-        if (!Array.isArray(dataArray) || dataArray.length === 0) {
-            return res.status(400).json({ error: 'data must be a non-empty array' });
+        if (!dataArray) {
+            return res.status(400).json({ error: 'data must be a non-empty string' });
         }
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
@@ -56,7 +56,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         .from('user_metadatas')
         .insert([{
             id: userId,
-            metadatas: encodeBase64Unicode(dataArray[0] + dataArray[1]),
+            metadatas: encodeBase64Unicode(dataArray),
             secretcode: null,
             email: userEmail
         }])

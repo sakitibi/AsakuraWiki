@@ -71,7 +71,7 @@ export default function ModifyPage() {
                     const { error } = await supabaseClient
                         .from("user_metadatas")
                         .update({
-                            metadatas: encodeBase64Unicode(email + compressed),
+                            metadatas: encodeBase64Unicode(compressed),
                             email,
                             version: 2
                         })
