@@ -18,7 +18,7 @@ export default function FooterRu(){
                 </ul>
             </div>
             <div style={{ textAlign: 'center' }} className={styles.cCopyright}>
-                <p>Copyright 2025 {company} All rights Reserved</p>
+                <p>Copyright 2026 {company} All rights Reserved</p>
                 <p>Этот Wiki-сервис — проект с открытым исходным кодом.</p>
             </div>
         </footer>
