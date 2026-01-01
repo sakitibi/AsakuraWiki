@@ -29,6 +29,22 @@ export default function MenuJp({ handleClick, menuStatus }: MenuJpProps){
                         <a href="/wiki/sample">サンプルWiki</a>
                     </li>
                 </ul>
+                <ul>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/about/ad">広告について</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/policies">利用規約</a>
+                    </li>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/privacy">プライバシーポリシー</a>
+                    </li>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/about">当レンタルWikiについて</a>
+                    </li>
+                </ul>
             </nav>
         )
     }

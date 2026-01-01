@@ -29,6 +29,22 @@ export default function MenuRu({ handleClick, menuStatus }: MenuRuProps){
                         <a href="/wiki/sample">Образец Wiki</a>
                     </li>
                 </ul>
+                <ul>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/ru/about/ad">О рекламе</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/ru/policies">условия обслуживания</a>
+                    </li>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/ru/privacy">политика конфиденциальности</a>
+                    </li>
+                    <li className={styles.pSpNav__item}>
+                        <a href="/ru/about">Об этом вики-сайте по аренде</a>
+                    </li>
+                </ul>
             </nav>
         )
     }
