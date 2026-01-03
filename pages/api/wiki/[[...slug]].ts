@@ -3,6 +3,23 @@ import { supabaseServer } from 'lib/supabaseClientServer';
 import Pako from 'pako';
 import { hexByteaToUint8Array } from '@/utils/wikiFetch';
 
+function formatNow() {
+    const date = new Date();
+
+    const week = ["日", "月", "火", "水", "木", "金", "土"];
+    const w = week[date.getDay()];
+
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+
+    const hh = String(date.getHours()).padStart(2, "0");
+    const mi = String(date.getMinutes()).padStart(2, "0");
+    const ss = String(date.getSeconds()).padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd} (${w}) ${hh}:${mi}:${ss}`;
+}
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -121,6 +138,7 @@ export default async function handler(
         if (req.method === 'PUT') {
             if (isCLI) await checkCLIAllowed() // CLI のみチェック
             const { content, title } = req.body
+            
             if (typeof content !== 'string' || typeof title !== 'string') {
                 return res.status(400).json({ error: 'Invalid request body' })
             }
@@ -150,11 +168,10 @@ export default async function handler(
             if ((wiki.edit_mode === 'private' && !userId) || (wiki.owner_id !== userId && existingPage.freeze)) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
             }
-
+            // &now; を現在日時に置換
+            let replacedContent = content.replace(/&now;/g, formatNow());
             // gzip 圧縮して \x?? 形式の文字列に変換
-            const compressedBytes = Buffer.from(
-                Pako.gzip(content, { level: 9 })
-            )
+            const compressedBytes = Pako.gzip(replacedContent, { level: 9 });
             const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
             // Supabase に保存
             const { error } = await supabaseServer
@@ -222,10 +239,9 @@ export default async function handler(
             if (!slug || !title || !content) {
                 return res.status(400).json({ error: 'Missing parameters' })
             }
+            let replacedContent = content.replace(/&now;/g, formatNow());
             // gzip 圧縮して \x?? 形式の文字列に変換
-            const compressedBytes = Buffer.from(
-                Pako.gzip(content, { level: 9 })
-            )
+            const compressedBytes = Pako.gzip(replacedContent, { level: 9 });
             const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
             const { data: owner, error: owner_error } = await supabaseServer
                 .from("wikis")
