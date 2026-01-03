@@ -1,7 +1,7 @@
 import { editMode } from "@/utils/wiki_settings";
 import { User } from "@supabase/supabase-js";
-import { supabaseServer } from "@/lib/supabaseClientServer";
 import { NextRouter } from "next/router";
+import { supabaseClient } from "@/lib/supabaseClient";
 
 export const handleUpdate = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
@@ -21,7 +21,7 @@ export const handleUpdate = async (
 
     setLoading(true);
     try {
-        const { data: { session } } = await supabaseServer.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
         const token = session?.access_token;
         const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
             method: 'PUT',
@@ -66,7 +66,7 @@ export const handleDelete = async (
         const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
         if (!ok) return;
 
-        const { data: { session } } = await supabaseServer.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
         const token = session?.access_token;
 
         try {
@@ -96,7 +96,7 @@ export const handleFreeze = async(
     pageSlugStr:string,
     user: User | null
 ) => {
-    const { data: pageData, error: pageSelectError} = await supabaseServer
+    const { data: pageData, error: pageSelectError} = await supabaseClient
         .from("wiki_pages")
         .select("slug,freeze")
         .eq("slug", pageSlugStr)
@@ -105,7 +105,7 @@ export const handleFreeze = async(
         console.error("PageSelectError: ", pageSelectError.message);
         return;
     }
-    const { data: wikiData, error: wikiSelectError} = await supabaseServer
+    const { data: wikiData, error: wikiSelectError} = await supabaseClient
         .from("wikis")
         .select("owner_id")
         .eq("slug", wikiSlugStr)
@@ -118,7 +118,7 @@ export const handleFreeze = async(
         console.error("Error 403 Forbidden");
         return;
     }
-    const { error: updateError } = await supabaseServer
+    const { error: updateError } = await supabaseClient
         .from("wiki_pages")
         .update({
             freeze: !pageData?.freeze,

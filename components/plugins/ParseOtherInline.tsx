@@ -151,10 +151,24 @@ export default function parseOtherInline(
             nodes.push(<span key={key}>{isNaN(val) ? 'ERR' : val}</span>)
             last = m.index + token.length
         }
-        // #comment
-        else if (token === '#comment') {
-            nodes.push(<CommentForm key={key} />)
-            last = m.index + token.length
+        // #comment(above|below)
+        else if (token.startsWith('#comment')) {
+            const match = token.match(/^#comment(?:\(\s*(above|below)\s*\))?$/);
+            const raw = match?.[1];
+
+            const position: 'above' | 'below' =
+                raw === 'below' ? 'below' : 'above';
+
+            nodes.push(
+                <CommentForm
+                    key={key}
+                    wikiSlug={wikiSlug}
+                    pageSlug={pageSlug}
+                    position={position}
+                />
+            );
+
+            last = m.index + token.length;
         }
         // #rtcomment
         else if (token.startsWith('#rtcomment')) {
