@@ -116,6 +116,7 @@ export const handleFreeze = async(
     }
     if(user?.id !== wikiData?.owner_id){
         console.error("Error 403 Forbidden");
+        alert("エラー このページを凍結/凍結解除する権限がありません、");
         return;
     }
     const { error: updateError } = await supabaseClient
