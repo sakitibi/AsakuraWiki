@@ -121,7 +121,7 @@ export default function BKMT_Front(){
                     <li><a href="https://wikiwiki.jp/maitestu-net/-s/dddc3dcc" target="_blank">これ</a>の<br/>Tipicaは、マイ鉄ネットの商標登録物です。<br/>は嘘だとおもいます。 -- みぞれ 2025-06-15 (日) 09:56:25</li>
                     <li>ご報告ありがとうございます!<br/>こちらで対応しておきます -- さきちび 2025-06-18 (水) 18:33:25</li>
                     <li><span style="font-size:15px;">自分主導で餅尾急行ワールドに軍事侵攻開始!</span> -- みぞれ 2025-06-24 (火) 23:49:15</li>
-                    <li>早速<a href="https://www.youtube.com/@bedrockminecraftrailway" target="_blank">BMR</a>さんが<a href="https://wikiwiki.jp/mgtn" target="_blank">秋月</a>という荒らしの所にいたので<br/>早速注意喚起メール送りました -- さきちび 2025-06-25 (水) 17:33:45</li>
+                    <li>早速<a href="https://www.youtube.com/@bedrockminecraftrailway" target="_blank">BMR</a>さんが<a href="https://wikiwiki.jp/vgtn" target="_blank">秋月</a>という荒らしの所にいたので<br/>早速注意喚起メール送りました -- さきちび 2025-06-25 (水) 17:33:45</li>
                     <li>今回の荒らしについて<br/>当委員会は仕事で活動している為<br/>今回の荒らし行為は<br/>威力業務妨害罪に<br/>問われる場合がございます、 -- みぞれ 2025-07-04 (金) 20:27:05</li>
                     <li>ページ長かったんでタブにしておきました! -- みぞれ 2025-07-07 (月) 17:51:53</li>
                     <li>7月24日に他Wikiに注意喚起貼りますか? -- さきちび 2025-07-08 (火) 16:48:13</li>
