@@ -20,7 +20,7 @@ export default function CommentForm({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const commentLine = `- ${body} -- ${name} &now;`;
+        const commentLine = `- ${body} -- ${name} &new{&now;};`;
 
         // ページ情報取得
         const { data: pageData, error: pageError } = await supabaseClient
