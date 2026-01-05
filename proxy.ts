@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 
-export function middleware(_: NextRequest) {
+export function proxy(_: NextRequest) {
     const csp = `
         default-src
         'self'

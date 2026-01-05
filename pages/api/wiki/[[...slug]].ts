@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { supabaseServer } from 'lib/supabaseClientServer';
+import { supabaseServer } from '@/lib/supabaseClientServer';
 import Pako from 'pako';
 import { hexByteaToUint8Array } from '@/utils/wikiFetch';
 

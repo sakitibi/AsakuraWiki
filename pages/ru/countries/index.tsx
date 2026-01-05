@@ -5,7 +5,7 @@ import HeaderRu from "@/utils/pageParts/top/ru/Header";
 import LeftMenuRu from "@/utils/pageParts/top/ru/LeftMenu";
 import RightMenuRu from "@/utils/pageParts/top/ru/RightMenu";
 import FooterRu from "@/utils/pageParts/top/ru/Footer";
-import styles from 'css/index.min.module.css';
+import styles from '@/css/index.min.module.css';
 
 export default function CountRies() {
     const [menuStatus, setMenuStatus] = useState(false);

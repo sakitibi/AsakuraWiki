@@ -1,7 +1,7 @@
 import { NextRouter, useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useSession, User, Session } from '@supabase/auth-helpers-react';
-import { supabaseClient } from 'lib/supabaseClient';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function NewPage() {
     const router:NextRouter = useRouter();

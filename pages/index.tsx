@@ -4,7 +4,7 @@ import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
-import styles from 'css/index.min.module.css';
+import styles from '@/css/index.min.module.css';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
 import LoginedUI from '@/utils/pageParts/top/jp/indexLogined';

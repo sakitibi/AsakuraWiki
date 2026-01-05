@@ -5,7 +5,7 @@ import LeftMenuJp from "@/utils/pageParts/top/jp/LeftMenu";
 import RightMenuJp from "@/utils/pageParts/top/jp/RightMenu";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import styles from 'css/index.min.module.css';
+import styles from '@/css/index.min.module.css';
 import PoliciesNotting from "@/utils/pageParts/top/jp/policies/Notting";
 import PoliciesDefined from "@/utils/pageParts/top/jp/policies/Defined";
 import PoliciesRegister, {

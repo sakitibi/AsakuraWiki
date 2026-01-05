@@ -5,7 +5,7 @@ import LeftMenuJp from "@/utils/pageParts/top/jp/LeftMenu";
 import HeaderJp from "@/utils/pageParts/top/jp/Header";
 import RightMenuJp from "@/utils/pageParts/top/jp/RightMenu";
 import FooterJp from "@/utils/pageParts/top/jp/Footer";
-import styles from 'css/index.min.module.css';
+import styles from '@/css/index.min.module.css';
 
 export default function CountRies() {
     const [menuStatus, setMenuStatus] = useState(false);

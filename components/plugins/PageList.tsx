@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NextRouter, useRouter } from 'next/router'
 import Link from 'next/link'
-import { supabaseServer } from 'lib/supabaseClientServer';
+import { supabaseServer } from '@/lib/supabaseClientServer';
 
 export interface PageItem{
     slug: string;

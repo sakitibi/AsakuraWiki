@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NextRouter, useRouter } from 'next/router';
-import { supabaseClient } from 'lib/supabaseClient';
+import { supabaseClient } from '@/lib/supabaseClient';
 import { ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import Head from 'next/head';
 import { User } from '@supabase/auth-helpers-react';

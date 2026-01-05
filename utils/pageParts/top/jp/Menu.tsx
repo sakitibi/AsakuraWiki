@@ -1,4 +1,4 @@
-import styles from 'css/index.min.module.css';
+import styles from '@/css/index.min.module.css';
 
 interface MenuJpProps {
     handleClick: () => void;

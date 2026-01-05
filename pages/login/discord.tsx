@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { supabaseClient } from 'lib/supabaseClient';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export default function DiscordLogin() {
     useEffect(() => {
