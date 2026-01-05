@@ -27,6 +27,7 @@ export default function WikiSettingsPage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [errorMsg, setErrorMsg] = useState<string>('');
     const [designColor, setdesignColor] = useState<designColor>('default');
+    const [osusume_hyouji_mode, setOsusume_hyouji_mode] = useState<boolean>(true);
     const [isCLI, setIsCLI] = useState<boolean>(true);
 
     useEffect(() => {
@@ -36,7 +37,7 @@ export default function WikiSettingsPage() {
             setLoading(true);
             const { data, error } = await supabaseClient
             .from('wikis')
-            .select('name, description, owner_id, edit_mode, design_color, cli_used')
+            .select('name, description, owner_id, edit_mode, design_color, cli_used, osusume_hyouji_mode')
             .eq('slug', slugStr)
             .maybeSingle();
 
@@ -68,6 +69,7 @@ export default function WikiSettingsPage() {
                 data.design_color === 'purple' ? 'purple': 
                 'default'
             );
+            setOsusume_hyouji_mode(data.osusume_hyouji_mode);
             setLoading(false);
         };
 
@@ -119,8 +121,6 @@ export default function WikiSettingsPage() {
 
         const { error: deletionError } = await supabaseClient
             .from('deleted_wikis')
-            /*.delete()
-            .eq('slug', slugStr)*/
             .insert([{
                 slug: slugStr,
                 deleted: true
@@ -143,6 +143,10 @@ export default function WikiSettingsPage() {
         isCLI ? setIsCLI(false) : setIsCLI(true);
     }
 
+    const isOsusumeChanges = () => {
+        setOsusume_hyouji_mode(!osusume_hyouji_mode);
+    }
+
     if (loading) return <p>読み込み中...</p>;
 
     return (
@@ -162,6 +166,7 @@ export default function WikiSettingsPage() {
                     /* end css */
                 `}
                 </style>
+                <title>{name} Wikiを編集</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 600 }}>
                 <h1>
@@ -242,6 +247,27 @@ export default function WikiSettingsPage() {
                                     value="true"
                                     onChange={() => isCLIChanges()}
                                     checked={isCLI}
+                                />
+                            </label>
+                            <br /><br />
+                            <label>
+                                トップページのおすすめWiki一覧に表示
+                                <input
+                                    type="radio"
+                                    name="isosusume"
+                                    value="false"
+                                    onChange={() => isCLIChanges()}
+                                    checked={osusume_hyouji_mode}
+                                />
+                            </label>
+                            <label>
+                                トップページのおすすめWiki一覧に非表示
+                                <input
+                                    type="radio"
+                                    name="isosusume"
+                                    value="true"
+                                    onChange={() => isOsusumeChanges()}
+                                    checked={!osusume_hyouji_mode}
                                 />
                             </label>
                             <br /><br />

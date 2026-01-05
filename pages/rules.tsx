@@ -6,10 +6,12 @@ import RightMenuJp from "@/utils/pageParts/top/jp/RightMenu";
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import styles from '@/css/index.min.module.css';
-import RulesComponents1 from "@/utils/pageParts/top/jp/rules/1";
 import Script from "next/script";
+import RulesComponents1 from "@/utils/pageParts/top/jp/rules/1";
 import RulesComponents2 from "@/utils/pageParts/top/jp/rules/2";
 import RulesComponents3 from "@/utils/pageParts/top/jp/rules/3";
+import RulesComponents4 from "@/utils/pageParts/top/jp/rules/4";
+import RulesComponents5 from "@/utils/pageParts/top/jp/rules/5";
 
 export default function Rules(){
     const [menuStatus, setMenuStatus] = useState(false);
@@ -51,6 +53,8 @@ export default function Rules(){
                             <RulesComponents1/>
                             <RulesComponents2/>
                             <RulesComponents3/>
+                            <RulesComponents4/>
+                            <RulesComponents5/>
                         </div>
                     </main>
                     <RightMenuJp/>
