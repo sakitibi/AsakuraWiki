@@ -62,3 +62,9 @@
         padding: .25em 1em !important;
     }
 }
+
+@media (max-width: 1299px) {
+    .pForBeginner,.pContact{
+        display: none;
+    }
+}

@@ -12,6 +12,7 @@ import RulesComponents2 from "@/utils/pageParts/top/jp/rules/2";
 import RulesComponents3 from "@/utils/pageParts/top/jp/rules/3";
 import RulesComponents4 from "@/utils/pageParts/top/jp/rules/4";
 import RulesComponents5 from "@/utils/pageParts/top/jp/rules/5";
+import RulesComponents6 from "@/utils/pageParts/top/jp/rules/6";
 
 export default function Rules(){
     const [menuStatus, setMenuStatus] = useState(false);
@@ -55,6 +56,7 @@ export default function Rules(){
                             <RulesComponents3/>
                             <RulesComponents4/>
                             <RulesComponents5/>
+                            <RulesComponents6/>
                         </div>
                     </main>
                     <RightMenuJp/>
