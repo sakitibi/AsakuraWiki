@@ -36,6 +36,7 @@ export default function NewsPage() {
                         <p>このサービスの管理者<small>(とメンバー)</small>めっちゃ大喜び!!!!</p>
                         <p>これは運営神!!!ナイス!!!!</p>
                         <p>願いが叶ったぞおおおおおぉ!!!</p>
+                        <p>追記: https://wikiwiki.jp/vgtn になってました、まだ残ってたみたいです</p>
                         <p><img src="https://sakitibi.github.io/AsakuraWiki-Images/WIKIWIKI利用規約違反で削除されました.png" alt='WIKIWIKI利用規約違反で削除されましたの画像' width="500" height="350"/></p>
                     </main>
                     <RightMenuJp/>
