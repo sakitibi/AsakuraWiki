@@ -96,18 +96,9 @@ export const handleFreeze = async(
     pageSlugStr:string,
     user: User | null
 ) => {
-    const { data: pageData, error: pageSelectError} = await supabaseClient
-        .from("wiki_pages")
-        .select("slug,freeze")
-        .eq("slug", pageSlugStr)
-        .maybeSingle()
-    if(pageSelectError){
-        console.error("PageSelectError: ", pageSelectError.message);
-        return;
-    }
     const { data: wikiData, error: wikiSelectError} = await supabaseClient
         .from("wikis")
-        .select("owner_id")
+        .select("owner_id,id")
         .eq("slug", wikiSlugStr)
         .maybeSingle()
     if(wikiSelectError){
@@ -117,6 +108,16 @@ export const handleFreeze = async(
     if(user?.id !== wikiData?.owner_id){
         console.error("Error 403 Forbidden");
         alert("エラー このページを凍結/凍結解除する権限がありません、");
+        return;
+    }
+    const { data: pageData, error: pageSelectError} = await supabaseClient
+        .from("wiki_pages")
+        .select("slug,freeze")
+        .eq("wiki_id", wikiData?.id)
+        .eq("slug", pageSlugStr)
+        .maybeSingle()
+    if(pageSelectError){
+        console.error("PageSelectError: ", pageSelectError.message);
         return;
     }
     const { error: updateError } = await supabaseClient
