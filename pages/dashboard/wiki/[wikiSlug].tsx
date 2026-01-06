@@ -257,7 +257,7 @@ export default function WikiSettingsPage() {
                                     type="radio"
                                     name="isosusume"
                                     value="false"
-                                    onChange={() => isCLIChanges()}
+                                    onChange={() => isOsusumeChanges()}
                                     checked={osusume_hyouji_mode}
                                 />
                             </label>
