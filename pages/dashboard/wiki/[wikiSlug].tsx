@@ -88,7 +88,8 @@ export default function WikiSettingsPage() {
             edit_mode: editMode,
             updated_at: new Date(),
             design_color: designColor,
-            cli_used: isCLI
+            cli_used: isCLI,
+            osusume_hyouji_mode
         })
         .eq('slug', slugStr);
 
