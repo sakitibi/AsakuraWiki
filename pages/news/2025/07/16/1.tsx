@@ -31,7 +31,13 @@ export default function NewsPage() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL='/news/2025/07/16/1'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/07/16 あさクラ南東部で<br/>強風被害が出ています、ご注意下さい</h1>
+                        <h1>
+                            <i
+                                className="fa-solid fa-tornado"
+                                style={{ fontSize: "inherit", color: "#909090" }}
+                            ></i>
+                            2025/07/16 あさクラ南東部で<br/>強風被害が出ています、ご注意下さい
+                        </h1>
                         <p>2025/07/15 16:00ごろ Train Builderワールド近海で<br/>強風が発生いたしました</p>
                         <p>2025/07/16 14:57ごろにあさクラ本土に上陸したと見ています</p>
                         <p>この影響で一部の地域で遅れや運転見合わせなどが発生しています</p>
