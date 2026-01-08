@@ -20,6 +20,9 @@ export default function RightMenuRu(){
                     <li className={styles.pContact__item}>
                         <a href="/about/ad">О рекламе</a>
                     </li>
+                    <li className={styles.pContact__item}>
+                        <a href="/rules">Правила использования данного сервиса</a>
+                    </li>
                 </ul>
             </div>
         </aside>

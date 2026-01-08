@@ -20,6 +20,9 @@ export default function RightMenuJp(){
                     <li className={styles.pContact__item}>
                         <a href="/about/ad">広告について</a>
                     </li>
+                    <li className={styles.pContact__item}>
+                        <a href="/rules">本サービスに関する利用のルール</a>
+                    </li>
                 </ul>
             </div>
         </aside>
