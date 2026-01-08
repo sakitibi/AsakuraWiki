@@ -1,0 +1,17 @@
+@use 'sass:meta';
+@use 'sass:list';
+
+// mb utilities only
+@mixin generate-mb-utility($values, $infix: "") {
+    // 値が単純 list / string の場合は key=value に変換
+    @if meta.type-of($values) == "string"
+        or meta.type-of(list.nth($values, 1)) != "list" {
+        $values: zip($values, $values);
+    }
+
+    @each $key, $value in $values {
+        .mb#{$infix}-#{$key} {
+            margin-bottom: $value;
+        }
+    }
+}

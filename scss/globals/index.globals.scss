@@ -5,6 +5,7 @@
 @use 'wiki/MinecraftMetro';
 @use 'top/collapsing';
 @use 'top/alert';
+@use 'top/mb';
 
 input:not([type=submit],[type=checkbox]) {
     width: 100%;
@@ -53,6 +54,13 @@ header{
     text-align: center;
 }
 
-#sanninnsenn{
-    font-weight: bold;
-}
+$spacers: (
+    0: 0,
+    1: .25rem,
+    2: .5rem,
+    3: 1rem,
+    4: 1.5rem,
+    5: 3rem
+);
+
+@include mb.generate-mb-utility($spacers);
