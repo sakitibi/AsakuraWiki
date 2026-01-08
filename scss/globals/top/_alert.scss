@@ -1,6 +1,7 @@
 $bs-dark-text-emphasis: #495057;
 $bs-dark-bg-subtle: #ced4da;
 $bs-dark-border-subtle: #adb5bd;
+$bs-alert-color:inherit;
 
 :root {
     --bs-primary-text-emphasis:#143149;
@@ -20,7 +21,6 @@ $bs-dark-border-subtle: #adb5bd;
     --bs-alert-padding-x:1rem;
     --bs-alert-padding-y:1rem;
     --bs-alert-margin-bottom:1rem;
-    $bs-alert-color:inherit;
     --bs-alert-border-color:transparent;
     --bs-alert-border:var(--bs-border-width) solid var(--bs-alert-border-color);
     --bs-alert-border-radius:var(--bs-border-radius);
@@ -57,7 +57,7 @@ $bs-dark-border-subtle: #adb5bd;
 
 .alert-primary {
     --bs-primary-text-emphasis:#143149;
-    $bs-alert-color:var(--bs-primary-text-emphasis);
+    $bs-alert-color:var(--bs-primary-text-emphasis) !global;
     --bs-alert-bg:var(--bs-primary-bg-subtle);
     --bs-alert-border-color:var(--bs-primary-border-subtle);
     --bs-alert-link-color:var(--bs-primary-text-emphasis);
@@ -65,7 +65,7 @@ $bs-dark-border-subtle: #adb5bd;
 
 .alert-secondary {
     --bs-secondary-text-emphasis:#2b2f32;
-    $bs-alert-color:var(--bs-secondary-text-emphasis);
+    $bs-alert-color:var(--bs-secondary-text-emphasis) !global;
     --bs-alert-bg:var(--bs-secondary-bg-subtle);
     --bs-alert-border-color:var(--bs-secondary-border-subtle);
     --bs-alert-link-color:var(--bs-secondary-text-emphasis);
@@ -73,7 +73,7 @@ $bs-dark-border-subtle: #adb5bd;
 
 .alert-success {
     --bs-success-text-emphasis:#254a25;
-    $bs-alert-color:var(--bs-success-text-emphasis);
+    $bs-alert-color:var(--bs-success-text-emphasis) !global;
     --bs-alert-bg:var(--bs-success-bg-subtle);
     --bs-alert-border-color:var(--bs-success-border-subtle);
     --bs-alert-link-color:var(--bs-success-text-emphasis);
@@ -81,7 +81,7 @@ $bs-dark-border-subtle: #adb5bd;
 
 .alert-info {
     --bs-info-text-emphasis:#244d59;
-    $bs-alert-color:var(--bs-info-text-emphasis);
+    $bs-alert-color:var(--bs-info-text-emphasis) !global;
     --bs-alert-bg:var(--bs-info-bg-subtle);
     --bs-alert-border-color:var(--bs-info-border-subtle);
     --bs-alert-link-color:var(--bs-info-text-emphasis);
@@ -89,7 +89,7 @@ $bs-dark-border-subtle: #adb5bd;
 
 .alert-warning {
     --bs-warning-text-emphasis:#60451f;
-    $bs-alert-color:var(--bs-warning-text-emphasis);
+    $bs-alert-color:var(--bs-warning-text-emphasis) !global;
     --bs-alert-bg:var(--bs-warning-bg-subtle);
     --bs-alert-border-color:var(--bs-warning-border-subtle);
     --bs-alert-link-color:var(--bs-warning-text-emphasis);
@@ -97,7 +97,7 @@ $bs-dark-border-subtle: #adb5bd;
 
 .alert-danger {
     --bs-danger-text-emphasis:#572120;
-    $bs-alert-color:var(--bs-danger-text-emphasis);
+    $bs-alert-color:var(--bs-danger-text-emphasis) !global;
     --bs-alert-bg:var(--bs-danger-bg-subtle);
     --bs-alert-border-color:var(--bs-danger-border-subtle);
     --bs-alert-link-color:var(--bs-danger-text-emphasis);
@@ -105,14 +105,14 @@ $bs-dark-border-subtle: #adb5bd;
 
 .alert-light {
     --bs-light-text-emphasis:#495057;
-    $bs-alert-color:var(--bs-light-text-emphasis);
+    $bs-alert-color:var(--bs-light-text-emphasis) !global;
     --bs-alert-bg:var(--bs-light-bg-subtle);
     --bs-alert-border-color:var(--bs-light-border-subtle);
     --bs-alert-link-color:var(--bs-light-text-emphasis);
 }
 
 .alert-dark {
-    $bs-alert-color: $bs-dark-text-emphasis;
+    $bs-alert-color: $bs-dark-text-emphasis !global;
     --bs-alert-bg: $bs-dark-bg-subtle;
     --bs-alert-border-color: $bs-dark-border-subtle;
     --bs-alert-link-color: $bs-dark-text-emphasis;
