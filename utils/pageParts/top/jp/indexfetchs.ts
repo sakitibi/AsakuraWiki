@@ -76,7 +76,7 @@ export async function fetched13ninstudioCounter(
         const response:Response = await fetch(requestURL);
         if(!response.ok){
             alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
-            opendns("ja");
+            opendns();
         }
         console.log("responseURL: ", response.url);
         const userData = await response.json();
@@ -84,6 +84,6 @@ export async function fetched13ninstudioCounter(
     } catch (error) {
         console.error("fetch error:", error);
         alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
-        opendns("ja");
+        opendns();
     }
 }

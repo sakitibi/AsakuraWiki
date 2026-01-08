@@ -76,6 +76,7 @@ export async function fetched13ninstudioCounter(
         console.error("fetch error:", error);
         alert("Не удалось получить счетчик.\nПроверьте сетевое окружение и перезагрузите страницу.");
         alert(error); // Safariなどのデベロッパーツールがないブラウザ用
+        opendns();
     }
 }
 
@@ -83,7 +84,7 @@ function isOpendns(response:Response){
     // OpenDNS のブロックページに飛ばされたか確認
     if (response.url.match(/https:\/\/block\.opendns\.com.+?/)) {
         alert("Функция счетчика этого приложения заблокирована OpenDNS.\nСчетчик не будет работать должным образом.");
-        opendns("ru");
+        opendns();
         return;
     }
     return;
