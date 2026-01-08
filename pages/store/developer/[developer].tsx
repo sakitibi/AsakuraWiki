@@ -20,6 +20,7 @@ export interface DeveloperProps{
 export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const [developers, setDevelopers] = useState<DeveloperProps | null>(null);
     const router:NextRouter = useRouter();
     const { developer } = router.query;
@@ -68,6 +69,7 @@ export default function Store() {
             const data = await res.json();
             console.log("data: ", data);
             setDevelopers(data); // concat不要
+            setLoading(false);
         };
         DevDataFetch();
     }, [DevelopersStr]);
@@ -85,35 +87,41 @@ export default function Store() {
                     <LeftMenuJp URL={`/store/developer/${DevelopersStr}`} rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
-                            {apps.length > 0 ? (
-                                <>
-                                    <h1>{developers?.developer_name}</h1>
-                                    {apps.map((data, index) => (
-                                        <>
-                                            <div id="developers-container" key={index}>
-                                                <div style={{ display: 'flex', gap: '20px' }}>
-                                                    {data.isChecked ? (
-                                                        <a
-                                                            className={styles.developersApplinks}
-                                                            href={`/store/details/${data.appid}`}
-                                                        >
-                                                            <img
-                                                                src={data.appicon_url}
-                                                                alt={`${data.app_title}_icon`}
-                                                                width="50"
-                                                                height="50"
-                                                            />
-                                                            <h2>{data.app_title}</h2>
-                                                        </a>
-                                                    ) : null}
-                                                </div>
-                                            </div>
-                                        </>
-                                    ))}
-                                    {developers?.developer_siteurl ? <p><a href={developers!.developer_siteurl}>このデベロッパのサイト</a></p> : null}
-                                </>
+                            {loading ? (
+                                <p>読み込み中</p>
                             ) : (
-                                <Custom404 isEmbed="true"/>
+                                <>
+                                    {apps.length > 0 ? (
+                                        <>
+                                            <h1>{developers?.developer_name}</h1>
+                                            {apps.map((data, index) => (
+                                                <>
+                                                    <div id="developers-container" key={index}>
+                                                        <div style={{ display: 'flex', gap: '20px' }}>
+                                                            {data.isChecked ? (
+                                                                <a
+                                                                    className={styles.developersApplinks}
+                                                                    href={`/store/details/${data.appid}`}
+                                                                >
+                                                                    <img
+                                                                        src={data.appicon_url}
+                                                                        alt={`${data.app_title}_icon`}
+                                                                        width="50"
+                                                                        height="50"
+                                                                    />
+                                                                    <h2>{data.app_title}</h2>
+                                                                </a>
+                                                            ) : null}
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            ))}
+                                            {developers?.developer_siteurl ? <p><a href={developers!.developer_siteurl}>このデベロッパのサイト</a></p> : null}
+                                        </>
+                                    ) : (
+                                        <Custom404 isEmbed="true"/>
+                                    )}
+                                </>
                             )}
                         </>
                     </main>

@@ -87,7 +87,8 @@ export default function Store() {
                     app_version: appversion,
                     update_at: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
                 })
-                .select()
+                .eq("appid", `${developerData.developer_id}.${appid}`)
+                .eq("id", user.id)
                 .single();
             if(error){
                 alert("エラー アプリケーションを公開出来ませんでした");

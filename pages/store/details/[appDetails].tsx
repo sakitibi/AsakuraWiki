@@ -29,6 +29,7 @@ export interface AppProps {
 export default function Store() {
     const [menuStatus, setMenuStatus] = useState(false);
     const [apps, setApps] = useState<AppProps | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     const router:NextRouter = useRouter();
     const { appDetails } = router.query;
     // クエリ→文字列化
@@ -57,6 +58,7 @@ export default function Store() {
             const data = await res.json();
             console.log("data: ", data);
             setApps(data); // concat不要
+            setLoading(false);
         };
         AppDataFetch();
     }, [appDetailsStr]);
@@ -91,53 +93,59 @@ export default function Store() {
                     <LeftMenuJp URL={`/store/details/${appDetailsStr}`} rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
-                            {!!apps ? (
-                                <div id="details-container">
-                                    {apps.isChecked ? (
-                                        <div id="details-contents">
-                                            <h1 id={styles.appTitle}>{apps.app_title}</h1>
-                                            <p>
-                                                <a id={styles.appDeveloper} href={`/store/developer/${apps.developer_id}`}>
-                                                    {apps.developer}
-                                                </a>
-                                            </p>
-                                            <div id={styles.appIconContainer}>
-                                                <p>
-                                                    <img
-                                                        src={apps.appicon_url}
-                                                        alt={`${apps.app_title}_icon`}
-                                                        width="50"
-                                                        height="50"
-                                                    />
-                                                </p>
-                                            </div>
-                                            <p>{apps.download_counter}ダウンロード</p>
-                                            <div style={{ display: 'flex' }}>
-                                                <button
-                                                    id={styles.installButton}
-                                                    className="installButton"
-                                                    onClick={async() => await InstallHandler(apps.download_url, apps.download_counter + 1)}
-                                                >
-                                                    <span
-                                                        style={{
-                                                            textAlign: 'center',
-                                                            margin: '0 auto'
-                                                        }}
-                                                    >
-                                                        インストール
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <h3>このゲームについて</h3>
-                                            <p style={{ maxWidth: '600px' }}>{apps.app_description ?? ""}</p>
-                                            <p>最終更新日: {
-                                                `${apps.update_at.split("-")[0]}/${apps.update_at.split("-")[1]}/${apps.update_at.split("-")[2].split(" ")[0]}`
-                                            }</p>
-                                        </div>
-                                    ) : null}
-                                </div>
+                            {loading ? (
+                                <p>読み込み中</p>
                             ) : (
-                                <Custom404 isEmbed='true'/>
+                                <>
+                                    {!!apps ? (
+                                        <div id="details-container">
+                                            {apps.isChecked ? (
+                                                <div id="details-contents">
+                                                    <h1 id={styles.appTitle}>{apps.app_title}</h1>
+                                                    <p>
+                                                        <a id={styles.appDeveloper} href={`/store/developer/${apps.developer_id}`}>
+                                                            {apps.developer}
+                                                        </a>
+                                                    </p>
+                                                    <div id={styles.appIconContainer}>
+                                                        <p>
+                                                            <img
+                                                                src={apps.appicon_url}
+                                                                alt={`${apps.app_title}_icon`}
+                                                                width="50"
+                                                                height="50"
+                                                            />
+                                                        </p>
+                                                    </div>
+                                                    <p>{apps.download_counter}ダウンロード</p>
+                                                    <div style={{ display: 'flex' }}>
+                                                        <button
+                                                            id={styles.installButton}
+                                                            className="installButton"
+                                                            onClick={async() => await InstallHandler(apps.download_url, apps.download_counter + 1)}
+                                                        >
+                                                            <span
+                                                                style={{
+                                                                    textAlign: 'center',
+                                                                    margin: '0 auto'
+                                                                }}
+                                                            >
+                                                                インストール
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <h3>このゲームについて</h3>
+                                                    <p style={{ maxWidth: '600px' }}>{apps.app_description ?? ""}</p>
+                                                    <p>最終更新日: {
+                                                        `${apps.update_at.split("-")[0]}/${apps.update_at.split("-")[1]}/${apps.update_at.split("-")[2].split(" ")[0]}`
+                                                    }</p>
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    ) : (
+                                        <Custom404 isEmbed='true'/>
+                                    )}
+                                </>
                             )}
                         </>
                     </main>
