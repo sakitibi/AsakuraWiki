@@ -63,6 +63,7 @@ export default function RulesComponents1(){
                         <ol>
                             <li>「〇〇を傷つける」「〇日に□□を襲う」という脅迫的な発言</li>
                             <li>他人のSNSアカウントや個人情報を公開して、「みんなで凸しろ」または「荒らせ」と煽る行為</li>
+                            <li><a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>などの荒らしは悪くないと主張する行為</li>
                             <li>晒し上げ(例外有り,荒らしに対しては完全無効)（特定の個人、ハンドルネーム、または名前や個人情報を公開して批判や攻撃を誘導する行為）</li>
                         </ol>
                     </div>
@@ -82,7 +83,7 @@ export default function RulesComponents1(){
                             <i className="fa-solid fa-message-exclamation fa-fw fa-lg fa-flip-horizontal"></i>
                             <b>システムの安定性を損なう行為は厳禁です。これらの行為は、<br/>電子計算機損壊等業務妨害罪に該当し、法的措置が取られる可能性があります。</b>
                         </p>
-                        <p>しかし、荒らしサイト(akidukisystems.com)などへの大量リクエスト攻撃（DDoS攻撃など）や過剰リクエストツールの使用を誘導・実行は義務となっています、</p>
+                        <p>しかし、荒らしサイト(akidukisystems.com)などへの大量リクエスト攻撃（DDoS攻撃など）や過剰リクエストツールの使用を誘導・実行は特例でOKとなっています、</p>
                     </div>
                 </div>
                 <li>
