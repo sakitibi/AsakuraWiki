@@ -1,13 +1,63 @@
-$font-minecraft: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
+/* fonts */
+$font-vanilla: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
 
-$link-green: #6cc349;
-$link-green-dark: #2a641c;
+/* links */
+$link-color: #6cc349, #2a641c;
 
-$heading1-small: 2.25rem;
-$heading1-large: 4.5rem;
-$heading1-large-md: 4rem;
+/* themes */
+$themes: (
+    "MC_Theme_Core",
+    "MC_Theme_Dungeons .MC_Theme_Vanilla",
+    "MC_Theme_Legends .MC_Theme_Vanilla",
+    "MC_Theme_Realms .MC_Theme_Vanilla",
+    "MC_Theme_Vanilla"
+);
 
-$break-lg: 1199.98px;
-$break-md: 768px;
+$vanilla-themes: (
+    "MC_Theme_Dungeons .MC_Theme_Vanilla",
+    "MC_Theme_Legends .MC_Theme_Vanilla",
+    "MC_Theme_Realms .MC_Theme_Vanilla",
+    "MC_Theme_Vanilla"
+);
 
-$themes: Core, Dungeons, Legends, Marketplace, Realms, Vanilla;
+/* heading mixins */
+@mixin heading-sm {
+    font-size: 2.25rem;
+    line-height: 2.25rem;
+    letter-spacing: -.54px;
+}
+
+@mixin heading-lg {
+    font-size: 4.5rem;
+    line-height: 4.5rem;
+    letter-spacing: -.015em;
+}
+
+/* fonts map */
+$minecraft-fonts: (
+    (
+        name: "MinecraftSeven",
+        src: (
+            url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/MinecraftSeven.woff") format("woff")
+        )
+    ),
+    (
+        name: "MinecraftSeven-v2",
+        src: (
+            url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Seven_v2.woff2") format("woff2"),
+            url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Seven_v2.woff") format("woff")
+        )
+    ),
+    (
+        name: "MinecraftTen",
+        src: (
+            url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/MinecraftTen.woff") format("woff")
+        )
+    ),
+    (
+        name: "MinecraftTenv2",
+        src: (
+            url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Tenv2.woff2") format("woff2")
+        )
+    )
+);
