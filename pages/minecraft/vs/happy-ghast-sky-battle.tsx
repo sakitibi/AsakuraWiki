@@ -62,41 +62,54 @@ export default function MinecraftVS(){
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-    const [user, setUser] = useState<User | null>(null);
+    const fetchUsers = async () => {
+        const { data, error } = await supabaseServer
+            .from("minecraft_vs_happy-ghast-sky-battle")
+            .select("user_name, team, user_id, live_link, score");
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        if (data) {
+            const grouped = data.reduce((acc: any, user) => {
+                if (!acc[user.team]) acc[user.team] = [];
+                acc[user.team].push({
+                    user_name: user.user_name,
+                    user_id: user.user_id,
+                    user_link: user.live_link,
+                    score: user.score
+                });
+                return acc;
+            }, {});
+
+            setUsers(grouped);
+        }
+    };
+
     useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
-
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
-    }, []);
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const { data, error } = await supabaseServer
-                .from("minecraft_vs_happy-ghast-sky-battle")
-                .select("user_name, team, user_id, live_link, score");
-            if (error) return console.error(error);
-
-            if (data) {
-                // チームごとに { user_name, user_id } をまとめる
-                const grouped = data.reduce((acc: any, user) => {
-                    if (!acc[user.team]) acc[user.team] = [];
-                    acc[user.team].push({
-                        user_name: user.user_name,
-                        user_id: user.user_id,
-                        user_link: user.live_link,
-                        score: user.score
-                    });
-                    return acc;
-                }, {});
-
-                setUsers(grouped);
-            }
-        };
-
         fetchUsers();
+
+        const channel = supabaseClient
+            .channel("realtime-users")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*", // INSERT / UPDATE / DELETE
+                    schema: "public",
+                    table: "minecraft_vs_happy-ghast-sky-battle",
+                },
+                () => {
+                    // 何か変わったら再取得
+                    fetchUsers();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabaseClient.removeChannel(channel);
+        };
     }, []);
     console.log("Current userlists:", userlists);
     const RuleImgChanges = () => {
