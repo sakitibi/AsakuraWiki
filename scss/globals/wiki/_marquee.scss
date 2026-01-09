@@ -1,47 +1,34 @@
+// サイズ定義
+$marquee-sizes: (
+    xl: 1300%,
+    md: 1000%,
+    sm: 700%
+);
+
+// アニメーション定義
+$marquee-types: (
+    once: 0%,
+    default: -100%,
+    alternate: -100%
+);
+
+// Base
 .marqueeBase {
     display: inline-block;
     animation-timing-function: ease-in-out;
     animation-fill-mode: forwards;
 }
 
-/* スライド */
-@keyframes scroll-slide-once-xl {
-    0% { transform: translateX(1300%); }
-    100% { transform: translateX(0%); }
-}
-@keyframes scroll-slide-once-md {
-    0% { transform: translateX(1000%); }
-    100% { transform: translateX(0%); }
-}
-@keyframes scroll-slide-once-sm {
-    0% { transform: translateX(700%); }
-    100% { transform: translateX(0%); }
-}
-
-/* 通常スクロール */
-@keyframes scroll-default-xl {
-    0% { transform: translateX(1300%); }
-    100% { transform: translateX(-100%); }
-}
-@keyframes scroll-default-md {
-    0% { transform: translateX(1000%); }
-    100% { transform: translateX(-100%); }
-}
-@keyframes scroll-default-sm {
-    0% { transform: translateX(700%); }
-    100% { transform: translateX(-100%); }
-}
-
-/* 往復スクロール */
-@keyframes scroll-alternate-xl {
-    0% { transform: translateX(1300%); }
-    100% { transform: translateX(-100%); }
-}
-@keyframes scroll-alternate-md {
-    0% { transform: translateX(1000%); }
-    100% { transform: translateX(-100%); }
-}
-@keyframes scroll-alternate-sm {
-    0% { transform: translateX(700%); }
-    100% { transform: translateX(-100%); }
+// keyframes 生成
+@each $size, $start in $marquee-sizes {
+    @each $type, $end in $marquee-types {
+        @keyframes scroll-#{$type}-#{$size} {
+            0% {
+                transform: translateX(#{$start});
+            }
+            100% {
+                transform: translateX(#{$end});
+            }
+        }
+    }
 }
