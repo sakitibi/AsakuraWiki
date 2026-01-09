@@ -1,0 +1,55 @@
+$alert-padding-x: 1rem !default;
+$alert-padding-y: .75rem !default;
+$alert-margin-bottom: 1rem !default;
+$alert-border-width: 1px !default;
+$alert-border-radius: .375rem !default;
+$alert-link-font-weight: 700 !default;
+$alert-dismissible-padding-r: 3rem !default;
+
+// Bootstrap 互換の CSS 変数プレフィックス
+$prefix: bs- !default;
+// Base colors
+$list-group-color: #212529 !default;
+$list-group-bg: #fff !default;
+$list-group-border-color: rgba(0, 0, 0, .125) !default;
+
+// Border
+$list-group-border-width: 1px !default;
+$list-group-border-radius: .375rem !default;
+
+// Padding
+$list-group-item-padding-x: 1rem !default;
+$list-group-item-padding-y: .5rem !default;
+
+// Action states
+$list-group-action-color: #495057 !default;
+$list-group-action-hover-color: #495057 !default;
+$list-group-hover-bg: #f8f9fa !default;
+
+$list-group-action-active-color: #212529 !default;
+$list-group-action-active-bg: #e9ecef !default;
+
+// Disabled
+$list-group-disabled-color: #6c757d !default;
+$list-group-disabled-bg: #fff !default;
+
+// Active
+$list-group-active-color: #fff !default;
+$list-group-active-bg: #0d6efd !default;
+$list-group-active-border-color: #0d6efd !default;
+
+// テーマカラー定義
+$theme-colors: (
+    "primary":   #0d6efd,
+    "secondary": #6c757d,
+    "success":   #198754,
+    "info":      #0dcaf0,
+    "warning":   #ffc107,
+    "danger":    #dc3545,
+    "light":     #f8f9fa,
+    "dark":      #212529
+) !default;
+
+$enable-rounded: true !default;
+$disable-rounded: false !default;
+$stretched-link-z-index: 1 !default;
