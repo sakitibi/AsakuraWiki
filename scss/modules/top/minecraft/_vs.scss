@@ -1,101 +1,124 @@
+@use '../../variables';
+
 .MC_Core_HeadingStyle {
-  .MC_Layout_Article .MC_Theme_Vanilla .MC_Heading_1, .MC_Link_Style_RichText h1, .MC_Theme_Vanilla .MC_Link_Style_RichText h1, .MC_Heading_1 {
-    font-size: 2.25rem;
-    letter-spacing: -.54px;
-    line-height: 2.25rem;
-  }
+    .MC_Layout_Article .MC_Theme_Vanilla .MC_Heading_1,
+    .MC_Link_Style_RichText h1,
+    .MC_Theme_Vanilla .MC_Link_Style_RichText h1,
+    .MC_Heading_1 {
+        font-size: variables.$heading1-small;
+        letter-spacing: -.54px;
+        line-height: variables.$heading1-small;
+    }
 }
 
 .MC_Layout_Article .MC_Theme_Vanilla {
-  .MC_Heading_1, .MC_Link_Style_RichText h1 {
-    font-size: 2.25rem;
-    letter-spacing: -.54px;
-    line-height: 2.25rem;
-  }
+    .MC_Heading_1,
+    .MC_Link_Style_RichText h1 {
+        font-size: variables.$heading1-small;
+        letter-spacing: -.54px;
+        line-height: variables.$heading1-small;
+    }
 }
 
-@media screen and (max-width: 1199.98px) {
-  .MC_Theme_Core .MC_Heading_1, .MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Marketplace .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Vanilla .MC_Heading_1 {
-    font-size: 4rem;
-    line-height: 4rem;
-  }
+@each $theme in variables.$themes {
+    .MC_Theme_#{$theme} {
+        &,
+        &.MC_Theme_Vanilla {
+            .MC_Heading_1 {
+                font-size: variables.$heading1-large;
+                letter-spacing: -.015em;
+                line-height: variables.$heading1-large;
+            }
+        }
+    }
 }
 
-.MC_Theme_Core .MC_Heading_1, .MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Vanilla .MC_Heading_1 {
-  font-size: 4.5rem;
-  letter-spacing: -.015em;
-  line-height: 4.5rem;
+@media screen and (max-width: variables.$break-lg) {
+    @each $theme in variables.$themes {
+        .MC_Theme_#{$theme} .MC_Heading_1 {
+            font-size: variables.$heading1-large-md;
+            line-height: variables.$heading1-large-md;
+        }
+    }
 }
 
-.MC_Theme_Dungeons .MC_Theme_Vanilla, .MC_Theme_Legends .MC_Theme_Vanilla, .MC_Theme_Realms .MC_Theme_Vanilla, .MC_Theme_Vanilla {
-  font-family: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
+.MC_Theme_Vanilla,
+.MC_Theme_Dungeons .MC_Theme_Vanilla,
+.MC_Theme_Legends .MC_Theme_Vanilla,
+.MC_Theme_Realms .MC_Theme_Vanilla {
+    font-family: variables.$font-minecraft;
 }
 
 .MC_articleHeroA_header_container > * {
-  flex-basis: 100%;
+    flex-basis: 100%;
 }
 
 .MC_articleHeroA_header_subheadline {
-  margin-top: 8px;
+    margin-top: 8px;
 }
 
 .MC_AEM_Wrapper {
-  position: relative;
-  z-index: 20;
+    position: relative;
+    z-index: 20;
 }
 
-.MC_articleGridA .MC_Link_Style_RichText {
-  word-wrap: break-word;
-  color: #fff, inherit;
-  margin-top: 24px;
-  word-break: break-word;
-}
+.MC_articleGridA {
+    .MC_Link_Style_RichText {
+        margin-top: 24px;
+        word-wrap: break-word;
+        word-break: break-word;
+        color: #fff, inherit;
+    }
 
-.MC_articleGridA_sectionRef {
-  height: 1px;
-  width: 100%;
+    &_sectionRef {
+        height: 1px;
+        width: 100%;
+    }
 }
 
 .MC_Bg_Inherit {
-  color: #fff, #000;
+    color: #fff, #000;
 }
 
-.MC_Theme_Vanilla .MC_Link_Style_RichText {
-    h1, h2, h3, h4, h5, h6 {
-        font-weight: 400;
-        margin: 0;
-    }
-
-    a {
-        &:not(.MC_Button, .MC_Link_Accent) {
-            color: #6cc349, #2a641c !important;
+.MC_Theme_Vanilla {
+    .MC_Link_Style_RichText {
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 400;
+            margin: 0;
         }
 
-        color: #6cc349, #2a641c !important;
-        font-weight: 700;
-        text-decoration: underline;
+        h1, h2, h3, h4 {
+            font-family: variables.$font-minecraft !important;
+        }
 
-        &:hover {
-            color: #6cc349, #2a641c !important;
+        h2 {
+            font-size: 3.5rem;
+            letter-spacing: -.015em;
+            line-height: 3.5rem;
+        }
+
+        a {
+            color: variables.$link-green, variables.$link-green-dark !important;
             font-weight: 700;
             text-decoration: underline;
+
+            &:not(.MC_Button, .MC_Link_Accent) {
+                color: variables.$link-green, variables.$link-green-dark !important;
+            }
+
+            &:hover {
+                color: variables.$link-green, variables.$link-green-dark !important;
+            }
         }
-    }
-
-    h1, h2, h3, h4 {
-        font-family: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif" !important;
-    }
-
-    h2 {
-        font-size: 3.5rem;
-        letter-spacing: -.015em;
-        line-height: 3.5rem;
     }
 }
 
-.MC_Theme_Core a:not(.MC_Button, .MC_Link_Accent), .MC_Theme_Vanilla a:not(.MC_Button, .MC_Link_Accent) {
-    color: #6cc349, #2a641c !important;
-    text-decoration: underline !important;
+.MC_Theme_Core,
+.MC_Theme_Vanilla {
+    a:not(.MC_Button, .MC_Link_Accent) {
+        color: variables.$link-green, variables.$link-green-dark !important;
+        text-decoration: underline !important;
+    }
 }
 
 .MC_Layout_Article {
@@ -113,21 +136,20 @@
     }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: variables.$break-md) {
     .MC_CarouselD {
         padding: 80px 0 86px;
     }
-}
-
-.MC_Link_Style_RichText table {
-    background-color: #262423;
 }
 
 .MC_Carousel {
     margin: 0 auto;
     overflow: hidden;
     width: 100%;
-    .MC_Carousel_thumbs_wrapper, .MC_Carousel_track_wrapper, .MC_Carousel_track_slide_media {
+
+    &_thumbs_wrapper,
+    &_track_wrapper,
+    &_track_slide_media {
         position: relative;
     }
 }
@@ -152,34 +174,57 @@
 
     .MC_Carousel_track_slide_media_img {
         aspect-ratio: 280 / 168;
-        display: block;
-        position: relative;
         width: 100%;
+        display: block;
     }
 
     .MC_Carousel_track_slide {
-        &.MC_Carousel_track_slide__active {
-            opacity: 1;
-        }
+        width: 280px;
         margin: 0 8px;
         opacity: .75;
         transition: opacity 1s;
-        width: 280px;
+
+        &__active {
+            opacity: 1;
+        }
     }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: variables.$break-md) {
     .MC_CarouselD {
         .MC_Carousel_track_slide_media_img {
             aspect-ratio: 640 / 384;
         }
+
         .MC_Carousel_track_slide {
-            margin: 0 12px;
             width: 640px;
+            margin: 0 12px;
         }
     }
 }
 
-.MC_Carousel_thumbs_slide, .MC_Carousel_track_slide {
+.MC_Carousel_thumbs_slide,
+.MC_Carousel_track_slide {
     flex: 0 0 auto;
+}
+
+@font-face {
+    font-family: 'MinecraftSeven';
+    src: url('https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/MinecraftSeven.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'MinecraftSeven-v2';
+    src: url('https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Seven_v2.woff2') format('woff2'),
+        url('https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Seven_v2.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'MinecraftTen';
+    src: url('https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/MinecraftTen.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'MinecraftTenv2';
+    src: url('https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Tenv2.woff2') format('woff2');
 }

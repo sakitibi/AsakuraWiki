@@ -1,0 +1,7 @@
+@use '../variables';
+
+@each $key, $size in variables.$font-sizes {
+    .size#{$key}{
+        font-size: $size;
+    }
+}
