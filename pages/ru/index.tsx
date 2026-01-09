@@ -71,15 +71,6 @@ export default function Home() {
         <>
         <Head>
             <title>БЕСПЛАТНАЯ АРЕНДА WIKI-СЕРВИСА АсакураWIKI</title>
-            <style jsx global>
-                {`
-                    /* css start */
-                    *, :after, :before {
-                        box-sizing: border-box;
-                    }
-                    /* css end */
-                `}
-            </style>
             {!user ? (
                 <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css"/>
             ) : null}
