@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import Pako from 'pako';
 import { hexByteaToUint8Array } from '@/utils/wikiFetch';
+import { adminerUserId } from '@/utils/user_list';
 
 function formatNow() {
     const date = new Date();
@@ -53,6 +54,7 @@ export default async function handler(
         }
 
         const isCLI:boolean = req.headers['x-cli'] === 'true' // CLI 判定用
+        const adminer_user_id_list = adminerUserId.find(value => value === userId);
 
         // CLI 用チェック関数
         const checkCLIAllowed = async () => {
@@ -165,7 +167,10 @@ export default async function handler(
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if ((wiki.edit_mode === 'private' && !userId) || (wiki.owner_id !== userId && existingPage.freeze)) {
+            if ((!adminer_user_id_list) &&
+                (wiki.edit_mode === 'private' && !userId) ||
+                (wiki.owner_id !== userId && existingPage.freeze)
+            ) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
             }
             // &now; を現在日時に置換
@@ -216,7 +221,10 @@ export default async function handler(
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if ((wiki.edit_mode === 'private' && !userId) || (wiki.owner_id !== userId && existingPage.freeze)) {
+            if ((!adminer_user_id_list) &&
+                (wiki.edit_mode === 'private' && !userId) ||
+                (wiki.owner_id !== userId && existingPage.freeze)
+            ) {
                 return res.status(403).json({ error: 'Forbidden' })
             }
 
@@ -245,11 +253,14 @@ export default async function handler(
             const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
             const { data: owner, error: owner_error } = await supabaseServer
                 .from("wikis")
-                .select("id,owner_id")
+                .select("id,owner_id,edit_mode")
                 .eq("slug", wikiSlug)
                 .maybeSingle()
             if(!owner || owner_error){
                 return res.status(500).json({ error: owner_error?.message });
+            }
+            if (!adminer_user_id_list && owner.edit_mode === 'private' && !userId) {
+                return res.status(403).json({ error: "Forbidden" });
             }
             const { data: wiki, error: wikiError } = await supabaseServer
                 .from('wiki_pages')

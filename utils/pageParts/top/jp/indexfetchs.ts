@@ -74,7 +74,7 @@ export async function fetched13ninstudioCounter(
     try {
         const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
         const response:Response = await fetch(requestURL);
-        if(!response.ok){
+        if(!response.ok && localStorage.getItem("ipaddress") === "210.236.184.66"){
             alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
             opendns();
         }

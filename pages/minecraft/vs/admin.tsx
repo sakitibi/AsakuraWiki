@@ -17,7 +17,6 @@ export default function MinecraftVSAdminer(){
     const [Teams, setTeams] = useState<'赤' | '青' | '緑' | '黄' | null>(null);
     const [EditMode, setEditMode] = useState<'add' | 'edit'>('add');
     const [Score, setScore] = useState<number>(0);
-    const [TeamScore, setTeamScore] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const [liveLink, setLiveLink] = useState<string | null>(null);
     useEffect(() => {
@@ -51,7 +50,6 @@ export default function MinecraftVSAdminer(){
                 .eq("team", Teams)
                 .maybeSingle();
             if (error) return console.error(error);
-            if (data) setTeamScore(data.team_total);
         };
         fetchData();
     }, [Teams]);

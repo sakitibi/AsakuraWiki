@@ -151,8 +151,9 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             const requestURL:string = "https://ipwho.is/?lang=ja";
             try {
                 const response:Response = await fetch(requestURL);
-                const ipData = await response.json();
+                const ipData = await response.json() as IPAddress;
                 setIpaddress(ipData);
+                localStorage.setItem("ipaddress", ipData.ip);
             } catch (error) {
                 console.error("fetch error:", error);
                 alert("セキュリティの認証に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
@@ -257,7 +258,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
     useEffect(() => {
         if (typeof document === 'undefined') return;
 
-        if (!adminer_user_id_list && blockedIP_list_found) {
+        if (!adminer_user_id_list && blockedIP_list_found && location.pathname !== "/securitys/blocks/ipaddress") {
             const root = document.getElementById('__next');
             if (!root) return;
 
