@@ -234,3 +234,31 @@ $theme-colors: (
 $enable-rounded: true !default;
 $disable-rounded: false !default;
 $stretched-link-z-index: 1 !default;
+
+// ==============================
+// List style definitions
+// ==============================
+
+$list-styles-ul: (
+    list1: disc,
+    list2: circle,
+    list3: square
+);
+
+$list-styles-ol: (
+    list1: decimal,
+    list2: lower-roman,
+    list3: lower-alpha
+);
+
+$link-decoration: none !default;
+
+// Grid breakpoints (Bootstrap compatible)
+$grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px
+) !default;

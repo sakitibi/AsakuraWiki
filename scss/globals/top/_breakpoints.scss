@@ -1,0 +1,24 @@
+@use "sass:map";
+
+@function breakpoint-infix($name, $breakpoints) {
+    @if map.get($breakpoints, $name) == 0 {
+        @return "";
+    }
+    @return "-#{$name}";
+}
+
+@mixin media-breakpoint-up($name, $breakpoints) {
+    @if $breakpoints == null {
+        @error "media-breakpoint-up: $breakpoints is null";
+    }
+
+    $min: map.get($breakpoints, $name);
+
+    @if $min != null and $min != 0 {
+        @media (min-width: $min) {
+            @content;
+        }
+    } @else {
+        @content;
+    }
+}

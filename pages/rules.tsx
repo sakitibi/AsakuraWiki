@@ -50,7 +50,7 @@ export default function Rules(){
                         </header>
                         <p>このルールは、<a href="/policies">利用規約第6条（禁止事項） </a>の具体例を示しています。以下に記載されている行為は一例であり、 ここに含まれていない内容であっても、利用規約に反する行為は全て禁止されています。</p>
                         <p>ルールの中には内容が重複する場合もございますが、利用者の皆さまが安心してご利用いただけるよう、サービスの安全性と健全な運営を守るためにご協力をお願いいたします。</p>
-                        <div className="pEntry__content">
+                        <div className="p-entry__content">
                             <RulesComponents1/>
                             <RulesComponents2/>
                             <RulesComponents3/>

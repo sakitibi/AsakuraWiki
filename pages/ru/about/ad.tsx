@@ -35,7 +35,7 @@ export default function AboutAd() {
                         <header className="pEntry__header">
                             <h1>О рекламе</h1>
                         </header>
-                        <div className="pEntry__content">
+                        <div className="p-entry__content">
                             <p>Бесплатный прокатный сервис WIKI «Asakura Wiki» работает за счет доходов от рекламы от рекламодателей и спонсоров.<br/>Вот почему мы показываем рекламу на каждой вики, которую вы создаете.</p>
                             <h2>Часто задаваемые вопросы о рекламе</h2>
                             <div className={styles.listGroup}>

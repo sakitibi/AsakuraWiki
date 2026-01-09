@@ -86,55 +86,26 @@ body{
                 text-align: center;
             }
         }
-        .pEntry__content {
+        .p-entry__content {
             color: #444;
             font-size: 13px;
             & .danger_list{
-                color: red;
+                color: red !important;
             }
-            & h2 {
+
+            @media (min-width: 992px) {
+                font-size: 16px;
+            }
+
+            & > h2 {
                 background-color: #f6f6f6;
                 font-size: 16px;
                 margin-bottom: 10px;
                 margin-top: 20px;
                 padding: 15px 10px;
-            }
-            & li{
-                margin: 4px auto;
-            }
-            & ol{
-                &>li::marker{
-                    unicode-bidi: isolate;
-                    font-variant-numeric: tabular-nums;
-                    text-transform: none;
-                    text-indent: 0px !important;
-                    text-align: start !important;
-                    text-align-last: auto !important;
-                }
-                display: block;
-                margin-block-start: 1em;
-                margin-block-end: 1em;
-                padding-inline-start: 40px;
-                unicode-bidi: isolate;
-                margin-bottom: 1rem;
-                margin-top: 0;
-                padding-left: 2rem;
-                & ol{
-                    counter-reset: subsection;
-                    list-style-type: none;
-                    list-style: none;
-                    margin: 8px auto;
-                    &>li{
-                        position: relative;
-                        &::before{
-                            content: "(" counter(subsection) ") ";
-                            counter-increment: subsection;
-                            left: -40px;
-                            position: absolute;
-                            text-align: right;
-                            width: 38px;
-                        }
-                    }
+
+                @media (min-width: 992px) {
+                    font-size: 16px;
                 }
             }
         }

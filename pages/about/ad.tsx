@@ -35,7 +35,7 @@ export default function AboutAd() {
                         <header className="pEntry__header">
                             <h1>広告について</h1>
                         </header>
-                        <div className="pEntry__content">
+                        <div className="p-entry__content">
                             <p>無料レンタルWIKIサービス「あさクラWiki」は、広告主やスポンサーからの広告収入によって運営しています。<br/>そのため、ユーザーが作成するすべてのWikiに広告を表示します。</p>
                             <h2>広告についてよくあるご質問</h2>
                             <div className={styles.listGroup}>

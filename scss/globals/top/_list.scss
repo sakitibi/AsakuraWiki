@@ -1,0 +1,36 @@
+@use 'variables';
+
+// ------------------------------
+// UL / OL style mapping
+// ------------------------------
+
+ul {
+    @each $class, $style in variables.$list-styles-ul {
+        &.#{$class} {
+            list-style-type: $style;
+        }
+    }
+}
+
+ol {
+    @each $class, $style in variables.$list-styles-ol {
+        &.#{$class} {
+            list-style-type: $style;
+        }
+    }
+}
+
+// ==============================
+// Common spacing (body only)
+// ==============================
+
+div#body {
+    ul,
+    ol,
+    dl {
+        &[class^="list"] {
+            margin-left: 16px;
+            padding-left: 16px;
+        }
+    }
+}

@@ -1,11 +1,13 @@
 @use 'top/mixin';
 @use 'top/button';
-@use 'top/marquee';
+@use 'wiki/marquee';
 @use 'top/body';
 @use 'wiki/MinecraftMetro';
 @use 'top/collapsing';
 @use 'top/alert';
 @use 'top/mb';
+@use 'top/list';
+@use 'top/list-group';
 
 input:not([type=submit],[type=checkbox]) {
     width: 100%;
