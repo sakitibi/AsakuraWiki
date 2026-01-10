@@ -173,7 +173,8 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                 const { error } = await supabaseClient
                     .from("analytics")
                     .upsert([{
-                        data: bytea
+                        data: bytea,
+                        updated_at: new Date()
                     }])
                     .eq("id", user?.id)
                 if(error){
@@ -192,7 +193,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         .from("analytics_withlogouted")
                         .update({
                             data: bytea,
-                            created_at: new Date()
+                            updated_at: new Date()
                         })
                         .eq("id", localStorage.getItem("unique_logouted_id"))
                     if(error){
