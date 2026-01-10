@@ -63,6 +63,31 @@ export default function Store() {
         AppDataFetch();
     }, [appDetailsStr]);
 
+    useEffect(() => {
+        document.querySelectorAll(".button").forEach(btn => {
+            btn.addEventListener("click", (e:any) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const ratio = x / rect.width;
+
+                btn.classList.remove("anim-left", "anim-center", "anim-right");
+
+                if (ratio < 0.33) {
+                    btn.classList.add("anim-left");
+                } else if (ratio > 0.66) {
+                    btn.classList.add("anim-right");
+                } else {
+                    btn.classList.add("anim-center");
+                }
+
+                // アニメーション終了後リセット
+                setTimeout(() => {
+                    btn.classList.remove("anim-left", "anim-center", "anim-right");
+                }, 350);
+            });
+        });
+    }, []);
+
     const InstallHandler = async(url:string, download_counter: number) => {
         if(!url) return;
         // データ取得
