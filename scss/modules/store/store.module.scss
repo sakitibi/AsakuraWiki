@@ -1,5 +1,12 @@
 $link-color: #00a173;
 
+@keyframes ripple {
+    to {
+        transform: scale(18);
+        opacity: 0;
+    }
+}
+
 #appTitle{
     border: 0;
     font-size: 44px;
@@ -49,47 +56,33 @@ $link-color: #00a173;
     position: relative;
     overflow: hidden;
     transform: translateZ(0);
-    box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.25);
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     transition:
         transform 0.12s ease,
         box-shadow 0.12s ease;
 
-    &::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-            90deg,
-            rgba(255,255,255,0.45),
-            rgba(255,255,255,0)
-        );
-        transform: scaleX(0);
-        transform-origin: center;
-        opacity: 0.9;
-        transition: transform 0.3s ease;
-        pointer-events: none;
-    }
-
     &:active {
         transform: translateY(2px) scale(0.97);
-        box-shadow:
-            inset 0 3px 6px rgba(0, 0, 0, 0.35);
+        box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.35);
     }
 
-    &.press-left::before {
-        transform-origin: left;
-        transform: scaleX(1);
-    }
-
-    &.press-center::before {
-        transform-origin: center;
-        transform: scaleX(1);
-    }
-
-    &.press-right::before {
-        transform-origin: right;
-        transform: scaleX(1);
+    .ripple {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle,
+            rgba(255,255,255,0.45) 0%,
+            rgba(255,255,255,0.25) 40%,
+            rgba(255,255,255,0.05) 70%,
+            rgba(255,255,255,0) 75%
+        );
+        transform: scale(0);
+        opacity: 0.9;
+        pointer-events: none;
+        animation: ripple 420ms ease-out forwards;
     }
 }
 

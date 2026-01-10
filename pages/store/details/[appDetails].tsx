@@ -64,30 +64,28 @@ export default function Store() {
     }, [appDetailsStr]);
 
     useEffect(() => {
+        if(!document || document.querySelectorAll(".installButton").length === 0) return;
         document.querySelectorAll(".installButton").forEach(btn => {
-            btn.addEventListener("pointerdown", (e:any)=> {
+            btn.addEventListener("pointerdown", (e:any) => {
                 const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const ratio = x / rect.width;
 
-                btn.classList.remove("press-left", "press-center", "press-right");
+                const ripple = document.createElement("span");
+                ripple.className = "ripple";
 
-                if (ratio < 0.33) {
-                    btn.classList.add("press-left");
-                } else if (ratio > 0.66) {
-                    btn.classList.add("press-right");
-                } else {
-                    btn.classList.add("press-center");
-                }
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = `${size}px`;
+
+                ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+                ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
+                btn.appendChild(ripple);
+
+                ripple.addEventListener("animationend", () => {
+                    ripple.remove();
+                });
             });
-
-            const clear = () =>
-                btn.classList.remove("press-left", "press-center", "press-right");
-
-            btn.addEventListener("pointerup", clear);
-            btn.addEventListener("pointerleave", clear);
         });
-    }, []);
+    }, [apps]);
 
     const InstallHandler = async(url:string, download_counter: number) => {
         if(!url) return;
