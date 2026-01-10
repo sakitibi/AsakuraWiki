@@ -208,7 +208,8 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         .from("analytics_withlogouted")
                         .insert({
                             id: randomString,
-                            data: bytea
+                            data: bytea,
+                            created_at: new Date()
                         })
                     if(error){
                         console.error("Error: ", error.message);
