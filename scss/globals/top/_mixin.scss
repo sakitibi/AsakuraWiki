@@ -1,10 +1,10 @@
 /* @mixin系統は早めに */
-@mixin background{
+@mixin background($font-weight: bold){
     background-size: 300% 100%;
     background-attachment: fixed;
     animation: bg-color 150s linear infinite;
     font-style: normal;
-    font-weight: bold;
+    font-weight: $font-weight;
 }
 
 @mixin position($bgcolor1, $bgcolor2){
@@ -28,10 +28,10 @@
     @include background;
 }
 
-@mixin snowly{
+@mixin snowly($font-weight: bold){
     background-image: linear-gradient(to right, #7ad4e8, #33fcff, #1ecefa, #6bc4c6, #5fc4d6, #58bfca);
     font-size: 15px;
-    @include background;
+    @include background($font-weight);
 }
 
 @mixin menubar($bgcolor){

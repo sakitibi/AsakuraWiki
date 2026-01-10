@@ -62,7 +62,7 @@ body {
 
     &:not(.wiki-font) {
         font-family: Noto Sans Japanese, sans-serif !important;
-        @include mixin.snowly;
+        @include mixin.snowly(normal);
 
         *,
         *::before,
