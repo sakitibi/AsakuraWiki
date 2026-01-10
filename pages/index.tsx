@@ -95,6 +95,7 @@ export default function Home() {
                     {!user ? (
                         <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css"/>
                     ) : null}
+                    <meta property='og:description' content='無料 レンタル WIKI サービス あさクラWIKI'/>
                     <meta property="og:title" content="無料 レンタル WIKI サービス あさクラWIKI"></meta>
                 </Head>
                 <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>

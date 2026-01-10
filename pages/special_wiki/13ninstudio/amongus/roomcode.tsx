@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Script from 'next/script';
 import { supabaseServer } from '@/lib/supabaseClientServer'; // ← realtime用クライアント
 
-export default function WikiPage() {
+export default function AmongusRoomCode() {
     const [roomcode, setRoomcode] = useState<string>("");
 
     const designColor: "default" = "default";
