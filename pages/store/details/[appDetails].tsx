@@ -65,7 +65,7 @@ export default function Store() {
 
     useEffect(() => {
         document.querySelectorAll(".installButton").forEach(btn => {
-            btn.addEventListener("mousedown", (e:any) => {
+            btn.addEventListener("pointerdown", (e:any)=> {
                 const rect = btn.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const ratio = x / rect.width;
@@ -81,13 +81,11 @@ export default function Store() {
                 }
             });
 
-            btn.addEventListener("mouseup", () => {
+            const clear = () =>
                 btn.classList.remove("press-left", "press-center", "press-right");
-            });
 
-            btn.addEventListener("mouseleave", () => {
-                btn.classList.remove("press-left", "press-center", "press-right");
-            });
+            btn.addEventListener("pointerup", clear);
+            btn.addEventListener("pointerleave", clear);
         });
     }, []);
 
