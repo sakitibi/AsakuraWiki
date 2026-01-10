@@ -29,12 +29,12 @@ export default function MenuRu({ handleClick, menuStatus }: MenuRuProps){
                         <a href="/wiki/sample">Образец Wiki</a>
                     </li>
                 </ul>
-                <ul>
+                <ul className={styles.pSpNav__list}>
                     <li className={styles.pSpNav__item}>
                         <a href="/ru/about/ad">О рекламе</a>
                     </li>
                 </ul>
-                <ul>
+                <ul className={styles.pSpNav__list}>
                     <li className={styles.pSpNav__item}>
                         <a href="/ru/policies">условия обслуживания</a>
                     </li>

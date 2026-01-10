@@ -9,7 +9,7 @@ $link-color: #00a173;
 }
 
 #appDeveloper{
-    color: #00a173;
+    color: $link-color;
     text-decoration: none;
 }
 
@@ -26,7 +26,7 @@ $link-color: #00a173;
     display: inline-flex;
     color: rgb(32, 33, 36) !important;
     cursor: pointer;
-    background-color: $link-color !important;
+    background-color: $link-color;
     align-items: center;
     min-width: 160px;
     min-height: 36px;
@@ -35,6 +35,19 @@ $link-color: #00a173;
     padding: 0 16px 0 16px;
     transition: border .28s cubic-bezier(.4, 0, .2, 1), box-shadow .28s cubic-bezier(.4, 0, .2, 1);
     box-shadow: none;
+    &:not(:disabled):active {
+        background-color: #056449 !important;
+        --mdc-ripple-fg-size: 96px;
+        --mdc-ripple-fg-scale: 1.8221273440073587;
+        --mdc-ripple-fg-translate-start: 56px, -28.25px;
+        --mdc-ripple-fg-translate-end: 32px, -28px;
+    }
+    &:not(:disabled):hover {
+        background-color: #00b380;
+    }
+    &:not(:disabled) {
+        background-color: $link-color;
+    }
 }
 
 .developersApplinks{
