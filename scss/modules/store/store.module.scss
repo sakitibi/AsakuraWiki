@@ -1,8 +1,14 @@
 $link-color: #00a173;
 
 @keyframes ripple {
+    from {
+        width: 0;
+        height: 0;
+        opacity: 0.9;
+    }
     to {
-        transform: scale(18);
+        width: 220%;
+        height: 220%;
         opacity: 0;
     }
 }
@@ -84,6 +90,64 @@ $link-color: #00a173;
         pointer-events: none;
         animation: ripple 420ms ease-out forwards;
     }
+}
+
+#installButton {
+    display: inline-flex;
+    align-items: center;
+    min-width: 160px;
+    min-height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    box-sizing: border-box;
+
+    position: relative;
+    overflow: hidden;
+    background-color: $link-color;
+    cursor: pointer;
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+#installButton-inner {
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+}
+
+#installButton:active .btn-inner {
+    transform: translateY(2px) scale(0.97);
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* hover / active 色は btn 側 */
+#installButton:not(:disabled):hover {
+    background-color: #00b380;
+}
+
+#installButton:not(:disabled):active {
+    background-color: #056449;
+}
+
+/* ripple（scale禁止） */
+#installButton .ripple {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+
+    background: radial-gradient(
+        circle,
+        rgba(255,255,255,0.45) 0%,
+        rgba(255,255,255,0.25) 40%,
+        rgba(255,255,255,0) 70%
+    );
+
+    animation: ripple 420ms ease-out;
 }
 
 .developersApplinks{
