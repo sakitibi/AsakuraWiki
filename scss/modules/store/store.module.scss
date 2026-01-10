@@ -48,29 +48,40 @@ $link-color: #00a173;
     text-transform: none;
     position: relative;
     overflow: hidden;
+    transform: translateZ(0);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
 
     &::after {
         content: "";
         position: absolute;
         inset: 0;
-        background-color: rgba(0, 0, 0, 0.15);
+        background: linear-gradient(
+            90deg,
+            rgba(255,255,255,0.35),
+            rgba(255,255,255,0)
+        );
         transform: scaleX(0);
         transform-origin: center;
-        transition: transform 0.35s ease;
+        transition: transform 0.25s ease;
         pointer-events: none;
     }
 
-    &.anim-left::after {
+    &:active {
+        transform: translateY(2px);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    &.press-left::after {
         transform-origin: left;
         transform: scaleX(1);
     }
 
-    &.anim-center::after {
+    &.press-center::after {
         transform-origin: center;
         transform: scaleX(1);
     }
 
-    &.anim-right::after {
+    &.press-right::after {
         transform-origin: right;
         transform: scaleX(1);
     }

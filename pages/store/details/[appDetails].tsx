@@ -64,26 +64,29 @@ export default function Store() {
     }, [appDetailsStr]);
 
     useEffect(() => {
-        document.querySelectorAll(".button").forEach(btn => {
-            btn.addEventListener("click", (e:any) => {
+        document.querySelectorAll(".installButton").forEach(btn => {
+            btn.addEventListener("mousedown", (e:any) => {
                 const rect = btn.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const ratio = x / rect.width;
 
-                btn.classList.remove("anim-left", "anim-center", "anim-right");
+                btn.classList.remove("press-left", "press-center", "press-right");
 
                 if (ratio < 0.33) {
-                    btn.classList.add("anim-left");
+                    btn.classList.add("press-left");
                 } else if (ratio > 0.66) {
-                    btn.classList.add("anim-right");
+                    btn.classList.add("press-right");
                 } else {
-                    btn.classList.add("anim-center");
+                    btn.classList.add("press-center");
                 }
+            });
 
-                // アニメーション終了後リセット
-                setTimeout(() => {
-                    btn.classList.remove("anim-left", "anim-center", "anim-right");
-                }, 350);
+            btn.addEventListener("mouseup", () => {
+                btn.classList.remove("press-left", "press-center", "press-right");
+            });
+
+            btn.addEventListener("mouseleave", () => {
+                btn.classList.remove("press-left", "press-center", "press-right");
             });
         });
     }, []);
