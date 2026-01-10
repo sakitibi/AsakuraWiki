@@ -1,5 +1,25 @@
 $link-color: #00a173;
 
+@keyframes mdc-ripple-fg-radius-in{
+	from{
+		animation-timing-function:cubic-bezier(.4,0,.2,1);
+		transform:translate(var(--mdc-ripple-fg-translate-start,0)) scale(1)
+	}
+	to{
+		transform:translate(var(--mdc-ripple-fg-translate-end,0)) scale(var(--mdc-ripple-fg-scale,1))
+	}
+}
+
+@keyframes mdc-ripple-fg-opacity-in{
+	from{
+		animation-timing-function:linear;
+		opacity:0
+	}
+	to{
+		opacity:var(--mdc-ripple-fg-opacity,0);
+	}
+}
+
 #appTitle{
     border: 0;
     font-size: 44px;
@@ -37,10 +57,11 @@ $link-color: #00a173;
     box-shadow: none;
     &:not(:disabled):active {
         background-color: #056449 !important;
-        --mdc-ripple-fg-size: 96px;
+        --mdc-ripple-fg-opacity: 0.2;
         --mdc-ripple-fg-scale: 1.8221273440073587;
         --mdc-ripple-fg-translate-start: 56px, -28.25px;
         --mdc-ripple-fg-translate-end: 32px, -28px;
+        animation: mdc-ripple-fg-radius-in 225ms forwards,mdc-ripple-fg-opacity-in 75ms forwards;
         transition: border .28s cubic-bezier(.4, 0, .2, 1), box-shadow .28s cubic-bezier(.4, 0, .2, 1);
         box-shadow: none;
     }
@@ -50,6 +71,7 @@ $link-color: #00a173;
     &:not(:disabled) {
         background-color: $link-color;
     }
+    text-transform: none;
 }
 
 .developersApplinks{
