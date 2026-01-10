@@ -136,6 +136,7 @@ export default function BKMT_Front(){
                     <li>マイ鉄ネットワークの参加者がどんどん増えて来ちゃってる..&br;これどうしよ -- みぞれ 2025-11-01 (土) 16:50:21</li>
                     <li><a href="https://wikiwiki.jp/p/information/view?id=8">これwikiwikiに警戒されてるんじゃ..</a> -- みぞれ 2025-12-08 (日) 12:21:53</li>
                     <li>やっぱ警戒されてそう -- さきちび 2025-12-15 (月) 17:56:32</li>
+                    <li>正当な活動なのに荒らし判定されてますなぜか<br/><a href="https://wikiwiki.jp/maitestu-net/-s/2b12c755">敵対勢力</a>のコメント欄にて(1525airexp)さんの投稿<br/>場合によっては<a href="/wiki/13ninstudio/要注意人物リスト">要注意人物リスト</a>に入れる場合がございます、 -- さきちび 2025-12-15 (月) 17:56:32</li>
                 </ul>
                 <p><a href="/wiki/maitetsu_bkmt/comment" target="_blank">こちらでコメントする</a></p>
             </div>
