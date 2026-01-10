@@ -70,7 +70,7 @@ export default function Store() {
                 const rect = btn.getBoundingClientRect();
 
                 const ripple = document.createElement("span");
-                ripple.className = "ripple";
+                ripple.className = styles.ripple;
 
                 ripple.style.left = `${e.clientX - rect.left}px`;
                 ripple.style.top  = `${e.clientY - rect.top}px`;
