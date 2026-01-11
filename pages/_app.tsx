@@ -174,7 +174,8 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     .from("analytics")
                     .upsert([{
                         data: bytea,
-                        updated_at: new Date()
+                        updated_at: new Date(),
+                        location_pathname: location.pathname ?? "/"
                     }])
                     .eq("id", user?.id)
                 if(error){
@@ -193,7 +194,8 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         .from("analytics_withlogouted")
                         .update({
                             data: bytea,
-                            updated_at: new Date()
+                            updated_at: new Date(),
+                            location_pathname: location.pathname ?? "/"
                         })
                         .eq("id", localStorage.getItem("unique_logouted_id"))
                     if(error){
@@ -210,7 +212,8 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         .insert({
                             id: randomString,
                             data: bytea,
-                            created_at: new Date()
+                            created_at: new Date(),
+                            location_pathname: location.pathname ?? "/"
                         })
                     if(error){
                         console.error("Error: ", error.message);
