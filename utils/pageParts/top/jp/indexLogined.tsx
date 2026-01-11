@@ -35,7 +35,7 @@ export default function LoginedUI(
             <h1>あさクラWiki{versions[0]}</h1>
             <div id="view-counter">
                 <p>今日の閲覧数: {wiki13ninstudioCounter?.today ?? 0}</p>
-                <p>合計の閲覧数: {wiki13ninstudioCounterTotal ? wiki13ninstudioCounterTotal : 0}</p>
+                <p>合計の閲覧数: {wiki13ninstudioCounterTotal ?? 0}</p>
                 <p>昨日の閲覧数: {wiki13ninstudioCounter?.yesterday ?? 0}</p>
                 <p>現在の閲覧数: {wiki13ninstudioCounter?.online ?? 0}</p>
             </div>

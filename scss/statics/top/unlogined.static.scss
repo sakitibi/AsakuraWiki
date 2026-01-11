@@ -23,7 +23,7 @@ html{
 
 body {
     $tw-bg-opacity: 1;
-    background-color: hsl(var(--background-default / $tw-bg-opacity)) !important;
+    background-color: hsl(var(--background-default) / $tw-bg-opacity) !important;
     $tw-text-opacity: 1;
     color: hsl(var(--foreground-default) / $tw-text-opacity);
     -webkit-font-smoothing: antialiased;
