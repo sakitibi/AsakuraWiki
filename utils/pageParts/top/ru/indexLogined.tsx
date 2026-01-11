@@ -3,8 +3,7 @@ import styles from '@/css/index.min.module.css';
 import Link from "next/link";
 import { LoginedUIProps } from "@/utils/pageParts/top/jp/indexLogined";
 
-export default function LoginedUI(
-{
+export default function LoginedUI({
     wiki13ninstudioCounter,
     wiki13ninstudioCounterTotal,
     loadingLiked,
@@ -12,39 +11,57 @@ export default function LoginedUI(
     H2Styles,
     loading,
     pages,
+    loadingRecent,
+    recentPages,
     goCreateWiki,
-}: LoginedUIProps){
+}: LoginedUIProps) {
+
+    const likedList = likedWikis.filter((wp) => wp.like_count > 0);
+
     return (
         <>
             <h1>АсакураWiki{versions[0]}</h1>
-            <div id="view-counter">
-                <p>Сегодняшние взгляды: {wiki13ninstudioCounter?.today ?? 0}</p>
-                <p>Всего просмотров: {wiki13ninstudioCounterTotal ? wiki13ninstudioCounterTotal : 0}</p>
-                <p>Вчерашние взгляды: {wiki13ninstudioCounter?.yesterday ?? 0}</p>
-                <p>Текущие взгляды: {wiki13ninstudioCounter?.online ?? 0}</p>
-            </div>
-            <div id="liked-wiki">
-                <h2 className={styles.pLikedWiki__title}>оценено всеми Wiki</h2>
-                    {loadingLiked ? <p>Loading...</p> : (
-                        <ul>
-                        {likedWikis.filter((wp) => wp.like_count > 0).length === 0
-                        ? <li>Нет рейтинга Wiki</li>
-                        : likedWikis
-                            .filter((wp) => wp.like_count > 0)
-                            .map((wp) => (
+
+            {/* 閲覧数 */}
+            <section id="view-counter" className="section">
+                <p>Сегодняшние просмотры: {wiki13ninstudioCounter?.today ?? 0}</p>
+                <p>Всего просмотров: {wiki13ninstudioCounterTotal}</p>
+                <p>Вчерашние просмотры: {wiki13ninstudioCounter?.yesterday ?? 0}</p>
+                <p>Сейчас онлайн: {wiki13ninstudioCounter?.online ?? 0}</p>
+            </section>
+
+            {/* みんなが評価しているWiki */}
+            <section id="liked-wiki" className="section">
+                <h2 className={styles.pLikedWiki__title}>Популярные Wiki</h2>
+
+                {loadingLiked ? (
+                    <p>Loading...</p>
+                ) : (
+                    <ul>
+                        {likedList.length === 0 ? (
+                            <li>Нет оценённых Wiki</li>
+                        ) : (
+                            likedList.map((wp) => (
                                 <li key={`liked-${wp.wikiSlug}`}>
                                     <Link href={`/wiki/${wp.wikiSlug}`}>
-                                        <button><strong>{wp.name} Wiki*</strong></button>
+                                        <button>
+                                            <strong>{wp.name} Wiki*</strong>
+                                        </button>
                                     </Link>
-                                    <small>Среднее количество лайков: {wp.like_count}</small>
+                                    <small>Среднее число лайков: {wp.like_count}</small>
                                 </li>
                             ))
-                        }
-                        </ul>
-                    )}
-                </div>
-            <div id="hot-wiki">
-                <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>ГОРЯЧАЯ Wiki</h2>
+                        )}
+                    </ul>
+                )}
+            </section>
+
+            {/* HOTなWiki */}
+            <section id="hot-wiki" className="section">
+                <h2 style={H2Styles} className={`${styles.pHotWiki__title} ${styles.fullWidthXs}`}>
+                    Горячие Wiki
+                </h2>
+
                 <ul>
                     <li>
                         <Link href="/special_wiki/13ninstudio">
@@ -61,44 +78,49 @@ export default function LoginedUI(
                         </Link>
                     </li>
                 </ul>
-            </div>
+            </section>
+
+            {/* 最近更新されたWiki */}
             {loading ? (
-            <p>Loading...</p>
+                <p>Loading...</p>
             ) : pages.length === 0 ? (
-            <p>Страниц пока нет.</p>
+                <p>Пока нет страниц.</p>
             ) : (
-                <div id="wikis">
+                <section id="wikis" className="section">
                     <div id="update-wiki">
-                        <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>Недавно <br/>обновленнаяWiki</h2>
-                        <ul>
-                            {pages.map((wp) => (
-                            <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
-                                <Link
-                                href={`/wiki/${wp.wikiSlug}`}
-                                >
-                                <button>
-                                    <span>
-                                        <strong>{wp.name} Wiki*</strong>
-                                    </span>
-                                </button>
-                                </Link>{' '}
-                                <small>
-                                （{new Date(wp.updated_at).toLocaleString()}）
-                                </small>
-                            </li>
-                            ))}
-                        </ul>
+                        <h2 style={H2Styles} className={`${styles.pRecentWiki__title} ${styles.fullWidthXs}`}>
+                            Недавно обновлённые Wiki
+                        </h2>
+
+                        {loadingRecent ? (
+                            <p>Loading...</p>
+                        ) : (
+                            <ul>
+                                {recentPages?.map((wp) => (
+                                    <li key={`${wp.wikiSlug}/${wp.pageSlug}`}>
+                                        <Link href={`/wiki/${wp.wikiSlug}`}>
+                                            <button>
+                                                <strong>{wp.name} Wiki*</strong>
+                                            </button>
+                                        </Link>
+                                        <small>（{new Date(wp.updated_at).toLocaleString()}）</small>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
-                </div>
+                </section>
             )}
+
+            {/* 新しいWikiを作る */}
             <br />
             <button onClick={goCreateWiki}>
                 <i
                     className="fa-utility-fill fa-semibold fa-folder-plus"
                     style={{ fontSize: 'inherit' }}
                 ></i>
-                <span>＋ Создать новую Вики (японский)</span>
+                <span>＋ Создать новую Wiki</span>
             </button>
         </>
-    )
+    );
 }
