@@ -12,6 +12,12 @@ export default function RightMenuJp(){
                     <li className={styles.pForBeginner__item}>
                         <a href="/wiki/sample">サンプルWiki</a>
                     </li>
+                    <li className={styles.pForBeginner__item}>
+                        <a href="/minecraft/relay">マイクラリレー</a>
+                    </li>
+                    <li className={styles.pForBeginner__item}>
+                        <a href="/minecraft/vs">マイクラバーサス</a>
+                    </li>
                 </ul>
             </div>
             <div className={styles.pContact}>

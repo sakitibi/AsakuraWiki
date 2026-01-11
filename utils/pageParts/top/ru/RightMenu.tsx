@@ -12,6 +12,12 @@ export default function RightMenuRu(){
                     <li className={styles.pForBeginner__item}>
                         <a href="/wiki/sample">Образец Wiki</a>
                     </li>
+                    <li className={styles.pForBeginner__item}>
+                        <a href="/minecraft/relay">Релейная игра Minecraft</a>
+                    </li>
+                    <li className={styles.pForBeginner__item}>
+                        <a href="/minecraft/vs">Minecraft против</a>
+                    </li>
                 </ul>
             </div>
             <div className={styles.pContact}>
