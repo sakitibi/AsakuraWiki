@@ -192,11 +192,11 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
                     const { error } = await supabaseClient
                         .from("analytics_withlogouted")
-                        .update({
+                        .upsert([{
                             data: bytea,
                             updated_at: new Date(),
                             location_pathname: location.pathname ?? "/"
-                        })
+                        }])
                         .eq("id", localStorage.getItem("unique_logouted_id"))
                     if(error){
                         console.error("Error: ", error.message);
@@ -209,12 +209,12 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
                     const { error } = await supabaseClient
                         .from("analytics_withlogouted")
-                        .insert({
+                        .insert([{
                             id: randomString,
                             data: bytea,
                             created_at: new Date(),
                             location_pathname: location.pathname ?? "/"
-                        })
+                        }])
                     if(error){
                         console.error("Error: ", error.message);
                         return;
