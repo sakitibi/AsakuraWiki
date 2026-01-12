@@ -44,7 +44,7 @@ export default function MinecraftVS(){
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/minecraft/vs"/>
+                    <LeftMenuJp URL="/minecraft/vs" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>マイクラバーサス</h1>
                         <p>ロシア語ページ無くてごめんなさい、</p>
