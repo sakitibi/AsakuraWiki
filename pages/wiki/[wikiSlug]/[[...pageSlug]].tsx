@@ -106,13 +106,20 @@ export default function WikiPage() {
     }, [wikiSlugStr, pageSlugStr]);
 
     useEffect(() => {
-        if (!menubar) {
+        // まだ読み込み中（undefined）の場合は何もしない
+        if (menubar === undefined) {
+            return;
+        }
+
+        // 読み込んだが存在しない（null）
+        if (menubar === null) {
             setParsedMenubar(null);
             return;
         }
 
+        // menubar が Page のときだけパース
         async function parse() {
-            if(!menubar?.content) return
+            if (!menubar?.content) return;
             const parsed = await parseWikiContent(menubar.content, {
                 wikiSlug: wikiSlugStr,
                 pageSlug: pageSlugStr,
