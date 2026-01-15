@@ -90,14 +90,14 @@ export default function WikiPage() {
             // 1. ページ固有 Menubar
             const pageSpecific = await wikiFetchByMenu(
                 wikiSlugStr,
-                `${pageSlugStr}/Menubar`
+                `${pageSlugStr}/MenuBar`
             );
             if(pageSpecific){
                 setMenubar(pageSpecific); return;
             }
             // 2. Wiki 全体 Menubar
             const globalMenu = await wikiFetchByMenu(
-                wikiSlugStr, "Menubar"
+                wikiSlugStr, "MenuBar"
             );
             setMenubar(globalMenu);
         }
