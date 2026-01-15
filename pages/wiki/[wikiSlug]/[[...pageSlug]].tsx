@@ -302,16 +302,17 @@ export default function WikiPage() {
                                         </div>
                                     </article>
                                     <aside style={{ width: "172px", padding: '1rem', gridRow: "1 / span 1" }}>
-                                        {menubar === undefined
-                                            ? "Menubar 読み込み中…"
-                                            : menubar === null
-                                                ? "Menubar は存在しません"
-                                                : parseWikiContent(menubar.content, {
-                                                    wikiSlug: wikiSlugStr,
-                                                    pageSlug: pageSlugStr,
-                                                    variables: {},
-                                                }
-                                        ).then(parsed => parsed)}
+                                        {
+                                            menubar === undefined && "Menubar 読み込み中…"
+                                        }
+                                        {
+                                            menubar === null && "Menubar は存在しません"
+                                        }
+                                        {
+                                            parsedMenubar && parsedMenubar.map((node, i) => (
+                                                <React.Fragment key={i}>{node}</React.Fragment>
+                                            ))
+                                        }
                                     </aside>
                                     <Script
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
