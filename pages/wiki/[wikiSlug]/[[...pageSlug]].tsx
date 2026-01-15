@@ -53,7 +53,8 @@ export default function WikiPage() {
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
     const [url, setUrl] = useState<URL | null>(null);
-    const [menubar, setMenubar] = useState<Page | null>(null);
+    const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
+    const [parsedMenubar, setParsedMenubar] = useState<React.ReactNode[] | null>(null);
 
     const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
@@ -87,24 +88,39 @@ export default function WikiPage() {
 
     useEffect(() => {
         async function loadMenubar() {
-            // 1. ページ固有 Menubar
             const pageSpecific = await wikiFetchByMenu(
                 wikiSlugStr,
                 `${pageSlugStr}/MenuBar`
             );
-            if(pageSpecific){
-                setMenubar(pageSpecific); return;
+            if (pageSpecific) {
+                setMenubar(pageSpecific);
+                return;
             }
-            // 2. Wiki 全体 Menubar
-            const globalMenu = await wikiFetchByMenu(
-                wikiSlugStr, "MenuBar"
-            );
+
+            const globalMenu = await wikiFetchByMenu(wikiSlugStr, "MenuBar");
             setMenubar(globalMenu);
-            console.log("pageSpecific:", pageSpecific);
-            console.log("globalMenu:", globalMenu);
         }
         loadMenubar();
     }, [wikiSlugStr, pageSlugStr]);
+
+    useEffect(() => {
+        if (!menubar) {
+            setParsedMenubar(null);
+            return;
+        }
+
+        async function parse() {
+            if(!menubar?.content) return
+            const parsed = await parseWikiContent(menubar.content, {
+                wikiSlug: wikiSlugStr,
+                pageSlug: pageSlugStr,
+                variables: {},
+            });
+            setParsedMenubar(parsed);
+        }
+
+        parse();
+    }, [menubar, wikiSlugStr, pageSlugStr]);
 
     useEffect(() => {
         console.log('更新された editMode:', editMode);
