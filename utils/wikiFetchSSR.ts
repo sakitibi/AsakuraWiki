@@ -1,5 +1,6 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
-import { Page } from '@/utils/wikiFetch';
+import { hexByteaToUint8Array, Page } from '@/utils/wikiFetch';
+import Pako from "pako";
 
 export default async function wikiFetchSSR(
     wikiSlug: string,
@@ -11,7 +12,15 @@ export default async function wikiFetchSSR(
         .eq('wiki_slug', wikiSlug)
         .eq('slug', pageSlug)
         .single();
+    // bytea(base64) → Uint8Array → gunzip
+    const compressed = hexByteaToUint8Array(data.content);
+    const decompressed = Pako.ungzip(compressed, { to: "string" });
 
-    if (error || !data) return null;
-    return data as Page;
+    const pageDataResult = {
+        ...data,
+        content: decompressed
+    };
+
+    if (error || !pageDataResult) return null;
+    return pageDataResult as Page;
 }
