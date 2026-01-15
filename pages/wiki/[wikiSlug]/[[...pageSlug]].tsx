@@ -33,15 +33,49 @@ export async function getServerSideProps(context: any) {
             : pageSlug ?? 'FrontPage';
 
     let page: Page | null = null;
+    let menubar: Page | null = null;
+    let sidebar: Page | null = null;
+    let parsedPage: any = null;
+    let parsedMenubar: any = null;
+    let parsedSidebar: any = null;
     let error: string | null = null;
+
     try {
+        // Page
         page = await wikiFetchSSR(wikiSlugStr, pageSlugStr);
+        parsedPage = page
+            ? await parseWikiContent(page.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} })
+            : null;
+
+        // Menubar
+        const pageMenu = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
+        menubar = pageMenu ?? (await wikiFetchByMenu(wikiSlugStr, "MenuBar"));
+        parsedMenubar = menubar
+            ? await parseWikiContent(menubar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} })
+            : null;
+
+        // Sidebar
+        const pageSidebar = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
+        sidebar = pageSidebar ?? (await wikiFetchByMenu(wikiSlugStr, "SideBar"));
+        parsedSidebar = sidebar
+            ? await parseWikiContent(sidebar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} })
+            : null;
     } catch (e: any) {
-        error = e.message ?? 'ページ取得中にエラー';
+        error = e.message ?? "ページ取得中にエラー";
     }
 
     return {
-        props: { pageData: page, errorData: error, wikiSlugStr, pageSlugStr }
+        props: {
+            wikiSlugStr,
+            pageSlugStr,
+            pageData: page,
+            menubarData: menubar,
+            sidebarData: sidebar,
+            parsedPage,
+            parsedMenubar,
+            parsedSidebar,
+            errorData: error
+        }
     };
 }
 
