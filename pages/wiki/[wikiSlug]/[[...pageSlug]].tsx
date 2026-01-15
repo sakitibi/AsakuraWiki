@@ -55,6 +55,8 @@ export default function WikiPage() {
     const [url, setUrl] = useState<URL | null>(null);
     const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
     const [parsedMenubar, setParsedMenubar] = useState<React.ReactNode[] | null>(null);
+    const [sidebar, setSidebar] = useState<Page | null | undefined>(undefined);
+    const [parsedSidebar, setParsedSidebar] = useState<React.ReactNode[] | null>(null);
 
     const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
@@ -121,6 +123,48 @@ export default function WikiPage() {
 
         parse();
     }, [menubar, wikiSlugStr, pageSlugStr]);
+
+    useEffect(() => {
+        async function loadSidebar() {
+            // 1. ページ固有 SideBar
+            const pageSpecific = await wikiFetchByMenu(
+                wikiSlugStr,
+                `${pageSlugStr}/SideBar`
+            );
+            if (pageSpecific) {
+                setSidebar(pageSpecific);
+                return;
+            }
+
+            // 2. Wiki 全体 SideBar
+            const globalSidebar = await wikiFetchByMenu(
+                wikiSlugStr,
+                "SideBar"
+            );
+            setSidebar(globalSidebar);
+        }
+
+        loadSidebar();
+    }, [wikiSlugStr, pageSlugStr]);
+
+    useEffect(() => {
+        if (!sidebar) {
+            setParsedSidebar(null);
+            return;
+        }
+
+        async function parse() {
+            if(!sidebar?.content) return;
+            const parsed = await parseWikiContent(sidebar.content, {
+                wikiSlug: wikiSlugStr,
+                pageSlug: pageSlugStr,
+                variables: {},
+            });
+            setParsedSidebar(parsed);
+        }
+
+        parse();
+    }, [sidebar, wikiSlugStr, pageSlugStr]);
 
     useEffect(() => {
         console.log('更新された editMode:', editMode);
@@ -246,7 +290,7 @@ export default function WikiPage() {
                     ) : (
                         <>
                             <div id="contents-wrapper" style={{display: 'flex'}}>
-                                <div id="container" style={{display: 'grid', gridTemplateColumns: "172px 1fr"}}>
+                                <div id="container" style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
                                     <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
@@ -301,6 +345,15 @@ export default function WikiPage() {
                                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                                         </div>
                                     </article>
+                                    {sidebar ? (
+                                        <aside style={{ width: "170px", padding: "1rem" }}>
+                                            {
+                                                parsedSidebar && parsedSidebar.map((node, i) => (
+                                                    <React.Fragment key={i}>{node}</React.Fragment>
+                                                ))
+                                            }
+                                        </aside>
+                                    ) : null}
                                     <aside style={{ width: "172px", padding: '1rem', gridRow: "1 / span 1" }}>
                                         {
                                             menubar === undefined && "Menubar 読み込み中…"
