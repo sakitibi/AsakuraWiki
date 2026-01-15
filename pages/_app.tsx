@@ -193,6 +193,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                     const { error } = await supabaseClient
                         .from("analytics_withlogouted")
                         .upsert([{
+                            id: localStorage.getItem("unique_logouted_id") ?? secureRandomString(32),
                             data: bytea,
                             updated_at: new Date(),
                             location_pathname: location.pathname ?? "/"
