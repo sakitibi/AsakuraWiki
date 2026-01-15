@@ -100,6 +100,8 @@ export default function WikiPage() {
                 wikiSlugStr, "MenuBar"
             );
             setMenubar(globalMenu);
+            console.log("pageSpecific:", pageSpecific);
+            console.log("globalMenu:", globalMenu);
         }
         loadMenubar();
     }, [wikiSlugStr, pageSlugStr]);
@@ -284,12 +286,16 @@ export default function WikiPage() {
                                         </div>
                                     </article>
                                     <aside style={{ width: "172px", padding: '1rem', gridRow: "1 / span 1" }}>
-                                        {menubar ? (
-                                            menubar.content ? parseWikiContent(
-                                                menubar.content,
-                                                { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {}, }
-                                            ).then(parsed => parsed) : "Menubar が空です" ) : ( "Menubar 読み込み中…" )
-                                        }
+                                        {menubar === undefined
+                                            ? "Menubar 読み込み中…"
+                                            : menubar === null
+                                                ? "Menubar は存在しません"
+                                                : parseWikiContent(menubar.content, {
+                                                    wikiSlug: wikiSlugStr,
+                                                    pageSlug: pageSlugStr,
+                                                    variables: {},
+                                                }
+                                        ).then(parsed => parsed)}
                                     </aside>
                                     <Script
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'

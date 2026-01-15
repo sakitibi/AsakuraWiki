@@ -95,7 +95,6 @@ export async function wikiFetchByMenu(
             .maybeSingle();
 
         if (error || !pageData){
-            console.error("MenuBarGetError: ", error?.message);
             return null
         };
 
