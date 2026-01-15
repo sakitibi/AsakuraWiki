@@ -94,7 +94,10 @@ export async function wikiFetchByMenu(
             .eq("slug", pageSlugStr)
             .maybeSingle();
 
-        if (error || !pageData) return null;
+        if (error || !pageData){
+            console.error("MenuBarGetError: ", error?.message);
+            return null
+        };
 
         const compressed = hexByteaToUint8Array(pageData.content);
         const decompressed = Pako.ungzip(compressed, { to: "string" });
