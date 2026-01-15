@@ -13,7 +13,7 @@ import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
 import { handleDelete, handleEdit, handleFreeze } from '@/utils/pageParts/wiki/wiki_handler';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import deletePage from '@/utils/pageParts/wiki/deletePage';
-import wikiFetch, { Page } from '@/utils/wikiFetch';
+import wikiFetch, { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
 import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
@@ -53,6 +53,7 @@ export default function WikiPage() {
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
     const [url, setUrl] = useState<URL | null>(null);
+    const [menubar, setMenubar] = useState<Page | null>(null);
 
     const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
@@ -82,6 +83,25 @@ export default function WikiPage() {
             setTitle,
             setContent
         );
+    }, [wikiSlugStr, pageSlugStr]);
+
+    useEffect(() => {
+        async function loadMenubar() {
+            // 1. ページ固有 Menubar
+            const pageSpecific = await wikiFetchByMenu(
+                wikiSlugStr,
+                `${pageSlugStr}/Menubar`
+            );
+            if(pageSpecific){
+                setMenubar(pageSpecific); return;
+            }
+            // 2. Wiki 全体 Menubar
+            const globalMenu = await wikiFetchByMenu(
+                wikiSlugStr, "Menubar"
+            );
+            setMenubar(globalMenu);
+        }
+        loadMenubar();
     }, [wikiSlugStr, pageSlugStr]);
 
     useEffect(() => {
@@ -208,7 +228,7 @@ export default function WikiPage() {
                     ) : (
                         <>
                             <div id="contents-wrapper" style={{display: 'flex'}}>
-                                <div id="container" style={{display: 'flex'}}>
+                                <div id="container" style={{display: 'grid', gridTemplateColumns: "172px 1fr"}}>
                                     <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
@@ -263,6 +283,14 @@ export default function WikiPage() {
                                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                                         </div>
                                     </article>
+                                    <aside style={{ width: "172px", padding: '1rem', gridRow: "1 / span 1" }}>
+                                        {menubar ? (
+                                            menubar.content ? parseWikiContent(
+                                                menubar.content,
+                                                { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {}, }
+                                            ).then(parsed => parsed) : "Menubar が空です" ) : ( "Menubar 読み込み中…" )
+                                        }
+                                    </aside>
                                     <Script
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
                                     />

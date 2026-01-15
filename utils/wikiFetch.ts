@@ -81,3 +81,30 @@ export default async function wikiFetch(
         setLoading(false);
     }
 }
+
+export async function wikiFetchByMenu(
+    wikiSlugStr: string,
+    pageSlugStr: string
+): Promise<Page | null> {
+    try {
+        const { data: pageData, error } = await supabaseServer
+            .from("wiki_pages")
+            .select("title, content")
+            .eq("wiki_slug", wikiSlugStr)
+            .eq("slug", pageSlugStr)
+            .maybeSingle();
+
+        if (error || !pageData) return null;
+
+        const compressed = hexByteaToUint8Array(pageData.content);
+        const decompressed = Pako.ungzip(compressed, { to: "string" });
+
+        return {
+            ...pageData,
+            content: decompressed,
+        };
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
