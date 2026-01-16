@@ -15,7 +15,6 @@ import deletePage from '@/utils/pageParts/wiki/deletePage';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import { usePageLikeHandlers } from '@/utils/pageParts/wiki/like/page';
 import { useWikiLikeHandlers } from '@/utils/pageParts/wiki/like/wiki';
-import type { NextRouter } from 'next/router';
 import { useRouter } from 'next/router';
 import { User } from '@supabase/supabase-js';
 
@@ -31,13 +30,25 @@ export interface WikiPageProps {
 
 export default function WikiPageInner(props: WikiPageProps) {
     const router = useRouter();
+
+    // -----------------------
+    // マウント確認
+    // -----------------------
     const [mounted, setMounted] = useState(false);
-    useEffect(() => setMounted(true), []);
+    useEffect(() => {
+        console.log('[WikiPageInner] mounted true');
+        setMounted(true);
+    }, []);
 
-    // まだ router が準備できていない場合は描画しない
-    if (!mounted || !router) return <div style={{ padding: '2rem' }}>読み込み中…</div>;
+    // routerがまだ準備できていない場合は何も描画しない
+    if (!mounted || !router) {
+        console.log('[WikiPageInner] waiting for router/mount...', { mounted, routerReady: !!router });
+        return <div style={{ padding: '2rem' }}>読み込み中…</div>;
+    }
 
-    // Hooks は条件分岐なしで呼ぶ
+    // -----------------------
+    // Hooks は必ず同じ順序で呼ぶ
+    // -----------------------
     const [user, setUser] = useState<User | null>(null);
     const [page] = useState<Page | null>(props.pageData ?? null);
     const [loading, setLoading] = useState<boolean>(!props.pageData);
@@ -52,19 +63,26 @@ export default function WikiPageInner(props: WikiPageProps) {
     const cmdStr = router.query?.cmd ?? '';
     const isEdit = cmdStr === 'edit';
 
+    console.log('[WikiPageInner] render', { wikiSlug: props.wikiSlugStr, pageSlug: props.pageSlugStr, isEdit, cmdStr });
+
     const special_wiki_list_found = special_wiki_list.find(v => v === props.wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(v => v === props.wikiSlugStr);
     const deleted_wiki_list_found = deleted_wiki_list.find(v => v === props.wikiSlugStr);
 
-    // --- Effects は元のまま ---
+    // -----------------------
+    // Effects
+    // -----------------------
     useEffect(() => {
+        console.log('[WikiPageInner] fetching user...');
         supabaseClient.auth.getUser().then(({ data }) => {
+            console.log('[WikiPageInner] user data', data.user);
             if (data.user) setUser(data.user);
         });
     }, []);
 
     useEffect(() => {
         if (!props.wikiSlugStr) return;
+        console.log('[WikiPageInner] fetching design color for', props.wikiSlugStr);
         fetchColor(props.wikiSlugStr, setDesignColor);
     }, [props.wikiSlugStr]);
 
@@ -72,26 +90,33 @@ export default function WikiPageInner(props: WikiPageProps) {
 
     useEffect(() => {
         if (!designColor) return;
+        console.log('[WikiPageInner] applying design color', designColor);
         document.body.classList.add('wiki-font', designColor);
-        return () => document.body.classList.remove('wiki-font', 'pink', 'blue', 'yellow', 'purple');
+        return () => {
+            console.log('[WikiPageInner] removing design color');
+            document.body.classList.remove('wiki-font', 'pink', 'blue', 'yellow', 'purple');
+        };
     }, [designColor]);
 
     useEffect(() => {
         if (cmdStr === 'delete' && props.pageSlugStr && props.wikiSlugStr && user && router) {
+            console.log('[WikiPageInner] delete command detected');
             deletePage(props.wikiSlugStr, props.pageSlugStr, router, user);
         }
     }, [cmdStr, props.pageSlugStr, props.wikiSlugStr, user, router]);
 
     useEffect(() => {
-        if (isEdit) CommentSubmitFunc(isEdit, props.wikiSlugStr!, props.pageSlugStr!);
+        if (isEdit) {
+            console.log('[WikiPageInner] comment submit init');
+            CommentSubmitFunc(isEdit, props.wikiSlugStr!, props.pageSlugStr!);
+        }
     }, [isEdit]);
 
     useEffect(() => {
         if (isEdit) {
             const handleBeforeUnload = (e: BeforeUnloadEvent) => {
                 if (content !== editContent) {
-                    const message =
-                        'あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。';
+                    const message = 'あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。';
                     e.preventDefault();
                     e.returnValue = message;
                     return message;
@@ -105,6 +130,7 @@ export default function WikiPageInner(props: WikiPageProps) {
     useEffect(() => {
         if (!isEdit) return;
         const run = async () => {
+            console.log('[WikiPageInner] parsing wiki content...');
             const parsed = await parseWikiContent(content, {
                 wikiSlug: props.wikiSlugStr!,
                 pageSlug: props.pageSlugStr!,
