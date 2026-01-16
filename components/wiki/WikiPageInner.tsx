@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
@@ -120,7 +118,12 @@ export default function WikiPageInner(props: WikiPageProps) {
         run();
     }, [isEdit, content, props.wikiSlugStr, props.pageSlugStr]);
 
-    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
+    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers({
+        wikiSlug: props.wikiSlugStr!,
+        pageSlug: props.pageSlugStr!,
+        onComplete: () => router.push(`/wiki/${props.wikiSlugStr}/${props.pageSlugStr}`)
+    });
+
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
     if (props.errorData) return <div style={{ color: 'red', padding: '2rem' }}>{props.errorData}</div>;
