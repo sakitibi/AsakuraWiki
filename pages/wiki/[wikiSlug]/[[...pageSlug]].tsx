@@ -170,7 +170,8 @@ export default function WikiPage({
         if (!isEdit) return;
         const run = async () => {
             const parsed = await parseWikiContent(content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
-            setParsedPreview(parsed);
+            // parsed が ReactNode[] なら key を付与してラップ
+            setParsedPreview(parsed.map((node,i) => <React.Fragment key={i}>{node}</React.Fragment>));
         };
         run();
     }, [isEdit, content, wikiSlugStr, pageSlugStr]);
@@ -229,7 +230,7 @@ export default function WikiPage({
                     <div id="contents-wrapper" style={{display: 'flex'}}>
                         <div id="container" style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
                             <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
-                                {parsedPreview?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
+                                {parsedPreview}
                                 {wikiSlugStr === special_wiki_list[0] && pageSlugStr === 'FrontPage' &&
                                 <button onClick={() => router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)}>
                                     <span>リダイレクトされない場合はこちら</span>
@@ -258,12 +259,12 @@ export default function WikiPage({
                                 </div>
                             </article>
                             {sidebar ? <aside style={{ width:"170px", padding:"1rem" }}>
-                                {parsedSidebarState?.map((node,i)=> <React.Fragment key={i}>{node}</React.Fragment>)}
+                                {parsedSidebarState}
                             </aside> : null}
                             <aside style={{ width:"172px", padding:'1rem', gridRow:"1 / span 1"}}>
                                 {menubar===undefined && "Menubar 読み込み中…"}
                                 {menubar===null && "Menubar は存在しません"}
-                                {parsedMenubarState?.map((node,i)=> <React.Fragment key={i}>{node}</React.Fragment>)}
+                                {parsedMenubarState}
                             </aside>
                             <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'/>
                         </div>
