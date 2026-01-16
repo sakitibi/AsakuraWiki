@@ -31,17 +31,13 @@ export interface WikiPageProps {
 
 export default function WikiPageInner(props: WikiPageProps) {
     const router = useRouter();
-
-    // ① router がマウントされるまで待つ
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
 
-    // ② マウント前は何も描画しない
-    if (!mounted) return <div style={{ padding: '2rem' }}>読み込み中…</div>;
+    // まだ router が準備できていない場合は描画しない
+    if (!mounted || !router) return <div style={{ padding: '2rem' }}>読み込み中…</div>;
 
-    const cmdStr = router.query?.cmd ?? '';
-    const isEdit = cmdStr === 'edit';
-
+    // Hooks は条件分岐なしで呼ぶ
     const [user, setUser] = useState<User | null>(null);
     const [page] = useState<Page | null>(props.pageData ?? null);
     const [loading, setLoading] = useState<boolean>(!props.pageData);
@@ -52,6 +48,9 @@ export default function WikiPageInner(props: WikiPageProps) {
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [editContent, setEditContent] = useState<string>(content);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
+
+    const cmdStr = router.query?.cmd ?? '';
+    const isEdit = cmdStr === 'edit';
 
     const special_wiki_list_found = special_wiki_list.find(v => v === props.wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(v => v === props.wikiSlugStr);
