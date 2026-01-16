@@ -97,14 +97,7 @@ export default function WikiPage({
     parsedSidebarHtml
 }: WikiPageProps) {
     // -----------------------
-    // CSR専用 Router (edit mode only)
-    // -----------------------
-    const router = useRouter();
-    const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
-    const isEdit = cmdStr === 'edit';
-
-    // -----------------------
-    // State
+    // SSR側では router を使わない
     // -----------------------
     const [user, setUser] = useState<User | null>(null);
     const [page] = useState<Page | null>(pageData ?? null);
@@ -116,12 +109,27 @@ export default function WikiPage({
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [editContent, setEditContent] = useState<string>(content);
 
-    // CSR parse for edit mode only
-    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
-
     const special_wiki_list_found = special_wiki_list.find(v => v === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(v => v === wikiSlugStr);
     const deleted_wiki_list_found = deleted_wiki_list.find(v => v === wikiSlugStr);
+
+    // -----------------------
+    // CSR専用 state
+    // -----------------------
+    const [cmdStr, setCmdStr] = useState<string>('');
+    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
+    const [router, setRouter] = useState<any>(null);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+        const r = require('next/router').useRouter();
+        setRouter(r);
+        const cmd = typeof r.query.cmd === 'string' ? r.query.cmd : '';
+        setCmdStr(cmd);
+    }, []);
+
+    const isEdit = cmdStr === 'edit';
 
     // -----------------------
     // Effects
@@ -134,8 +142,14 @@ export default function WikiPage({
         document.body.classList.add('wiki-font', designColor);
         return () => document.body.classList.remove('wiki-font','pink','blue','yellow','purple');
     }, [designColor]);
-    useEffect(() => { if (cmdStr !== 'delete' || !pageSlugStr || !wikiSlugStr || !user) return; deletePage(wikiSlugStr, pageSlugStr, router, user); }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
-    useEffect(() => CommentSubmitFunc(isEdit, wikiSlugStr!, pageSlugStr!), []);
+
+    useEffect(() => {
+        if (!isClient || cmdStr !== 'delete' || !pageSlugStr || !wikiSlugStr || !user || !router) return;
+        deletePage(wikiSlugStr, pageSlugStr, router, user);
+    }, [cmdStr, pageSlugStr, wikiSlugStr, user, router, isClient]);
+
+    useEffect(() => CommentSubmitFunc(isEdit, wikiSlugStr!, pageSlugStr!), [isEdit]);
+
     useEffect(() => {
         if(isEdit){
             const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -147,11 +161,13 @@ export default function WikiPage({
                 }
             };
             window.addEventListener("beforeunload", handleBeforeUnload);
+            return () => window.removeEventListener("beforeunload", handleBeforeUnload);
         }
     }, [content, editContent, isEdit]);
-    useEffect(() => { if(wikiSlugStr === "maitetsu_bkmt" && pageSlugStr === "FrontPage") location.replace("/special_wiki/maitetsu_bkmt"); }, [wikiSlugStr, pageSlugStr]);
 
-    // CSR parse for edit mode
+    // -----------------------
+    // CSR parse only for edit
+    // -----------------------
     useEffect(() => {
         if (!isEdit) return;
         const run = async () => {
