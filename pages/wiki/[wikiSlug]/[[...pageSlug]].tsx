@@ -97,7 +97,14 @@ export default function WikiPage({
     parsedSidebarHtml
 }: WikiPageProps) {
     // -----------------------
-    // SSR側では router を使わない
+    // Client-safe router
+    // -----------------------
+    const router = useRouter();
+    const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
+    const isEdit = cmdStr === 'edit';
+
+    // -----------------------
+    // State
     // -----------------------
     const [user, setUser] = useState<User | null>(null);
     const [page] = useState<Page | null>(pageData ?? null);
@@ -108,28 +115,11 @@ export default function WikiPage({
     const [editMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [editContent, setEditContent] = useState<string>(content);
+    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
 
     const special_wiki_list_found = special_wiki_list.find(v => v === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(v => v === wikiSlugStr);
     const deleted_wiki_list_found = deleted_wiki_list.find(v => v === wikiSlugStr);
-
-    // -----------------------
-    // CSR専用 state
-    // -----------------------
-    const [cmdStr, setCmdStr] = useState<string>('');
-    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
-    const [router, setRouter] = useState<any>(null);
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-        setIsClient(true);
-        const r = require('next/router').useRouter();
-        setRouter(r);
-        const cmd = typeof r.query.cmd === 'string' ? r.query.cmd : '';
-        setCmdStr(cmd);
-    }, []);
-
-    const isEdit = cmdStr === 'edit';
 
     // -----------------------
     // Effects
@@ -144,9 +134,8 @@ export default function WikiPage({
     }, [designColor]);
 
     useEffect(() => {
-        if (!isClient || cmdStr !== 'delete' || !pageSlugStr || !wikiSlugStr || !user || !router) return;
-        deletePage(wikiSlugStr, pageSlugStr, router, user);
-    }, [cmdStr, pageSlugStr, wikiSlugStr, user, router, isClient]);
+        if(cmdStr === 'delete' && pageSlugStr && wikiSlugStr && user) deletePage(wikiSlugStr, pageSlugStr, router, user);
+    }, [cmdStr, pageSlugStr, wikiSlugStr, user, router]);
 
     useEffect(() => CommentSubmitFunc(isEdit, wikiSlugStr!, pageSlugStr!), [isEdit]);
 
@@ -165,9 +154,7 @@ export default function WikiPage({
         }
     }, [content, editContent, isEdit]);
 
-    // -----------------------
     // CSR parse only for edit
-    // -----------------------
     useEffect(() => {
         if (!isEdit) return;
         const run = async () => {
