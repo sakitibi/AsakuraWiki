@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NextRouter, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { User } from '@supabase/auth-helpers-react';
@@ -20,9 +20,6 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import wikiFetchSSR from '@/utils/wikiFetchSSR';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-// =======================
-// SSR 用関数
-// =======================
 export async function getServerSideProps(context: any) {
     const { wikiSlug, pageSlug } = context.query;
     const wikiSlugStr = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
@@ -42,14 +39,12 @@ export async function getServerSideProps(context: any) {
     let error: string | null = null;
 
     try {
-        // Page
         page = await wikiFetchSSR(wikiSlugStr, pageSlugStr);
         if (page) {
             const parsed = await parseWikiContent(page.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
             parsedPageHtml = parsed.map(node => renderToStaticMarkup(<>{node}</>)).join('');
         }
 
-        // Menubar
         const pageMenu = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
         menubar = pageMenu ?? (await wikiFetchByMenu(wikiSlugStr, "MenuBar"));
         if (menubar) {
@@ -57,7 +52,6 @@ export async function getServerSideProps(context: any) {
             parsedMenubarHtml = parsed.map(node => renderToStaticMarkup(<>{node}</>)).join('');
         }
 
-        // Sidebar
         const pageSidebar = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
         sidebar = pageSidebar ?? (await wikiFetchByMenu(wikiSlugStr, "SideBar"));
         if (sidebar) {
@@ -83,9 +77,6 @@ export async function getServerSideProps(context: any) {
     };
 }
 
-// =======================
-// コンポーネント本体
-// =======================
 interface WikiPageProps {
     pageData?: Page | null;
     errorData?: string | null;
@@ -99,23 +90,18 @@ interface WikiPageProps {
 export default function WikiPage({
     pageData,
     errorData,
-    wikiSlugStr: ssrWikiSlug,
-    pageSlugStr: ssrPageSlug,
+    wikiSlugStr,
+    pageSlugStr,
     parsedPageHtml,
     parsedMenubarHtml,
     parsedSidebarHtml
 }: WikiPageProps) {
-    const router: NextRouter = useRouter();
-    const { wikiSlug, pageSlug, page: pageQuery } = router.query;
-    const cmdStr: string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
-    const wikiSlugStr: string = ssrWikiSlug ?? (Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '');
-    const pageSlugStr: string = ssrPageSlug ?? (
-        typeof pageQuery === 'string'
-            ? pageQuery
-            : Array.isArray(pageSlug)
-            ? pageSlug.join('/')
-            : pageSlug ?? 'FrontPage'
-    );
+    // -----------------------
+    // CSR専用 Router (edit mode only)
+    // -----------------------
+    const router = useRouter();
+    const cmdStr = typeof router.query.cmd === 'string' ? router.query.cmd : '';
+    const isEdit = cmdStr === 'edit';
 
     // -----------------------
     // State
@@ -128,16 +114,11 @@ export default function WikiPage({
     const [content, setContent] = useState<string>(pageData?.content ?? '');
     const [editMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
-
-    // -----------------------
-    // parsedPreview / Menubar / Sidebar
-    // -----------------------
-    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : null);
     const [editContent, setEditContent] = useState<string>(content);
-    const [parsedMenubarState, setParsedMenubar] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : null);
-    const [parsedSidebarState, setParsedSidebar] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : null);
 
-    const isEdit: boolean = cmdStr === 'edit';
+    // CSR parse for edit mode only
+    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
+
     const special_wiki_list_found = special_wiki_list.find(v => v === wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(v => v === wikiSlugStr);
     const deleted_wiki_list_found = deleted_wiki_list.find(v => v === wikiSlugStr);
@@ -154,9 +135,9 @@ export default function WikiPage({
         return () => document.body.classList.remove('wiki-font','pink','blue','yellow','purple');
     }, [designColor]);
     useEffect(() => { if (cmdStr !== 'delete' || !pageSlugStr || !wikiSlugStr || !user) return; deletePage(wikiSlugStr, pageSlugStr, router, user); }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
-    useEffect(() => CommentSubmitFunc(isEdit, wikiSlugStr, pageSlugStr), []);
+    useEffect(() => CommentSubmitFunc(isEdit, wikiSlugStr!, pageSlugStr!), []);
     useEffect(() => {
-        if(cmdStr === "edit"){
+        if(isEdit){
             const handleBeforeUnload = (e: BeforeUnloadEvent) => {
                 if(content !== editContent){
                     const message = "あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。";
@@ -167,16 +148,14 @@ export default function WikiPage({
             };
             window.addEventListener("beforeunload", handleBeforeUnload);
         }
-    }, [content, editContent, cmdStr]);
+    }, [content, editContent, isEdit]);
     useEffect(() => { if(wikiSlugStr === "maitetsu_bkmt" && pageSlugStr === "FrontPage") location.replace("/special_wiki/maitetsu_bkmt"); }, [wikiSlugStr, pageSlugStr]);
 
-    // -----------------------
-    // CSR parse / editMode のみ
-    // -----------------------
+    // CSR parse for edit mode
     useEffect(() => {
         if (!isEdit) return;
         const run = async () => {
-            const parsed = await parseWikiContent(content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+            const parsed = await parseWikiContent(content, { wikiSlug: wikiSlugStr!, pageSlug: pageSlugStr!, variables: {} });
             setParsedPreview(parsed.map((node,i) => <React.Fragment key={i}>{node}</React.Fragment>));
         };
         run();
@@ -199,6 +178,7 @@ export default function WikiPage({
                 <Head>
                     <title>{page.title}{isEdit ? ' を編集' : null}</title>
                 </Head>
+
                 {isEdit ? (
                     <WikiEditPage
                         title={title}
@@ -207,8 +187,8 @@ export default function WikiPage({
                         setContent={setContent}
                         parsedPreview={parsedPreview}
                         loading={loading}
-                        wikiSlugStr={wikiSlugStr}
-                        pageSlugStr={pageSlugStr}
+                        wikiSlugStr={wikiSlugStr!}
+                        pageSlugStr={pageSlugStr!}
                         setLoading={setLoading}
                         editMode={editMode}
                         user={user}
@@ -218,23 +198,22 @@ export default function WikiPage({
                     <div id="contents-wrapper" style={{display: 'flex'}}>
                         <div id="container" style={{display: 'grid', gridTemplateColumns: "172px 1fr 170px"}}>
                             <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
-                                {/* SSR 文字列を innerHTML で表示 */}
                                 <div dangerouslySetInnerHTML={{ __html: parsedPageHtml ?? '' }} />
                                 {wikiSlugStr === special_wiki_list[0] && pageSlugStr === 'FrontPage' &&
                                 <button onClick={() => router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)}>
                                     <span>リダイレクトされない場合はこちら</span>
                                 </button>}
-                                <button onClick={() => handleEdit(router, wikiSlugStr, pageSlugStr)} style={{ marginLeft: 8 }}>
+                                <button onClick={() => handleEdit(router, wikiSlugStr!, pageSlugStr!)} style={{ marginLeft: 8 }}>
                                     <span>このページを編集</span>
                                 </button>
-                                <button onClick={async()=>await handleDelete(special_wiki_list_found, wikiSlugStr, pageSlugStr, router)}>
+                                <button onClick={async()=>await handleDelete(special_wiki_list_found, wikiSlugStr!, pageSlugStr!, router)}>
                                     <span>このページを削除</span>
                                 </button>
                                 <br/>
                                 <Link href={`/dashboard/${wikiSlugStr}/new`}>
                                     <button style={{ marginLeft: 12 }}><span>新しいページを作成</span></button>
                                 </Link>
-                                <button onClick={()=>handleFreeze(wikiSlugStr,pageSlugStr,user)}>
+                                <button onClick={()=>handleFreeze(wikiSlugStr!,pageSlugStr!,user)}>
                                     <span>このページを凍結 凍結解除</span>
                                 </button>
                                 <button onClick={handlePageLike} style={{ marginTop:12 }}><span>このページを高く評価</span></button>
