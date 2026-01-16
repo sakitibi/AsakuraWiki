@@ -137,6 +137,7 @@ export default function BKMT_Front(){
                     <li><a href="https://wikiwiki.jp/p/information/view?id=8">これwikiwikiに警戒されてるんじゃ..</a> -- みぞれ 2025-12-08 (日) 12:21:53</li>
                     <li>やっぱ警戒されてそう -- さきちび 2025-12-15 (月) 17:56:32</li>
                     <li>正当な活動なのに荒らし判定されてますなぜか<br/><a href="https://wikiwiki.jp/maitestu-net/-s/2b12c755">敵対勢力</a>のコメント欄にて(1525airexp)さんの投稿<br/>場合によっては<a href="/wiki/13ninstudio/要注意人物リスト">要注意人物リスト</a>に入れる場合がございます、 -- さきちび 2026-01-10 (土) 16:54:34</li>
+                    <li>ちなみに1525airexpさんの情報全てさきちびさんに開示請求した -- みぞれ 2026-01-16 (金) 15:57:23</li>
                 </ul>
                 <p><a href="/wiki/maitetsu_bkmt/comment" target="_blank">こちらでコメントする</a></p>
             </div>
