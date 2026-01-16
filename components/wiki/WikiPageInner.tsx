@@ -30,31 +30,12 @@ export interface WikiPageProps {
 
 export default function WikiPageInner(props: WikiPageProps) {
     const router = useRouter();
-
-    // -----------------------
-    // マウント確認
-    // -----------------------
     const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-        console.log('[WikiPageInner] mounted true');
-        setMounted(true);
-    }, []);
-
-    // routerがまだ準備できていない場合は何も描画しない
-    if (!mounted || !router) {
-        console.log('[WikiPageInner] waiting for router/mount...', { mounted, routerReady: !!router });
-        return <div style={{ padding: '2rem' }}>読み込み中…</div>;
-    }
-
-    // -----------------------
-    // Hooks は必ず同じ順序で呼ぶ
-    // -----------------------
     const [user, setUser] = useState<User | null>(null);
-    const [page] = useState<Page | null>(props.pageData ?? null);
-    const [loading, setLoading] = useState<boolean>(!props.pageData);
-    const [error] = useState<string | null>(props.errorData ?? null);
-    const [title, setTitle] = useState<string>(props.pageData?.title ?? '');
+    const [page, setPage] = useState<Page | null>(props.pageData ?? null);
+    const [loading, setLoading] = useState(false); // 初期値 false
     const [content, setContent] = useState<string>(props.pageData?.content ?? '');
+    const [title, setTitle] = useState<string>(props.pageData?.title ?? '');
     const [editMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [editContent, setEditContent] = useState<string>(content);
@@ -63,26 +44,29 @@ export default function WikiPageInner(props: WikiPageProps) {
     const cmdStr = router.query?.cmd ?? '';
     const isEdit = cmdStr === 'edit';
 
-    console.log('[WikiPageInner] render', { wikiSlug: props.wikiSlugStr, pageSlug: props.pageSlugStr, isEdit, cmdStr });
-
     const special_wiki_list_found = special_wiki_list.find(v => v === props.wikiSlugStr);
     const ban_wiki_list_found = ban_wiki_list.find(v => v === props.wikiSlugStr);
     const deleted_wiki_list_found = deleted_wiki_list.find(v => v === props.wikiSlugStr);
+
+    // マウント後に必要な state 初期化
+    useEffect(() => {
+        setMounted(true);
+        setPage(props.pageData ?? null);
+        setContent(props.pageData?.content ?? '');
+        setTitle(props.pageData?.title ?? '');
+    }, [props.pageData]);
 
     // -----------------------
     // Effects
     // -----------------------
     useEffect(() => {
-        console.log('[WikiPageInner] fetching user...');
         supabaseClient.auth.getUser().then(({ data }) => {
-            console.log('[WikiPageInner] user data', data.user);
             if (data.user) setUser(data.user);
         });
     }, []);
 
     useEffect(() => {
         if (!props.wikiSlugStr) return;
-        console.log('[WikiPageInner] fetching design color for', props.wikiSlugStr);
         fetchColor(props.wikiSlugStr, setDesignColor);
     }, [props.wikiSlugStr]);
 
@@ -90,24 +74,18 @@ export default function WikiPageInner(props: WikiPageProps) {
 
     useEffect(() => {
         if (!designColor) return;
-        console.log('[WikiPageInner] applying design color', designColor);
         document.body.classList.add('wiki-font', designColor);
-        return () => {
-            console.log('[WikiPageInner] removing design color');
-            document.body.classList.remove('wiki-font', 'pink', 'blue', 'yellow', 'purple');
-        };
+        return () => document.body.classList.remove('wiki-font', 'pink', 'blue', 'yellow', 'purple');
     }, [designColor]);
 
     useEffect(() => {
         if (cmdStr === 'delete' && props.pageSlugStr && props.wikiSlugStr && user && router) {
-            console.log('[WikiPageInner] delete command detected');
             deletePage(props.wikiSlugStr, props.pageSlugStr, router, user);
         }
     }, [cmdStr, props.pageSlugStr, props.wikiSlugStr, user, router]);
 
     useEffect(() => {
         if (isEdit) {
-            console.log('[WikiPageInner] comment submit init');
             CommentSubmitFunc(isEdit, props.wikiSlugStr!, props.pageSlugStr!);
         }
     }, [isEdit]);
@@ -130,7 +108,6 @@ export default function WikiPageInner(props: WikiPageProps) {
     useEffect(() => {
         if (!isEdit) return;
         const run = async () => {
-            console.log('[WikiPageInner] parsing wiki content...');
             const parsed = await parseWikiContent(content, {
                 wikiSlug: props.wikiSlugStr!,
                 pageSlug: props.pageSlugStr!,
@@ -144,9 +121,20 @@ export default function WikiPageInner(props: WikiPageProps) {
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
-    if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>;
+    if (props.errorData) return <div style={{ color: 'red', padding: '2rem' }}>{props.errorData}</div>;
+
+    // 初回レンダーは SSR HTML を表示
+    if (!mounted) {
+        return (
+            <div dangerouslySetInnerHTML={{ __html: props.parsedPageHtml ?? '読み込み中…' }} />
+        );
+    }
+
     if (loading || !page) return <div style={{ padding: '2rem' }}>読み込み中…</div>;
 
+    // -----------------------
+    // レンダリング
+    // -----------------------
     return (
         <>
             {ban_wiki_list_found ? (
