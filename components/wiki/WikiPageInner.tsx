@@ -2,21 +2,33 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { User } from '@supabase/supabase-js';
+
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { Page } from '@/utils/wikiFetch';
 import { supabaseClient } from '@/lib/supabaseClient';
 import fetchColor from '@/utils/fetchColor';
-import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
+import {
+    special_wiki_list,
+    ban_wiki_list,
+    deleted_wiki_list,
+} from '@/utils/wiki_list';
 import type { editMode, designColor } from '@/utils/wiki_settings';
-import { WikiBanned, WikiDeleted } from '@/utils/pageParts/wiki/wiki_notfound';
+import {
+    WikiBanned,
+    WikiDeleted,
+} from '@/utils/pageParts/wiki/wiki_notfound';
 import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
-import { handleDelete, handleEdit, handleFreeze } from '@/utils/pageParts/wiki/wiki_handler';
+import {
+    handleDelete,
+    handleEdit,
+    handleFreeze,
+} from '@/utils/pageParts/wiki/wiki_handler';
 import deletePage from '@/utils/pageParts/wiki/deletePage';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import { usePageLikeHandlers } from '@/utils/pageParts/wiki/like/page';
 import { useWikiLikeHandlers } from '@/utils/pageParts/wiki/like/wiki';
-import { useRouter } from 'next/router';
-import { User } from '@supabase/supabase-js';
 
 export interface WikiPageProps {
     pageData?: Page | null;
@@ -30,25 +42,30 @@ export interface WikiPageProps {
 
 export default function WikiPageInner(props: WikiPageProps) {
     const router = useRouter();
+    const { isReady } = router;
+
     const [mounted, setMounted] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [page, setPage] = useState<Page | null>(props.pageData ?? null);
-    const [loading, setLoading] = useState(false); // 初期値 false
-    const [content, setContent] = useState<string>(props.pageData?.content ?? '');
-    const [title, setTitle] = useState<string>(props.pageData?.title ?? '');
+    const [loading, setLoading] = useState(false);
+    const [content, setContent] = useState(props.pageData?.content ?? '');
+    const [title, setTitle] = useState(props.pageData?.title ?? '');
     const [editMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
-    const [editContent, setEditContent] = useState<string>(content);
-    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
+    const [editContent, setEditContent] = useState(content);
+    const [parsedPreview, setParsedPreview] =
+        useState<React.ReactNode[] | null>(null);
 
-    const cmdStr = router.query?.cmd ?? '';
+    const cmdStr = isReady ? router.query.cmd : undefined;
     const isEdit = cmdStr === 'edit';
 
-    const special_wiki_list_found = special_wiki_list.find(v => v === props.wikiSlugStr);
-    const ban_wiki_list_found = ban_wiki_list.find(v => v === props.wikiSlugStr);
-    const deleted_wiki_list_found = deleted_wiki_list.find(v => v === props.wikiSlugStr);
+    const specialFound = special_wiki_list.includes(props.wikiSlugStr ?? '');
+    const banFound = ban_wiki_list.includes(props.wikiSlugStr ?? '');
+    const deletedFound = deleted_wiki_list.includes(props.wikiSlugStr ?? '');
 
-    // マウント後に必要な state 初期化
+    // -----------------------
+    // Mount
+    // -----------------------
     useEffect(() => {
         setMounted(true);
         setPage(props.pageData ?? null);
@@ -57,7 +74,7 @@ export default function WikiPageInner(props: WikiPageProps) {
     }, [props.pageData]);
 
     // -----------------------
-    // Effects
+    // Auth
     // -----------------------
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data }) => {
@@ -65,86 +82,130 @@ export default function WikiPageInner(props: WikiPageProps) {
         });
     }, []);
 
+    // -----------------------
+    // Design color
+    // -----------------------
     useEffect(() => {
         if (!props.wikiSlugStr) return;
         fetchColor(props.wikiSlugStr, setDesignColor);
     }, [props.wikiSlugStr]);
 
-    useEffect(() => setEditContent(content), [content]);
-
     useEffect(() => {
         if (!designColor) return;
         document.body.classList.add('wiki-font', designColor);
-        return () => document.body.classList.remove('wiki-font', 'pink', 'blue', 'yellow', 'purple');
+        return () =>
+            document.body.classList.remove(
+                'wiki-font',
+                'pink',
+                'blue',
+                'yellow',
+                'purple'
+            );
     }, [designColor]);
 
+    // -----------------------
+    // Delete cmd
+    // -----------------------
     useEffect(() => {
-        if (cmdStr === 'delete' && props.pageSlugStr && props.wikiSlugStr && user && router) {
-            deletePage(props.wikiSlugStr, props.pageSlugStr, router, user);
+        if (!isReady) return;
+        if (
+            cmdStr === 'delete' &&
+            props.wikiSlugStr &&
+            props.pageSlugStr &&
+            user
+        ) {
+            deletePage(
+                props.wikiSlugStr,
+                props.pageSlugStr,
+                router,
+                user
+            );
         }
-    }, [cmdStr, props.pageSlugStr, props.wikiSlugStr, user, router]);
+    }, [isReady, cmdStr, props.wikiSlugStr, props.pageSlugStr, user]);
 
+    // -----------------------
+    // Edit helpers
+    // -----------------------
     useEffect(() => {
-        if (isEdit) {
-            CommentSubmitFunc(isEdit, props.wikiSlugStr!, props.pageSlugStr!);
-        }
-    }, [isEdit]);
-
-    useEffect(() => {
-        if (isEdit) {
-            const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-                if (content !== editContent) {
-                    const message = 'あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。';
-                    e.preventDefault();
-                    e.returnValue = message;
-                    return message;
-                }
-            };
-            window.addEventListener('beforeunload', handleBeforeUnload);
-            return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-        }
-    }, [content, editContent, isEdit]);
+        if (!isReady || !isEdit) return;
+        CommentSubmitFunc(
+            isEdit,
+            props.wikiSlugStr!,
+            props.pageSlugStr!
+        );
+    }, [isReady, isEdit]);
 
     useEffect(() => {
         if (!isEdit) return;
-        const run = async () => {
+        const onBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (content !== editContent) {
+                e.preventDefault();
+                e.returnValue =
+                    '変更内容が保存されない可能性があります。';
+            }
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
+        return () =>
+            window.removeEventListener('beforeunload', onBeforeUnload);
+    }, [isEdit, content, editContent]);
+
+    useEffect(() => {
+        if (!isEdit) return;
+        (async () => {
             const parsed = await parseWikiContent(content, {
                 wikiSlug: props.wikiSlugStr!,
                 pageSlug: props.pageSlugStr!,
                 variables: {},
             });
-            setParsedPreview(parsed.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>));
-        };
-        run();
-    }, [isEdit, content, props.wikiSlugStr, props.pageSlugStr]);
+            setParsedPreview(
+                parsed.map((n, i) => (
+                    <React.Fragment key={i}>{n}</React.Fragment>
+                ))
+            );
+        })();
+    }, [isEdit, content]);
 
-    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers({
-        wikiSlug: props.wikiSlugStr!,
-        pageSlug: props.pageSlugStr!,
-        onComplete: () => router.push(`/wiki/${props.wikiSlugStr}/${props.pageSlugStr}`)
-    });
+    // -----------------------
+    // Like handlers (isReady 後)
+    // -----------------------
+    const pageLikeHandlers = isReady
+        ? usePageLikeHandlers({
+              wikiSlug: props.wikiSlugStr!,
+              pageSlug: props.pageSlugStr!,
+              onComplete: () =>
+                  router.push(
+                      `/wiki/${props.wikiSlugStr}/${props.pageSlugStr}`
+                  ),
+          })
+        : null;
 
-    const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
+    const wikiLikeHandlers = useWikiLikeHandlers();
 
-    if (props.errorData) return <div style={{ color: 'red', padding: '2rem' }}>{props.errorData}</div>;
+    // -----------------------
+    // Early return
+    // -----------------------
+    if (props.errorData) {
+        return <div style={{ padding: '2rem' }}>{props.errorData}</div>;
+    }
 
-    // 初回レンダーは SSR HTML を表示
-    if (!mounted) {
+    if (!mounted || !isReady) {
         return (
-            <div dangerouslySetInnerHTML={{ __html: props.parsedPageHtml ?? '読み込み中…' }} />
+            <div
+                dangerouslySetInnerHTML={{
+                    __html: props.parsedPageHtml ?? '読み込み中…',
+                }}
+            />
         );
     }
 
-    if (loading || !page) return <div style={{ padding: '2rem' }}>読み込み中…</div>;
-
-    // -----------------------
-    // レンダリング
-    // -----------------------
-    return (
+    if (loading || !page) {
+        return <div style={{ padding: '2rem' }}>読み込み中…</div>;
+    }
+    return(
         <>
-            {ban_wiki_list_found ? (
+            {banFound ? (
                 <WikiBanned />
-            ) : deleted_wiki_list_found ? (
+            ) : deletedFound ? (
                 <WikiDeleted />
             ) : (
                 <>
@@ -179,15 +240,15 @@ export default function WikiPageInner(props: WikiPageProps) {
                                         </button>
                                     )}
                                     {router && <button onClick={() => handleEdit(router, props.wikiSlugStr!, props.pageSlugStr!)} style={{ marginLeft: 8 }}>このページを編集</button>}
-                                    {router && <button onClick={async () => await handleDelete(special_wiki_list_found, props.wikiSlugStr!, props.pageSlugStr!, router)}>このページを削除</button>}
+                                    {router && <button onClick={async () => await handleDelete(specialFound, props.wikiSlugStr!, props.pageSlugStr!, router)}>このページを削除</button>}
                                     <br />
                                     <Link href={`/dashboard/${props.wikiSlugStr}/new`}><button style={{ marginLeft: 12 }}>新しいページを作成</button></Link>
                                     <button onClick={() => handleFreeze(props.wikiSlugStr!, props.pageSlugStr!, user)}>このページを凍結 凍結解除</button>
-                                    <button onClick={handlePageLike} style={{ marginTop: 12 }}>このページを高く評価</button>
-                                    <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>このページを低く評価</button>
+                                    <button onClick={pageLikeHandlers?.handlePageLike} style={{ marginTop: 12 }}>このページを高く評価</button>
+                                    <button onClick={pageLikeHandlers?.handlePageLike} style={{ marginLeft: 8 }}>このページを低く評価</button>
                                     <br />
-                                    <button onClick={handleWikiLike} style={{ marginLeft: 12}}>このWikiを高く評価</button>
-                                    <button onClick={handleWikiDisLike} style={{ marginLeft: 8}}>このWikiを低く評価</button>
+                                    <button onClick={wikiLikeHandlers.handleWikiLike} style={{ marginLeft: 12}}>このWikiを高く評価</button>
+                                    <button onClick={wikiLikeHandlers.handleWikiDisLike} style={{ marginLeft: 8}}>このWikiを低く評価</button>
                                     <br />
                                     <div id="ad-container" style={{ textAlign: 'center' }}>
                                         <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350" />
