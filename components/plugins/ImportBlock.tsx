@@ -1,4 +1,4 @@
-import { supabaseServer } from '@/lib/supabaseClientServer';
+import { supabaseClient } from '@/lib/supabaseClient';
 import { Context, ImportBlockProps, injectConstBlocksProps } from '@/components/plugins/parsePluginTypes';
 import { hexByteaToUint8Array } from '@/utils/wikiFetch';
 import Pako from 'pako';
@@ -27,7 +27,7 @@ export async function resolveImports(content: string, context: Context): Promise
             const [, wikiSlug, pageSlug, rawVars] = match;
             const requestedVars = rawVars.split(',').map((v: string) => v.trim());
 
-            const { data: pageData, error: pageError } = await supabaseServer
+            const { data: pageData, error: pageError } = await supabaseClient
                 .from('wiki_pages')
                 .select('content')
                 .eq('wiki_slug', wikiSlug)
@@ -46,7 +46,7 @@ export async function resolveImports(content: string, context: Context): Promise
             // ✅ local の場合は wikiSlug が一致しているか確認
             if (validVars.length === 0) continue;
 
-            const { data: varData } = await supabaseServer
+            const { data: varData } = await supabaseClient
                 .from('wiki_variables')
                 .select('name, value, type, kind')
                 .eq('wiki_slug', wikiSlug)

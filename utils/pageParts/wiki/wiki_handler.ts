@@ -57,7 +57,7 @@ export const handleEdit = (
 };
 
 export const handleDelete = async (
-    special_wiki_list_found: boolean,
+    special_wiki_list_found: string | undefined,
     wikiSlugStr: string,
     pageSlugStr: string,
     router: NextRouter
