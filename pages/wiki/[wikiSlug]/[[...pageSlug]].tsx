@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Script from 'next/script';
 import Link from 'next/link';
 import { renderToStaticMarkup } from 'react-dom/server';
-import type { NextRouter } from 'next/router';
+import { useRouter as nextUseRouter, NextRouter } from 'next/router';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
 import wikiFetchSSR from '@/utils/wikiFetchSSR';
@@ -64,15 +64,15 @@ export async function getServerSideProps(context: any) {
 
     return {
         props: {
-        wikiSlugStr,
-        pageSlugStr,
-        pageData: page,
-        menubarData: menubar,
-        sidebarData: sidebar,
-        parsedPageHtml,
-        parsedMenubarHtml,
-        parsedSidebarHtml,
-        errorData: error
+            wikiSlugStr,
+            pageSlugStr,
+            pageData: page,
+            menubarData: menubar,
+            sidebarData: sidebar,
+            parsedPageHtml,
+            parsedMenubarHtml,
+            parsedSidebarHtml,
+            errorData: error
         }
     };
 }
@@ -99,11 +99,8 @@ export default function WikiPage({
     // -----------------------
     // Client-safe router
     // -----------------------
-    const [router, setRouter] = useState<NextRouter | null>(null);
-    useEffect(() => {
-        import('next/router.js').then(mod => setRouter(mod.useRouter()));
-    }, []);
-
+    const isClient = typeof window !== 'undefined';
+    const router: NextRouter | null = isClient ? nextUseRouter() : null;
     const cmdStr = router && typeof router.query.cmd === 'string' ? router.query.cmd : '';
     const isEdit = cmdStr === 'edit';
 
@@ -147,7 +144,7 @@ export default function WikiPage({
 
     useEffect(() => {
         if (cmdStr === 'delete' && pageSlugStr && wikiSlugStr && user && router) {
-        deletePage(wikiSlugStr, pageSlugStr, router, user);
+            deletePage(wikiSlugStr, pageSlugStr, router, user);
         }
     }, [cmdStr, pageSlugStr, wikiSlugStr, user, router]);
 
@@ -157,16 +154,16 @@ export default function WikiPage({
 
     useEffect(() => {
         if (isEdit) {
-        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (content !== editContent) {
-            const message = "あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。";
-            e.preventDefault();
-            e.returnValue = message;
-            return message;
-            }
-        };
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+            const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+                if (content !== editContent) {
+                    const message = "あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。";
+                    e.preventDefault();
+                    e.returnValue = message;
+                    return message;
+                }
+            };
+            window.addEventListener("beforeunload", handleBeforeUnload);
+            return () => window.removeEventListener("beforeunload", handleBeforeUnload);
         }
     }, [content, editContent, isEdit]);
 
@@ -174,8 +171,8 @@ export default function WikiPage({
     useEffect(() => {
         if (!isEdit) return;
         const run = async () => {
-        const parsed = await parseWikiContent(content, { wikiSlug: wikiSlugStr!, pageSlug: pageSlugStr!, variables: {} });
-        setParsedPreview(parsed.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>));
+            const parsed = await parseWikiContent(content, { wikiSlug: wikiSlugStr!, pageSlug: pageSlugStr!, variables: {} });
+            setParsedPreview(parsed.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>));
         };
         run();
     }, [isEdit, content, wikiSlugStr, pageSlugStr]);
@@ -191,71 +188,71 @@ export default function WikiPage({
 
     return (
         <>
-        {ban_wiki_list_found ? <WikiBanned/> :
-        deleted_wiki_list_found ? <WikiDeleted/> :
-        <>
-            <Head>
-            <title>{page.title}{isEdit ? ' を編集' : null}</title>
-            </Head>
+            {ban_wiki_list_found ? <WikiBanned/> :
+            deleted_wiki_list_found ? <WikiDeleted/> :
+            <>
+                <Head>
+                    <title>{page.title}{isEdit ? ' を編集' : null}</title>
+                </Head>
 
-            {isEdit ? (
-            <WikiEditPage
-                title={title}
-                setTitle={setTitle}
-                content={content}
-                setContent={setContent}
-                parsedPreview={parsedPreview}
-                loading={loading}
-                wikiSlugStr={wikiSlugStr!}
-                pageSlugStr={pageSlugStr!}
-                setLoading={setLoading}
-                editMode={editMode}
-                user={user}
-                router={router!} // router が null の場合はボタン押せないので安全
-            />
-            ) : (
-            <div id="contents-wrapper" style={{ display: 'flex' }}>
-                <div id="container" style={{ display: 'grid', gridTemplateColumns: "172px 1fr 170px" }}>
-                <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
-                    <div dangerouslySetInnerHTML={{ __html: parsedPageHtml ?? '' }} />
-                    {router && wikiSlugStr === special_wiki_list[0] && pageSlugStr === 'FrontPage' &&
-                    <button onClick={() => router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)}>
-                        <span>リダイレクトされない場合はこちら</span>
-                    </button>}
-                    {router && <button onClick={() => handleEdit(router, wikiSlugStr!, pageSlugStr!)} style={{ marginLeft: 8 }}>
-                    <span>このページを編集</span>
-                    </button>}
-                    {router && <button onClick={async () => await handleDelete(special_wiki_list_found, wikiSlugStr!, pageSlugStr!, router)}>
-                    <span>このページを削除</span>
-                    </button>}
-                    <br/>
-                    <Link href={`/dashboard/${wikiSlugStr}/new`}>
-                    <button style={{ marginLeft: 12 }}><span>新しいページを作成</span></button>
-                    </Link>
-                    <button onClick={() => handleFreeze(wikiSlugStr!, pageSlugStr!, user)}>
-                    <span>このページを凍結 凍結解除</span>
-                    </button>
-                    <button onClick={handlePageLike} style={{ marginTop: 12 }}><span>このページを高く評価</span></button>
-                    <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}><span>このページを低く評価</span></button>
-                    <br/>
-                    <button onClick={handleWikiLike} style={{ marginLeft: 12}}><span>このWikiを高く評価</span></button>
-                    <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}><span>このWikiを低く評価</span></button>
-                    <br/>
-                    <div id="ad-container" style={{ textAlign:'center' }}>
-                    <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
+                {isEdit ? (
+                    <WikiEditPage
+                        title={title}
+                        setTitle={setTitle}
+                        content={content}
+                        setContent={setContent}
+                        parsedPreview={parsedPreview}
+                        loading={loading}
+                        wikiSlugStr={wikiSlugStr!}
+                        pageSlugStr={pageSlugStr!}
+                        setLoading={setLoading}
+                        editMode={editMode}
+                        user={user}
+                        router={router!}
+                    />
+                ) : (
+                    <div id="contents-wrapper" style={{ display: 'flex' }}>
+                        <div id="container" style={{ display: 'grid', gridTemplateColumns: "172px 1fr 170px" }}>
+                            <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
+                                <div dangerouslySetInnerHTML={{ __html: parsedPageHtml ?? '' }} />
+                                {router && wikiSlugStr === special_wiki_list[0] && pageSlugStr === 'FrontPage' &&
+                                <button onClick={() => router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)}>
+                                    <span>リダイレクトされない場合はこちら</span>
+                                </button>}
+                                {router && <button onClick={() => handleEdit(router, wikiSlugStr!, pageSlugStr!)} style={{ marginLeft: 8 }}>
+                                    <span>このページを編集</span>
+                                </button>}
+                                {router && <button onClick={async () => await handleDelete(special_wiki_list_found, wikiSlugStr!, pageSlugStr!, router)}>
+                                    <span>このページを削除</span>
+                                </button>}
+                                <br/>
+                                <Link href={`/dashboard/${wikiSlugStr}/new`}>
+                                    <button style={{ marginLeft: 12 }}><span>新しいページを作成</span></button>
+                                </Link>
+                                <button onClick={() => handleFreeze(wikiSlugStr!, pageSlugStr!, user)}>
+                                    <span>このページを凍結 凍結解除</span>
+                                </button>
+                                <button onClick={handlePageLike} style={{ marginTop: 12 }}><span>このページを高く評価</span></button>
+                                <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}><span>このページを低く評価</span></button>
+                                <br/>
+                                <button onClick={handleWikiLike} style={{ marginLeft: 12}}><span>このWikiを高く評価</span></button>
+                                <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}><span>このWikiを低く評価</span></button>
+                                <br/>
+                                <div id="ad-container" style={{ textAlign:'center' }}>
+                                    <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
+                                </div>
+                            </article>
+                            <aside style={{ width:"170px", padding:"1rem" }}>
+                                <div dangerouslySetInnerHTML={{ __html: parsedSidebarHtml ?? '' }} />
+                            </aside>
+                            <aside style={{ width:"172px", padding:'1rem'}}>
+                                <div dangerouslySetInnerHTML={{ __html: parsedMenubarHtml ?? '' }} />
+                            </aside>
+                            <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'/>
+                        </div>
                     </div>
-                </article>
-                <aside style={{ width:"170px", padding:"1rem" }}>
-                    <div dangerouslySetInnerHTML={{ __html: parsedSidebarHtml ?? '' }} />
-                </aside>
-                <aside style={{ width:"172px", padding:'1rem'}}>
-                    <div dangerouslySetInnerHTML={{ __html: parsedMenubarHtml ?? '' }} />
-                </aside>
-                <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'/>
-                </div>
-            </div>
-            )}
-        </>}
+                )}
+            </>}
         </>
     );
 }
