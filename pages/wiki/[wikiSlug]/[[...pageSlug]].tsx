@@ -194,6 +194,12 @@ export default function WikiPage({
         run();
     }, [isEdit, sidebar, wikiSlugStr, pageSlugStr]);
 
+    useEffect(() => {
+        console.log("parsedPreview: ", parsedPreview);
+        console.log("parsedMenubarState: ", parsedMenubarState);
+        console.log("parsedSidebarState: ", parsedSidebarState);
+    }, [parsedPreview, parsedMenubarState, parsedSidebarState]);
+
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
