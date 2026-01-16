@@ -13,7 +13,7 @@ import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
 import { handleDelete, handleEdit, handleFreeze } from '@/utils/pageParts/wiki/wiki_handler';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import deletePage from '@/utils/pageParts/wiki/deletePage';
-import wikiFetch, { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
+import { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
 import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
@@ -35,31 +35,31 @@ export async function getServerSideProps(context: any) {
     let page: Page | null = null;
     let menubar: Page | null = null;
     let sidebar: Page | null = null;
-    let parsedPage: any = null;
-    let parsedMenubar: any = null;
-    let parsedSidebar: any = null;
+    let parsedPage: React.ReactNode[] | null = null;
+    let parsedMenubar: React.ReactNode[] | null = null;
+    let parsedSidebar: React.ReactNode[] | null = null;
     let error: string | null = null;
 
     try {
         // Page
         page = await wikiFetchSSR(wikiSlugStr, pageSlugStr);
-        parsedPage = page
-            ? await parseWikiContent(page.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} })
-            : null;
+        if (page) {
+            parsedPage = await parseWikiContent(page.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+        }
 
         // Menubar
         const pageMenu = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
         menubar = pageMenu ?? (await wikiFetchByMenu(wikiSlugStr, "MenuBar"));
-        parsedMenubar = menubar
-            ? await parseWikiContent(menubar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} })
-            : null;
+        if (menubar) {
+            parsedMenubar = await parseWikiContent(menubar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+        }
 
         // Sidebar
         const pageSidebar = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
         sidebar = pageSidebar ?? (await wikiFetchByMenu(wikiSlugStr, "SideBar"));
-        parsedSidebar = sidebar
-            ? await parseWikiContent(sidebar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} })
-            : null;
+        if (sidebar) {
+            parsedSidebar = await parseWikiContent(sidebar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+        }
     } catch (e: any) {
         error = e.message ?? "ページ取得中にエラー";
     }
@@ -87,9 +87,20 @@ interface WikiPageProps {
     errorData?: string | null;
     wikiSlugStr?: string;
     pageSlugStr?: string;
+    parsedPage?: React.ReactNode[] | null;
+    parsedMenubar?: React.ReactNode[] | null;
+    parsedSidebar?: React.ReactNode[] | null;
 }
 
-export default function WikiPage({ pageData, errorData, wikiSlugStr: ssrWikiSlug, pageSlugStr: ssrPageSlug }: WikiPageProps) {
+export default function WikiPage({
+    pageData,
+    errorData,
+    wikiSlugStr: ssrWikiSlug,
+    pageSlugStr: ssrPageSlug,
+    parsedPage: ssrParsedPage,
+    parsedMenubar: ssrParsedMenubar,
+    parsedSidebar: ssrParsedSidebar
+}: WikiPageProps) {
     const router: NextRouter = useRouter();
 
     // -----------------------
@@ -110,20 +121,22 @@ export default function WikiPage({ pageData, errorData, wikiSlugStr: ssrWikiSlug
     // State
     // -----------------------
     const [user, setUser] = useState<User | null>(null);
-    const [page, setPage] = useState<Page | null>(pageData ?? null);
+    const [page] = useState<Page | null>(pageData ?? null);
     const [loading, setLoading] = useState<boolean>(!pageData);
-    const [error, setError] = useState<string | null>(errorData ?? null);
+    const [error] = useState<string | null>(errorData ?? null);
     const [title, setTitle] = useState<string>(pageData?.title ?? '');
     const [content, setContent] = useState<string>(pageData?.content ?? '');
-    const [editMode, setEditMode] = useState<editMode>('public');
+    const [editMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
-    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
+
+    // SSR でパース済みを初期値として使用
+    const [parsedPreview] = useState<React.ReactNode[] | null>(ssrParsedPage ?? null);
     const [editContent, setEditContent] = useState<string>(content);
-    const [url, setUrl] = useState<URL | null>(null);
-    const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
-    const [parsedMenubar, setParsedMenubar] = useState<React.ReactNode[] | null>(null);
-    const [sidebar, setSidebar] = useState<Page | null | undefined>(undefined);
-    const [parsedSidebar, setParsedSidebar] = useState<React.ReactNode[] | null>(null);
+
+    const [menubar] = useState<Page | null | undefined>(undefined);
+    const [sidebar] = useState<Page | null | undefined>(undefined);
+    const [parsedMenubarState] = useState<React.ReactNode[] | null>(ssrParsedMenubar ?? null);
+    const [parsedSidebarState] = useState<React.ReactNode[] | null>(ssrParsedSidebar ?? null);
 
     const isEdit: boolean = cmdStr === 'edit';
     const special_wiki_list_found = special_wiki_list.find(v => v === wikiSlugStr);
@@ -137,67 +150,7 @@ export default function WikiPage({ pageData, errorData, wikiSlugStr: ssrWikiSlug
         supabaseClient.auth.getUser().then(({ data }) => { if (data.user) setUser(data.user); });
     }, []);
 
-    useEffect(() => setUrl(new URL(window.location.href)), []);
-
     useEffect(() => { if (!wikiSlugStr) return; fetchColor(wikiSlugStr, setDesignColor); }, [wikiSlugStr]);
-
-    useEffect(() => {
-        if (!wikiSlugStr || !pageSlugStr) return;
-        if (pageData) return; // SSR で既に取得済みなら fetch しない
-        setLoading(true);
-        wikiFetch(wikiSlugStr, pageSlugStr, setError, setLoading, setEditMode, setPage, setTitle, setContent);
-    }, [wikiSlugStr, pageSlugStr]);
-
-    // Menubar
-    useEffect(() => {
-        async function loadMenubar() {
-            const pageSpecific = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
-            if (pageSpecific) { setMenubar(pageSpecific); return; }
-            const globalMenu = await wikiFetchByMenu(wikiSlugStr, "MenuBar");
-            setMenubar(globalMenu);
-        }
-        loadMenubar();
-    }, [wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        if (!menubar || !isEdit) return;
-        async function parse() {
-            const parsed = await parseWikiContent(menubar?.content ?? '', { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
-            setParsedMenubar(parsed);
-        }
-        parse();
-    }, [menubar, wikiSlugStr, pageSlugStr, isEdit]);
-
-    // Sidebar
-    useEffect(() => {
-        async function loadSidebar() {
-            const pageSpecific = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
-            if (pageSpecific) { setSidebar(pageSpecific); return; }
-            const globalSidebar = await wikiFetchByMenu(wikiSlugStr, "SideBar");
-            setSidebar(globalSidebar);
-        }
-        loadSidebar();
-    }, [wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        if (!sidebar || !isEdit) return;
-        async function parse() {
-            const parsed = await parseWikiContent(sidebar?.content ?? '', { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
-            setParsedSidebar(parsed);
-        }
-        parse();
-    }, [sidebar, wikiSlugStr, pageSlugStr, isEdit]);
-
-    // プレビュー
-    const previewText = isEdit ? content : page?.content ?? '';
-    useEffect(() => {
-        if (!isEdit) return;
-        async function fetchParsedPreview() {
-            const result = await parseWikiContent(previewText, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
-            setParsedPreview(result);
-        }
-        fetchParsedPreview();
-    }, [previewText, wikiSlugStr, pageSlugStr, isEdit]);
 
     useEffect(() => setEditContent(content), [content]);
 
@@ -237,6 +190,10 @@ export default function WikiPage({ pageData, errorData, wikiSlugStr: ssrWikiSlug
 
     if (error) return <div style={{ color:'red', padding:'2rem'}}>{error}</div>;
     if (loading || !page) return <div style={{ padding:'2rem'}}>読み込み中…</div>;
+
+    // -----------------------
+    // Render
+    // -----------------------
 
     return (
         <>
@@ -328,7 +285,7 @@ export default function WikiPage({ pageData, errorData, wikiSlugStr: ssrWikiSlug
                                     {sidebar ? (
                                         <aside style={{ width: "170px", padding: "1rem" }}>
                                             {
-                                                parsedSidebar && parsedSidebar.map((node, i) => (
+                                                parsedSidebarState?.map((node, i) => (
                                                     <React.Fragment key={i}>{node}</React.Fragment>
                                                 ))
                                             }
@@ -342,7 +299,7 @@ export default function WikiPage({ pageData, errorData, wikiSlugStr: ssrWikiSlug
                                             menubar === null && "Menubar は存在しません"
                                         }
                                         {
-                                            parsedMenubar && parsedMenubar.map((node, i) => (
+                                            parsedMenubarState?.map((node, i) => (
                                                 <React.Fragment key={i}>{node}</React.Fragment>
                                             ))
                                         }
