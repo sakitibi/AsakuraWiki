@@ -18,6 +18,7 @@ import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
 import wikiFetchSSR from '@/utils/wikiFetchSSR';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 // =======================
 // SSR 用関数
@@ -35,25 +36,34 @@ export async function getServerSideProps(context: any) {
     let page: Page | null = null;
     let menubar: Page | null = null;
     let sidebar: Page | null = null;
-    let parsedPage: React.ReactNode[] | null = null;
-    let parsedMenubar: React.ReactNode[] | null = null;
-    let parsedSidebar: React.ReactNode[] | null = null;
+    let parsedPageHtml: string | null = null;
+    let parsedMenubarHtml: string | null = null;
+    let parsedSidebarHtml: string | null = null;
     let error: string | null = null;
 
     try {
         // Page
         page = await wikiFetchSSR(wikiSlugStr, pageSlugStr);
-        if (page) parsedPage = await parseWikiContent(page.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+        if (page) {
+            const parsed = await parseWikiContent(page.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+            parsedPageHtml = parsed.map(node => renderToStaticMarkup(<>{node}</>)).join('');
+        }
 
         // Menubar
         const pageMenu = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
         menubar = pageMenu ?? (await wikiFetchByMenu(wikiSlugStr, "MenuBar"));
-        if (menubar) parsedMenubar = await parseWikiContent(menubar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+        if (menubar) {
+            const parsed = await parseWikiContent(menubar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+            parsedMenubarHtml = parsed.map(node => renderToStaticMarkup(<>{node}</>)).join('');
+        }
 
         // Sidebar
         const pageSidebar = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
         sidebar = pageSidebar ?? (await wikiFetchByMenu(wikiSlugStr, "SideBar"));
-        if (sidebar) parsedSidebar = await parseWikiContent(sidebar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+        if (sidebar) {
+            const parsed = await parseWikiContent(sidebar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+            parsedSidebarHtml = parsed.map(node => renderToStaticMarkup(<>{node}</>)).join('');
+        }
     } catch (e: any) {
         error = e.message ?? "ページ取得中にエラー";
     }
@@ -65,9 +75,9 @@ export async function getServerSideProps(context: any) {
             pageData: page,
             menubarData: menubar,
             sidebarData: sidebar,
-            parsedPage,
-            parsedMenubar,
-            parsedSidebar,
+            parsedPageHtml,
+            parsedMenubarHtml,
+            parsedSidebarHtml,
             errorData: error
         }
     };
@@ -81,9 +91,9 @@ interface WikiPageProps {
     errorData?: string | null;
     wikiSlugStr?: string;
     pageSlugStr?: string;
-    parsedPage?: React.ReactNode[] | null;
-    parsedMenubar?: React.ReactNode[] | null;
-    parsedSidebar?: React.ReactNode[] | null;
+    parsedPageHtml?: string | null;
+    parsedMenubarHtml?: string | null;
+    parsedSidebarHtml?: string | null;
 }
 
 export default function WikiPage({
@@ -91,9 +101,9 @@ export default function WikiPage({
     errorData,
     wikiSlugStr: ssrWikiSlug,
     pageSlugStr: ssrPageSlug,
-    parsedPage: ssrParsedPage,
-    parsedMenubar: ssrParsedMenubar,
-    parsedSidebar: ssrParsedSidebar
+    parsedPageHtml,
+    parsedMenubarHtml,
+    parsedSidebarHtml
 }: WikiPageProps) {
     const router: NextRouter = useRouter();
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;
@@ -122,13 +132,10 @@ export default function WikiPage({
     // -----------------------
     // parsedPreview / Menubar / Sidebar
     // -----------------------
-    // SSRパース済みを初期値に使うのは閲覧モードのみ
-    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : ssrParsedPage ?? null);
+    const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : null);
     const [editContent, setEditContent] = useState<string>(content);
-    const [menubar] = useState<Page | null | undefined>(undefined);
-    const [sidebar] = useState<Page | null | undefined>(undefined);
-    const [parsedMenubarState, setParsedMenubar] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : ssrParsedMenubar ?? null);
-    const [parsedSidebarState, setParsedSidebar] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : ssrParsedSidebar ?? null);
+    const [parsedMenubarState, setParsedMenubar] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : null);
+    const [parsedSidebarState, setParsedSidebar] = useState<React.ReactNode[] | null>(cmdStr === 'edit' ? null : null);
 
     const isEdit: boolean = cmdStr === 'edit';
     const special_wiki_list_found = special_wiki_list.find(v => v === wikiSlugStr);
@@ -170,35 +177,10 @@ export default function WikiPage({
         if (!isEdit) return;
         const run = async () => {
             const parsed = await parseWikiContent(content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
-            // parsed が ReactNode[] なら key を付与してラップ
             setParsedPreview(parsed.map((node,i) => <React.Fragment key={i}>{node}</React.Fragment>));
         };
         run();
     }, [isEdit, content, wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        if (!isEdit || !menubar) return;
-        const run = async () => {
-            const parsed = await parseWikiContent(menubar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
-            setParsedMenubar(parsed);
-        };
-        run();
-    }, [isEdit, menubar, wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        if (!isEdit || !sidebar) return;
-        const run = async () => {
-            const parsed = await parseWikiContent(sidebar.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
-            setParsedSidebar(parsed);
-        };
-        run();
-    }, [isEdit, sidebar, wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        console.log("parsedPreview: ", parsedPreview);
-        console.log("parsedMenubarState: ", parsedMenubarState);
-        console.log("parsedSidebarState: ", parsedSidebarState);
-    }, [parsedPreview, parsedMenubarState, parsedSidebarState]);
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
@@ -234,9 +216,10 @@ export default function WikiPage({
                     />
                 ) : (
                     <div id="contents-wrapper" style={{display: 'flex'}}>
-                        <div id="container" style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
+                        <div id="container" style={{display: 'grid', gridTemplateColumns: "172px 1fr 170px"}}>
                             <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
-                                {parsedPreview}
+                                {/* SSR 文字列を innerHTML で表示 */}
+                                <div dangerouslySetInnerHTML={{ __html: parsedPageHtml ?? '' }} />
                                 {wikiSlugStr === special_wiki_list[0] && pageSlugStr === 'FrontPage' &&
                                 <button onClick={() => router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)}>
                                     <span>リダイレクトされない場合はこちら</span>
@@ -264,13 +247,11 @@ export default function WikiPage({
                                     <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                                 </div>
                             </article>
-                            {sidebar ? <aside style={{ width:"170px", padding:"1rem" }}>
-                                {parsedSidebarState}
-                            </aside> : null}
-                            <aside style={{ width:"172px", padding:'1rem', gridRow:"1 / span 1"}}>
-                                {menubar===undefined && "Menubar 読み込み中…"}
-                                {menubar===null && "Menubar は存在しません"}
-                                {parsedMenubarState}
+                            <aside style={{ width:"170px", padding:"1rem" }}>
+                                <div dangerouslySetInnerHTML={{ __html: parsedSidebarHtml ?? '' }} />
+                            </aside>
+                            <aside style={{ width:"172px", padding:'1rem'}}>
+                                <div dangerouslySetInnerHTML={{ __html: parsedMenubarHtml ?? '' }} />
                             </aside>
                             <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'/>
                         </div>
