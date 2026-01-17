@@ -25,13 +25,15 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         if (!data) return res.status(404).json({ error: "NotFound" });
         return res.status(201).json(data);
     } else if (req.method === 'POST') {
-        const body:string = req.body;
-        // データ取得
+        // SSR fetch でも CSR fetch でも JSON で受け取る
+        const { developer } = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+
         const { data, error } = await supabaseServer
             .from('store.developers')
             .select('user_id,developer_id,developer_siteurl,official,developer_name')
-            .eq("developer_id", body)
-            .maybeSingle()
+            .eq("developer_id", developer)
+            .maybeSingle();
+
         if (error) return res.status(500).json({ error: error.message });
         if (!data) return res.status(404).json({ error: "NotFound" });
         return res.status(201).json(data);

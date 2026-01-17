@@ -98,7 +98,10 @@ export async function getServerSideProps(context: any) {
         return { props: { apps: [], developers: null, developersStr } };
     }
 
-    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+    // SSR では絶対 URL が必要
+    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+    console.log("SSR BASE_URL:", BASE_URL);
+    console.log("developersStr:", developersStr);
 
     try {
         // apps データ取得
@@ -108,6 +111,7 @@ export async function getServerSideProps(context: any) {
             body: JSON.stringify({ developer: developersStr }),
         });
         const apps: AppProps[] = appsRes.ok ? await appsRes.json() : [];
+        console.log("apps:", apps);
 
         // developer データ取得
         const devRes = await fetch(`${BASE_URL}/api/store/developers`, {
@@ -116,6 +120,7 @@ export async function getServerSideProps(context: any) {
             body: JSON.stringify({ developer: developersStr }),
         });
         const developers: DeveloperProps | null = devRes.ok ? await devRes.json() : null;
+        console.log("developers:", developers);
 
         return {
             props: { apps, developers, developersStr },
