@@ -22,11 +22,14 @@ interface StorePageProps {
     developersStr: string;
 }
 
-export default function Store({ apps: initialApps, developers, developersStr }: StorePageProps) {
+export default function Store({ apps, developers, developersStr }: StorePageProps) {
     const [menuStatus, setMenuStatus] = useState(false);
-    const apps = initialApps; // SSR で取得済み
+
     const handleClick = () => {
         setMenuStatus(prev => !prev);
+        if (typeof document !== 'undefined') {
+            document.body.style.overflow = menuStatus ? '' : 'hidden';
+        }
     };
 
     if (!developers) return <Custom404 isEmbed="true" />;
@@ -83,7 +86,7 @@ export default function Store({ apps: initialApps, developers, developersStr }: 
     );
 }
 
-// SSR でデータ取得
+// -------------------- SSR --------------------
 export async function getServerSideProps(context: any) {
     const { developer } = context.query;
     const developersStr: string = Array.isArray(developer) ? developer.join('/') : developer ?? '';
@@ -92,21 +95,28 @@ export async function getServerSideProps(context: any) {
         return { props: { apps: [], developers: null, developersStr } };
     }
 
-    // apps データ取得
-    const appsRes = await fetch("/api/store/details", {
-        method: 'POST',
-        body: developersStr,
-    });
-    const apps: AppProps[] = appsRes.ok ? await appsRes.json() : [];
+    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    // developer データ取得
-    const devRes = await fetch("/api/store/developers", {
-        method: 'POST',
-        body: developersStr,
-    });
-    const developers: DeveloperProps | null = devRes.ok ? await devRes.json() : null;
+    try {
+        // apps データ取得
+        const appsRes = await fetch(`${BASE_URL}/api/store/details`, {
+            method: 'POST',
+            body: developersStr,
+        });
+        const apps: AppProps[] = appsRes.ok ? await appsRes.json() : [];
 
-    return {
-        props: { apps, developers, developersStr },
-    };
+        // developer データ取得
+        const devRes = await fetch(`${BASE_URL}/api/store/developers`, {
+            method: 'POST',
+            body: developersStr,
+        });
+        const developers: DeveloperProps | null = devRes.ok ? await devRes.json() : null;
+
+        return {
+            props: { apps, developers, developersStr },
+        };
+    } catch (err) {
+        console.error('SSR fetch error:', err);
+        return { props: { apps: [], developers: null, developersStr } };
+    }
 }
