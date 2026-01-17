@@ -25,13 +25,20 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         if (!data) return res.status(404).json({ error: "NotFound" });
         return res.status(201).json(data);
     } else if (req.method === 'POST') {
-        // SSR fetch でも CSR fetch でも JSON で受け取る
-        const { developer } = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        // body が文字列かオブジェクトかを判定
+        let developerId: string;
+        if (typeof req.body === 'string') {
+            developerId = req.body;
+        } else if (req.body.developer) {
+            developerId = req.body.developer;
+        } else {
+            return res.status(400).json({ error: 'Missing developer field' });
+        }
 
         const { data, error } = await supabaseServer
             .from('store.developers')
             .select('user_id,developer_id,developer_siteurl,official,developer_name')
-            .eq("developer_id", developer)
+            .eq("developer_id", developerId)
             .maybeSingle();
 
         if (error) return res.status(500).json({ error: error.message });
