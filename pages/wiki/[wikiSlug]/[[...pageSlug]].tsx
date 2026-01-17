@@ -384,7 +384,7 @@ export default function WikiPage() {
                                     />
                                 </div>
                             </div>
-                            <div className={styles.container}>
+                            {/*<div className={styles.container}>
                                 <div className={`footer_${designColor} ${styles.clearfix}`}>
                                     <div style={{ display: "inline-block" }}>
                                         レンタルWIKI by
@@ -397,7 +397,7 @@ export default function WikiPage() {
                                         </a>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*/}
                         </>
                     )}
                 </>
