@@ -26,10 +26,13 @@ export default function Store({ apps, developers, developersStr }: StorePageProp
     const [menuStatus, setMenuStatus] = useState(false);
 
     const handleClick = () => {
-        setMenuStatus(prev => !prev);
-        if (typeof document !== 'undefined') {
-            document.body.style.overflow = menuStatus ? '' : 'hidden';
-        }
+        setMenuStatus(prev => {
+            const next = !prev;
+            if (typeof document !== 'undefined') {
+                document.body.style.overflow = next ? 'hidden' : '';
+            }
+            return next;
+        });
     };
 
     if (!developers) return <Custom404 isEmbed="true" />;
@@ -101,14 +104,16 @@ export async function getServerSideProps(context: any) {
         // apps データ取得
         const appsRes = await fetch(`${BASE_URL}/api/store/details`, {
             method: 'POST',
-            body: developersStr,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ developer: developersStr }),
         });
         const apps: AppProps[] = appsRes.ok ? await appsRes.json() : [];
 
         // developer データ取得
         const devRes = await fetch(`${BASE_URL}/api/store/developers`, {
             method: 'POST',
-            body: developersStr,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ developer: developersStr }),
         });
         const developers: DeveloperProps | null = devRes.ok ? await devRes.json() : null;
 
