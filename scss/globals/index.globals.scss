@@ -10,6 +10,7 @@
 @use 'top/list-group';
 @use 'wiki/size';
 @use 'top/section';
+@use 'wiki/footer';
 
 input:not([type=submit],[type=checkbox]) {
     width: 100%;

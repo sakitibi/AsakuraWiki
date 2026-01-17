@@ -1,14 +1,6 @@
 @use 'notice-wiki-removal';
 @use 'plugins';
 
-$footer_color: (
-    "default": #d1f0a0,
-    "pink": "#fad6e7",
-    "blue": "#cce3f8",
-    "yellow": "#feeaa4",
-    "purple": "#e9d7f3",
-);
-
 .list{
     .list1 {
         list-style-type: disc !important;
@@ -30,14 +22,4 @@ $footer_color: (
     clear: both;
     content: "";
     display: block;
-}
-
-@each $key, $color in $footer_color{
-    .footer_#{$key}{
-        background-color: #{$color};
-        border: 1px solid #000;
-        color: #000;
-        font-size: 80%;
-        padding: 2px 9px;
-    }
 }
