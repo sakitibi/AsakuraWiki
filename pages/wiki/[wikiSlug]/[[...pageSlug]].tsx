@@ -17,6 +17,7 @@ import wikiFetch, { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
 import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
+import styles from '@/css/wikis.min.module.css';
 
 export default function WikiPage() {
     const router:NextRouter = useRouter()
@@ -374,6 +375,20 @@ export default function WikiPage() {
                                             ))
                                         }
                                     </aside>
+                                    <div className={styles.container}>
+                                        <div className={`${styles.footer + "_" + designColor} ${styles.clearfix}`}>
+                                            <div style={{ display: "inline-block" }}>
+                                                レンタルWIKI by
+                                                <a href="/" title='無料レンタルWikiサービス'>
+                                                    あさクラWiki
+                                                </a>
+                                                &nbsp;/&nbsp;
+                                                <a href="/about/ad" title='広告について'>
+                                                    広告について
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <Script
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
                                     />
