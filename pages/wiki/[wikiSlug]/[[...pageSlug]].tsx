@@ -89,90 +89,38 @@ export default function WikiPage() {
         );
     }, [wikiSlugStr, pageSlugStr]);
 
+    // MenuBar / SideBar 取得とパース統合
     useEffect(() => {
-        async function loadMenubar() {
-            const pageSpecific = await wikiFetchByMenu(
-                wikiSlugStr,
-                `${pageSlugStr}/MenuBar`
-            );
-            if (pageSpecific) {
-                setMenubar(pageSpecific);
-                return;
+        if (!wikiSlugStr || !pageSlugStr) return;
+
+        async function loadMenuAndSidebar() {
+            // --- MenuBar ---
+            let menuPage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
+            if (!menuPage) menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
+            setMenubar(menuPage ?? null);
+
+            if (menuPage?.content) {
+                const parsed = await parseWikiContent(menuPage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+                setParsedMenubar(parsed);
+            } else {
+                setParsedMenubar(null);
             }
 
-            const globalMenu = await wikiFetchByMenu(wikiSlugStr, "MenuBar");
-            setMenubar(globalMenu);
-        }
-        loadMenubar();
-    }, [wikiSlugStr, pageSlugStr]);
+            // --- SideBar ---
+            let sidePage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
+            if (!sidePage) sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar');
+            setSidebar(sidePage ?? null);
 
-    useEffect(() => {
-        // まだ読み込み中（undefined）の場合は何もしない
-        if (menubar === undefined) {
-            return;
-        }
-
-        // 読み込んだが存在しない（null）
-        if (menubar === null) {
-            setParsedMenubar(null);
-            return;
-        }
-
-        // menubar が Page のときだけパース
-        async function parse() {
-            if (!menubar?.content) return;
-            const parsed = await parseWikiContent(menubar.content, {
-                wikiSlug: wikiSlugStr,
-                pageSlug: pageSlugStr,
-                variables: {},
-            });
-            setParsedMenubar(parsed);
-        }
-
-        parse();
-    }, [menubar, wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        async function loadSidebar() {
-            // 1. ページ固有 SideBar
-            const pageSpecific = await wikiFetchByMenu(
-                wikiSlugStr,
-                `${pageSlugStr}/SideBar`
-            );
-            if (pageSpecific) {
-                setSidebar(pageSpecific);
-                return;
+            if (sidePage?.content) {
+                const parsed = await parseWikiContent(sidePage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+                setParsedSidebar(parsed);
+            } else {
+                setParsedSidebar(null);
             }
-
-            // 2. Wiki 全体 SideBar
-            const globalSidebar = await wikiFetchByMenu(
-                wikiSlugStr,
-                "SideBar"
-            );
-            setSidebar(globalSidebar);
         }
 
-        loadSidebar();
+        loadMenuAndSidebar();
     }, [wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        if (!sidebar) {
-            setParsedSidebar(null);
-            return;
-        }
-
-        async function parse() {
-            if(!sidebar?.content) return;
-            const parsed = await parseWikiContent(sidebar.content, {
-                wikiSlug: wikiSlugStr,
-                pageSlug: pageSlugStr,
-                variables: {},
-            });
-            setParsedSidebar(parsed);
-        }
-
-        parse();
-    }, [sidebar, wikiSlugStr, pageSlugStr]);
 
     useEffect(() => {
         console.log('更新された editMode:', editMode);
@@ -358,31 +306,15 @@ export default function WikiPage() {
                                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                                         </div>
                                     </article>
-                                    <aside style={{ width: "170px", padding: "1rem" }}>
-                                        {
-                                            sidebar === undefined && "SideBar 読み込み中…"
-                                        }
-                                        {
-                                            sidebar === null && "SideBar は存在しません"
-                                        }
-                                        {
-                                            parsedSidebar && parsedSidebar.map((node, i) => (
-                                                <React.Fragment key={i}>{node}</React.Fragment>
-                                            ))
-                                        }
+                                    <aside style={{ width: '170px', padding: '1rem' }}>
+                                        {sidebar === undefined && 'SideBar 読み込み中…'}
+                                        {sidebar !== undefined && sidebar === null && 'SideBar は存在しません'}
+                                        {parsedSidebar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
                                     </aside>
-                                    <aside style={{ width: "172px", padding: '1rem', gridRow: "1 / span 1" }}>
-                                        {
-                                            menubar === undefined && "MenuBar 読み込み中…"
-                                        }
-                                        {
-                                            menubar === null && "MenuBar は存在しません"
-                                        }
-                                        {
-                                            parsedMenubar && parsedMenubar.map((node, i) => (
-                                                <React.Fragment key={i}>{node}</React.Fragment>
-                                            ))
-                                        }
+                                    <aside style={{ width: '172px', padding: '1rem' }}>
+                                        {menubar === undefined && 'MenuBar 読み込み中…'}
+                                        {menubar !== undefined && menubar === null && 'MenuBar は存在しません'}
+                                        {parsedMenubar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
                                     </aside>
                                     <Script
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
