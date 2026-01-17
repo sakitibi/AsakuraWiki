@@ -260,6 +260,11 @@ export default function WikiPage() {
         }
     }, [wikiSlugStr, pageSlugStr]);
 
+    useEffect(() => {
+        console.log("MenuBar: ", menubar);
+        console.log("SideBar: ", sidebar);
+    }, [menubar, sidebar])
+
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
