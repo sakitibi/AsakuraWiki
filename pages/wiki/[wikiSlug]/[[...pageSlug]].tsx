@@ -353,21 +353,25 @@ export default function WikiPage() {
                                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                                         </div>
                                     </article>
-                                    {sidebar ? (
-                                        <aside style={{ width: "170px", padding: "1rem" }}>
-                                            {
-                                                parsedSidebar && parsedSidebar.map((node, i) => (
-                                                    <React.Fragment key={i}>{node}</React.Fragment>
-                                                ))
-                                            }
-                                        </aside>
-                                    ) : null}
-                                    <aside style={{ width: "172px", padding: '1rem', gridRow: "1 / span 1" }}>
+                                    <aside style={{ width: "170px", padding: "1rem" }}>
                                         {
-                                            menubar === undefined && "Menubar 読み込み中…"
+                                            sidebar === undefined && "SideBar 読み込み中…"
                                         }
                                         {
-                                            menubar === null && "Menubar は存在しません"
+                                            sidebar === null && "SideBar は存在しません"
+                                        }
+                                        {
+                                            parsedSidebar && parsedSidebar.map((node, i) => (
+                                                <React.Fragment key={i}>{node}</React.Fragment>
+                                            ))
+                                        }
+                                    </aside>
+                                    <aside style={{ width: "172px", padding: '1rem', gridRow: "1 / span 1" }}>
+                                        {
+                                            menubar === undefined && "MenuBar 読み込み中…"
+                                        }
+                                        {
+                                            menubar === null && "MenuBar は存在しません"
                                         }
                                         {
                                             parsedMenubar && parsedMenubar.map((node, i) => (
