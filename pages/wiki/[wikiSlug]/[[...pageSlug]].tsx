@@ -298,7 +298,7 @@ export default function WikiPage() {
                     ) : (
                         <>
                             <div id="contents-wrapper" style={{display: 'flex'}}>
-                                <div id="container" style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
+                                <div className={styles.container} style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
                                     <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
@@ -375,23 +375,23 @@ export default function WikiPage() {
                                             ))
                                         }
                                     </aside>
-                                    <div className={styles.container}>
-                                        <div className={`${styles.footer + "_" + designColor} ${styles.clearfix}`}>
-                                            <div style={{ display: "inline-block" }}>
-                                                レンタルWIKI by
-                                                <a href="/" title='無料レンタルWikiサービス'>
-                                                    あさクラWiki
-                                                </a>
-                                                &nbsp;/&nbsp;
-                                                <a href="/about/ad" title='広告について'>
-                                                    広告について
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <Script
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
                                     />
+                                </div>
+                                <div className={styles.container}>
+                                    <div className={`${styles.footer}_${designColor} ${styles.clearfix}`}>
+                                        <div style={{ display: "inline-block" }}>
+                                            レンタルWIKI by
+                                            <a href="/" title='無料レンタルWikiサービス'>
+                                                あさクラWiki
+                                            </a>
+                                            &nbsp;/&nbsp;
+                                            <a href="/about/ad" title='広告について'>
+                                                広告について
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </>
