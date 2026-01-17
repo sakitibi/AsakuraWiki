@@ -379,18 +379,18 @@ export default function WikiPage() {
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
                                     />
                                 </div>
-                                <div className={styles.container}>
-                                    <div className={`${styles.footer}_${designColor} ${styles.clearfix}`}>
-                                        <div style={{ display: "inline-block" }}>
-                                            レンタルWIKI by
-                                            <a href="/" title='無料レンタルWikiサービス'>
-                                                あさクラWiki
-                                            </a>
-                                            &nbsp;/&nbsp;
-                                            <a href="/about/ad" title='広告について'>
-                                                広告について
-                                            </a>
-                                        </div>
+                            </div>
+                            <div className={styles.container}>
+                                <div className={`${styles.footer}_${designColor} ${styles.clearfix}`}>
+                                    <div style={{ display: "inline-block" }}>
+                                        レンタルWIKI by
+                                        <a href="/" title='無料レンタルWikiサービス'>
+                                            あさクラWiki
+                                        </a>
+                                        &nbsp;/&nbsp;
+                                        <a href="/about/ad" title='広告について'>
+                                            広告について
+                                        </a>
                                     </div>
                                 </div>
                             </div>
