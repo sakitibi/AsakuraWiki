@@ -6,11 +6,9 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useState, useEffect } from "react";
-import { supabaseServer } from "@/lib/supabaseClientServer";
 
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userlists, setUsers] = useState<any[]>([]);
     useEffect(() => {
         if (typeof document !== 'undefined' && typeof window !== "undefined") {
             document.body.style.overflow = menuStatus ? "hidden" : "";
@@ -22,19 +20,6 @@ export default function MinecraftVS(){
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const { data: users, error } = await supabaseServer
-                .from("minecraft_vs_happy-ghast-sky-battle")
-                .select("user_name, team");
-
-            if (error) return console.error(error);
-            if (users) setUsers(users);
-        };
-
-        fetchUsers();
-    }, []);
-    console.log("Current userlists:", userlists);
     return(
         <>
             <Head>
