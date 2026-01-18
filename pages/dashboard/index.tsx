@@ -84,14 +84,14 @@ export default function DashboardPage() {
                                 {mywikis.map((data, index) => (
                                     <>
                                         <div key={index}>
-                                            <button>
-                                                <Link href={`/dashboard/wiki/${data.slug}`}>
+                                            <Link href={`/dashboard/wiki/${data.slug}`}>
+                                                <button>
                                                     <span>
                                                         <i className="fa-solid fa-folder-gear"></i>
                                                         {data.name} Wiki* を管理
                                                     </span>
-                                                </Link>
-                                            </button>
+                                                </button>
+                                            </Link>
                                         </div>
                                     </>
                                 ))}
