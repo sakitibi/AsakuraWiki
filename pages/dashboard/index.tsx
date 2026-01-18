@@ -4,9 +4,16 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { useEffect, useState } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { supabaseClient } from '@/lib/supabaseClient';
+import Link from 'next/link';
+
+interface MyWikiProps{
+    name: string;
+    slug: string;
+}
 
 export default function DashboardPage() {
     const [user, setUser] = useState<User | null>(null);
+    const [mywikis, setMywikis] = useState<MyWikiProps[]>([]);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
@@ -45,6 +52,21 @@ export default function DashboardPage() {
         window.location.href = "/dashboard/accounts/modify";
     }
     useEffect(() => {
+        if(!user) return;
+        async function MyWikiFetch(){
+            const { data, error } = await supabaseClient
+                .from("wikis")
+                .select("name, slug")
+                .eq("owner_id", user?.id)
+            if(!data || error){
+                console.error("Error: ", error.message);
+                return;
+            }
+            setMywikis(data);
+        }
+        MyWikiFetch();
+    }, [user]);
+    useEffect(() => {
         setLoading(false);
     }, []);
     return (
@@ -58,6 +80,21 @@ export default function DashboardPage() {
                     <div id="content">
                         <p>こんにちは、{name} さん！</p>
                         <div id="dashboard">
+                            <div id="my_wiki_container">
+                                {mywikis.map((data, index) => (
+                                    <>
+                                        <div key={index}>
+                                            <button>
+                                                <Link href={`/dashboard/wiki/${data.slug}`}>
+                                                    <span>
+                                                        {data.name} Wiki* を管理
+                                                    </span>
+                                                </Link>
+                                            </button>
+                                        </div>
+                                    </>
+                                ))}
+                            </div>
                             <button
                                 disabled={loading}
                                 onClick={async() => await handleLogout()}
