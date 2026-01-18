@@ -3,8 +3,8 @@ import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import Link from 'next/link';
 import { User } from '@supabase/auth-helpers-react';
-import { createServerClient } from '@supabase/auth-helpers-nextjs';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import { createServerClient } from '@supabase/ssr';
 
 interface MyWikiProps {
     name: string;
@@ -30,7 +30,7 @@ export default function DashboardPage({ user, mywikis }: DashboardProps) {
     const provider = user?.app_metadata?.provider;
 
     const handleLogout = async () => {
-        await fetch('/api/logout');
+        await fetch('/api/accounts/logout');
         location.reload();
     };
 
@@ -113,23 +113,23 @@ export default function DashboardPage({ user, mywikis }: DashboardProps) {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
-                get(name: string) {
-                    return ctx.req.cookies[name];
+                get(name) {
+                    return req.cookies[name];
                 },
-                set(name: string, value: string, options: any) {
-                    ctx.res.setHeader(
+                set(name, value, options) {
+                    res.setHeader(
                         'Set-Cookie',
                         `${name}=${value}; Path=/; HttpOnly`
                     );
                 },
-                remove(name: string, options: any) {
-                    ctx.res.setHeader(
+                remove(name, options) {
+                    res.setHeader(
                         'Set-Cookie',
                         `${name}=; Path=/; Max-Age=0`
                     );
@@ -151,14 +151,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         };
     }
 
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('wikis')
         .select('name, slug')
         .eq('owner_id', user.id);
-
-    if (error) {
-        console.error(error.message);
-    }
 
     return {
         props: {
