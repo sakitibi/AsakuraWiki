@@ -119,19 +119,26 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
-                get(name) {
-                    return req.cookies[name];
+                getAll() {
+                    return Object.entries(req.cookies).map(([name, value]) => ({
+                        name,
+                        value: value ?? '',
+                    }));
                 },
-                set(name, value, options) {
+                setAll(cookies) {
                     res.setHeader(
                         'Set-Cookie',
-                        `${name}=${value}; Path=/; HttpOnly`
-                    );
-                },
-                remove(name, options) {
-                    res.setHeader(
-                        'Set-Cookie',
-                        `${name}=; Path=/; Max-Age=0`
+                        cookies.map(({ name, value, options }) =>
+                            `${name}=${value}; Path=/; ${
+                                options?.maxAge ? `Max-Age=${options.maxAge};` : ''
+                            } ${
+                                options?.httpOnly ? 'HttpOnly;' : ''
+                            } ${
+                                options?.secure ? 'Secure;' : ''
+                            } ${
+                                options?.sameSite ? `SameSite=${options.sameSite};` : ''
+                            }`
+                        )
                     );
                 },
             },
