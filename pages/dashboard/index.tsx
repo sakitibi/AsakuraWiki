@@ -39,14 +39,14 @@ export default function DashboardPage({ user, mywikis }: DashboardProps) {
             <Head>
                 <title>ダッシュボード</title>
             </Head>
-
             <main style={{ padding: '2rem' }}>
-                <h1>🎉 ダッシュボード</h1>
-
+                <h1>
+                    ダッシュボード
+                    <i className="fa-utility-fill fa-semibold fa-user"></i>
+                </h1>
                 {user ? (
                     <div id="content">
                         <p>こんにちは、{name} さん！</p>
-
                         <div id="dashboard">
                             <div id="my_wiki_container">
                                 {mywikis.map((data) => (
