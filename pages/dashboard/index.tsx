@@ -1,121 +1,95 @@
-import { User } from '@supabase/auth-helpers-react';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import { useEffect, useState } from 'react';
-import { asakuraMenberUserId } from '@/utils/user_list';
-import { supabaseClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
+import { User } from '@supabase/auth-helpers-react';
+import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { asakuraMenberUserId } from '@/utils/user_list';
 
-interface MyWikiProps{
+interface MyWikiProps {
     name: string;
     slug: string;
 }
 
-export default function DashboardPage() {
-    const [user, setUser] = useState<User | null>(null);
-    const [mywikis, setMywikis] = useState<MyWikiProps[]>([]);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
+interface DashboardProps {
+    user: User | null;
+    mywikis: MyWikiProps[];
+}
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
-    }, []);
-    const [loading, setLoading] = useState<boolean>(true);
-    const asakura_menber_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
-    const name:string =
-        user?.user_metadata?.name ||  // GitHubログインなどの表示名
-        user?.user_metadata?.full_name || // その他のプロバイダー
-        user?.user_metadata?.username || // カスタムフィールド
-        user?.email ||                   // 最後の手段
+export default function DashboardPage({ user, mywikis }: DashboardProps) {
+    const asakura_menber_found =
+        user && asakuraMenberUserId.includes(user.id);
+
+    const name =
+        user?.user_metadata?.name ||
+        user?.user_metadata?.full_name ||
+        user?.user_metadata?.username ||
+        user?.email ||
         'ゲスト';
-    const provider = user?.app_metadata.provider;
-    const handleLogout = async() => {
-        try{
-            setLoading(true);
-            await supabaseClient.auth.signOut();
-            location.reload();
-        } catch(e:any){
-            console.error("error: ", e);
-        } finally{
-            setLoading(false);
-        }
-    }
-    const createSecretCode = () => {
-        if (loading || !asakura_menber_found || provider !== "email") return;
-        window.location.href = "/dashboard/secretcodes/create";
-    }
-    const AccountModify = () => {
-        if (loading || !asakura_menber_found || provider !== "email") return;
-        window.location.href = "/dashboard/accounts/modify";
-    }
-    useEffect(() => {
-        if(!user) return;
-        async function MyWikiFetch(){
-            const { data, error } = await supabaseClient
-                .from("wikis")
-                .select("name, slug")
-                .eq("owner_id", user?.id)
-            if(!data || error){
-                console.error("Error: ", error.message);
-                return;
-            }
-            setMywikis(data);
-        }
-        MyWikiFetch();
-    }, [user]);
-    useEffect(() => {
-        setLoading(false);
-    }, []);
+
+    const provider = user?.app_metadata?.provider;
+
+    const handleLogout = async () => {
+        await fetch('/api/logout');
+        location.reload();
+    };
+
     return (
         <>
             <Head>
                 <title>ダッシュボード</title>
             </Head>
+
             <main style={{ padding: '2rem' }}>
                 <h1>🎉 ダッシュボード</h1>
+
                 {user ? (
                     <div id="content">
                         <p>こんにちは、{name} さん！</p>
+
                         <div id="dashboard">
                             <div id="my_wiki_container">
-                                {mywikis.map((data, index) => (
-                                    <>
-                                        <div key={index}>
-                                            <Link href={`/dashboard/wiki/${data.slug}`}>
-                                                <button>
-                                                    <span>
-                                                        <i className="fa-solid fa-folder-gear"></i>
-                                                        {data.name} Wiki* を管理
-                                                    </span>
-                                                </button>
-                                            </Link>
-                                        </div>
-                                    </>
+                                {mywikis.map((data) => (
+                                    <div key={data.slug}>
+                                        <Link href={`/dashboard/wiki/${data.slug}`}>
+                                            <button>
+                                                <span>
+                                                    <i className="fa-solid fa-folder-gear" />
+                                                    {data.name} Wiki* を管理
+                                                </span>
+                                            </button>
+                                        </Link>
+                                    </div>
                                 ))}
                             </div>
-                            <button
-                                disabled={loading}
-                                onClick={async() => await handleLogout()}
-                            >
+
+                            <button onClick={handleLogout}>
                                 <span>ログアウト</span>
                             </button>
+
                             <button
-                                disabled={loading || !asakura_menber_found || provider !== "email"}
-                                onClick={createSecretCode}
+                                disabled={!asakura_menber_found || provider !== 'email'}
+                                onClick={() =>
+                                    (location.href = '/dashboard/secretcodes/create')
+                                }
                             >
-                                <span>あさクラシークレットコードの作成
-                                    {!asakura_menber_found || provider !== "email" ? "(使用不可)" : null}
+                                <span>
+                                    あさクラシークレットコードの作成
+                                    {!asakura_menber_found || provider !== 'email'
+                                        ? '(使用不可)'
+                                        : null}
                                 </span>
                             </button>
+
                             <button
-                                disabled={loading || provider !== "email"}
-                                onClick={AccountModify}
+                                disabled={provider !== 'email'}
+                                onClick={() =>
+                                    (location.href = '/dashboard/accounts/modify')
+                                }
                             >
-                                <span>13ninアカウント情報変更
-                                    {provider !== "email" ? "(使用不可)" : null}
+                                <span>
+                                    13ninアカウント情報変更
+                                    {provider !== 'email' ? '(使用不可)' : null}
                                 </span>
                             </button>
                         </div>
@@ -123,12 +97,73 @@ export default function DashboardPage() {
                 ) : (
                     <>
                         <p>401 ログインが必要です</p>
-                        <p><a href="/login">ここからログインして下さい</a></p>
-                        <p><a href="/login/13nin/signup">13ninアカウントが無い場合は新規作成して下さい</a></p>
+                        <p>
+                            <a href="/login">ここからログインして下さい</a>
+                        </p>
+                        <p>
+                            <a href="/login/13nin/signup">
+                                13ninアカウントが無い場合は新規作成して下さい
+                            </a>
+                        </p>
                     </>
                 )}
             </main>
-            <FooterJp/>
+            <FooterJp />
         </>
     );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                get(name: string) {
+                    return ctx.req.cookies[name];
+                },
+                set(name: string, value: string, options: any) {
+                    ctx.res.setHeader(
+                        'Set-Cookie',
+                        `${name}=${value}; Path=/; HttpOnly`
+                    );
+                },
+                remove(name: string, options: any) {
+                    ctx.res.setHeader(
+                        'Set-Cookie',
+                        `${name}=; Path=/; Max-Age=0`
+                    );
+                },
+            },
+        }
+    );
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        return {
+            props: {
+                user: null,
+                mywikis: [],
+            },
+        };
+    }
+
+    const { data, error } = await supabase
+        .from('wikis')
+        .select('name, slug')
+        .eq('owner_id', user.id);
+
+    if (error) {
+        console.error(error.message);
+    }
+
+    return {
+        props: {
+            user,
+            mywikis: data ?? [],
+        },
+    };
+};
