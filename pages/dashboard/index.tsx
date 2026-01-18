@@ -87,6 +87,7 @@ export default function DashboardPage() {
                                             <button>
                                                 <Link href={`/dashboard/wiki/${data.slug}`}>
                                                     <span>
+                                                        <i className="fa-solid fa-folder-gear"></i>
                                                         {data.name} Wiki* を管理
                                                     </span>
                                                 </Link>
