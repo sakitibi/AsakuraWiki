@@ -20,9 +20,15 @@ module.exports = {
 
         const { data: apps_data } = await supabase
             .from("store.apps")
-            .select("appid,developer_id")
+            .select("appid")
 
         if (!apps_data) return []
+
+        const { data: devs_data } = await supabase
+            .from("store.developers")
+            .select("developer_id")
+
+        if (!devs_data) return []
         return wiki_pages_data.map(row => {
             const path = row.slug
                 ? `/wiki/${row.wiki_slug}/${row.slug}`
@@ -45,7 +51,7 @@ module.exports = {
                 }
             })
         ).concat(
-            apps_data.map(dev => {
+            devs_data.map(dev => {
                 const path = `/store/developers/${dev.developer_id}`
                 return {
                     loc: path,
