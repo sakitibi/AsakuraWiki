@@ -7,7 +7,7 @@
 ul {
     @each $class, $style in variables.$list-styles-ul {
         &.#{$class} {
-            list-style-type: $style;
+            list-style-type: $style !important;
         }
     }
 }
@@ -15,7 +15,7 @@ ul {
 ol {
     @each $class, $style in variables.$list-styles-ol {
         &.#{$class} {
-            list-style-type: $style;
+            list-style-type: $style !important;
         }
     }
 }
