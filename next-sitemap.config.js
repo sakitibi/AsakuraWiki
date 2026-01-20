@@ -12,13 +12,18 @@ module.exports = {
     sitemapSize: 7000,
 
     additionalPaths: async () => {
-        const { data } = await supabase
+        const { data: wiki_pages_data } = await supabase
             .from('wiki_pages')
             .select('wiki_slug, slug')
 
-        if (!data) return []
+        if (!wiki_pages_data) return []
 
-        return data.map(row => {
+        const { data: apps_data } = await supabase
+            .from("store.apps")
+            .select("appid,developer_id")
+
+        if (!apps_data) return []
+        return wiki_pages_data.map(row => {
             const path = row.slug
                 ? `/wiki/${row.wiki_slug}/${row.slug}`
                 : `/wiki/${row.wiki_slug}`
@@ -29,6 +34,26 @@ module.exports = {
                 changefreq: 'weekly',
                 priority: 0.7,
             }
-        })
+        }).concat(
+            apps_data.map(app => {
+                const path = `/store/details/${app.appid}`;
+                return {
+                    loc: path,
+                    lastmod: new Date().toISOString(),
+                    changefreq: 'weekly',
+                    priority: 0.7,
+                }
+            })
+        ).concat(
+            apps_data.map(dev => {
+                const path = `/store/developers/${dev.developer_id}`
+                return {
+                    loc: path,
+                    lastmod: new Date().toISOString(),
+                    changefreq: 'weekly',
+                    priority: 0.7,
+                }
+            })
+        )
     },
 }
