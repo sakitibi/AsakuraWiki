@@ -8,7 +8,6 @@ import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import React, { useState, useEffect } from "react";
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import { supabaseClient } from "@/lib/supabaseClient";
-import { User } from "@supabase/supabase-js";
 
 interface TeamTableProps{
     user_name:string;

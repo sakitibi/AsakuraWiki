@@ -224,7 +224,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             }
             ipSupabaseFetch();
         }
-    }, [ipaddress]);
+    }, [ipaddress, user]);
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
