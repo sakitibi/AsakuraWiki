@@ -508,7 +508,12 @@ export default function parseOtherInline(
             const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim()); // 曜日を除去
             if (isNaN(parsedDate.getTime())) {
                 nodes.push(
-                    <span key={keyStr} style={{ color: 'red' }}>日付形式エラー</span>
+                    <span key={keyStr} style={{ color: 'red' }}>
+                        日付形式エラー:
+                        args: {args},
+                        dateStr: {dateStr},
+                        keyStr: {keyStr}
+                    </span>
                 );
                 last = m.index + token.length;
             }
