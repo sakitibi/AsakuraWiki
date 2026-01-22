@@ -55,72 +55,85 @@ export default function Store() {
         }
     }
 
-    const StorePublish = async(e:React.FormEvent) => {
+    const StorePublish = async (e: React.FormEvent) => {
         e.preventDefault();
-        if(!document) return;
+        if (!user) return;
+
         setLoading(true);
-        try{
-            const developerData:DeveloperProps = await devFetch();
-            if(!developerData){
-                throw new Error("Error: デベロッパデータがnullです");
+
+        try {
+            const developerData: DeveloperProps = await devFetch();
+            if (!developerData) {
+                throw new Error("デベロッパデータが取得できません");
             }
-            if(user?.id !== developerData.user_id){
-                throw new Error("Error: デベロッパコンソール未登録です");
+
+            if (user.id !== developerData.user_id) {
+                throw new Error("デベロッパ権限がありません");
             }
-            const appid = (document.getElementById("appid") as HTMLInputElement).value;
-            const appicon = (document.getElementById("appicon") as HTMLInputElement).value;
-            const appdownload = (document.getElementById("appdownload") as HTMLInputElement).value;
-            const apptitle = (document.getElementById("apptitle") as HTMLInputElement).value;
-            const appdescription = (document.getElementById("appdescription") as HTMLInputElement).value ?? null; // 任意項目
-            const appversion = (document.getElementById("appversion") as HTMLInputElement).value;
+
+            const appidInput = (document.getElementById("appid") as HTMLInputElement).value;
+            const fullAppId = `${developerData.developer_id}.${appidInput}`;
+
             const { error } = await supabaseClient
                 .from("store.apps")
-                .update([{
-                    appid: `${developerData.developer_id}.${appid}`,
+                .update({
                     developer: developerData.developer_name,
                     developer_siteurl: developerData.developer_siteurl,
                     developer_id: developerData.developer_id,
-                    appicon_url: appicon,
-                    download_url: appdownload,
-                    app_title: apptitle,
-                    app_description: appdescription ?? null,
-                    app_version: appversion,
-                    update_at: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
-                }])
-                .eq("developer_id", developerData.developer_id)
-                .eq("appid", `${developerData.developer_id}.${appid}`)
+                    appicon_url: (document.getElementById("appicon") as HTMLInputElement).value,
+                    download_url: (document.getElementById("appdownload") as HTMLInputElement).value,
+                    app_title: (document.getElementById("apptitle") as HTMLInputElement).value,
+                    app_description:
+                        (document.getElementById("appdescription") as HTMLInputElement).value || null,
+                    app_version: (document.getElementById("appversion") as HTMLInputElement).value,
+                    update_at: new Date().toISOString().slice(0, 10),
+                })
+                // なりすまし対策
                 .eq("id", user.id)
-                .maybeSingle()
-            if(error){
-                alert("エラー アプリケーションを公開出来ませんでした");
-                console.error("Error: ", error.message);
+                // 更新対象特定
+                .eq("developer_id", developerData.developer_id)
+                .eq("appid", fullAppId);
+
+            if (error) {
+                console.error(error);
+                alert("アプリケーションを更新できませんでした");
                 return;
             }
-        } catch(e){
-            console.error("Error: ", e);
+
+            alert("更新完了");
+
+        } catch (e) {
+            console.error(e);
         } finally {
             setLoading(false);
         }
-    }
-    const AppDelete = async() => {
-        try{
+    };
+    const AppDelete = async () => {
+        if (!user) return;
+
+        try {
             setLoading(true);
+
+            const appid = window.prompt("削除するアプリケーションのIDを入力");
+            if (!appid) return;
+
             const { error } = await supabaseClient
                 .from("store.apps")
                 .delete()
-                .eq("user_id", user?.id)
-                .eq("appid", window.prompt("削除するアプリケーションのidを入力"))
-            if(error){
-                throw new Error(error.message);
-            }
-            alert("削除完了!");
+                .eq("id", user.id)        // 所有者チェック
+                .eq("appid", appid);     // アプリ特定
+
+            if (error) throw error;
+
+            alert("削除完了");
             location.href = "/store";
-        } catch(e){
-            console.error("Error: ", e);
-        }finally{
+
+        } catch (e) {
+            console.error(e);
+        } finally {
             setLoading(false);
         }
-    }
+    };
     return(
         <>
             <Head>
