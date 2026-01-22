@@ -84,6 +84,7 @@ export default function Store() {
 
     const InstallHandler = async(url:string, download_counter: number) => {
         if(!url) return;
+        console.log("download_counter: ", download_counter);
         // データ取得
         const { error } = await supabaseServer
             .from('store.apps')
