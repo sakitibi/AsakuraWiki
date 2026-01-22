@@ -179,7 +179,7 @@ body {
         }
 
         &:not(.pink, .blue, .yellow, .purple) {
-            @include mixin.defaultGreen;
+            @include mixin.menubar(#d1f0a0);
         }
 
         &.pink {
@@ -195,7 +195,7 @@ body {
         }
 
         &.purple {
-            @include mixin.purple;
+            @include mixin.menubar(#e9d7f3);
         }
 
         hr {
