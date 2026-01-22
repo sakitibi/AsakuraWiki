@@ -75,7 +75,7 @@ export default function Store() {
             const appversion = (document.getElementById("appversion") as HTMLInputElement).value;
             const { error } = await supabaseClient
                 .from("store.apps")
-                .update({
+                .update([{
                     appid: `${developerData.developer_id}.${appid}`,
                     developer: developerData.developer_name,
                     developer_siteurl: developerData.developer_siteurl,
@@ -86,7 +86,7 @@ export default function Store() {
                     app_description: appdescription ?? null,
                     app_version: appversion,
                     update_at: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
-                })
+                }])
                 .eq("appid", `${developerData.developer_id}.${appid}`)
                 .eq("id", user.id)
                 .single();
