@@ -7,6 +7,7 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useState, useEffect } from "react";
 import { TableStyles, TdStyles } from "../vs/happy-ghast-sky-battle";
+import { company } from "@/utils/version";
 
 export default function MinecraftRelayManyManyMany(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -41,6 +42,11 @@ export default function MinecraftRelayManyManyMany(){
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1 className={styles.MC_Heading_1}>マイクラリレー 〜 メニー! メニー! メニー! 〜</h1>
                         <p>ロシア語ページ無くてごめんなさい、</p>
+                        <p>
+                            なお、【マイクラリレー2025 〜 メニー！メニー！メニー！】ダイジェスト動画<br/>
+                            という動画がYoutube上に出回ってるのを発見しましたが、<br/>
+                            それは<strong>{company}と無関係の偽動画です!!</strong> 本物はダイジェスト動画をアップしておりません。
+                        </p>
                         <p>開催時間: 2025年12月30日(火) 7:30〜</p>
                         <p>再生リスト: <a href="https://youtube.com/playlist?list=PLDsY7IAMYhhggK-LpIEx23u8ZYc06m4xM">ここ</a></p>
                         <p>参加者:</p>
