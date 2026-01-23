@@ -252,7 +252,7 @@ export default function WikiPage() {
                         <>
                             <div id="contents-wrapper" style={{display: 'flex'}}>
                                 <div className={styles.container} style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
-                                    <article style={{ padding: '2rem', maxWidth: 1000 }} className='columnCenter'>
+                                    <article style={{ padding: '2rem', maxWidth: 1000 }} className={`columnCenter ${styles.clearfix}`}>
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
@@ -323,7 +323,7 @@ export default function WikiPage() {
                             </div>
                             <div className={`footer_${designColor} ${styles.clearfix}`}>
                                 <div style={{ display: "inline-block" }}>
-                                    レンタルWIKI by
+                                    レンタルWiki by
                                     <a href="/" title='無料レンタルWikiサービス'>
                                         あさクラWiki
                                     </a>

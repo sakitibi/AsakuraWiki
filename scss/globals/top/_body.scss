@@ -1,4 +1,5 @@
 @use 'mixin';
+@use 'sass:map';
 
 // list-style 定義
 $list-styles-ul: (
@@ -11,6 +12,10 @@ $list-styles-ol: (
     list1: decimal,
     list2: lower-roman,
     list3: lower-alpha
+);
+
+$wiki_background_color: (
+    default: #d1f0a0
 );
 
 body {
@@ -180,8 +185,16 @@ body {
             }
         }
 
+        & #columnRight{
+            background-color: white;
+        }
+
+        & #columnLeft{
+            background-color: map.get($wiki_background_color, default);
+        }
+
         &:not(.pink, .blue, .yellow, .purple) {
-            @include mixin.menubar(#d1f0a0);
+            @include mixin.menubar(map.get($wiki_background_color, default));
         }
 
         &.pink {
@@ -214,13 +227,12 @@ body {
             max-width: 930px;
             min-width: 930px;
             text-align: left;
+            @media screen and (min-width: 820px) {
+                &{
+                    min-width: 930px;
+                    max-width: 930px;
+                }
+            }
         }
-    }
-}
-
-@media screen and (min-width: 820px) {
-    body.wiki-font #contents-wrapper {
-        min-width: 930px;
-        max-width: 930px;
     }
 }
