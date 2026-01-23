@@ -167,15 +167,17 @@ body {
         font-size: 12px;
         @include mixin.background;
 
-        .columnCenter,
-        .columnLeft,
-        .columnRight {
-            grid-row: 1 / span 1;
-            min-width: 0;
-        }
+        $columns: (
+            columnCenter: "2",
+            columnLeft: "1",
+            columnRight: "3"
+        );
 
-        .columnCenter {
-            grid-column: 2 / span 1;
+        @each $key, $num in $columns{
+            .#{$key}{
+                grid-column: $num / span 1;
+                grid-row: 1 / span 1;
+            }
         }
 
         &:not(.pink, .blue, .yellow, .purple) {
