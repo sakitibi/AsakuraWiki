@@ -191,10 +191,10 @@ export default function Accordion({ title, level, initiallyOpen, children, }: Ac
             borderRight: '1px solid #fdd341',
             borderTop: '1px solid #fdd341'
         } : designColor === 'purple' ? {
-            backgroundColor: '#dfa4fe',
-            borderColor: 'currentcolor currentcolor #8641fd #8641fd',
-            borderRight: '1px solid #8641fd',
-            borderTop: '1px solid #8641fd'
+            backgroundColor: '#e9d7f3',
+            borderColor: 'currentcolor currentcolor #ceb0e0 #ceb0e0',
+            borderRight: '1px solid #ceb0e0',
+            borderTop: '1px solid #ceb0e0'
         } : {
             backgroundColor: '#d1f0a0',
             borderColor: 'currentcolor currentcolor #afd965 #afd965',
@@ -212,7 +212,7 @@ export default function Accordion({ title, level, initiallyOpen, children, }: Ac
             } : designColor === 'yellow' ? {
                 borderColor: '#fdd341'
             } : designColor === 'purple' ? {
-                borderColor: '#8641fd'
+                borderColor: '#ceb0e0'
             } : {
                 borderColor: '#afd965'
             }
@@ -226,7 +226,7 @@ export default function Accordion({ title, level, initiallyOpen, children, }: Ac
         } : designColor === 'yellow' ? {
             borderLeft: '15px solid #fdd341'
         } : designColor === 'purple' ? {
-            borderLeft: '15px solid #8641fd'
+            borderLeft: '15px solid #ceb0e0'
         } : {
             borderLeft: '15px solid #afd965'
         }
