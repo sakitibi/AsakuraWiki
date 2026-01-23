@@ -185,11 +185,11 @@ body {
             }
         }
 
-        & #columnRight{
+        & .columnRight{
             background-color: white;
         }
 
-        & #columnLeft{
+        & .columnLeft{
             background-color: map.get($wiki_background_color, default);
         }
 
