@@ -206,5 +206,21 @@ body {
             border: 0;
             margin-block: 0.5em;
         }
+
+        &.container-wrapper {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            margin: 0 auto;
+            max-width: 930px;
+            min-width: 930px;
+            text-align: left;
+        }
+    }
+}
+
+@media screen and (min-width: 820px) {
+    body.wiki-font .container-wrapper {
+        min-width: 930px;
+        max-width: 930px;
     }
 }
