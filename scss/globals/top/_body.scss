@@ -168,9 +168,9 @@ body {
         @include mixin.background;
 
         $columns: (
-            columnCenter: "2",
-            columnLeft: "1",
-            columnRight: "3"
+            columnCenter: 2,
+            columnLeft: 1,
+            columnRight: 3
         );
 
         @each $key, $num in $columns{
