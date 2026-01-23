@@ -15,7 +15,11 @@ $list-styles-ol: (
 );
 
 $wiki_background_color: (
-    default: #d1f0a0
+    "default": #d1f0a0,
+    "pink": #feeef6,
+    "blue": #f0f8ff,
+    "yellow": #fffbed,
+    "purple": #e9d7f3
 );
 
 body {
@@ -189,28 +193,17 @@ body {
             background-color: white;
         }
 
-        & .columnLeft{
-            background-color: map.get($wiki_background_color, default);
-        }
-
         &:not(.pink, .blue, .yellow, .purple) {
             @include mixin.menubar(map.get($wiki_background_color, default));
         }
 
-        &.pink {
-            @include mixin.menubar(#feeef6);
-        }
-
-        &.blue {
-            @include mixin.menubar(#f0f8ff);
-        }
-
-        &.yellow {
-            @include mixin.menubar(#fffbed);
-        }
-
-        &.purple {
-            @include mixin.menubar(#e9d7f3);
+        @each $key, $color in $wiki_background_color{
+            &.#{$key} {
+                @include mixin.menubar($color);
+            }
+            &.#{$key} .columnLeft{
+                background-color: map.get($wiki_background_color, $key);
+            }
         }
 
         hr {
