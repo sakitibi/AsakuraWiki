@@ -267,7 +267,7 @@ export default function WikiPage() {
                                             </button>
                                         )}
                                         <button onClick={() => 
-                                            handleEdit(router, wikiSlugStr, pageSlugStr)
+                                            handleEdit(wikiSlugStr, pageSlugStr)
                                         } style={{ marginLeft: 8 }}>
                                             <span>このページを編集</span>
                                         </button>

@@ -46,14 +46,11 @@ export const handleUpdate = async (
 
 // 編集モード切り替え
 export const handleEdit = (
-    router: NextRouter,
     wikiSlugStr: string,
     pageSlugStr: string
 ) => {
-    router.push({
-        pathname: `/wiki/${wikiSlugStr}`,
-        query: { cmd: 'edit', page: pageSlugStr },
-    });
+    location.href =
+    `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`)}`;
 };
 
 export const handleDelete = async (
