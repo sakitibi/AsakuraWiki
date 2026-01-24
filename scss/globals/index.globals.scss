@@ -11,6 +11,7 @@
 @use 'wiki/size';
 @use 'top/section';
 @use 'wiki/footer';
+@use 'wiki/header';
 
 input:not([type=submit],[type=checkbox]) {
     width: 100%;

@@ -1,4 +1,9 @@
-@mixin header_common{
+@use "sass:list";
+
+/* =========================
+    共通 mixin
+========================= */
+@mixin header_common {
     display: block;
     font-weight: bold;
     unicode-bidi: isolate;
@@ -6,58 +11,116 @@
     color: #000;
     margin: .2em 0 .5em;
     padding: .3em .3em .15em .5em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
+    margin-inline: 0;
 }
 
-@mixin header_common_h2{
-    border: 0;
+@mixin accordion_header {
+    cursor: pointer;
+}
+
+/* =========================
+    見出しレベル別 共通
+========================= */
+@mixin header_h2 {
+    font-size: 1.5em;
     border-bottom: 1px solid;
     border-left: 15px solid;
-    font-size: 1.5em;
-    margin-block-start: 0.83em;
-    margin-block-end: 0.83em;
+    margin-block: 0.83em;
     @include header_common;
 }
 
-@mixin header_common_h3{
+@mixin header_h3 {
     font-size: 1.17em;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
     border: 1px solid;
     border-left: 15px solid;
+    margin-block: 1em;
     @include header_common;
 }
 
-@mixin header_common_h4{
-    margin-block-start: 1.33em;
-    margin-block-end: 1.33em;
+@mixin header_h4 {
+    margin-block: 1.33em;
     @include header_common;
 }
 
-body.wiki-font{
-    & .accordion-container {
+/* =========================
+    色指定 mixin
+========================= */
+@mixin heading_h2_color($bg, $bd) {
+    background-color: $bg;
+    border-color: currentcolor currentcolor $bd $bd;
+    border-top: 1px solid $bd;
+    border-right: 1px solid $bd;
+}
+
+@mixin heading_h3_color($bd) {
+    border-color: $bd;
+}
+
+@mixin heading_h4_color($bd) {
+    border-left: $bd;
+}
+
+/* =========================
+    テーマカラー定義
+========================= */
+$themes: (
+    pink:   (#fad6e7, #ea94bc),
+    blue:   (#cce3f8, #86b8e2),
+    yellow: (#feeaa4, #fdd341),
+    purple: (#e9d7f3, #ceb0e0),
+    default:(#d1f0a0, #afd965)
+);
+
+/* =========================
+    ベース適用
+========================= */
+body.wiki-font {
+
+    .accordion-container {
         margin-bottom: 10px;
     }
-    & h2.accordion-header {
-        cursor: pointer;
-        @include header_common_h2;
+
+    h2 {
+        @include header_h2;
+
+        &.accordion-header {
+            @include accordion_header;
+        }
     }
-    & h3.accordion-header {
-        cursor: pointer;
-        @include header_common_h3;
+
+    h3 {
+        @include header_h3;
+
+        &.accordion-header {
+            @include accordion_header;
+        }
     }
-    & h4.accordion-header {
-        cursor: pointer;
-        @include header_common_h4;
+
+    h4 {
+        @include header_h4;
+
+        &.accordion-header {
+            @include accordion_header;
+        }
     }
-    & h2:not(.accordion-header) {
-        @include header_common_h2;
-    }
-    & h3:not(.accordion-header) {
-        @include header_common_h3;
-    }
-    & h4:not(.accordion-header) {
-        @include header_common_h4;
+}
+
+/* =========================
+    テーマ別スタイル
+========================= */
+@each $name, $colors in $themes {
+    body.wiki-font#{if($name == default, ":not(.pink,.blue,.yellow,.purple)", ".#{$name}")} {
+
+        h2 {
+            @include heading_h2_color(list.nth($colors, 1), list.nth($colors, 2));
+        }
+
+        h3 {
+            @include heading_h3_color(list.nth($colors, 2));
+        }
+
+        h4 {
+            @include heading_h4_color(list.nth($colors, 2));
+        }
     }
 }
