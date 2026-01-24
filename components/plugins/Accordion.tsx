@@ -233,14 +233,14 @@ export default function Accordion({ title, level, initiallyOpen, children, }: Ac
     )
 
     return (
-        <div style={{ margin: '1em 0' }}>
-            <Tag onClick={() => setOpen(!open)} style={{...commonsStyle,...headingStyle}}>
+        <div className="accordion-container">
+            <Tag onClick={() => setOpen(!open)} /*style={{...commonsStyle,...headingStyle}}*/ className="accordion-header">
                 <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style={{ width: '1em', height: '1em' }}>
                     <path fill="currentColor" d={iconPath} />
                 </svg>
                 {title}
             </Tag>
-            <div style={{ paddingLeft: '1em', display: open ? 'block' : 'none'}}>{children}</div>
+            <div style={{ display: open ? 'block' : 'none' }} className="accordion-content">{children}</div>
         </div>
     )
 }

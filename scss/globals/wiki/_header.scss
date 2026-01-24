@@ -1,0 +1,63 @@
+@mixin header_common{
+    display: block;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    background-color: transparent;
+    color: #000;
+    margin: .2em 0 .5em;
+    padding: .3em .3em .15em .5em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+@mixin header_common_h2{
+    border: 0;
+    border-bottom: 1px solid;
+    border-left: 15px solid;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    @include header_common;
+}
+
+@mixin header_common_h3{
+    font-size: 1.17em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    border: 1px solid;
+    border-left: 15px solid;
+    @include header_common;
+}
+
+@mixin header_common_h4{
+    margin-block-start: 1.33em;
+    margin-block-end: 1.33em;
+    @include header_common;
+}
+
+body.wiki-font{
+    & .accordion-container {
+        margin-bottom: 10px;
+    }
+    & h2.accordion-header {
+        cursor: pointer;
+        @include header_common_h2;
+    }
+    & h3.accordion-header {
+        cursor: pointer;
+        @include header_common_h3;
+    }
+    & h4.accordion-header {
+        cursor: pointer;
+        @include header_common_h4;
+    }
+    & h2:not(.accordion-header) {
+        @include header_common_h2;
+    }
+    & h3:not(.accordion-header) {
+        @include header_common_h3;
+    }
+    & h4:not(.accordion-header) {
+        @include header_common_h4;
+    }
+}
