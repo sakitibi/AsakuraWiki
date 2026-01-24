@@ -306,16 +306,20 @@ export default function WikiPage() {
                                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                                         </div>
                                     </article>
-                                    <aside style={{ width: '170px', padding: '1rem' }} className='columnRight'>
-                                        {sidebar === undefined && 'SideBar 読み込み中…'}
-                                        {sidebar !== undefined && sidebar === null && 'SideBar は存在しません'}
-                                        {parsedSidebar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
-                                    </aside>
-                                    <aside style={{ width: '172px', padding: '1rem' }} className='columnLeft'>
-                                        {menubar === undefined && 'MenuBar 読み込み中…'}
-                                        {menubar !== undefined && menubar === null && 'MenuBar は存在しません'}
-                                        {parsedMenubar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
-                                    </aside>
+                                    {isEdit ? null : (
+                                        <>
+                                            <aside style={{ width: '170px', padding: '1rem' }} className='columnRight'>
+                                                {sidebar === undefined && 'SideBar 読み込み中…'}
+                                                {sidebar !== undefined && sidebar === null && 'SideBar は存在しません'}
+                                                {parsedSidebar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
+                                            </aside>
+                                            <aside style={{ width: '172px', padding: '1rem' }} className='columnLeft'>
+                                                {menubar === undefined && 'MenuBar 読み込み中…'}
+                                                {menubar !== undefined && menubar === null && 'MenuBar は存在しません'}
+                                                {parsedMenubar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
+                                            </aside>
+                                        </>
+                                    )}
                                     <Script
                                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
                                     />
