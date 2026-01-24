@@ -167,9 +167,10 @@ export default async function handler(
             if (wikiError) return res.status(500).json({ error: wikiError.message })
             if (!wiki) return res.status(404).json({ error: 'Wiki not found' })
 
-            if ((!adminer_user_id_list) &&
-                (wiki.edit_mode === 'private' && !userId) ||
-                (wiki.owner_id !== userId && existingPage.freeze)
+            if (
+                (!adminer_user_id_list) &&
+                ((wiki.edit_mode === 'private' && !userId) ||
+                (wiki.owner_id !== userId && existingPage.freeze))
             ) {
                 return res.status(403).json({ error: 'Not authorized to edit' })
             }
