@@ -25,7 +25,7 @@ export default function YellowLine(){
                 <tr>
                     <th style={{ color:LineColor }}><ruby>北<rt>きた</rt></ruby>スポンジ<ruby>名物<rt>めいぶつ</rt></ruby> YR10</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>巨大渓谷<rt>きょだいけいこく</rt></ruby> YR11</th>
@@ -40,7 +40,7 @@ export default function YellowLine(){
                 <tr>
                     <th style={{ color:LineColor }}><ruby>地下鉄大草<rt>ちかてつおおくさ</rt></ruby> YR13 <span style={{ color: OrangeLineColor }}>OR06</span></th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>地下鉄東第二都市<rt>ちかてつひがしだいにとし</rt></ruby> YR14 <span style={{ color: OrangeLineColor }}>OR07</span></th>

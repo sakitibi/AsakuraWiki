@@ -29,12 +29,12 @@ export default function BrownLine(){
                 <tr>
                     <th style={{ color:LineColor }}><ruby>地下渓谷西<rt>ちかけいこくにし</rt></ruby> BR05</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>第二都市<rt>だいにとし</rt></ruby>ニュータウン<ruby>東<rt>ひがし</rt></ruby> BR06</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>第二都市<rt>だいにとし</rt></ruby>ニュータウン<ruby>中央<rt>ちゅうおう</rt></ruby> BR07</th>

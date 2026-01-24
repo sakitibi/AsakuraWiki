@@ -28,7 +28,7 @@ export default function GreenLine(){
                 <tr>
                     <th style={{ color:LineColor }}><ruby>南花の森<rt>みなみはなのもり</rt></ruby> GR04</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>小桜<rt>こざくら</rt></ruby> GR05</th>
@@ -53,12 +53,12 @@ export default function GreenLine(){
                 <tr>
                     <th style={{ color:LineColor }}><ruby>北<rt>きた</rt></ruby>スポンジ<ruby>名物<rt>めいぶつ</rt></ruby> GR09</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>地下鉄湖瀬<rt>ちかてつこぜ</rt></ruby> GR10</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>南湖瀬森林<rt>みなみこぜしんりん</rt></ruby> GR11</th>
@@ -68,7 +68,7 @@ export default function GreenLine(){
                 <tr>
                     <th style={{ color:LineColor }}><ruby>地下鉄叢<rt>ちかてつくさむら</rt></ruby> GR12</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>地下鉄新<rt>ちかてつしん</rt></ruby>メサ<ruby>市<rt>し</rt></ruby> GR13</th>
@@ -88,7 +88,7 @@ export default function GreenLine(){
                 <tr>
                     <th style={{ color:LineColor }}>メサ<ruby>湖<rt>こ</rt></ruby> GR16</th>
                     <StopStation/>
-                    <StopStation/>
+                    <PassingStation/>
                 </tr>
                 <tr>
                     <th style={{ color:LineColor }}><ruby>砂漠市北<rt>さばくしきた</rt></ruby> GR17</th>
