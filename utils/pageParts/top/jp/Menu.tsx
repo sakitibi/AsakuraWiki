@@ -14,7 +14,7 @@ export default function MenuJp({ handleClick, menuStatus }: MenuJpProps){
                     <div className={`${styles.pSpNav__btnClose}`} onClick={handleClick}>×</div>
                 </div>
                 <div className={styles.pSpNav__register}>
-                    <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">ログイン/新規登録</a>
+                    <a className={`${styles.btn} ${styles.btnPrimary} ${styles.col12}`} href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3">ログイン/新規登録</a>
                 </div>
                 <ul className={styles.pSpNav__list}>
                     <li className={styles.pSpNav__item}>

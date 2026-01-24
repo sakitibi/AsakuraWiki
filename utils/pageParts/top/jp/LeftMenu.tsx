@@ -27,7 +27,7 @@ export default function LeftMenuJp({ URL, rupages }: Props){
                         </Link>
                     </li>
                     <li>
-                        <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69">
+                        <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3">
                             <button><span>ログイン/新規登録</span></button>
                         </Link>
                     </li>
