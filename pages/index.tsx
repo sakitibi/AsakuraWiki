@@ -30,6 +30,11 @@ export default function Home() {
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] =
         useState<WikiCounter | null>(null);
     const [user, setUser] = useState<User | null>(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     /* ===== auth (完全防御) ===== */
     useEffect(() => {
@@ -97,12 +102,14 @@ export default function Home() {
         <>
             <Head>
                 <title>無料 レンタル WIKI サービス あさクラWIKI</title>
-                {!user && (
+
+                {mounted && !user && (
                     <link
                         rel="stylesheet"
                         href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css"
                     />
                 )}
+
                 <meta
                     property="og:title"
                     content="無料 レンタル WIKI サービス あさクラWIKI"
