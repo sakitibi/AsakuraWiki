@@ -1,12 +1,12 @@
 import Head from 'next/head';
 import styles from '@/css/index.module.css';
-import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
-import MenuJp from '@/utils/pageParts/top/jp/Menu';
-import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import { useState, useEffect } from 'react';
-import HeaderJp from '@/utils/pageParts/top/jp/Header';
-import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { company } from '@/utils/version';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
+import MenuRu from '@/utils/pageParts/top/ru/Menu';
 
 
 export default function NewsPage() {
@@ -27,11 +27,11 @@ export default function NewsPage() {
             <Head>
                 <title>2025/12/22 Примерно 24-го и 25-го числа.</title>
             </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick}/>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news/2025/12/22/1"/>
+                    <LeftMenuRu URL="/news/2025/12/22/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2025/12/22 Примерно 24-го и 25-го числа.</h1>
                         <p>24-25 декабря</p>
@@ -44,9 +44,9 @@ export default function NewsPage() {
                             <li>Сообщите администраторам о NMNGyuri.</li>
                         </ol>
                     </main>
-                    <RightMenuJp/>
+                    <RightMenuRu/>
                 </div>
-                <FooterJp/>
+                <FooterRu/>
             </div>
         </>
     )

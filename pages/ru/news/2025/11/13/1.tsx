@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import styles from '@/css/index.module.css';
-import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
-import MenuJp from '@/utils/pageParts/top/jp/Menu';
-import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import { useState, useEffect } from 'react';
-import HeaderJp from '@/utils/pageParts/top/jp/Header';
-import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import MenuRu from '@/utils/pageParts/top/ru/Menu';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
 
 
 export default function NewsPage() {
@@ -26,11 +26,11 @@ export default function NewsPage() {
             <Head>
                 <title>2025/11/13 Наблюдение за сильным снегопадом в районе снежного поля на западе Асакуры</title>
             </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick}/>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news/2025/11/13/1"/>
+                    <LeftMenuRu URL="/news/2025/11/13/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>
                             <i
@@ -42,9 +42,9 @@ export default function NewsPage() {
                         <p>Потому что сильный снегопад наблюдался<br/> в районе снежного поля на западе Асакуры</p>
                         <p>Многие железнодорожные линии сталкиваются<br/> с задержками и приостановками.</p>
                     </main>
-                    <RightMenuJp/>
+                    <RightMenuRu/>
                 </div>
-                <FooterJp/>
+                <FooterRu/>
             </div>
         </>
     )
