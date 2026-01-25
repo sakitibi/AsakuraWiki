@@ -9,6 +9,11 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
+const Titles = [
+    "無料 レンタル WIKI サービス あさクラWIKI",
+    "当レンタルWikiについて"
+]
+
 export default function GSCRedirect() {
     const [menuStatus, setMenuStatus] = useState(false);
     const router = useRouter();
@@ -20,6 +25,7 @@ export default function GSCRedirect() {
         : Array.isArray(pagesId)
         ? pagesId.join('/')
         : pagesId ?? 'index';
+    const titles_list_found:string | undefined = Titles.find(value => value === pagesIdStr);
     useEffect(() => {
         if(typeof document !== "undefined"){
             document.body.style.overflow = menuStatus ? "hidden" : "";
@@ -28,10 +34,6 @@ export default function GSCRedirect() {
             };
         }
     }, [menuStatus]);
-    useEffect(() => {
-        if(!pagesIdStr) return;
-        location.replace(`/${pagesIdStr}`);
-    }, [pagesIdStr]);
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
@@ -39,7 +41,7 @@ export default function GSCRedirect() {
         <>
             <Head>
                 <meta charSet='UTF-8'/>
-                <title>リダイレクト</title>
+                <title>{titles_list_found ?? "リダイレクト"}</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
