@@ -30,7 +30,7 @@ export default function Members() {
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/members"/>
+                    <LeftMenuJp URL="/members" rupages='false'/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>あさクラメンバー一覧</h1>
                         <ul className='list1'>
@@ -68,6 +68,12 @@ export default function Members() {
                             <li><a href="https://youtube.com/@anakena.M">アナケナ・ファミリー</a></li>
                             <li><a href="https://youtube.com/@chaaaco">茶子</a></li>
                             <li><a href="https://discord.gg/zbvXxCWcg6">匿名</a></li>
+                            <li>審査中</li>
+                            <li>審査中</li>
+                            <li>審査中</li>
+                            <li>審査中</li>
+                            <li>審査中</li>
+                            <li>審査中</li>
                         </ul>
                     </main>
                     <RightMenuJp/>
