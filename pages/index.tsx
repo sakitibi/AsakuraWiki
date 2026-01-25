@@ -32,6 +32,10 @@ export default function Home() {
     const [user, setUser] = useState<User | null>(null);
     const [mounted, setMounted] = useState(false);
 
+    const isBot =
+        typeof navigator !== 'undefined' &&
+        /googlebot|bot|crawler|spider/i.test(navigator.userAgent);
+
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -153,11 +157,8 @@ export default function Home() {
             <Head>
                 <title>無料 レンタル WIKI サービス あさクラWIKI</title>
 
-                {mounted && !user && (
-                    <link
-                        rel="stylesheet"
-                        href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css"
-                    />
+                {mounted && !user && !isBot && (
+                    <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css" />
                 )}
 
                 <meta
