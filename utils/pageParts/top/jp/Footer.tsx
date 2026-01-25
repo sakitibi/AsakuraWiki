@@ -1,4 +1,4 @@
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import { company } from '@/utils/version';
 
 export default function FooterJp(){

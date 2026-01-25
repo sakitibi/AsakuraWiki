@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import { useEffect, useState } from 'react';
 import MenuRu from '@/utils/pageParts/top/ru/Menu';
 import HeaderRu from '@/utils/pageParts/top/ru/Header';

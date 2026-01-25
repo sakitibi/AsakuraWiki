@@ -1,12 +1,12 @@
 import Head from "next/head";
 import FooterJp from "@/utils/pageParts/top/jp/Footer";
-import styles from "@/css/wikis.min.module.css";
+import styles from "@/css/wikis.module.css";
 
 export function WikiBanned(){
     return(
         <>
             <Head>
-                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.min.static.css"/>
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.static.css"/>
                 <title>404 Not Found</title>
             </Head>
             <main style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
@@ -49,7 +49,7 @@ export function WikiDeleted(){
     return (
         <>
             <Head>
-                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.min.static.css"/>
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.static.css"/>
                 <title>404 Not Found</title>
             </Head>
             <main style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>

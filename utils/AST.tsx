@@ -5,7 +5,7 @@ import { Context, ASTNode } from '@/components/plugins/parsePluginTypes';
 import ExportBlock from '@/components/plugins/ExportBlock';
 import ImportBlock from '@/components/plugins/ImportBlock';
 import Fold from '@/components/plugins/Fold';
-import styles from '@/css/wikis.min.module.css';
+import styles from '@/css/wikis.module.css';
 import { tokenize } from '@/utils/parsePlugins';
 
 export function buildAST(src: string, context: Context): ASTNode[] {

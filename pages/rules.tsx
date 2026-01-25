@@ -5,7 +5,7 @@ import LeftMenuJp from "@/utils/pageParts/top/jp/LeftMenu";
 import RightMenuJp from "@/utils/pageParts/top/jp/RightMenu";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import Script from "next/script";
 import RulesComponents1 from "@/utils/pageParts/top/jp/rules/1";
 import RulesComponents2 from "@/utils/pageParts/top/jp/rules/2";
@@ -64,7 +64,7 @@ export default function Rules(){
                 <FooterJp/>
             </div>
             <Script
-                src="https://sakitibi.github.io/static.asakurawiki.com/js/app-342b4e71117d974a1648.min.static.js"
+                src="https://sakitibi.github.io/static.asakurawiki.com/js/app-342b4e71117d974a1648.static.js"
                 defer
             />
         </>

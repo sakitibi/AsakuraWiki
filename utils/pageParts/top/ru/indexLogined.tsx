@@ -1,5 +1,5 @@
 import versions from "@/utils/version";
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import Link from "next/link";
 import { LoginedUIProps } from "@/utils/pageParts/top/jp/indexLogined";
 

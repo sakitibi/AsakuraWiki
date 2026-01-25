@@ -4,7 +4,7 @@ import { handleUpdate } from "@/utils/pageParts/wiki/wiki_handler";
 import { editMode } from "@/utils/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { NextRouter } from "next/router";
-import styles from '@/css/wikis.min.module.css';
+import styles from '@/css/wikis.module.css';
 
 interface WikiEditPageProps{
     title: string;

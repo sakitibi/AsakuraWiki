@@ -5,7 +5,7 @@ import LeftMenuJp from "@/utils/pageParts/top/jp/LeftMenu";
 import RightMenuJp from "@/utils/pageParts/top/jp/RightMenu";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import { company } from "@/utils/version";
 
 export default function Privacy(){

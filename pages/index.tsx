@@ -4,7 +4,7 @@ import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
 import LoginedUI from '@/utils/pageParts/top/jp/indexLogined';
@@ -158,7 +158,7 @@ export default function Home() {
                 <title>無料 レンタル WIKI サービス あさクラWIKI</title>
 
                 {mounted && !user && !isBot && (
-                    <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css" />
+                    <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css" />
                 )}
 
                 <meta

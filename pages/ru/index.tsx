@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import HeaderRu from '@/utils/pageParts/top/ru/Header';
 import MenuRu from '@/utils/pageParts/top/ru/Menu';
 import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
@@ -72,7 +72,7 @@ export default function Home() {
         <Head>
             <title>БЕСПЛАТНАЯ АРЕНДА WIKI-СЕРВИСА АсакураWIKI</title>
             {!user ? (
-                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.min.static.css"/>
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"/>
             ) : null}
         </Head>
         <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>

@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
 import MenuRu from '@/utils/pageParts/top/ru/Menu';
 import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';

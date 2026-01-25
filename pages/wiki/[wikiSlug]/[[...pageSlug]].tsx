@@ -17,7 +17,7 @@ import wikiFetch, { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
 import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
-import styles from '@/css/wikis.min.module.css';
+import styles from '@/css/wikis.module.css';
 import { asakuraMenberUserId } from '@/utils/user_list';
 
 export default function WikiPage() {

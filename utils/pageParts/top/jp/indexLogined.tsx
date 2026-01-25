@@ -1,6 +1,6 @@
 import versions from '@/utils/version';
 import Link from 'next/link';
-import styles from '@/css/index.min.module.css';
+import styles from '@/css/index.module.css';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
 
 export interface LoginedUIProps {

@@ -1,6 +1,6 @@
 import { SessionContextProvider, User } from '@supabase/auth-helpers-react';
 import { supabaseClient } from '@/lib/supabaseClient';
-import '@/css/index.min.globals.css';
+import '@/css/index.globals.css';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
@@ -281,7 +281,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
         <>
             <Head>
                 <meta name="google-site-verification" content="MmpT0kkr9zsaqTFT71vXz7Ji13ujnC_kX_0S57tD_Dk" />
-                <link rel='stylesheet' href="https://sakitibi.github.io/static.asakurawiki.com/css/fontawesomepro.min.static.css"/>
+                <link rel='stylesheet' href="https://sakitibi.github.io/static.asakurawiki.com/css/fontawesomepro.static.css"/>
             </Head>
             <SessionContextProvider supabaseClient={supabaseClient}>
                 {/* gtag.js の読み込み */}
