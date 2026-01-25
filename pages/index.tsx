@@ -17,41 +17,67 @@ import {
 import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/auth-helpers-react';
 
-interface ClientError{
+interface ClientError {
     type: 'error' | 'promise';
     message: string;
     stack?: string;
-};
+}
+
+const AsakuraWikiTitle = "無料 レンタル Wiki サービス あさクラWiki";
 
 export default function Home() {
+    /* ===============================
+        Bot 判定（最優先）
+    =============================== */
+    const isBot =
+        typeof navigator === 'undefined' ||
+        /googlebot|bot|crawler|spider/i.test(navigator.userAgent);
+
+    if (isBot) {
+        return (
+            <>
+                <Head>
+                    <title>無料 レンタル WIKI サービス あさクラWIKI</title>
+                    <meta property="og:title" content={AsakuraWikiTitle} />
+                    <meta property="og:description" content={AsakuraWikiTitle} />
+                    <meta property="og:site_name" content={AsakuraWikiTitle} />
+                    <meta
+                        name="description"
+                        content="なんと半周年!これまでを大切に、これからも進化し続けます。"
+                    />
+                </Head>
+                <div className={styles.contentsWrapper}></div>
+            </>
+        );
+    }
+
+    /* ===============================
+        state
+    =============================== */
     const [pages, setPages] = useState<WikiPage[]>([]);
     const [recentPages, setRecentPages] = useState<WikiPage[]>([]);
     const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
-
     const [loading, setLoading] = useState(true);
     const [loadingLiked, setLoadingLiked] = useState(true);
     const [loadingRecent, setLoadingRecent] = useState(true);
-
     const [menuStatus, setMenuStatus] = useState(false);
     const [wiki13ninstudioCounter, setWiki13ninstudioCounter] =
         useState<WikiCounter | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [mounted, setMounted] = useState(false);
-
     const [clientError, setClientError] = useState<ClientError | null>(null);
 
-    const isBot =
-        typeof navigator !== 'undefined' &&
-        /googlebot|bot|crawler|spider/i.test(navigator.userAgent);
-
+    /* ===============================
+        mount
+    =============================== */
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    /* ===== global error capture ===== */
+    /* ===============================
+        global error capture
+    =============================== */
     useEffect(() => {
-        if (typeof window === 'undefined') return;
-
         const onError = (event: ErrorEvent) => {
             console.error('[GLOBAL ERROR]', event);
             setClientError({
@@ -82,32 +108,35 @@ export default function Home() {
         };
     }, []);
 
-    /* ===== auth ===== */
+    /* ===============================
+        auth
+    =============================== */
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const { data } = await supabaseClient.auth.getUser();
+        supabaseClient.auth
+            .getUser()
+            .then(({ data }) => {
                 if (data?.user) setUser(data.user);
-            } catch (e) {
-                console.error('[AUTH EXCEPTION]', e);
+            })
+            .catch(e => {
+                console.error('[AUTH ERROR]', e);
                 setClientError({
                     type: 'error',
                     message: 'Auth error',
                     stack: e instanceof Error ? e.stack : undefined
                 });
-            }
-        };
-        fetchUser();
+            });
     }, []);
 
-    /* ===== data fetch ===== */
+    /* ===============================
+        data fetch
+    =============================== */
     useEffect(() => {
         try {
             fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
             fetchLikedWikis(setLoadingLiked, setLikedWikis);
             fetched13ninstudioCounter(setWiki13ninstudioCounter);
         } catch (e) {
-            console.error('[FETCH FAILED]', e);
+            console.error('[FETCH ERROR]', e);
             setClientError({
                 type: 'error',
                 message: 'Data fetch failed',
@@ -116,31 +145,28 @@ export default function Home() {
         }
     }, []);
 
-    /* ===== theme ===== */
+    /* ===============================
+        theme
+    =============================== */
     useEffect(() => {
-        if (typeof document === 'undefined') return;
         const html = document.documentElement;
         if (!user) html.setAttribute('data-theme', 'dark');
         else html.removeAttribute('data-theme');
     }, [user]);
 
-    /* ===== body lock ===== */
+    /* ===============================
+        body lock
+    =============================== */
     useEffect(() => {
-        if (typeof document === 'undefined') return;
         document.body.style.overflow = menuStatus ? 'hidden' : '';
         return () => {
             document.body.style.overflow = '';
         };
     }, [menuStatus]);
 
-    const handleClick = () => {
-        setMenuStatus(prev => !prev);
-    };
-
-    const wiki13ninstudioCounterTotal =
-        (wiki13ninstudioCounter?.total ?? 0) + 1391;
-
-    /* ===== error UI ===== */
+    /* ===============================
+        error UI（人間専用）
+    =============================== */
     if (clientError) {
         return (
             <>
@@ -160,12 +186,14 @@ export default function Home() {
         );
     }
 
+    const wiki13ninstudioCounterTotal =
+        (wiki13ninstudioCounter?.total ?? 0) + 1391;
+
     return (
         <>
             <Head>
-                <title>無料 レンタル WIKI サービス あさクラWIKI</title>
-
-                {mounted && !user && !isBot && (
+                <title>{AsakuraWikiTitle}</title>
+                {mounted && !user && (
                     <link
                         rel="stylesheet"
                         href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"
@@ -173,10 +201,10 @@ export default function Home() {
                 )}
             </Head>
 
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
+            <MenuJp handleClick={() => setMenuStatus(v => !v)} menuStatus={menuStatus} />
 
             <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick} />
+                <HeaderJp handleClick={() => setMenuStatus(v => !v)} />
 
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/" />

@@ -1,9 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    mode: "production",
     productionBrowserSourceMaps: true,
     output: 'standalone',
-    devtool: "source-map",
     turbopack: {},
 
     webpack(config, { isServer }) {
