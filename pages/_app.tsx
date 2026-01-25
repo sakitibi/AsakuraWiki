@@ -28,6 +28,9 @@ interface CustomAppProps {
 export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
+    const isBot =
+        typeof navigator !== 'undefined' &&
+        /Googlebot|bingbot|Slurp|DuckDuckBot/i.test(navigator.userAgent);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
@@ -164,8 +167,12 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
     }, []); // ← 初回だけ実行
 
     useEffect(() => {
+        // ✅ Googlebot / Bingbot では絶対に実行しない
+        if (isBot) return;
+
         if(!ipaddress) return;
         if(ipaddress.latitude === 39.0437567 && ipaddress.longitude === -77.4874416) return;
+
         if(user){
             async function ipSupabaseFetch(){
                 const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
@@ -186,7 +193,6 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             ipSupabaseFetch();
         } else {
             async function ipSupabaseFetch(){
-                console.log("unique_logouted_id: ", localStorage.getItem("unique_logouted_id"))
                 if(localStorage.getItem("unique_logouted_id")){
                     const compressedBytes = Pako.gzip(JSON.stringify(ipaddress), { level: 9 })
                     const bytea = '\\x' + Buffer.from(compressedBytes).toString('hex');
@@ -224,7 +230,7 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
             }
             ipSupabaseFetch();
         }
-    }, [ipaddress, user]);
+    }, [ipaddress, user, isBot]);
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
