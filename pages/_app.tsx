@@ -322,6 +322,16 @@ export default function AsakuraWiki({Component, pageProps}: CustomAppProps) {
                         ※JavaScriptをオンにしてください※
                     </div>
                 </noscript>
+                <div
+                    style={{
+                        textAlign: 'center',
+                    }}
+                >
+                    <h2>また同じ時期に大量のメンバー申請が来た為、</h2>
+                    <p>審査の基準が一時的に厳しくなっています。</p>
+                    <p><a href="/news/2026/01/25/1">詳しくはこちら</a></p>
+                    <p>また、あさクラという名称になってから1月26日で3年です。</p>
+                </div>
                 <Component {...pageProps} />
             </SessionContextProvider>
         </>
