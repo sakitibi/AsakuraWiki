@@ -5,6 +5,11 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 )
 
+const errKaihi = [
+    "/",
+    "/about"
+]
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
     siteUrl: 'https://asakura-wiki.vercel.app',
@@ -53,6 +58,16 @@ module.exports = {
         ).concat(
             devs_data.map(dev => {
                 const path = `/store/developers/${dev.developer_id}`
+                return {
+                    loc: path,
+                    lastmod: new Date().toISOString(),
+                    changefreq: 'weekly',
+                    priority: 0.7,
+                }
+            })
+        ).concat(
+            errKaihi.map((data) => {
+                const path = "/gsc/idx" + data
                 return {
                     loc: path,
                     lastmod: new Date().toISOString(),
