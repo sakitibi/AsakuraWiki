@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
@@ -17,6 +17,12 @@ import {
 import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/auth-helpers-react';
 
+interface ClientError{
+    type: 'error' | 'promise';
+    message: string;
+    stack?: string;
+};
+
 export default function Home() {
     const [pages, setPages] = useState<WikiPage[]>([]);
     const [recentPages, setRecentPages] = useState<WikiPage[]>([]);
@@ -32,6 +38,8 @@ export default function Home() {
     const [user, setUser] = useState<User | null>(null);
     const [mounted, setMounted] = useState(false);
 
+    const [clientError, setClientError] = useState<ClientError | null>(null);
+
     const isBot =
         typeof navigator !== 'undefined' &&
         /googlebot|bot|crawler|spider/i.test(navigator.userAgent);
@@ -40,24 +48,28 @@ export default function Home() {
         setMounted(true);
     }, []);
 
+    /* ===== global error capture ===== */
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
         const onError = (event: ErrorEvent) => {
-            console.error('[GLOBAL ERROR]', {
+            console.error('[GLOBAL ERROR]', event);
+            setClientError({
+                type: 'error',
                 message: event.message,
-                filename: event.filename,
-                lineno: event.lineno,
-                colno: event.colno,
-                error: event.error,
-                userAgent: navigator.userAgent
+                stack: event.error?.stack
             });
         };
 
         const onUnhandledRejection = (event: PromiseRejectionEvent) => {
-            console.error('[UNHANDLED PROMISE]', {
-                reason: event.reason,
-                userAgent: navigator.userAgent
+            console.error('[UNHANDLED PROMISE]', event.reason);
+            setClientError({
+                type: 'promise',
+                message:
+                    event.reason instanceof Error
+                        ? event.reason.message
+                        : String(event.reason),
+                stack: event.reason?.stack
             });
         };
 
@@ -70,21 +82,19 @@ export default function Home() {
         };
     }, []);
 
-    /* ===== auth (完全防御) ===== */
+    /* ===== auth ===== */
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const { data, error } = await supabaseClient.auth.getUser();
-
-                console.log('[AUTH RESULT]', {
-                    hasUser: !!data?.user,
-                    error,
-                    ua: typeof navigator !== 'undefined' ? navigator.userAgent : 'ssr'
-                });
-
+                const { data } = await supabaseClient.auth.getUser();
                 if (data?.user) setUser(data.user);
             } catch (e) {
                 console.error('[AUTH EXCEPTION]', e);
+                setClientError({
+                    type: 'error',
+                    message: 'Auth error',
+                    stack: e instanceof Error ? e.stack : undefined
+                });
             }
         };
         fetchUser();
@@ -94,63 +104,61 @@ export default function Home() {
     useEffect(() => {
         try {
             fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
-        } catch (e) {
-            console.error('[fetchRecentPages FAILED]', e);
-        }
-
-        try {
             fetchLikedWikis(setLoadingLiked, setLikedWikis);
-        } catch (e) {
-            console.error('[fetchLikedWikis FAILED]', e);
-        }
-
-        try {
             fetched13ninstudioCounter(setWiki13ninstudioCounter);
         } catch (e) {
-            console.error('[fetched13ninstudioCounter FAILED]', e);
+            console.error('[FETCH FAILED]', e);
+            setClientError({
+                type: 'error',
+                message: 'Data fetch failed',
+                stack: e instanceof Error ? e.stack : undefined
+            });
         }
     }, []);
 
     /* ===== theme ===== */
     useEffect(() => {
         if (typeof document === 'undefined') return;
-
         const html = document.documentElement;
-        if (!user) {
-            html.setAttribute('data-theme', 'dark');
-        } else {
-            html.removeAttribute('data-theme');
-        }
+        if (!user) html.setAttribute('data-theme', 'dark');
+        else html.removeAttribute('data-theme');
     }, [user]);
 
     /* ===== body lock ===== */
     useEffect(() => {
         if (typeof document === 'undefined') return;
-
         document.body.style.overflow = menuStatus ? 'hidden' : '';
         return () => {
             document.body.style.overflow = '';
         };
     }, [menuStatus]);
 
-    const wiki13ninstudioCounterTotal =
-        (wiki13ninstudioCounter?.total ?? 0) + 1391;
-
-    const goCreateWiki = () => {
-        location.href = '/dashboard/create-wiki';
-    };
-
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
 
-    const H2Styles: React.CSSProperties = {
-        marginBlockStart: '0.83em',
-        marginBlockEnd: '0.83em',
-        marginInlineStart: '0px',
-        marginInlineEnd: '0px',
-        unicodeBidi: 'isolate'
-    };
+    const wiki13ninstudioCounterTotal =
+        (wiki13ninstudioCounter?.total ?? 0) + 1391;
+
+    /* ===== error UI ===== */
+    if (clientError) {
+        return (
+            <>
+                <Head>
+                    <title>Client Error</title>
+                </Head>
+                <main style={{ padding: '2rem', color: 'red' }}>
+                    <h1>Client-side Exception</h1>
+                    <p>{clientError.message}</p>
+                    {clientError.stack && (
+                        <pre style={{ whiteSpace: 'pre-wrap' }}>
+                            {clientError.stack}
+                        </pre>
+                    )}
+                </main>
+            </>
+        );
+    }
 
     return (
         <>
@@ -158,17 +166,11 @@ export default function Home() {
                 <title>無料 レンタル WIKI サービス あさクラWIKI</title>
 
                 {mounted && !user && !isBot && (
-                    <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css" />
+                    <link
+                        rel="stylesheet"
+                        href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"
+                    />
                 )}
-
-                <meta
-                    property="og:title"
-                    content="無料 レンタル WIKI サービス あさクラWIKI"
-                />
-                <meta
-                    property="og:description"
-                    content="無料 レンタル WIKI サービス あさクラWIKI"
-                />
             </Head>
 
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
@@ -188,10 +190,10 @@ export default function Home() {
                                 loadingRecent={loadingRecent}
                                 loading={loading}
                                 likedWikis={likedWikis}
-                                H2Styles={H2Styles}
                                 pages={pages}
                                 recentPages={recentPages}
-                                goCreateWiki={goCreateWiki}
+                                goCreateWiki={() => (location.href = '/dashboard/create-wiki')}
+                                H2Styles={{}}
                             />
                         ) : (
                             <LogoutedUI />
