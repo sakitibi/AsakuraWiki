@@ -18,6 +18,7 @@ import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
 import styles from '@/css/wikis.min.module.css';
+import { asakuraMenberUserId } from '@/utils/user_list';
 
 export default function WikiPage() {
     const router:NextRouter = useRouter()
@@ -62,6 +63,7 @@ export default function WikiPage() {
     const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
+    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     useEffect(() => {
         setUrl(new URL(window.location.href));
     }, []);
@@ -193,17 +195,17 @@ export default function WikiPage() {
     }, [content, editContent, cmdStr]);
 
     useEffect(() => {
-        if(wikiSlugStr === "maitetsu_bkmt" && pageSlugStr === "FrontPage"){
+        async function counterfetch(){
+            return await fetch(`https://counter.wikiwiki.jp/c/13ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`);
+        }
+        counterfetch();
+        if(wikiSlugStr === special_wiki_list[0] && pageSlugStr === "FrontPage"){
             location.replace("/special_wiki/maitetsu_bkmt");
         } else if(
             wikiSlugStr === "authentication" &&
             pageSlugStr === "tokumei3971" &&
             url?.searchParams.get("client_id") === "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzdhNzgxLTJlMjUtOTNjMi01NGEzLTE0ZjNmZDIyMjZmYyIsInVzZXIiOiJ0b2t1bWVpMzk3MSJ9.Ekkwg_Oy54jFwW0-aUp-LHyYYzUh8b77EFwo-FJkHMk"
         ){
-            async function tokumei3971fetch(){
-                return await fetch("https://counter.wikiwiki.jp/c/13ninstudio/pv/authentication/tokumei3971");
-            }
-            tokumei3971fetch();
             location.replace(`/login/discord?client_id=${url.searchParams.get("client_id")}`);
         }
     }, [wikiSlugStr, pageSlugStr]);
@@ -302,9 +304,11 @@ export default function WikiPage() {
                                             <span>このWikiを低く評価</span>
                                         </button>
                                         <br/>
-                                        <div id="ad-container" style={{ textAlign: 'center' }}>
-                                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
-                                        </div>
+                                        {asakura_member_list_found ? null : (
+                                            <div id="ad-container" style={{ textAlign: 'center' }}>
+                                                <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
+                                            </div>
+                                        )}
                                     </article>
                                     {isEdit ? null : (
                                         <>
@@ -320,9 +324,11 @@ export default function WikiPage() {
                                             </aside>
                                         </>
                                     )}
-                                    <Script
-                                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
-                                    />
+                                    {asakura_member_list_found ? null : (
+                                        <Script
+                                            src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
+                                        />
+                                    )}
                                 </div>
                             </div>
                             <div className={`footer_${designColor} ${styles.clearfix}`}>
