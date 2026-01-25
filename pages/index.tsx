@@ -36,15 +36,51 @@ export default function Home() {
         setMounted(true);
     }, []);
 
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const onError = (event: ErrorEvent) => {
+            console.error('[GLOBAL ERROR]', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                error: event.error,
+                userAgent: navigator.userAgent
+            });
+        };
+
+        const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+            console.error('[UNHANDLED PROMISE]', {
+                reason: event.reason,
+                userAgent: navigator.userAgent
+            });
+        };
+
+        window.addEventListener('error', onError);
+        window.addEventListener('unhandledrejection', onUnhandledRejection);
+
+        return () => {
+            window.removeEventListener('error', onError);
+            window.removeEventListener('unhandledrejection', onUnhandledRejection);
+        };
+    }, []);
+
     /* ===== auth (完全防御) ===== */
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const { data, error } = await supabaseClient.auth.getUser();
-                if (error) return;
+
+                console.log('[AUTH RESULT]', {
+                    hasUser: !!data?.user,
+                    error,
+                    ua: typeof navigator !== 'undefined' ? navigator.userAgent : 'ssr'
+                });
+
                 if (data?.user) setUser(data.user);
-            } catch {
-                // Googlebot / storage 制限環境ではここに来る
+            } catch (e) {
+                console.error('[AUTH EXCEPTION]', e);
             }
         };
         fetchUser();
@@ -52,9 +88,23 @@ export default function Home() {
 
     /* ===== data fetch ===== */
     useEffect(() => {
-        fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
-        fetchLikedWikis(setLoadingLiked, setLikedWikis);
-        fetched13ninstudioCounter(setWiki13ninstudioCounter);
+        try {
+            fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
+        } catch (e) {
+            console.error('[fetchRecentPages FAILED]', e);
+        }
+
+        try {
+            fetchLikedWikis(setLoadingLiked, setLikedWikis);
+        } catch (e) {
+            console.error('[fetchLikedWikis FAILED]', e);
+        }
+
+        try {
+            fetched13ninstudioCounter(setWiki13ninstudioCounter);
+        } catch (e) {
+            console.error('[fetched13ninstudioCounter FAILED]', e);
+        }
     }, []);
 
     /* ===== theme ===== */
