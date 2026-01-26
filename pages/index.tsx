@@ -23,36 +23,11 @@ interface ClientError {
     stack?: string;
 }
 
-const AsakuraWikiTitle = "無料 レンタル Wiki サービス あさクラWiki";
+const AsakuraWikiTitle = '無料 レンタル Wiki サービス あさクラWiki';
 
 export default function Home() {
     /* ===============================
-        Bot 判定（最優先）
-    =============================== */
-    const isBot =
-        typeof navigator === 'undefined' ||
-        /googlebot|bot|crawler|spider/i.test(navigator.userAgent);
-
-    if (isBot) {
-        return (
-            <>
-                <Head>
-                    <title>無料 レンタル WIKI サービス あさクラWIKI</title>
-                    <meta property="og:title" content={AsakuraWikiTitle} />
-                    <meta property="og:description" content={AsakuraWikiTitle} />
-                    <meta property="og:site_name" content={AsakuraWikiTitle} />
-                    <meta
-                        name="description"
-                        content="なんと半周年!これまでを大切に、これからも進化し続けます。"
-                    />
-                </Head>
-                <div className={styles.contentsWrapper}></div>
-            </>
-        );
-    }
-
-    /* ===============================
-        state
+        state（最上流）
     =============================== */
     const [pages, setPages] = useState<WikiPage[]>([]);
     const [recentPages, setRecentPages] = useState<WikiPage[]>([]);
@@ -66,6 +41,13 @@ export default function Home() {
     const [user, setUser] = useState<User | null>(null);
     const [mounted, setMounted] = useState(false);
     const [clientError, setClientError] = useState<ClientError | null>(null);
+
+    /* ===============================
+        Bot 判定（clientError 共有）
+    =============================== */
+    const isBot =
+        typeof navigator === 'undefined' ||
+        /googlebot|bot|crawler|spider/i.test(navigator.userAgent);
 
     /* ===============================
         mount
@@ -131,19 +113,27 @@ export default function Home() {
         data fetch
     =============================== */
     useEffect(() => {
-        try {
-            fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
-            fetchLikedWikis(setLoadingLiked, setLikedWikis);
-            fetched13ninstudioCounter(setWiki13ninstudioCounter);
-        } catch (e) {
-            console.error('[FETCH ERROR]', e);
-            setClientError({
-                type: 'error',
-                message: 'Data fetch failed',
-                stack: e instanceof Error ? e.stack : undefined
-            });
-        }
+        fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
+        fetchLikedWikis(setLoadingLiked, setLikedWikis);
+        fetched13ninstudioCounter(setWiki13ninstudioCounter);
     }, []);
+
+    /* ===============================
+        wiki counter 使用（明示）
+    =============================== */
+    useEffect(() => {
+        console.log(wiki13ninstudioCounter);
+    }, [wiki13ninstudioCounter]);
+
+    const wiki13ninstudioCounterTotal =
+        (wiki13ninstudioCounter?.total ?? 0) + 1391;
+
+    if (!isNaN(wiki13ninstudioCounterTotal)) {
+        console.log(
+            'ApplicationAllViewedCounter:',
+            wiki13ninstudioCounterTotal ?? null
+        );
+    }
 
     /* ===============================
         theme
@@ -164,8 +154,53 @@ export default function Home() {
         };
     }, [menuStatus]);
 
+    const H2Styles:React.CSSProperties = {
+        marginBlockStart: '0.83em',
+        marginBlockEnd: '0.83em',
+        marginInlineStart: '0px',
+        marginInlineEnd: '0px',
+        unicodeBidi: 'isolate',
+        textAlign: 'center'
+    }
+
     /* ===============================
-        error UI（人間専用）
+        Bot 用 JSX（error 表示対応）
+    =============================== */
+    if (isBot) {
+        return (
+            <>
+                <Head>
+                    <title>
+                        {clientError
+                            ? 'Error | あさクラWiki'
+                            : AsakuraWikiTitle}
+                    </title>
+                    <meta property="og:title" content={AsakuraWikiTitle} />
+                    <meta property="og:site_name" content={AsakuraWikiTitle} />
+                    <meta
+                        name="description"
+                        content={
+                            clientError
+                                ? 'Client-side error occurred'
+                                : 'なんと半周年!これまでを大切に、これからも進化し続けます。'
+                        }
+                    />
+                </Head>
+
+                <div className={styles.contentsWrapper}>
+                    {clientError && (
+                        <main style={{ padding: '2rem' }}>
+                            <h1>Application Error</h1>
+                            <p>{clientError.message}</p>
+                        </main>
+                    )}
+                </div>
+            </>
+        );
+    }
+
+    /* ===============================
+        人間用 error UI
     =============================== */
     if (clientError) {
         return (
@@ -186,9 +221,9 @@ export default function Home() {
         );
     }
 
-    const wiki13ninstudioCounterTotal =
-        (wiki13ninstudioCounter?.total ?? 0) + 1391;
-
+    /* ===============================
+        normal render
+    =============================== */
     return (
         <>
             <Head>
@@ -201,7 +236,10 @@ export default function Home() {
                 )}
             </Head>
 
-            <MenuJp handleClick={() => setMenuStatus(v => !v)} menuStatus={menuStatus} />
+            <MenuJp
+                handleClick={() => setMenuStatus(v => !v)}
+                menuStatus={menuStatus}
+            />
 
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={() => setMenuStatus(v => !v)} />
@@ -213,15 +251,19 @@ export default function Home() {
                         {user ? (
                             <LoginedUI
                                 wiki13ninstudioCounter={wiki13ninstudioCounter}
-                                wiki13ninstudioCounterTotal={wiki13ninstudioCounterTotal}
+                                wiki13ninstudioCounterTotal={
+                                    wiki13ninstudioCounterTotal
+                                }
                                 loadingLiked={loadingLiked}
                                 loadingRecent={loadingRecent}
                                 loading={loading}
                                 likedWikis={likedWikis}
                                 pages={pages}
                                 recentPages={recentPages}
-                                goCreateWiki={() => (location.href = '/dashboard/create-wiki')}
-                                H2Styles={{}}
+                                goCreateWiki={() =>
+                                    (location.href = '/dashboard/create-wiki')
+                                }
+                                H2Styles={H2Styles}
                             />
                         ) : (
                             <LogoutedUI />
