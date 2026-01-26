@@ -2,6 +2,9 @@ import { supabaseServer } from "@/lib/supabaseClientServer";
 import type { WikiPage, LikedWiki, WikiCounter } from "@/utils/pageParts/top/indexInterfaces";
 import { opendns } from "@/utils/blockredirects";
 
+/* =========================
+ * Recent Pages
+ * ========================= */
 export async function fetchRecentPages(
     setLoadingRecent: React.Dispatch<React.SetStateAction<boolean>>,
     setRecentPages: React.Dispatch<React.SetStateAction<WikiPage[]>>,
@@ -9,7 +12,7 @@ export async function fetchRecentPages(
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): Promise<void> {
     const { data, error } = await supabaseServer
-        .from('wiki_pages')
+        .from("wiki_pages")
         .select(`
             wiki_slug,
             slug,
@@ -19,71 +22,96 @@ export async function fetchRecentPages(
                 slug
             )
         `)
-        .eq('wikis.osusume_hyouji_mode', true)
-        .order('updated_at', { ascending: false })
-        .limit(100); // ← 追加
+        .eq("wikis.osusume_hyouji_mode", true)
+        .order("updated_at", { ascending: false })
+        .limit(100);
 
     if (error || !data) {
-        console.error('fetchRecentPages error:', error)
-        setLoadingRecent(false)
-        return
+        console.error("fetchRecentPages error:", error);
+        setLoadingRecent(false);
+        return;
     }
 
-    const flattened = data.map((d: any) => ({
-        wikiSlug:    d.wiki_slug,
-        pageSlug:    d.slug,
-        name:        d.wikis?.name ?? '(無名Wiki)',
-        updated_at:  d.updated_at,
-    }))
+    const flattened: WikiPage[] = data.map((d: any) => ({
+        wikiSlug: d.wiki_slug,
+        pageSlug: d.slug,
+        name: d.wikis?.name ?? "(無名Wiki)",
+        updated_at: d.updated_at,
+    }));
 
     const unique = flattened.filter(
         (item, idx, arr) =>
-        arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
-    )
+            arr.findIndex(x => x.wikiSlug === item.wikiSlug) === idx
+    );
 
-    setRecentPages(unique)
-    setPages(unique)
-    setLoading(false)
-    setLoadingRecent(false)
+    setRecentPages(unique);
+    setPages(unique);
+    setLoading(false);
+    setLoadingRecent(false);
 }
 
+/* =========================
+ * Liked Wikis
+ * ========================= */
 export async function fetchLikedWikis(
     setLoadingLiked: React.Dispatch<React.SetStateAction<boolean>>,
     setLikedWikis: React.Dispatch<React.SetStateAction<LikedWiki[]>>
-) {
-    const { data, error } = await supabaseServer.rpc('get_top_wikis_by_like_count')
+): Promise<void> {
+    const { data, error } = await supabaseServer.rpc("get_top_wikis_by_like_count");
 
     if (error || !data) {
-        console.error('fetchLikedWikis error:', error)
-        setLoadingLiked(false)
-        return
+        console.error("fetchLikedWikis error:", error);
+        setLoadingLiked(false);
+        return;
     }
 
-    const topLikedWikis = data.map((row: any) => ({
+    const topLikedWikis: LikedWiki[] = data.map((row: any) => ({
         wikiSlug: row.wiki_slug,
         name: row.name,
-        like_count: row.like_count
-    }))
-    setLikedWikis(topLikedWikis)
+        like_count: row.like_count,
+    }));
+
+    setLikedWikis(topLikedWikis);
     setLoadingLiked(false);
 }
 
+/* =========================
+ * 13ninstudio Counter
+ * ========================= */
 export async function fetched13ninstudioCounter(
     setWiki13ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
-) {
+): Promise<void> {
     try {
-        const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
-        const response:Response = await fetch(requestURL);
-        if(!response.ok && localStorage.getItem("ipaddress") === "210.236.184.66"){
-            alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
-            opendns();
+        const requestURL =
+            "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
+
+        const response = await fetch(requestURL, {
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            if (
+                typeof window !== "undefined" &&
+                localStorage.getItem("ipaddress") === "210.236.184.66"
+            ) {
+                alert(
+                    "カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。"
+                );
+                opendns();
+            }
+            throw new Error(`Counter fetch failed: ${response.status}`);
         }
-        console.log("responseURL: ", response.url);
-        const userData = await response.json();
+
+        const userData: WikiCounter = await response.json();
         setWiki13ninstudioCounter(userData);
     } catch (error) {
-        console.error("fetch error:", error);
-        alert("カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。");
-        opendns();
+        console.error("fetched13ninstudioCounter error:", error);
+
+        if (typeof window !== "undefined") {
+            alert(
+                "カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。"
+            );
+            opendns();
+        }
     }
 }
