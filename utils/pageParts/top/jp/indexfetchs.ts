@@ -79,26 +79,17 @@ export async function fetchLikedWikis(
  * 13ninstudio Counter
  * ========================= */
 export async function fetched13ninstudioCounter(
-    setWiki13ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
+    setWiki13ninstudioCounter: React.Dispatch<
+        React.SetStateAction<WikiCounter | null>
+    >
 ): Promise<void> {
     try {
-        const requestURL =
-            "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html";
-
-        const response = await fetch(requestURL, {
+        // ★ クライアント → 自サイト API（CORS 回避）
+        const response = await fetch("/api/wiki13-counter", {
             cache: "no-store",
         });
 
         if (!response.ok) {
-            if (
-                typeof window !== "undefined" &&
-                localStorage.getItem("ipaddress") === "210.236.184.66"
-            ) {
-                alert(
-                    "カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。"
-                );
-                opendns();
-            }
             throw new Error(`Counter fetch failed: ${response.status}`);
         }
 
@@ -107,11 +98,17 @@ export async function fetched13ninstudioCounter(
     } catch (error) {
         console.error("fetched13ninstudioCounter error:", error);
 
-        if (typeof window !== "undefined") {
-            alert(
-                "カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。"
-            );
-            opendns();
+        // ★ 人間ブラウザのみ通知（bot/GSC完全無視）
+        if (
+            typeof window !== "undefined" &&
+            !/bot|crawler|spider|googlebot/i.test(navigator.userAgent)
+        ) {
+            if (localStorage.getItem("ipaddress") === "210.236.184.66") {
+                alert(
+                    "カウンターの取得に失敗しました。\nネットワーク環境を確認の上、再読み込みしてください。"
+                );
+                opendns();
+            }
         }
     }
 }
