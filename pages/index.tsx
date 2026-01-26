@@ -6,7 +6,11 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import styles from '@/css/index.module.css';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
+import type {
+    WikiCounter,
+    WikiPage,
+    LikedWiki
+} from '@/utils/pageParts/top/indexInterfaces';
 import LoginedUI from '@/utils/pageParts/top/jp/indexLogined';
 import LogoutedUI from '@/utils/pageParts/top/jp/indexLogouted';
 import {
@@ -43,23 +47,33 @@ export default function Home() {
     const [clientError, setClientError] = useState<ClientError | null>(null);
 
     /* ===============================
-        Bot 判定
+        Bot 判定（state）
     =============================== */
-    const isBot =
-        typeof navigator === 'undefined' ||
-        /googlebot|bingbot|slurp|duckduckbot|bot|crawler|spider/i.test(
-            navigator.userAgent
-        );
+    const [isBot, setIsBot] = useState(true);
 
     /* ===============================
-        mount
+        mount & bot detect
     =============================== */
     useEffect(() => {
         setMounted(true);
+
+        if (typeof window === 'undefined') {
+            setIsBot(true);
+            return;
+        }
+
+        const ua = navigator.userAgent;
+        const bot =
+            /googlebot|bingbot|slurp|duckduckbot|bot|crawler|spider/i.test(ua);
+
+        setIsBot(bot);
+
+        console.log('[UA]', ua);
+        console.log('[isBot]', bot);
     }, []);
 
     /* ===============================
-        global error capture
+        global error capture（人間のみ）
     =============================== */
     useEffect(() => {
         if (isBot) return;
@@ -86,19 +100,24 @@ export default function Home() {
         };
 
         window.addEventListener('error', onError);
-        window.addEventListener('unhandledrejection', onUnhandledRejection);
+        window.addEventListener(
+            'unhandledrejection',
+            onUnhandledRejection
+        );
 
         return () => {
             window.removeEventListener('error', onError);
-            window.removeEventListener('unhandledrejection', onUnhandledRejection);
+            window.removeEventListener(
+                'unhandledrejection',
+                onUnhandledRejection
+            );
         };
     }, [isBot]);
 
     /* ===============================
-        auth（Botでは実行しない）
+        auth（人間のみ）
     =============================== */
     useEffect(() => {
-        console.log("isBot: ", isBot);
         if (isBot) return;
 
         supabaseClient.auth
@@ -117,12 +136,17 @@ export default function Home() {
     }, [isBot]);
 
     /* ===============================
-        data fetch（Bot完全回避）
+        data fetch（完全 Bot 回避）
     =============================== */
     useEffect(() => {
         if (isBot) return;
 
-        fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
+        fetchRecentPages(
+            setLoadingRecent,
+            setRecentPages,
+            setPages,
+            setLoading
+        );
         fetchLikedWikis(setLoadingLiked, setLikedWikis);
         fetched13ninstudioCounter(setWiki13ninstudioCounter);
     }, [isBot]);
@@ -131,34 +155,37 @@ export default function Home() {
         wiki counter 使用（明示）
     =============================== */
     useEffect(() => {
-        console.log(wiki13ninstudioCounter);
-    }, [wiki13ninstudioCounter]);
+        if (isBot) return;
+        console.log('[counter]', wiki13ninstudioCounter);
+    }, [wiki13ninstudioCounter, isBot]);
 
     const wiki13ninstudioCounterTotal =
         (wiki13ninstudioCounter?.total ?? 0) + 1391;
 
-    if (!isNaN(wiki13ninstudioCounterTotal)) {
+    if (!isBot && !isNaN(wiki13ninstudioCounterTotal)) {
         console.log(
             'ApplicationAllViewedCounter:',
-            wiki13ninstudioCounterTotal ?? null
+            wiki13ninstudioCounterTotal
         );
     }
 
     /* ===============================
-        theme
+        theme（人間のみ）
     =============================== */
     useEffect(() => {
         if (isBot) return;
+
         const html = document.documentElement;
         if (!user) html.setAttribute('data-theme', 'dark');
         else html.removeAttribute('data-theme');
     }, [user, isBot]);
 
     /* ===============================
-        body lock
+        body lock（人間のみ）
     =============================== */
     useEffect(() => {
         if (isBot) return;
+
         document.body.style.overflow = menuStatus ? 'hidden' : '';
         return () => {
             document.body.style.overflow = '';
@@ -175,14 +202,17 @@ export default function Home() {
     };
 
     /* ===============================
-        Bot 用レンダリング
+        Bot 用レンダリング（SSR安全）
     =============================== */
     if (isBot) {
         return (
             <>
                 <Head>
                     <title>{AsakuraWikiTitle}</title>
-                    <meta name="description" content="無料で使えるオープンソースのレンタルWikiサービス" />
+                    <meta
+                        name="description"
+                        content="無料で使えるオープンソースのレンタルWikiサービス"
+                    />
                 </Head>
                 <main style={{ padding: '2rem' }}>
                     <h1>{AsakuraWikiTitle}</h1>
@@ -242,7 +272,9 @@ export default function Home() {
                     <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
                         {user ? (
                             <LoginedUI
-                                wiki13ninstudioCounter={wiki13ninstudioCounter}
+                                wiki13ninstudioCounter={
+                                    wiki13ninstudioCounter
+                                }
                                 wiki13ninstudioCounterTotal={
                                     wiki13ninstudioCounterTotal
                                 }
@@ -253,7 +285,8 @@ export default function Home() {
                                 pages={pages}
                                 recentPages={recentPages}
                                 goCreateWiki={() =>
-                                    (location.href = '/dashboard/create-wiki')
+                                    (location.href =
+                                        '/dashboard/create-wiki')
                                 }
                                 H2Styles={H2Styles}
                             />
