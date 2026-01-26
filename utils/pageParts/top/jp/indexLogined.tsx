@@ -33,7 +33,7 @@ export default function LoginedUI({
 
     return (
         <>
-            <h1>あさクラWiki{versions[0]}</h1>
+            <h1>あさクラWiki{versions[2]}</h1>
 
             {/* 閲覧数 */}
             <section id="view-counter" className="section">

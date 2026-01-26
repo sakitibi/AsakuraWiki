@@ -20,6 +20,7 @@ import {
 } from '@/utils/pageParts/top/jp/indexfetchs';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/auth-helpers-react';
+import versions from '@/utils/version';
 
 interface ClientError {
     type: 'error' | 'promise';
@@ -226,10 +227,15 @@ export default function Home() {
                 </Head>
 
                 <div className={styles.contentsWrapper}>
-                    {clientError && (
+                    {clientError ? (
                         <main style={{ padding: '2rem' }}>
                             <h1>Application Error</h1>
                             <p>{clientError.message}</p>
+                        </main>
+                    ) : (
+                        <main style={{ padding: '2rem' }}>
+                            <h1>あさクラWiki {versions[2]}</h1>
+                            <p>なんと半周年!これまでを大切に、これからも進化し続けます。</p>
                         </main>
                     )}
                 </div>
