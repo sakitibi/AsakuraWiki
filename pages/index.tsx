@@ -47,7 +47,9 @@ export default function Home() {
     =============================== */
     const isBot =
         typeof navigator === 'undefined' ||
-        /googlebot|bot|crawler|spider/i.test(navigator.userAgent);
+        /googlebot|bingbot|slurp|duckduckbot|bot|crawler|spider/i.test(
+            navigator.userAgent
+        );
 
     /* ===============================
         mount
@@ -96,6 +98,7 @@ export default function Home() {
         auth（Botでは実行しない）
     =============================== */
     useEffect(() => {
+        console.log("isBot: ", isBot);
         if (isBot) return;
 
         supabaseClient.auth
@@ -183,7 +186,6 @@ export default function Home() {
                 </Head>
                 <main style={{ padding: '2rem' }}>
                     <h1>{AsakuraWikiTitle}</h1>
-                    <p>オープンソースで使いやすいレンタルWikiサービスです。</p>
                 </main>
             </>
         );

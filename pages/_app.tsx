@@ -100,6 +100,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
 
     // wiki13ninstudioCounter fetch
     useEffect(() => {
+        console.log("isBot: ", isBot);
         if (typeof navigator === 'undefined' || isBot) return;
         async function fetchCounter() {
             try {
