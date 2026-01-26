@@ -27,7 +27,7 @@ const AsakuraWikiTitle = '無料 レンタル Wiki サービス あさクラWiki
 
 export default function Home() {
     /* ===============================
-        state（最上流）
+        state
     =============================== */
     const [pages, setPages] = useState<WikiPage[]>([]);
     const [recentPages, setRecentPages] = useState<WikiPage[]>([]);
@@ -43,7 +43,7 @@ export default function Home() {
     const [clientError, setClientError] = useState<ClientError | null>(null);
 
     /* ===============================
-        Bot 判定（clientError 共有）
+        Bot 判定
     =============================== */
     const isBot =
         typeof navigator === 'undefined' ||
@@ -60,6 +60,8 @@ export default function Home() {
         global error capture
     =============================== */
     useEffect(() => {
+        if (isBot) return;
+
         const onError = (event: ErrorEvent) => {
             console.error('[GLOBAL ERROR]', event);
             setClientError({
@@ -88,12 +90,14 @@ export default function Home() {
             window.removeEventListener('error', onError);
             window.removeEventListener('unhandledrejection', onUnhandledRejection);
         };
-    }, []);
+    }, [isBot]);
 
     /* ===============================
-        auth
+        auth（Botでは実行しない）
     =============================== */
     useEffect(() => {
+        if (isBot) return;
+
         supabaseClient.auth
             .getUser()
             .then(({ data }) => {
@@ -107,16 +111,18 @@ export default function Home() {
                     stack: e instanceof Error ? e.stack : undefined
                 });
             });
-    }, []);
+    }, [isBot]);
 
     /* ===============================
-        data fetch
+        data fetch（Bot完全回避）
     =============================== */
     useEffect(() => {
+        if (isBot) return;
+
         fetchRecentPages(setLoadingRecent, setRecentPages, setPages, setLoading);
         fetchLikedWikis(setLoadingLiked, setLikedWikis);
         fetched13ninstudioCounter(setWiki13ninstudioCounter);
-    }, []);
+    }, [isBot]);
 
     /* ===============================
         wiki counter 使用（明示）
@@ -139,62 +145,46 @@ export default function Home() {
         theme
     =============================== */
     useEffect(() => {
+        if (isBot) return;
         const html = document.documentElement;
         if (!user) html.setAttribute('data-theme', 'dark');
         else html.removeAttribute('data-theme');
-    }, [user]);
+    }, [user, isBot]);
 
     /* ===============================
         body lock
     =============================== */
     useEffect(() => {
+        if (isBot) return;
         document.body.style.overflow = menuStatus ? 'hidden' : '';
         return () => {
             document.body.style.overflow = '';
         };
-    }, [menuStatus]);
+    }, [menuStatus, isBot]);
 
-    const H2Styles:React.CSSProperties = {
+    const H2Styles: React.CSSProperties = {
         marginBlockStart: '0.83em',
         marginBlockEnd: '0.83em',
         marginInlineStart: '0px',
         marginInlineEnd: '0px',
         unicodeBidi: 'isolate',
         textAlign: 'center'
-    }
+    };
 
     /* ===============================
-        Bot 用 JSX（error 表示対応）
+        Bot 用レンダリング
     =============================== */
     if (isBot) {
         return (
             <>
                 <Head>
-                    <title>
-                        {clientError
-                            ? 'Error | あさクラWiki'
-                            : AsakuraWikiTitle}
-                    </title>
-                    <meta property="og:title" content={AsakuraWikiTitle} />
-                    <meta property="og:site_name" content={AsakuraWikiTitle} />
-                    <meta
-                        name="description"
-                        content={
-                            clientError
-                                ? 'Client-side error occurred'
-                                : 'なんと半周年!これまでを大切に、これからも進化し続けます。'
-                        }
-                    />
+                    <title>{AsakuraWikiTitle}</title>
+                    <meta name="description" content="無料で使えるオープンソースのレンタルWikiサービス" />
                 </Head>
-
-                <div className={styles.contentsWrapper}>
-                    {clientError && (
-                        <main style={{ padding: '2rem' }}>
-                            <h1>Application Error</h1>
-                            <p>{clientError.message}</p>
-                        </main>
-                    )}
-                </div>
+                <main style={{ padding: '2rem' }}>
+                    <h1>{AsakuraWikiTitle}</h1>
+                    <p>オープンソースで使いやすいレンタルWikiサービスです。</p>
+                </main>
             </>
         );
     }
