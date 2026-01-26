@@ -42,7 +42,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
 
         const ua = navigator.userAgent;
         const bot =
-            /googlebot|bingbot|slurp|duckduckbot|bot|crawler|spider/i.test(ua);
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
 
         setIsBot(bot);
 
@@ -158,7 +158,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         (async () => {
             try {
                 const res = await fetch(
-                    'https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html',
+                    'https://counter.wikiwiki.jp/c/13ninstudio/pv/_app',
                     { cache: 'no-store' }
                 );
                 if (!res.ok) return;

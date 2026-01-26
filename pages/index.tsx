@@ -64,7 +64,7 @@ export default function Home() {
 
         const ua = navigator.userAgent;
         const bot =
-            /googlebot|bingbot|slurp|duckduckbot|bot|crawler|spider/i.test(ua);
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
 
         setIsBot(bot);
 
