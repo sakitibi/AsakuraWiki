@@ -208,15 +208,31 @@ export default function Home() {
         return (
             <>
                 <Head>
-                    <title>{AsakuraWikiTitle}</title>
+                    <title>
+                        {clientError
+                            ? 'Error | あさクラWiki'
+                            : AsakuraWikiTitle}
+                    </title>
+                    <meta property="og:title" content={AsakuraWikiTitle} />
+                    <meta property="og:site_name" content={AsakuraWikiTitle} />
                     <meta
                         name="description"
-                        content="無料で使えるオープンソースのレンタルWikiサービス"
+                        content={
+                            clientError
+                                ? 'Client-side error occurred'
+                                : 'なんと半周年!これまでを大切に、これからも進化し続けます。'
+                        }
                     />
                 </Head>
-                <main style={{ padding: '2rem' }}>
-                    <h1>{AsakuraWikiTitle}</h1>
-                </main>
+
+                <div className={styles.contentsWrapper}>
+                    {clientError && (
+                        <main style={{ padding: '2rem' }}>
+                            <h1>Application Error</h1>
+                            <p>{clientError.message}</p>
+                        </main>
+                    )}
+                </div>
             </>
         );
     }
