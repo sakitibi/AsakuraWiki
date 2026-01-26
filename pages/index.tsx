@@ -21,8 +21,9 @@ import {
 import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/auth-helpers-react';
 import versions from '@/utils/version';
+import ClientErrorUI from '@/utils/pageParts/top/clienterrorUI';
 
-interface ClientError {
+export interface ClientError {
     type: 'error' | 'promise';
     message: string;
     stack?: string;
@@ -203,9 +204,77 @@ export default function Home() {
     };
 
     /* ===============================
-        Bot 用レンダリング（SSR安全）
+        人間用 error UI
     =============================== */
-    if (isBot) {
+    if (clientError) {
+        return (
+            <ClientErrorUI
+                clientError={clientError}
+            />
+        );
+    }
+
+    /* ===============================
+        normal render
+    =============================== */
+    if(!isBot){
+        return (
+            <>
+                <Head>
+                    <title>{AsakuraWikiTitle}</title>
+                    {mounted && !user && (
+                        <link
+                            rel="stylesheet"
+                            href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"
+                        />
+                    )}
+                </Head>
+
+                <MenuJp
+                    handleClick={() => setMenuStatus(v => !v)}
+                    menuStatus={menuStatus}
+                />
+
+                <div className={styles.contentsWrapper}>
+                    <HeaderJp handleClick={() => setMenuStatus(v => !v)} />
+
+                    <div className={styles.contents}>
+                        <LeftMenuJp URL="/" />
+
+                        <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
+                            {user ? (
+                                <LoginedUI
+                                    wiki13ninstudioCounter={
+                                        wiki13ninstudioCounter
+                                    }
+                                    wiki13ninstudioCounterTotal={
+                                        wiki13ninstudioCounterTotal
+                                    }
+                                    loadingLiked={loadingLiked}
+                                    loadingRecent={loadingRecent}
+                                    loading={loading}
+                                    likedWikis={likedWikis}
+                                    pages={pages}
+                                    recentPages={recentPages}
+                                    goCreateWiki={() =>
+                                        (location.href =
+                                            '/dashboard/create-wiki')
+                                    }
+                                    H2Styles={H2Styles}
+                                />
+                            ) : (
+                                <LogoutedUI />
+                            )}
+                        </main>
+
+                        <RightMenuJp />
+                    </div>
+
+                    <FooterJp />
+                </div>
+            </>
+        );
+    } else {
         return (
             <>
                 <Head>
@@ -230,7 +299,7 @@ export default function Home() {
                     {clientError ? (
                         <main style={{ padding: '2rem' }}>
                             <h1>Application Error</h1>
-                            <p>{clientError.message}</p>
+                            <p>{(clientError as ClientError).message}</p>
                         </main>
                     ) : (
                         <main style={{ padding: '2rem' }}>
@@ -242,86 +311,4 @@ export default function Home() {
             </>
         );
     }
-
-    /* ===============================
-        人間用 error UI
-    =============================== */
-    if (clientError) {
-        return (
-            <>
-                <Head>
-                    <title>Client Error</title>
-                </Head>
-                <main style={{ padding: '2rem', color: 'red' }}>
-                    <h1>Client-side Exception</h1>
-                    <p>{clientError.message}</p>
-                    {clientError.stack && (
-                        <pre style={{ whiteSpace: 'pre-wrap' }}>
-                            {clientError.stack}
-                        </pre>
-                    )}
-                </main>
-            </>
-        );
-    }
-
-    /* ===============================
-        normal render
-    =============================== */
-    return (
-        <>
-            <Head>
-                <title>{AsakuraWikiTitle}</title>
-                {mounted && !user && (
-                    <link
-                        rel="stylesheet"
-                        href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"
-                    />
-                )}
-            </Head>
-
-            <MenuJp
-                handleClick={() => setMenuStatus(v => !v)}
-                menuStatus={menuStatus}
-            />
-
-            <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={() => setMenuStatus(v => !v)} />
-
-                <div className={styles.contents}>
-                    <LeftMenuJp URL="/" />
-
-                    <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
-                        {user ? (
-                            <LoginedUI
-                                wiki13ninstudioCounter={
-                                    wiki13ninstudioCounter
-                                }
-                                wiki13ninstudioCounterTotal={
-                                    wiki13ninstudioCounterTotal
-                                }
-                                loadingLiked={loadingLiked}
-                                loadingRecent={loadingRecent}
-                                loading={loading}
-                                likedWikis={likedWikis}
-                                pages={pages}
-                                recentPages={recentPages}
-                                goCreateWiki={() =>
-                                    (location.href =
-                                        '/dashboard/create-wiki')
-                                }
-                                H2Styles={H2Styles}
-                            />
-                        ) : (
-                            <LogoutedUI />
-                        )}
-                    </main>
-
-                    <RightMenuJp />
-                </div>
-
-                <FooterJp />
-            </div>
-        </>
-    );
 }
