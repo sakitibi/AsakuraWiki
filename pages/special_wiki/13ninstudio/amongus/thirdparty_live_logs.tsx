@@ -29,6 +29,7 @@ export default function AmongusOthersRoomJoinedLogs() {
                         <div id="body">
                             <h1>Amongusの13人TVの他配信者さんの部屋での試合記録</h1>
                             <p><a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">ルールはこちら</a></p>
+                            <p>該当の他配信者さんが<a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">ルール</a>や<a href="/policies">利用規約</a>に違反した場合は削除されます。</p>
                             <div id="live_logs">
                                 <section id="UC1HxHVAadoOwBN6k5oozGcw">
                                     <p><a href="https://youtube.com/channel/UC1HxHVAadoOwBN6k5oozGcw">國産わっふる さん</a></p>
