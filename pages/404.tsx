@@ -15,6 +15,7 @@ export default function Custom404({
     return (
         <>
             <Head>
+                <meta name='robots' content='noindex, follow' />
                 <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/404.static.css"/>
                 <title>404 Not Found</title>
             </Head>
