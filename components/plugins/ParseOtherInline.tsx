@@ -503,7 +503,11 @@ export default function parseOtherInline(
             const args = m[46]?.split(',').map(s => s.trim()) ?? [];
             const dateStr = m[47]?.trim();
             const keyStr = `inl-${baseKey}-${m.index}`;
-
+            console.log("&new logs: ", {
+                "args: ": args,
+                "dateStr: ": dateStr,
+                "keyStr: ": keyStr
+            });
             // 日付文字列から Date オブジェクトを生成
             const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim()); // 曜日を除去
             if (isNaN(parsedDate.getTime())) {
