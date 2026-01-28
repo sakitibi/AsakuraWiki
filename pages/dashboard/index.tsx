@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { User } from '@supabase/auth-helpers-react';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { createServerClient } from '@supabase/ssr';
+import { useEffect, useState } from 'react';
+import { DeveloperProps } from './developer/register';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 interface MyWikiProps {
     name: string;
@@ -17,6 +20,7 @@ interface DashboardProps {
 }
 
 export default function DashboardPage({ user, mywikis }: DashboardProps) {
+    const [developerData, setDeveloperData] = useState<DeveloperProps | null>(null);
     const asakura_menber_found =
         user && asakuraMenberUserId.includes(user.id);
 
@@ -33,6 +37,33 @@ export default function DashboardPage({ user, mywikis }: DashboardProps) {
         await fetch('/api/accounts/logout');
         location.reload();
     };
+
+    const devFetch = async() => {
+        try{
+            const session = await supabaseClient.auth.getSession();
+            const token = session?.data?.session?.access_token;
+            const res:Response = await fetch("/api/store/developers", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if(!res.ok){
+                console.error("Error: ", await res.json());
+                return;
+            }
+            return await res.json();
+        } catch(e){
+            console.error("Error: ", e);
+        }
+    }
+
+    useEffect(() => {
+        (async function(){
+            setDeveloperData(await devFetch());
+        })();
+    }, []);
 
     return (
         <>
@@ -92,6 +123,27 @@ export default function DashboardPage({ user, mywikis }: DashboardProps) {
                                     {provider !== 'email' ? '(使用不可)' : null}
                                 </span>
                             </button>
+                            {developerData ? (
+                                <button
+                                    onClick={() =>
+                                        (location.href = '/dashboard/developer/modify')
+                                    }
+                                >
+                                    <span>
+                                        13ninデベロッパコンソール情報変更
+                                    </span>
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() =>
+                                        (location.href = '/dashboard/developer/register')
+                                    }
+                                >
+                                    <span>
+                                        13ninデベロッパコンソール登録
+                                    </span>
+                                </button>
+                            )}
                         </div>
                     </div>
                 ) : (
