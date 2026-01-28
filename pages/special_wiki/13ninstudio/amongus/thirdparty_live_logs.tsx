@@ -35,13 +35,13 @@ export default function AmongusOthersRoomJoinedLogs() {
                                     <p><a href="https://youtube.com/channel/UC1HxHVAadoOwBN6k5oozGcw">國産わっふる さん</a></p>
                                     <ul>
                                         <li>
-                                            <a href="https://youtu.be/4cvEH0iubLg">
+                                            <a href="https://youtu.be/4cvEH0iubLg?t=9656">
                                                 2026/01/27 23:57 ~ 2026/01/28 0:23 13人TV = 緑: ノイズメーカー<br/>
                                                 インポスター: 黄色、ライム、グレー
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="https://youtu.be/4cvEH0iubLg">
+                                            <a href="https://youtu.be/4cvEH0iubLg?t=8508">
                                                 2026/01/27 23:37 ~ 2026/01/27 23:52 13人TV = 緑: 亡霊<br/>
                                                 インポスター: 緑、バナナ、紫
                                             </a>
