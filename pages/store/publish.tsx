@@ -8,11 +8,13 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { DeveloperProps } from '@/pages/store/developer/[developer]';
 import type { User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
+import Link from 'next/link';
 
 export default function Store() {
     const [loading, setLoading] = useState<boolean>(false);
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [user, setUser] = useState<User | null>(null);
+    const [developerData, setDeveloperData] = useState<DeveloperProps | null>(null);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
@@ -55,12 +57,17 @@ export default function Store() {
         }
     }
 
+    useEffect(() => {
+        (async function(){
+            setDeveloperData(await devFetch());
+        })();
+    }, []);
+
     const StorePublish = async(e:React.FormEvent) => {
         e.preventDefault();
         if(!document) return;
         setLoading(true);
         try{
-            const developerData:DeveloperProps = await devFetch();
             if(!developerData){
                 throw new Error("Error: デベロッパデータがnullです");
             }
@@ -113,45 +120,70 @@ export default function Store() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/store/publish/" rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <>
-                            <h1>アプリケーションの公開</h1>
-                            <p>審査が通るまで公開されません</p>
-                            <form onSubmit={StorePublish}>
-                                <label>
-                                    アプリID
-                                    <input type="text" id="appid" required/>
-                                </label>
-                                <br/><br/>
-                                <label>
-                                    アプリアイコンURL
-                                    <input type="text" id="appicon" required/>
-                                </label>
-                                <br/><br/>
-                                <label>
-                                    アプリダウンロードURL
-                                    <input type="text" id="appdownload" required/>
-                                </label>
-                                <br/><br/>
-                                <label>
-                                    アプリタイトル
-                                    <input type="text" id="apptitle" required/>
-                                </label>
-                                <br/><br/>
-                                <label>
-                                    アプリの説明(任意)
-                                    <input type="text" id="appdescription"/>
-                                </label>
-                                <br/><br/>
-                                <label>
-                                    アプリバージョン
-                                    <input type="text" id="appversion" placeholder='1.0.0' required/>
-                                </label>
-                                <br/><br/>
-                                <button type="submit" disabled={loading}>
-                                    <span>アプリケーションを公開</span>
-                                </button>
-                            </form>
-                        </>
+                        {user && developerData ? (
+                            <>
+                                <h1>アプリケーションの公開</h1>
+                                <p>審査が通るまで公開されません</p>
+                                <form onSubmit={StorePublish}>
+                                    <label>
+                                        アプリID
+                                        <input type="text" id="appid" required/>
+                                    </label>
+                                    <br/><br/>
+                                    <label>
+                                        アプリアイコンURL
+                                        <input type="text" id="appicon" required/>
+                                    </label>
+                                    <br/><br/>
+                                    <label>
+                                        アプリダウンロードURL
+                                        <input type="text" id="appdownload" required/>
+                                    </label>
+                                    <br/><br/>
+                                    <label>
+                                        アプリタイトル
+                                        <input type="text" id="apptitle" required/>
+                                    </label>
+                                    <br/><br/>
+                                    <label>
+                                        アプリの説明(任意)
+                                        <input type="text" id="appdescription"/>
+                                    </label>
+                                    <br/><br/>
+                                    <label>
+                                        アプリバージョン
+                                        <input type="text" id="appversion" placeholder='1.0.0' required/>
+                                    </label>
+                                    <br/><br/>
+                                    <button type="submit" disabled={loading}>
+                                        <span>アプリケーションを公開</span>
+                                    </button>
+                                </form>
+                            </>
+                        ) : (
+                            <>
+                                <h1>Error 403 Forbidden</h1>
+                                <p>あなたはこのページにアクセスする権限がありません。</p>
+                                {!user ? (
+                                    <p>
+                                        <Link href="/login">
+                                            <button>
+                                                <span>ログインして下さい</span>
+                                            </button>
+                                        </Link>
+                                    </p>
+                                ) : null}
+                                {!developerData ? (
+                                    <p>
+                                        <Link href="/dashboard/developer/register">
+                                            <button>
+                                                <span>13ninDeveloperConsoleに登録して下さい</span>
+                                            </button>
+                                        </Link>
+                                    </p>
+                                ) : null}
+                            </>
+                        )}
                     </main>
                 </div>
                 <FooterJp/>

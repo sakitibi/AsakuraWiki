@@ -67,10 +67,8 @@ export default function Store({ osusume }: StoreProps) {
 
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>13ninGamesStore</h1>
-
                         <div id="osusume-apps">
                             <p>おすすめアプリ</p>
-
                             {osusume.length > 0 ? (
                                 osusume.map((data) => (
                                     <div
@@ -84,7 +82,6 @@ export default function Store({ osusume }: StoreProps) {
                                             width={100}
                                             height={100}
                                         />
-
                                         <div style={{ display: 'block' }}>
                                             <a
                                                 href={`/store/details/${data.appid}`}
@@ -100,12 +97,11 @@ export default function Store({ osusume }: StoreProps) {
                                     </div>
                                 ))
                             ) : (
-                                <p>おすすめアプリがありません</p>
+                                <p>Error 404 おすすめアプリがありません</p>
                             )}
                         </div>
                     </main>
                 </div>
-
                 <FooterJp />
             </div>
         </>
