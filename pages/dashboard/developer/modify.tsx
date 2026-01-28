@@ -114,7 +114,13 @@ export default function DeveloperConsoleModify() {
                     <LeftMenuJp URL="/dashboard/developer/modify" rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
-                            <h1>13ninデベロッパコンソール変更</h1>
+                            <h1>
+                                <i
+                                    className="fa-solid fa-gear-complex-code"
+                                    style={{ fontSize: "inherit" }}
+                                ></i>
+                                13ninデベロッパコンソール変更
+                            </h1>
                             <form onSubmit={DevConsoleRegister}>
                                 <label>
                                     デベロッパID
@@ -127,6 +133,7 @@ export default function DeveloperConsoleModify() {
                                         <option value="com" selected>com</option>
                                         <option value="jp">jp</option>
                                         <option value="ru">ru</option>
+                                        <option value="net">net</option>
                                         <option value="org">org</option>
                                         <option value="dev">dev</option>
                                         <option value="app">app</option>

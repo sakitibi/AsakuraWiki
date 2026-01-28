@@ -98,7 +98,13 @@ export default function CreateWikiPage() {
                 <title>新しいWikiを作る</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 600 }}>
-                <h1>新しいWikiを作る</h1>
+                <h1>
+                    <i
+                        className="fa-utility-fill fa-semibold fa-folder-plus"
+                        style={{ fontSize: "inherit" }}
+                    ></i>
+                    新しいWikiを作る
+                </h1>
                 <form onSubmit={handleSubmit}>
                     <label>
                     Wiki ID（変更できません）:

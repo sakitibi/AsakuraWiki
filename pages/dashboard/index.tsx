@@ -73,7 +73,10 @@ export default function DashboardPage({ user, mywikis }: DashboardProps) {
             <main style={{ padding: '2rem' }}>
                 <h1>
                     ダッシュボード
-                    <i className="fa-utility-fill fa-semibold fa-user"></i>
+                    <i
+                        className="fa-utility-fill fa-semibold fa-user"
+                        style={{ fontSize: "inherit" }}
+                    ></i>
                 </h1>
                 {user ? (
                     <div id="content">
