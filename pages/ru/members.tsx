@@ -33,7 +33,7 @@ export default function Members() {
                     <LeftMenuRu URL="/members"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>Список участников Асакуры</h1>
-                        <p>Текущее количество участников: 32, 5 находятся на рассмотрении.</p>
+                        <p>Текущее количество участников: 33, 4 находятся на рассмотрении.</p>
                         <ul className='list1'>
                             <li><a href="https://youtube.com/channel/UCJcP2mfDCtKnADrbDDjT_8g/?sub_confirmation=1">Сакичиби (Администратор) Присоединился 1 января 2021 года.</a>
                                 <ul className='list2'>
@@ -72,7 +72,7 @@ export default function Members() {
                             <li><a href="https://youtube.com/@chaaaco">Чако Участие состоялось 4 марта 2025 года.</a></li>
                             <li><a href="https://discord.gg/zbvXxCWcg6">Токумеи Присоединился 12 августа 2025 года.</a></li>
                             <li><a href='https://youtube.com/@yuinel'>Yuineru присоединился 27 января 2026 года.</a></li>
-                            <li>На рассмотрении</li>
+                            <li><a href='https://youtube.com/@akasakabox'>Акасака Бокс Присоединился 29 января 2026 года.</a></li>
                             <li>На рассмотрении</li>
                             <li>На рассмотрении</li>
                             <li>На рассмотрении</li>
