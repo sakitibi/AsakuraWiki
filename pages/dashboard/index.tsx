@@ -67,11 +67,10 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
                                     </div>
                                 ))}
                             </div>
-
                             <button onClick={handleLogout}>
                                 <span>ログアウト</span>
                             </button>
-
+                            <br/><br/>
                             <button
                                 disabled={!asakura_menber_found || provider !== 'email'}
                                 onClick={() =>
@@ -85,7 +84,7 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
                                         : null}
                                 </span>
                             </button>
-
+                            <br/><br/>
                             <button
                                 disabled={provider !== 'email'}
                                 onClick={() =>
@@ -97,6 +96,7 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
                                     {provider !== 'email' ? '(使用不可)' : null}
                                 </span>
                             </button>
+                            <br/><br/>
                             {developerData ? (
                                 <button
                                     onClick={() =>
