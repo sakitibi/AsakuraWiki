@@ -500,13 +500,18 @@ export default function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&new')) {
-            const args = m[46]?.split(',').map(s => s.trim()) ?? [];
+            let args = m[46]?.split(',').map(s => s.trim()) ?? [];
+
+            // ★ デフォルト補正：空の () の場合は ["date"]
+            if (args.length === 1 && args[0] === "") {
+                args = ["date"];
+            }
+
             const dateStr = m[47]?.trim();
             const keyStr = `inl-${baseKey}-${m.index}`;
 
             console.log("&new logs: ", { args, dateStr, keyStr });
 
-            // 日付が無い場合はエラー扱い
             if (!dateStr) {
                 nodes.push(
                     <span key={keyStr} style={{ color: 'red' }}>
@@ -516,10 +521,9 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
-                continue;   // ← 必須
+                continue;
             }
 
-            // Safari 対応：曜日除去 → ISO8601 形式に変換
             const cleaned = dateStr.replace(/\(.*?\)/, '').trim();
             const iso = cleaned.replace(' ', 'T');
             const parsedDate = new Date(iso);
@@ -534,7 +538,7 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
-                continue;   // ← これが無いと Safari が落ちる
+                continue;
             }
 
             const now = new Date();
