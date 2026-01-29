@@ -520,6 +520,7 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
+                continue;
             }
 
             const now:Date = new Date();
