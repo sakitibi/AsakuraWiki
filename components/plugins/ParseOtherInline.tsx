@@ -503,13 +503,19 @@ export default function parseOtherInline(
             const args = m[46]?.split(',').map(s => s.trim()) ?? [];
             const dateStr = m[47]?.trim();
             const keyStr = `inl-${baseKey}-${m.index}`;
+
             console.log("&new logs: ", {
                 "args: ": args,
                 "dateStr: ": dateStr,
                 "keyStr: ": keyStr
             });
-            // 日付文字列から Date オブジェクトを生成
-            const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim()); // 曜日を除去
+
+            // Safari 対応：曜日除去 → ISO8601 形式に変換
+            const cleaned = dateStr.replace(/\(.*?\)/, '').trim();
+            const iso = cleaned.replace(' ', 'T'); // ← これが重要（Safari対応）
+
+            const parsedDate = new Date(iso);
+
             if (isNaN(parsedDate.getTime())) {
                 nodes.push(
                     <span key={keyStr} style={{ color: 'red' }}>
@@ -520,13 +526,14 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
+                continue; // ← ここで抜けるのが安全
             }
 
-            const now:Date = new Date();
-            const diffMs:number = now.getTime() - parsedDate.getTime();
-            const diffDays:number = diffMs / (1000 * 60 * 60 * 24);
+            const now: Date = new Date();
+            const diffMs: number = now.getTime() - parsedDate.getTime();
+            const diffDays: number = diffMs / (1000 * 60 * 60 * 24);
 
-            let label:string = '';
+            let label: string = '';
             if (diffDays <= 1) label = 'New!';
             else if (diffDays <= 5) label = 'New';
 
@@ -539,9 +546,9 @@ export default function parseOtherInline(
                 }}>
                     {showDate ? dateStr : ''} <span style={{
                         color: diffDays <= 1 ?
-                        'red' : diffDays <= 3 ?
-                        'orange' : diffDays <= 5 ?
-                        'green' : 'inherit'
+                            'red' : diffDays <= 3 ?
+                                'orange' : diffDays <= 5 ?
+                                    'green' : 'inherit'
                     }}>{label}</span>
                 </span>
             );
