@@ -500,7 +500,10 @@ export default function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&new')) {
-            const args = m.groups?.args ?? "date";
+            let args = m.groups?.args ?? "date";
+            if(args !== "nodate"){
+                args = "date";
+            }
             const dateStr = m.groups?.date;
             const keyStr = `inl-${baseKey}-${m.index}`;
 
