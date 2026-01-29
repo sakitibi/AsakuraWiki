@@ -505,14 +505,27 @@ export default function parseOtherInline(
             const keyStr = `inl-${baseKey}-${m.index}`;
 
             console.log("&new logs: ", {
-                "args: ": args,
-                "dateStr: ": dateStr,
-                "keyStr: ": keyStr
+                args,
+                dateStr,
+                keyStr
             });
+
+            // 日付が無い場合はエラー扱いにする
+            if (!dateStr) {
+                nodes.push(
+                    <span key={keyStr} style={{ color: 'red' }}>
+                        日付形式エラー（空の dateStr）:
+                        args: {args},
+                        keyStr: {keyStr}
+                    </span>
+                );
+                last = m.index + token.length;
+                continue;
+            }
 
             // Safari 対応：曜日除去 → ISO8601 形式に変換
             const cleaned = dateStr.replace(/\(.*?\)/, '').trim();
-            const iso = cleaned.replace(' ', 'T'); // ← これが重要（Safari対応）
+            const iso = cleaned.replace(' ', 'T');
 
             const parsedDate = new Date(iso);
 
@@ -526,14 +539,14 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
-                continue; // ← ここで抜けるのが安全
+                continue;
             }
 
-            const now: Date = new Date();
-            const diffMs: number = now.getTime() - parsedDate.getTime();
-            const diffDays: number = diffMs / (1000 * 60 * 60 * 24);
+            const now = new Date();
+            const diffMs = now.getTime() - parsedDate.getTime();
+            const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
-            let label: string = '';
+            let label = '';
             if (diffDays <= 1) label = 'New!';
             else if (diffDays <= 5) label = 'New';
 
