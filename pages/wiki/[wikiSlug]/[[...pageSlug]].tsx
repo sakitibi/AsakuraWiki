@@ -20,6 +20,14 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import styles from '@/css/wikis.module.css';
 import { asakuraMenberUserId } from '@/utils/user_list';
 
+// Chromium系判定
+export function isChromiumOrFirefox() {
+    if(!navigator) return;
+    const ua = navigator.userAgent;
+    // Edge, Opera, Chrome, Chromium, Brave など
+    return /\b(Chrome|Mozilla|Gecko|Firefox|Chromium|Edg|OPR|Brave)\b/.test(ua) && !/Silk|UCBrowser|SamsungBrowser|CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
+}
+
 export default function WikiPage() {
     const router:NextRouter = useRouter()
     const [user, setUser] = useState<User | null>(null);

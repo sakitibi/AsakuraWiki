@@ -12,6 +12,7 @@ import type { Context } from "@/components/plugins/parsePluginTypes";
 import versions from "@/utils/version";
 import type { ReactNode } from "react";
 import FunctionCallRenderer from "@/components/plugins/functionCall";
+import { isChromiumOrFirefox } from "@/pages/wiki/[wikiSlug]/[[...pageSlug]]";
 
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
 export default function parseOtherInline(
@@ -29,7 +30,7 @@ export default function parseOtherInline(
     let last:number = 0
     let m: RegExpExecArray | null
     // 各プラグインを順次キャプチャする正規表現
-    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment(?:\(\s*(?:above|below)\s*\))?|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);||&new\([^)]*\)\{[^}]+\};|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
+    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment(?:\(\s*(?:above|below)\s*\))?|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&new(?:\(([^)]*)\))?\{([^\}]+)\};|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
 
     while ((m = re.exec(line))) {
         const token:string = m[0];
@@ -500,53 +501,53 @@ export default function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&new')) {
-            const args = m[46]?.split(',').map(s => s.trim()) ?? [];
-            const dateStr = m[47]?.trim();
-            const keyStr = `inl-${baseKey}-${m.index}`;
-            console.log("&new logs: ", {
-                "args: ": args,
-                "dateStr: ": dateStr,
-                "keyStr: ": keyStr
-            });
-            // 日付文字列から Date オブジェクトを生成
-            const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim()); // 曜日を除去
-            if (isNaN(parsedDate.getTime())) {
+            if(isChromiumOrFirefox()){
+                const args = m[46]?.split(',').map(s => s.trim()) ?? [];
+                const dateStr = m[47]?.trim();
+                const keyStr = `inl-${baseKey}-${m.index}`;
+                console.log("&new logs: ", {
+                    "args: ": args,
+                    "dateStr: ": dateStr,
+                    "keyStr: ": keyStr
+                });
+                // 日付文字列から Date オブジェクトを生成
+                const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim()); // 曜日を除去
+                if (isNaN(parsedDate.getTime())) {
+                    nodes.push(
+                        <span key={keyStr} style={{ color: 'red' }}>
+                            日付形式エラー:
+                            args: {args},
+                            dateStr: {dateStr},
+                            keyStr: {keyStr}
+                        </span>
+                    );
+                    last = m.index + token.length;
+                }
+
+                const now:Date = new Date();
+                const diffMs:number = now.getTime() - parsedDate.getTime();
+                const diffDays:number = diffMs / (1000 * 60 * 60 * 24);
+
+                let label:string = '';
+                if (diffDays <= 1) label = 'New!';
+                else if (diffDays <= 5) label = 'New';
+
+                const showDate = !args.includes('nodate');
+
                 nodes.push(
-                    <span key={keyStr} style={{ color: 'red' }}>
-                        日付形式エラー:
-                        args: {args},
-                        dateStr: {dateStr},
-                        keyStr: {keyStr}
+                    <span key={keyStr} style={{
+                        fontWeight: 'bold',
+                        fontSize: '80%'
+                    }}>
+                        {showDate ? dateStr : ''} <span style={{
+                            color: diffDays <= 1 ?
+                            'red' : diffDays <= 3 ?
+                            'orange' : diffDays <= 5 ?
+                            'green' : 'inherit'
+                        }}>{label}</span>
                     </span>
                 );
-                last = m.index + token.length;
-                continue;
             }
-
-            const now:Date = new Date();
-            const diffMs:number = now.getTime() - parsedDate.getTime();
-            const diffDays:number = diffMs / (1000 * 60 * 60 * 24);
-
-            let label:string = '';
-            if (diffDays <= 1) label = 'New!';
-            else if (diffDays <= 5) label = 'New';
-
-            const showDate = !args.includes('nodate');
-
-            nodes.push(
-                <span key={keyStr} style={{
-                    fontWeight: 'bold',
-                    fontSize: '80%'
-                }}>
-                    {showDate ? dateStr : ''} <span style={{
-                        color: diffDays <= 1 ?
-                        'red' : diffDays <= 3 ?
-                        'orange' : diffDays <= 5 ?
-                        'green' : 'inherit'
-                    }}>{label}</span>
-                </span>
-            );
-
             last = m.index + token.length;
         }
         else if (m[48]) {
