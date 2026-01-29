@@ -240,19 +240,20 @@ export default function Home() {
                         }
                     />
                 </Head>
-
                 <div className={styles.contentsWrapper}>
+                    <main style={{ padding: '2rem' }}>
                     {clientError ? (
-                        <main style={{ padding: '2rem' }}>
-                            <h1>Application Error</h1>
-                            <p>{(clientError as ClientError).message}</p>
-                        </main>
-                    ) : (
-                        <main style={{ padding: '2rem' }}>
-                            <h1>АсакураWiki {versions[2]}</h1>
-                            <p>Прошло уже полгода! Мы будем и дальше дорожить нашим прошлым и продолжать развиваться.</p>
-                        </main>
-                    )}
+                            <>
+                                <h1>Application Error</h1>
+                                <p>{(clientError as ClientError).message}</p>
+                            </>
+                        ) : (
+                            <>
+                                <h1>АсакураWiki {versions[2]}</h1>
+                                <p>Прошло уже полгода! Мы будем и дальше дорожить нашим прошлым и продолжать развиваться.</p>
+                            </>
+                        )}
+                    </main>
                 </div>
             </>
         );
