@@ -504,13 +504,9 @@ export default function parseOtherInline(
             const dateStr = m[47]?.trim();
             const keyStr = `inl-${baseKey}-${m.index}`;
 
-            console.log("&new logs: ", {
-                args,
-                dateStr,
-                keyStr
-            });
+            console.log("&new logs: ", { args, dateStr, keyStr });
 
-            // 日付が無い場合はエラー扱いにする
+            // 日付が無い場合はエラー扱い
             if (!dateStr) {
                 nodes.push(
                     <span key={keyStr} style={{ color: 'red' }}>
@@ -520,13 +516,12 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
-                continue;
+                continue;   // ← 必須
             }
 
             // Safari 対応：曜日除去 → ISO8601 形式に変換
             const cleaned = dateStr.replace(/\(.*?\)/, '').trim();
             const iso = cleaned.replace(' ', 'T');
-
             const parsedDate = new Date(iso);
 
             if (isNaN(parsedDate.getTime())) {
@@ -539,7 +534,7 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
-                continue;
+                continue;   // ← これが無いと Safari が落ちる
             }
 
             const now = new Date();
@@ -553,15 +548,13 @@ export default function parseOtherInline(
             const showDate = !args.includes('nodate');
 
             nodes.push(
-                <span key={keyStr} style={{
-                    fontWeight: 'bold',
-                    fontSize: '80%'
-                }}>
-                    {showDate ? dateStr : ''} <span style={{
-                        color: diffDays <= 1 ?
-                            'red' : diffDays <= 3 ?
-                                'orange' : diffDays <= 5 ?
-                                    'green' : 'inherit'
+                <span key={keyStr} style={{ fontWeight: 'bold', fontSize: '80%' }}>
+                    {showDate ? dateStr : ''} 
+                    <span style={{
+                        color: diffDays <= 1 ? 'red'
+                            : diffDays <= 3 ? 'orange'
+                            : diffDays <= 5 ? 'green'
+                            : 'inherit'
                     }}>{label}</span>
                 </span>
             );
