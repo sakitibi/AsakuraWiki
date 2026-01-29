@@ -29,8 +29,8 @@ export default function parseOtherInline(
     let last:number = 0
     let m: RegExpExecArray | null
     // 各プラグインを順次キャプチャする正規表現
-    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment(?:\(\s*(?:above|below)\s*\))?|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&new(?:\((?<args>[^)]*)\))?\{(?<date>[^\}]+)\};|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
-
+    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment(?:\(\s*(?:above|below)\s*\))?|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
+    const newRe = /&new(?:\((?<args>[^)]*)\))?\{(?<date>[^\}]+)\};/; // &newだけ特別扱い
     while ((m = re.exec(line))) {
         const token:string = m[0];
         const key:string = `inl-${baseKey}-${m.index}`;
@@ -500,26 +500,20 @@ export default function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&new')) {
-            let args = m.groups?.args ?? "date";
-            if(args !== "nodate"){
-                args = "date";
-            }
-            const dateStr = m.groups?.date;
-            const keyStr = `inl-${baseKey}-${m.index}`;
-
-            console.log("&new logs: ", { args, dateStr, keyStr });
-
-            if (!dateStr) {
-                nodes.push(
-                    <span key={keyStr} style={{ color: 'red' }}>
-                        日付形式エラー（空の dateStr）:
-                        args: {args},
-                        keyStr: {keyStr}
-                    </span>
-                );
+            const m2 = token.match(newRe);
+            if (!m2?.groups) {
+                // マッチしない場合はスキップ
                 last = m.index + token.length;
                 continue;
             }
+
+            let args = m2.groups.args || "date";
+            if (args !== "nodate") args = "date";
+
+            const dateStr = m2.groups.date;
+            const keyStr = `inl-${baseKey}-${m.index}`;
+
+            console.log("&new logs: ", { args, dateStr, keyStr });
 
             const cleaned = dateStr.replace(/\(.*?\)/, '').trim();
             const iso = cleaned.replace(' ', 'T');
@@ -546,7 +540,7 @@ export default function parseOtherInline(
             if (diffDays <= 1) label = 'New!';
             else if (diffDays <= 5) label = 'New';
 
-            const showDate = !args.includes('nodate');
+            const showDate = args !== "nodate";
 
             nodes.push(
                 <span key={keyStr} style={{ fontWeight: 'bold', fontSize: '80%' }}>
@@ -562,12 +556,12 @@ export default function parseOtherInline(
 
             last = m.index + token.length;
         }
-        else if (m[48]) {
-            const name = m[48].trim();
-            const argsRaw = m[49];
+        else if (m[46]) {
+            const name = m[46].trim();
+            const argsRaw = m[47];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
 
-            console.log('[ParseInline] function-call via m[48]:', { name, args });
+            console.log('[ParseInline] function-call via m[46]:', { name, args });
 
             nodes.push(
                 <FunctionCallRenderer
