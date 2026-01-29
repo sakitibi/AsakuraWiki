@@ -29,8 +29,8 @@ export default function parseOtherInline(
     let last:number = 0
     let m: RegExpExecArray | null
     // 各プラグインを順次キャプチャする正規表現
-    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment(?:\(\s*(?:above|below)\s*\))?|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
-    const newRe = /&new(?:\((?<args>[^)]*)\))?\{(?<date>[^\}]+)\};/; // &newだけ特別扱い
+    const re:RegExp = /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment(?:\(\s*(?:above|below)\s*\))?|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);||&new\([^)]*\)\{[^}]+\};|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu
+
     while ((m = re.exec(line))) {
         const token:string = m[0];
         const key:string = `inl-${baseKey}-${m.index}`;
@@ -500,25 +500,16 @@ export default function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&new')) {
-            const m2 = token.match(newRe);
-            if (!m2?.groups) {
-                // マッチしない場合はスキップ
-                last = m.index + token.length;
-                continue;
-            }
-
-            let args = m2.groups.args || "date";
-            if (args !== "nodate") args = "date";
-
-            const dateStr = m2.groups.date;
+            const args = m[46]?.split(',').map(s => s.trim()) ?? [];
+            const dateStr = m[47]?.trim();
             const keyStr = `inl-${baseKey}-${m.index}`;
-
-            console.log("&new logs: ", { args, dateStr, keyStr });
-
-            const cleaned = dateStr.replace(/\(.*?\)/, '').trim();
-            const iso = cleaned.replace(' ', 'T');
-            const parsedDate = new Date(iso);
-
+            console.log("&new logs: ", {
+                "args: ": args,
+                "dateStr: ": dateStr,
+                "keyStr: ": keyStr
+            });
+            // 日付文字列から Date オブジェクトを生成
+            const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim()); // 曜日を除去
             if (isNaN(parsedDate.getTime())) {
                 nodes.push(
                     <span key={keyStr} style={{ color: 'red' }}>
@@ -529,39 +520,40 @@ export default function parseOtherInline(
                     </span>
                 );
                 last = m.index + token.length;
-                continue;
             }
 
-            const now = new Date();
-            const diffMs = now.getTime() - parsedDate.getTime();
-            const diffDays = diffMs / (1000 * 60 * 60 * 24);
+            const now:Date = new Date();
+            const diffMs:number = now.getTime() - parsedDate.getTime();
+            const diffDays:number = diffMs / (1000 * 60 * 60 * 24);
 
-            let label = '';
+            let label:string = '';
             if (diffDays <= 1) label = 'New!';
             else if (diffDays <= 5) label = 'New';
 
-            const showDate = args !== "nodate";
+            const showDate = !args.includes('nodate');
 
             nodes.push(
-                <span key={keyStr} style={{ fontWeight: 'bold', fontSize: '80%' }}>
-                    {showDate ? dateStr : ''} 
-                    <span style={{
-                        color: diffDays <= 1 ? 'red'
-                            : diffDays <= 3 ? 'orange'
-                            : diffDays <= 5 ? 'green'
-                            : 'inherit'
+                <span key={keyStr} style={{
+                    fontWeight: 'bold',
+                    fontSize: '80%'
+                }}>
+                    {showDate ? dateStr : ''} <span style={{
+                        color: diffDays <= 1 ?
+                        'red' : diffDays <= 3 ?
+                        'orange' : diffDays <= 5 ?
+                        'green' : 'inherit'
                     }}>{label}</span>
                 </span>
             );
 
             last = m.index + token.length;
         }
-        else if (m[46]) {
-            const name = m[46].trim();
-            const argsRaw = m[47];
+        else if (m[48]) {
+            const name = m[48].trim();
+            const argsRaw = m[49];
             const args = argsRaw ? argsRaw.split(',').map(s => s.trim()) : [];
 
-            console.log('[ParseInline] function-call via m[46]:', { name, args });
+            console.log('[ParseInline] function-call via m[48]:', { name, args });
 
             nodes.push(
                 <FunctionCallRenderer
