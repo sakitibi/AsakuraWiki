@@ -1,0 +1,41 @@
+.navfold-container {
+
+    & .navfold-summary {
+        display: inline-flex;
+        flex-flow: row nowrap;
+        border: none;
+        background: none;
+        padding: 4px 2em 4px 0;
+        text-align: left;
+
+        // 要素が button なのでそのままだとつねに黒になる。
+        // 上の階層から引き継いで button 要素のスタイルを無視しないと。
+        color: inherit;
+
+        &:hover {
+            background: none;
+            text-decoration: underline;
+        }
+
+        & .navfold-summary-icon {
+            margin-right: 2px;
+        }
+    }
+    & .navfold-content {
+        padding-left: 14px;
+    }
+}
+
+.navfold-container:not(.navfold-open) {
+    & > .navfold-summary .navfold-icon-open {
+        display: none;
+    }
+    & > .navfold-content {
+        display: none;
+    }
+}
+.navfold-container.navfold-open {
+    & > .navfold-summary .navfold-icon-close {
+        display: none;
+    }
+}

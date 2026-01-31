@@ -1,0 +1,40 @@
+table {
+    border-collapse: collapse;
+    padding: 0;
+    border: 0;
+    text-align: left;
+}
+
+table thead td, table tfoot td {
+    color: var(--table-thead-tfoot-td-text-color);
+    background-color: var(--table-thead-tfoot-td-background-color);
+}
+
+table thead th, table tfoot th {
+    color: var(--table-thead-tfoot-th-text-color);
+    background-color: var(--table-thead-tfoot-th-background-color);
+}
+
+table th {
+    padding: 3px;
+    margin: 1px;
+    text-align: center;
+    color: var(--table-th-text-color);
+    background-color: var(--table-th-background-color);
+    /*border-right: 0 solid;*/
+    /*border-bottom: 0 solid;*/
+    border: 1px solid var(--table-th-border-color);
+}
+
+table td {
+    padding: 3px;
+    margin: 1px;
+    color: var(--table-td-text-color);
+    background-color: var(--table-td-background-color);
+    border: 1px solid var(--table-td-border-color);
+}
+
+table.conflict_diff > thead th {
+    background-color: var(--table-conflict-thead-th-background-color);
+    border: 1px solid var(--table-conflict-thead-th-border-color);
+}
