@@ -312,7 +312,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                     textAlign: "center",
                     color: "white",
                     backgroundColor: "red",
-                    fontSize: "20px"
+                    fontSize: "18px"
                 }}
             >
                 <h1>

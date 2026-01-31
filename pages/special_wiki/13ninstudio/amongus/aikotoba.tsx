@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Script from 'next/script';
 import { supabaseServer } from '@/lib/supabaseClientServer'; // ← realtime用クライアント
+import { notuseUsername } from '@/utils/user_list';
 
 export default function AmongusRoomAuthCode() {
     const [roomAuthCode, setRoomAuthcode] = useState<string>("");
@@ -9,6 +9,7 @@ export default function AmongusRoomAuthCode() {
     const [inputRoomAuthcode, setInputRoomAuthcode] = useState<string>("");
     const [amongusUserName, setAmongusUserName] = useState<string>("");
     const [success, setSuccess] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>('');
 
     const designColor: "default" = "default";
 
@@ -75,6 +76,19 @@ export default function AmongusRoomAuthCode() {
         e.preventDefault();
         try{
             setLoading(true);
+            const notuseUser_list_found = notuseUsername.find(value => amongusUserName.match(value));
+            if(notuseUser_list_found){
+                setErrorMsg("エラー 禁止されているユーザー名です。");
+                return;
+            }
+            if(amongusUserName.length > 10){
+                setErrorMsg("ユーザー名が長すぎます!");
+                return;
+            }
+            if(roomAuthCode === inputRoomAuthcode){
+                setErrorMsg("認証コードが正しくありません。");
+                return;
+            }
             const { error } = await supabaseServer
                 .from("amongus_authcodes")
                 .insert([{
@@ -106,6 +120,8 @@ export default function AmongusRoomAuthCode() {
                                 <>
                                     <h1>認証が完了しました!</h1>
                                     <p><a href="amongus:">Amongus部屋にお戻り下さい</a></p>
+                                    <p><a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">Amongusの13人TV部屋のルール</a></p>
+                                    <p><a href="/policies">利用規約</a></p>
                                 </>
                             ) : (
                                 <>
@@ -131,7 +147,7 @@ export default function AmongusRoomAuthCode() {
                                         </label>
                                         <br/><br/>
                                         <label>
-                                            Amongusでのユーザー名
+                                            Amongusでのユーザー名(10文字以内)
                                             <input
                                                 type='text'
                                                 onChange={(e) => setAmongusUserName(e.target.value)}
@@ -139,6 +155,7 @@ export default function AmongusRoomAuthCode() {
                                             />
                                         </label>
                                         <br/><br/>
+                                        {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
                                         <button type='submit'>
                                             <span>{loading ? "認証中" : "認証"}</span>
                                         </button>
@@ -151,7 +168,6 @@ export default function AmongusRoomAuthCode() {
                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                         </div>
                     </article>
-                    <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js' />
                 </div>
             </div>
         </>
