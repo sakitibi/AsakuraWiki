@@ -169,10 +169,6 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             }
         })();
     }, [isBot]);
-
-    const wiki13ninstudioCounterTotal =
-        (wiki13ninstudioCounter?.total ?? 0) + 1391;
-
     /* ===============================
         IP 取得（人間のみ）
     =============================== */
@@ -274,7 +270,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         if((Date.now() - termsAgreeTime) > 6048e5){ // 規約同意後1週間たっているか判定
             location.replace(`/policies?redirect=${encodeURIComponent(location.pathname)}`);
         }
-    }, []);
+    }, [isBot]);
 
     return (
         <>
