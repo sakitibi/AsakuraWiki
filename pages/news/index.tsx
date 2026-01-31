@@ -34,6 +34,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
+                            <li>2026/01/31 <a href="/news/2026/01/31/1">緊急速報 名前は長い方が有利の被害者が1日平均過去最大です</a></li>
                             <li>2026/01/25 <a href="/news/2026/01/25/1">また同じ時期に大量のメンバー申請が来た為、</a></li>
                             <li>2025/12/22 <a href="/news/2025/12/22/1">24日〜25日について</a></li>
                             <li>2025/12/14 <a href="/news/2025/12/14/1">18日〜13ninGamesStore本格開設!</a></li>

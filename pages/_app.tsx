@@ -307,6 +307,19 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                 </>
             )}
 
+            <div
+                style={{
+                    textAlign: "center",
+                    color: "white",
+                    backgroundColor: "red",
+                    fontSize: "20px"
+                }}
+            >
+                <h1>
+                    <a href="/news/2026/01/31/1">緊急速報 名前は長い方が有利の被害者が1日平均過去最大です 詳しくはこちら</a>
+                </h1>
+            </div>
+
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />
             </SessionContextProvider>
