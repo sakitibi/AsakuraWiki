@@ -15,6 +15,7 @@ import PoliciesRegister, {
 
 export default function Policies(){
     const [menuStatus, setMenuStatus] = useState(false);
+    const [url, setUrl] = useState<URL | null>(null);
     useEffect(() => {
         if(typeof document !== "undefined"){
             document.body.style.overflow = menuStatus ? "hidden" : "";
@@ -23,9 +24,17 @@ export default function Policies(){
             };
         }
     }, [menuStatus]);
+    useEffect(() => {
+        if(!location) return;
+        setUrl(new URL(location.href));
+    }, [])
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
+    const Agreed = () => {
+        localStorage.setItem("terms_agree", String(Date.now()));
+        location.replace(`${url?.searchParams.get("redirect") ?? "/policies"}`);
+    }
     return(
         <>
             <Head>
@@ -46,6 +55,7 @@ export default function Policies(){
                             <ol>
                                 <li>本規約は、本サービスの提供条件及び本サービスの利用に関する当社とユーザーとの間の権利義務関係を定めることを目的とし、ユーザーと当社との間の本サービスの利用に関わる一切の関係に適用されます。</li>
                                 <li>本規約の内容と、その他の本規約外における他サービス利用規約、条例、法律、憲法などと対立する場合は、<br/><strong>本規約の規定が優先して適用されるもの</strong>とします。(13nin利用規約引用)</li>
+                                <li>また、本サービスを一度でも閲覧したら本規約が適応されるものとします。(2026年1月31日追加)</li>
                             </ol>
                             <h2>第2条（定義）</h2>
                             <PoliciesDefined/>
@@ -136,6 +146,9 @@ export default function Policies(){
                                 <li>本規約及びサービス利用契約の準拠法は日本法とします。なお、本サービスにおいて物品の売買が発生する場合であっても、国際物品売買契約に関する国際連合条約の適用を排除することに合意します。</li>
                                 <li>本規約またはサービス利用契約に起因し、または関連する一切の紛争については、大阪地方裁判所を第一審の専属的合意管轄裁判所とします。</li>
                             </ol>
+                            <button onClick={Agreed}>
+                                <span>利用規約に同意する</span>
+                            </button>
                         </div>
                     </main>
                     <RightMenuJp/>

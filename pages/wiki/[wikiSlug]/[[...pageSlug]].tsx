@@ -23,9 +23,19 @@ import { asakuraMenberUserId } from '@/utils/user_list';
 // Chromium系判定
 export function isChromiumOrFirefox() {
     if(!navigator) return;
-    const ua = navigator.userAgent;
-    // Edge, Opera, Chrome, Chromium, Brave など
-    return /\b(Chrome|Mozilla|Gecko|Firefox|Chromium|Edg|OPR|Brave)\b/.test(ua) && !/Silk|UCBrowser|SamsungBrowser|CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
+    const ua = navigator.userAgent.toLowerCase();
+
+    const isSafari =
+        ua.includes('safari') &&
+        // Chrome、iOS版Chrome、iOS版FirefoxはSafariという文字列を含むので除外する
+        !ua.includes('chrome') &&
+        !ua.includes('crios') &&
+        !ua.includes('fxios');
+
+    // WebViewの場合はSafariという文字列を含まないため個別に確認が必要
+    const isIosWebView = (ua.includes('iphone') || ua.includes('ipad')) && ua.includes('applewebkit') && !ua.includes('safari');
+
+    return isSafari || isIosWebView;
 }
 
 export default function WikiPage() {

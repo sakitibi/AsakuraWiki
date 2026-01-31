@@ -263,6 +263,19 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         }
     }, [adminer_user_id_list, blockedIP_list_found]);
 
+    useEffect(() => {
+        if(!location || !localStorage || isBot) return;
+        if(
+            location.pathname === "/policies" ||
+            location.pathname === "/rules" ||
+            location.pathname === "/privacy"
+        ) return;
+        const termsAgreeTime = parseInt(localStorage.getItem("terms_agree") ?? "0", 10);
+        if((Date.now() - termsAgreeTime) > 6048e5){ // 規約同意後1週間たっているか判定
+            location.replace(`/policies?redirect=${encodeURIComponent(location.pathname)}`);
+        }
+    }, []);
+
     return (
         <>
             <Head>

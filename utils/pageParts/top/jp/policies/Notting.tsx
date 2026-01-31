@@ -45,6 +45,18 @@ export default function PoliciesNotting(){
                 </li>
                 <li className="danger_list">
                     <strong>
+                        <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
+                        の配信の合言葉を部屋内で発言する行為
+                    </strong>
+                </li>
+                <li className="danger_list">
+                    <strong>
+                        <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>
+                        の関係者が当サービスを利用する行為
+                    </strong>
+                </li>
+                <li className="danger_list">
+                    <strong>
                         <a href="https://www.e-kokusei.go.jp">{kokuseiChousaStr}</a>を支援、宣伝などをする行為
                     </strong>
                 </li>
