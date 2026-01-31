@@ -135,7 +135,7 @@ export default function AmongusRoomAuthCode() {
                                     <p>2026年1月31日より、認証コードの入力がルール上必須となりました。</p>
                                     <p>認証コードを入力しないとルールに同意していないと判断されます。</p>
                                     <p>以下をフォームに入力して下さい。</p>
-                                    <p><strong>{roomAuthCode}</strong></p>
+                                    <p style={{fontSize: "15px" }}>認証コード: <strong>{roomAuthCode}</strong></p>
                                     <form onSubmit={handleSubmit}>
                                         <label>
                                             認証コード
