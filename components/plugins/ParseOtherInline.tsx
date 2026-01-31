@@ -12,7 +12,7 @@ import type { Context } from "@/components/plugins/parsePluginTypes";
 import versions from "@/utils/version";
 import type { ReactNode } from "react";
 import FunctionCallRenderer from "@/components/plugins/functionCall";
-import { isChromiumOrFirefox } from "@/pages/wiki/[wikiSlug]/[[...pageSlug]]";
+import { isSafari } from "@/pages/wiki/[wikiSlug]/[[...pageSlug]]";
 
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
 export default function parseOtherInline(
@@ -501,7 +501,7 @@ export default function parseOtherInline(
             last = m.index + token.length;
         }
         else if (token.startsWith('&new')) {
-            if(isChromiumOrFirefox()){
+            if(!isSafari()){
                 const args = m[46]?.split(',').map(s => s.trim()) ?? [];
                 const dateStr = m[47]?.trim();
                 const keyStr = `inl-${baseKey}-${m.index}`;

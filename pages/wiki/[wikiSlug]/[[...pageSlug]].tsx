@@ -21,7 +21,7 @@ import styles from '@/css/wikis.module.css';
 import { asakuraMenberUserId } from '@/utils/user_list';
 
 // Chromium系判定
-export function isChromiumOrFirefox() {
+export function isSafari() {
     if(!navigator) return;
     const ua = navigator.userAgent.toLowerCase();
 
