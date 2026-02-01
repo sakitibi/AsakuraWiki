@@ -264,6 +264,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         if(
             location.pathname === "/policies" ||
             location.pathname === "/rules" ||
+            location.pathname === "/special_wiki/13ninstudio/amongus/rules" ||
             location.pathname === "/privacy"
         ) return;
         const termsAgreeTime = parseInt(localStorage.getItem("terms_agree") ?? "0", 10);
