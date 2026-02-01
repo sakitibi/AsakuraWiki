@@ -19,14 +19,12 @@ export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [userMeta, setUserMeta] = useState<any[]>([]);
-
-    const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
-
-        if (!!notuseUser_list_found) {
+        const notuseUser_list_found = notuseUsername.some(re => re.test(username));
+        if (notuseUser_list_found) {
             setErrorMsg('このユーザー名は使用出来ません。');
             setLoading(false);
             return;
