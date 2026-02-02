@@ -24,7 +24,7 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2026/01/31 緊急速報 名前は長い方が有利の被害者が1日平均過去最大です</title>
+                <title>2026/01/31 Срочные новости: Среднесуточное число жертв в НМНГюри достигло рекордного уровня.</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -32,13 +32,13 @@ export default function NewsPage() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/news/2026/01/31/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2026/01/31 緊急速報 名前は長い方が有利の被害者が1日平均過去最大です</h1>
-                        <p>これに伴い、あさクラメンバーの審査を一時停止させていただきます。</p>
-                        <p>名前は長い方が有利の配信の概要欄を決して見ないでください。</p>
-                        <p>名前は長い方が有利の配信の概要欄の閲覧は、<a href="/policies">利用規約</a>で禁止されています。</p>
-                        <p><a href="/policies">利用規約</a>も厳しくしました。</p>
-                        <p>今後、あさクラWikiを一度でもご利用いただいた場合は、利用規約に同意いただく必要があります。</p>
-                        <p><a href="https://youtu.be/rsxcYICOQ0A">問題の配信</a></p>
+                        <h1>2026/01/31 Срочные новости: Среднесуточное число жертв в НМНГюри достигло рекордного уровня.</h1>
+                        <p>В связи с этим мы временно приостанавливаем отбор участников группы «Асакура».</p>
+                        <p>Никогда не смотрите раздел описания NMNGyuri.</p>
+                        <p>Просмотр раздела описания NMNGyuri запрещен в соответствии с <a href="/policies">Условиями использования</a>.</p>
+                        <p>Мы также ужесточили наши <a href="/policies">Условия использования</a>.</p>
+                        <p>С этого момента, если вы хотя бы раз заходили на Asakura Wiki, вам потребуется согласиться с условиями использования.</p>
+                        <p><a href="https://youtu.be/rsxcYICOQ0A">Распространение выпусков</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>
