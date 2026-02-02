@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import styles from '@/css/index.module.css';
-import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
-import MenuJp from '@/utils/pageParts/top/jp/Menu';
-import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
-import { useState, useEffect } from 'react';
-import HeaderJp from '@/utils/pageParts/top/jp/Header';
-import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import MenuRu from '@/utils/pageParts/top/ru/Menu';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
+import { useEffect, useState } from 'react';
 
 
 export default function NewsPage() {
@@ -26,11 +26,11 @@ export default function NewsPage() {
             <Head>
                 <title>2026/01/31 Срочные новости: Среднесуточное число жертв в НМНГюри достигло рекордного уровня.</title>
             </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick}/>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news/2026/01/31/1"/>
+                    <LeftMenuRu URL="/news/2026/01/31/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2026/01/31 Срочные новости: Среднесуточное число жертв в НМНГюри достигло рекордного уровня.</h1>
                         <p>В связи с этим мы временно приостанавливаем отбор участников группы «Асакура».</p>
@@ -40,9 +40,9 @@ export default function NewsPage() {
                         <p>С этого момента, если вы хотя бы раз заходили на Asakura Wiki, вам потребуется согласиться с условиями использования.</p>
                         <p><a href="https://youtu.be/rsxcYICOQ0A">Распространение выпусков</a></p>
                     </main>
-                    <RightMenuJp/>
+                    <RightMenuRu/>
                 </div>
-                <FooterJp/>
+                <FooterRu/>
             </div>
         </>
     )
