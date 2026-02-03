@@ -140,6 +140,9 @@
 
 .MC_Link_Style_RichText table {
     background-color: #262423;
+    & tr{
+        border-bottom: 1px solid #6b6562;
+    }
 }
 
 /* =========================================
