@@ -33,7 +33,7 @@ export default function Members() {
                     <LeftMenuJp URL="/members"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>あさクラメンバー一覧</h1>
-                        <p>現在のメンバー数: 33人 4人審査中</p>
+                        <p>現在のメンバー数: 35人 3人審査中</p>
                         <ul className='list1'>
                             <li><a href="https://youtube.com/channel/UCJcP2mfDCtKnADrbDDjT_8g/?sub_confirmation=1">さきちび(管理者) 2021年1月1日参加</a>
                                 <ul className='list2'>
@@ -73,7 +73,7 @@ export default function Members() {
                             <li><a href="https://discord.gg/zbvXxCWcg6">匿名 2025年8月12日参加</a></li>
                             <li><a href='https://youtube.com/@yuinel'>ゆいねる 2026年1月27日参加</a></li>
                             <li><a href='https://youtube.com/@akasakabox'>あかさかの箱 2026年1月29日参加</a></li>
-                            <li>審査中</li>
+                            <li><a href="https://youtube.com/@torebiru">Train Builder 2026年2月3日参加</a></li>
                             <li>審査中</li>
                             <li>審査中</li>
                             <li>審査中</li>
