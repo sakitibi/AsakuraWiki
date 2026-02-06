@@ -1,38 +1,3 @@
-/* fonts */
-$font-vanilla: "MinecraftTenv2","MinecraftTen","Noto Sans","Helvetica Neue","Helvetica","Arial","sans-serif";
-
-/* links */
-$link-color: #6cc349, #2a641c;
-
-/* themes */
-$themes: (
-    "MC_Theme_Core",
-    "MC_Theme_Dungeons .MC_Theme_Vanilla",
-    "MC_Theme_Legends .MC_Theme_Vanilla",
-    "MC_Theme_Realms .MC_Theme_Vanilla",
-    "MC_Theme_Vanilla"
-);
-
-$vanilla-themes: (
-    "MC_Theme_Dungeons .MC_Theme_Vanilla",
-    "MC_Theme_Legends .MC_Theme_Vanilla",
-    "MC_Theme_Realms .MC_Theme_Vanilla",
-    "MC_Theme_Vanilla"
-);
-
-/* heading mixins */
-@mixin heading-sm {
-    font-size: 2.25rem;
-    line-height: 2.25rem;
-    letter-spacing: -.54px;
-}
-
-@mixin heading-lg {
-    font-size: 4.5rem;
-    line-height: 4.5rem;
-    letter-spacing: -.015em;
-}
-
 /* fonts map */
 $minecraft-fonts: (
     (
