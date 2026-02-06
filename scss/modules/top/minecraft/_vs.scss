@@ -1,79 +1,35 @@
-@use 'sass:map';
-@use '../../variables';
-
-/* =========================================================
-    Heading
-========================================================= */
-
 .MC_Core_HeadingStyle {
-    .MC_Layout_Article .MC_Theme_Vanilla .MC_Heading_1,
-    .MC_Link_Style_RichText h1,
-    .MC_Theme_Vanilla .MC_Link_Style_RichText h1,
-    .MC_Heading_1 {
+    .MC_Layout_Article .MC_Theme_Vanilla .MC_Heading_1, .MC_Link_Style_RichText h1, .MC_Theme_Vanilla .MC_Link_Style_RichText h1, .MC_Heading_1 {
         font-size: 2.25rem;
         letter-spacing: -0.54px;
         line-height: 2.25rem;
     }
 }
 
-.MC_Layout_Article {
-    .MC_Theme_Vanilla {
-        .MC_Heading_1,
-        .MC_Link_Style_RichText h1 {
-            font-size: 2.25rem;
-            letter-spacing: -0.54px;
-            line-height: 2.25rem;
-        }
+.MC_Layout_Article .MC_Theme_Vanilla {
+    .MC_Heading_1, .MC_Link_Style_RichText h1 {
+        font-size: 2.25rem;
+        letter-spacing: -0.54px;
+        line-height: 2.25rem;
     }
 }
 
-/* =========================================================
-    Heading (Theme)
-========================================================= */
-
-.MC_Theme_Core .MC_Heading_1,
-.MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1,
-.MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1,
-.MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1,
-.MC_Theme_Vanilla .MC_Heading_1 {
-    font-size: 4.5rem;
-    letter-spacing: -0.015em;
-    line-height: 4.5rem;
-}
-
 @media screen and (max-width: 1199.98px) {
-    .MC_Theme_Core .MC_Heading_1,
-    .MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1,
-    .MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1,
-    .MC_Theme_Marketplace .MC_Theme_Vanilla .MC_Heading_1,
-    .MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1,
-    .MC_Theme_Vanilla .MC_Heading_1 {
+    .MC_Theme_Core .MC_Heading_1, .MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Marketplace .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Vanilla .MC_Heading_1 {
         font-size: 4rem;
         line-height: 4rem;
     }
 }
 
-/* =========================================================
-    Theme Base
-========================================================= */
-
-.MC_Theme_Vanilla,
-.MC_Theme_Dungeons .MC_Theme_Vanilla,
-.MC_Theme_Legends .MC_Theme_Vanilla,
-.MC_Theme_Realms .MC_Theme_Vanilla {
-    font-family:
-        "MinecraftTenv2",
-        "MinecraftTen",
-        "Noto Sans",
-        "Helvetica Neue",
-        "Helvetica",
-        "Arial",
-        "sans-serif";
+.MC_Theme_Core .MC_Heading_1, .MC_Theme_Dungeons .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Legends .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Realms .MC_Theme_Vanilla .MC_Heading_1, .MC_Theme_Vanilla .MC_Heading_1 {
+    font-size: 4.5rem;
+    letter-spacing: -0.015em;
+    line-height: 4.5rem;
 }
 
-/* =========================================================
-    Article / Layout
-========================================================= */
+.MC_Theme_Dungeons .MC_Theme_Vanilla, .MC_Theme_Legends .MC_Theme_Vanilla, .MC_Theme_Realms .MC_Theme_Vanilla, .MC_Theme_Vanilla {
+    font-family: "MinecraftTenv2", "MinecraftTen", "Noto Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+}
 
 .MC_articleHeroA_header_container > * {
     flex-basis: 100%;
@@ -88,94 +44,91 @@
     z-index: 20;
 }
 
-.MC_articleGridA {
-    .MC_Link_Style_RichText {
-        margin-top: 24px;
-        word-wrap: break-word;
-        word-break: break-word;
-        color: #fff, inherit;
-    }
+.MC_articleGridA .MC_Link_Style_RichText {
+    word-wrap: break-word;
+    color: #fff, inherit;
+    margin-top: 24px;
+    word-break: break-word;
+}
 
-    &_sectionRef {
-        width: 100%;
-        height: 1px;
-    }
+.MC_articleGridA_sectionRef {
+    height: 1px;
+    width: 100%;
 }
 
 .MC_Bg_Inherit {
     color: #fff, #000;
 }
 
-/* =========================================================
-    RichText
-========================================================= */
-
-.MC_Link_Style_RichText {
-    table {
-        background-color: #262423;
+.MC_Theme_Vanilla .MC_Link_Style_RichText {
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 400;
+        margin: 0;
     }
-}
 
-.MC_Theme_Vanilla {
-    .MC_Link_Style_RichText {
+    a {
+        color: #6cc349, #2a641c !important;
+        font-weight: 700;
+        text-decoration: underline;
 
-        h1, h2, h3, h4, h5, h6 {
-            margin: 0;
-            font-weight: 400;
+        &:not(.MC_Button, .MC_Link_Accent) {
+            color: #6cc349, #2a641c !important;
         }
 
-        h1, h2, h3, h4 {
-            font-family:
-                "MinecraftTenv2",
-                "MinecraftTen",
-                "Noto Sans",
-                "Helvetica Neue",
-                "Helvetica",
-                "Arial",
-                "sans-serif" !important;
-        }
-
-        h2 {
-            font-size: 3.5rem;
-            letter-spacing: -0.015em;
-            line-height: 3.5rem;
-        }
-
-        a {
+        &:hover {
             color: #6cc349, #2a641c !important;
             font-weight: 700;
             text-decoration: underline;
-
-            &:not(.MC_Button, .MC_Link_Accent) {
-                color: #6cc349, #2a641c !important;
-            }
-
-            &:hover {
-                color: #6cc349, #2a641c !important;
-                text-decoration: underline;
-            }
         }
+    }
+
+    h1, h2, h3, h4 {
+        font-family: "MinecraftTenv2", "MinecraftTen", "Noto Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif" !important;
+    }
+
+    h2 {
+        font-size: 3.5rem;
+        letter-spacing: -0.015em;
+        line-height: 3.5rem;
     }
 }
 
-.MC_Theme_Core a:not(.MC_Button, .MC_Link_Accent),
-.MC_Theme_Vanilla a:not(.MC_Button, .MC_Link_Accent) {
+.MC_Theme_Core a:not(.MC_Button, .MC_Link_Accent), .MC_Theme_Vanilla a:not(.MC_Button, .MC_Link_Accent) {
     color: #6cc349, #2a641c !important;
     text-decoration: underline !important;
 }
 
-/* =========================================================
-    Carousel
-========================================================= */
+.MC_Layout_Article {
+    .MC_CarouselD {
+        padding: 16px 0 !important;
+    }
+
+    .MC_articleGridA .MC_Link_Style_RichText [style*=font-family] {
+        font-family: "Noto Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif" !important;
+        font-size: 1rem !important;
+    }
+
+    .MC_Link_Style_RichText h2 {
+        margin-top: 24px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .MC_CarouselD {
+        padding: 80px 0 86px;
+    }
+}
+
+.MC_Link_Style_RichText table {
+    background-color: #262423;
+}
 
 .MC_Carousel {
-    width: 100%;
     margin: 0 auto;
     overflow: hidden;
+    width: 100%;
 
-    .MC_Carousel_thumbs_wrapper,
-    .MC_Carousel_track_wrapper,
-    .MC_Carousel_track_slide_media {
+    .MC_Carousel_thumbs_wrapper, .MC_Carousel_track_wrapper, .MC_Carousel_track_slide_media {
         position: relative;
     }
 }
@@ -185,32 +138,33 @@
     padding: 48px 0 54px;
 
     .MC_Carousel_header {
-        max-width: 1040px;
         margin: 0 auto 48px;
+        max-width: 1040px;
         padding: 0 10px;
         text-align: center;
     }
 
     .MC_Carousel_track {
-        position: relative;
         left: 50%;
-        width: max-content;
+        position: relative;
         transform-origin: center;
+        width: max-content;
     }
 
     .MC_Carousel_track_slide_media_img {
-        display: block;
-        width: 100%;
         aspect-ratio: 280 / 168;
+        display: block;
+        position: relative;
+        width: 100%;
     }
 
     .MC_Carousel_track_slide {
-        width: 280px;
         margin: 0 8px;
-        opacity: 0.75;
+        opacity: .75;
         transition: opacity 1s;
+        width: 280px;
 
-        &__active {
+        &.MC_Carousel_track_slide__active {
             opacity: 1;
         }
     }
@@ -218,34 +172,56 @@
 
 @media screen and (min-width: 768px) {
     .MC_CarouselD {
-        padding: 80px 0 86px;
-
         .MC_Carousel_track_slide_media_img {
             aspect-ratio: 640 / 384;
         }
 
         .MC_Carousel_track_slide {
-            width: 640px;
             margin: 0 12px;
+            width: 640px;
         }
     }
 }
 
-.MC_Carousel_thumbs_slide,
-.MC_Carousel_track_slide {
+.MC_Carousel_thumbs_slide, .MC_Carousel_track_slide {
     flex: 0 0 auto;
 }
 
-/* =========================================================
-    Fonts
-========================================================= */
+/* Webfont: MinecraftSeven */
+@font-face {
+    font-family: 'MinecraftSeven';
+    src: url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/MinecraftSeven.woff") format("woff");
 
-@each $font in variables.$minecraft-fonts {
-    @font-face {
-        font-family: map.get($font, name);
-        src: map.get($font, src);
-        font-style: normal;
-        font-weight: normal;
-        text-rendering: optimizeLegibility;
-    }
+    /* Modern Browsers */
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: Minecraft Seven V2 */
+@font-face {
+    font-family: 'MinecraftSeven-v2';
+    src: url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Seven_v2.woff2") format("woff2"), url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Seven_v2.woff") format("woff");
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: MinecraftTen */
+@font-face {
+    font-family: 'MinecraftTen';
+    src: url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/MinecraftTen.woff") format("woff");
+
+    /* Modern Browsers */
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'MinecraftTenv2';
+    src: url("https://sakitibi.github.io/static.asakurawiki.com/fonts/minecraft/Minecraft-Tenv2.woff2");
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
 }
