@@ -4,18 +4,17 @@
 // UL / OL style mapping
 // ------------------------------
 
-ul {
-    @each $class, $style in variables.$list-styles-ul {
-        &.#{$class} {
-            list-style-type: $style !important;
-        }
-    }
-}
+$ul_ol: (
+    "ul",
+    "ol"
+);
 
-ol {
-    @each $class, $style in variables.$list-styles-ol {
-        &.#{$class} {
-            list-style-type: $style !important;
+@each $listtype in $ul_ol {
+    #{$listtype} {
+        @each $class, $style in variables.$list-styles-ul {
+            &.#{$class} {
+                list-style-type: $style !important;
+            }
         }
     }
 }

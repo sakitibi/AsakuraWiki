@@ -22,3 +22,9 @@
         font-size: calc(1.275rem + .3vw);
     }
 }
+
+@media (min-width: 768px) {
+    .article > h1 {
+        font-size: 36px;
+    }
+}
