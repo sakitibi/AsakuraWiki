@@ -1,60 +1,18 @@
+/* pContact系統 */
+@use 'pCommon';
+
 .pContact {
-    background-color: #deeffc;
-    background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white.png");
-    border-radius: 10px;
-    padding: 18px;
+    @include pCommon.pCommon(
+        #deeffc
+    );
 }
 
 .pContact__title {
-    border-bottom: 1px solid #51738f;
-    color: #51738f;
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0 0 14px;
-    padding: 0 0 14px;
-    text-align: center;
+    @include pCommon.pCommon__title(#51738f);
 }
 
 .pContact__item {
-    margin: 0;
-    padding: 0;
-}
-
-.pContact__list {
-    margin: 0;
-    padding: 0;
-    list-style: none !important;
-}
-
-.pContact__item {
-    &>a {
-        align-items: center !important;
-        background-color: #fff !important;
-        border-radius: 5px !important;
-        color: #51738f !important;
-        display: flex !important;
-        font-size: 13px !important;
-        font-weight: 700 !important;
-        justify-content: center !important;
-        padding: 10px !important;
-        text-align: center !important;
-        -webkit-text-decoration: none !important;
-        text-decoration: none !important;
-
-        &::before {
-        margin-right: 10px;
-        margin-left: -16px;
-        display: inline-block;
-        content: '';
-        height: 12px;
-        width: 6px;
-        background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/right_arrow_blue.png");
-        background-repeat: no-repeat;
-        background-size: contain;
-        }
-    }
-
-    &:not(:first-child) {
-        margin-top: 10px;
+    > a {
+        @include pCommon.pCommon__item(#51738f, "blue");
     }
 }
