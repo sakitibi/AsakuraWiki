@@ -5,23 +5,19 @@
 .collapsing {
     height: 0;
     overflow: hidden;
-    transition: height .35s ease
+    transition: height .35s ease;
+    &.collapse-horizontal {
+        height: auto;
+        transition: width .35s ease;
+        width: 0
+    }
 }
 
 @media(prefers-reduced-motion:reduce) {
     .collapsing {
-        transition: none
-    }
-}
-
-.collapsing.collapse-horizontal {
-    height: auto;
-    transition: width .35s ease;
-    width: 0
-}
-
-@media(prefers-reduced-motion:reduce) {
-    .collapsing.collapse-horizontal {
-        transition: none
+        transition: none;
+        &.collapse-horizontal {
+            transition: none
+        }
     }
 }
