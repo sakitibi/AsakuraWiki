@@ -64,7 +64,7 @@ export default function Rules(){
                 <FooterJp/>
             </div>
             <Script
-                src="https://sakitibi.github.io/static.asakurawiki.com/js/app-342b4e71117d974a1648.static.js"
+                src="https://sakitibi.github.io/static.asakurawiki.com/js/app-342b4e71117d974a1648.min.static.js"
                 defer
             />
         </>
