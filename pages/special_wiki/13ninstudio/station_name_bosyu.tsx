@@ -33,7 +33,6 @@ export default function StationNameBosyu() {
                                 </summary>
                                 <ul>
                                     <li>海木</li>
-                                    <li>棖毛</li>
                                     <li>能入</li>
                                     <li>由依</li>
                                 </ul>
