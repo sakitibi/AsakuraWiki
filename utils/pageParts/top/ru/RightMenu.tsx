@@ -20,6 +20,17 @@ export default function RightMenuRu(){
                     </li>
                 </ul>
             </div>
+            <div className={styles.pForBeginner}>
+                <h2 className={styles.pForBeginner__title}>Дочерние службы</h2>
+                <ul className={styles.pForBeginner__list}>
+                    <li className={styles.pForBeginner__item}>
+                        <a href="/store">13ninGamesStore</a>
+                    </li>
+                    <li className={styles.pForBeginner__item}>
+                        <a href="https://sakitibi.github.io/13nin.com/SKNewRoles">SKNewRoles</a>
+                    </li>
+                </ul>
+            </div>
             <div className={styles.pContact}>
                 <h2 className={styles.pContact__title}>поддерживать</h2>
                 <ul className={styles.pContact__list}>
