@@ -317,8 +317,11 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                 }}
             >
                 <h1>
-                    <a href="/news/2026/01/31/1">緊急速報 名前は長い方が有利の被害者が1日平均過去最大です 詳しくはこちら</a>
+                    <a href="/news/2026/01/31/1">
+                        緊急速報 名前は長い方が有利の被害者が1日平均過去最大です 詳しくはこちら
+                    </a>
                 </h1>
+                <p>名前は長い方が有利の荒らし行為が始まってから1年..</p>
             </div>
 
             <SessionContextProvider supabaseClient={supabaseClient}>
