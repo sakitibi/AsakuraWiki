@@ -213,6 +213,7 @@ export default function WikiPage() {
     }, [content, editContent, cmdStr]);
 
     useEffect(() => {
+        if(!wikiSlugStr || !pageSlugStr) return;
         async function counterfetch(){
             return await fetch(`https://counter.wikiwiki.jp/c/13ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`);
         }
