@@ -26,9 +26,6 @@ export default function RightMenuRu(){
                     <li className={styles.pForBeginner__item}>
                         <a href="/store">13ninGamesStore</a>
                     </li>
-                    <li className={styles.pForBeginner__item}>
-                        <a href="https://sakitibi.github.io/13nin.com/SKNewRoles">SKNewRoles</a>
-                    </li>
                 </ul>
             </div>
             <div className={styles.pContact}>
