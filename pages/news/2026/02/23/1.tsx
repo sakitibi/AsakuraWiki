@@ -37,6 +37,7 @@ export default function NewsPage() {
                         <p>JSObfuscatorも撤退しました</p>
                         <p>名前は長い方が有利の配信監視も</p>
                         <p>もう時効が25日に来ます</p>
+                        <p>しかし荒らし対策は閲覧者に対応を任せます</p>
                         <p>バージョンはおそらくV2.0.80で凍結されます</p>
                     </main>
                     <RightMenuJp/>
