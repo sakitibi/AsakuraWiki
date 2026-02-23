@@ -33,12 +33,10 @@ export default function NewsPage() {
                     <LeftMenuJp URL="/news/2026/02/23/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2026/02/23 大事なお知らせ</h1>
-                        <p>13ninstudioはゲーム事業から完全撤退します</p>
+                        <p>13ninstudioはゲーム開発事業から完全撤退します</p>
                         <p>JSObfuscatorも撤退しました</p>
-                        <p>名前は長い方が有利の配信監視も</p>
-                        <p>もう時効が25日に来ます</p>
-                        <p>しかし荒らし対策は閲覧者に対応を任せます</p>
                         <p>バージョンはおそらくV2.0.80で凍結されます</p>
+                        <p>13ninstudioはゲーム実況メインになります</p>
                     </main>
                     <RightMenuJp/>
                 </div>
