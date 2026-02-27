@@ -158,6 +158,7 @@ export default function WikiPage() {
             document.body.classList.remove('blue');
             document.body.classList.remove('yellow');
             document.body.classList.remove('purple');
+            document.body.classList.remove('emerald');
         };
     }, [designColor]);
     useEffect(() => {
