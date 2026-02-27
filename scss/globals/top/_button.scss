@@ -2,7 +2,15 @@
 
 body {
     // 💚 デフォルトテーマ（wiki-fontが無い場合）
-    &:not(.wiki-font, .wiki-font.pink, .wiki-font.blue, .wiki-font.yellow, .wiki-font.default) {
+    &:not(
+        .wiki-font,
+        .wiki-font.pink,
+        .wiki-font.blue,
+        .wiki-font.yellow,
+        .wiki-font.purple,
+        .wiki-font.emerald,
+        .wiki-font.default
+    ) {
         button:not(#menu-button,.navfold-summary,.fold-button,.installButton) {
             position: relative;
             padding: 10px 20px;
@@ -85,8 +93,11 @@ body {
         &.purple button:not(#menu-button,.navfold-summary,.fold-button)::before {
             @include mixin.position(rgb(123, 37, 252), rgb(65, 8, 130));
         }
+        &.emerald button:not(#menu-button,.navfold-summary,.fold-button)::before {
+            @include mixin.position(#7ef9a1, #00db7c);
+        }
         &.default button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(/*#1ce369, #076727*/#d1faff, #6eecff);
+            @include mixin.position(#1ce369, #076727);
         }
     }
 
