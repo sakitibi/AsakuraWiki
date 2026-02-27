@@ -67,6 +67,7 @@ export default function WikiSettingsPage() {
                 data.design_color === 'blue' ? 'blue' : 
                 data.design_color === 'yellow' ? 'yellow': 
                 data.design_color === 'purple' ? 'purple': 
+                data.design_color === 'emerald' ? 'emerald': 
                 'default'
             );
             setOsusume_hyouji_mode(data.osusume_hyouji_mode);
@@ -227,6 +228,7 @@ export default function WikiSettingsPage() {
                                     <option value="blue">ブルー</option>
                                     <option value="yellow">イエロー</option>
                                     <option value="purple">パープル</option>
+                                    <option value="emerald">エメラルド</option>
                                 </select>
                             </label>
                             <br /><br />
