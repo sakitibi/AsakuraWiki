@@ -7,6 +7,7 @@ export type designColor =
 'blue' |
 'yellow' |
 'purple' |
+'emerald'|
 'default';
 
 export type headerLevel = 

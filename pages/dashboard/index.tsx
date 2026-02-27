@@ -56,7 +56,7 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
                             <div id="my_wiki_container">
                                 {mywikis.map((data) => (
                                     <div key={data.slug}>
-                                        <Link href={`/dashboard/wiki/${data.slug}`}>
+                                        <Link href={`/dashboard/${data.slug}/settings`}>
                                             <button>
                                                 <span>
                                                     <i className="fa-solid fa-folder-gear" />

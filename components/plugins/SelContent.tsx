@@ -35,6 +35,10 @@ export default function SelContent({ type, children }: SelContentProps) {
             backgroundColor: '#cce3f8'
         } : designColor === 'yellow' ? {
             backgroundColor: '#feeaa4'
+        } : designColor === 'purple' ? {
+            backgroundColor: '#e9d7f3'
+        } : designColor === 'emerald' ? {
+            backgroundColor: '#9affb2'
         } : {
             backgroundColor: '#d1f0a0'
         }
@@ -51,6 +55,12 @@ export default function SelContent({ type, children }: SelContentProps) {
             } : designColor === 'yellow' ? {
                 backgroundColor: 'transparent',
                 borderColor: '#feeaa4'
+            } : designColor === 'purple' ? {
+                backgroundColor: 'transparent',
+                borderColor: '#e9d7f3'
+            } : designColor === 'emerald' ? {
+                backgroundColor: 'transparent',
+                borderColor: '#9affb2'
             } : {
                 backgroundColor: 'transparent',
                 borderColor: '#d1f0a0'
@@ -67,6 +77,12 @@ export default function SelContent({ type, children }: SelContentProps) {
         } : designColor === 'yellow' ? {
             backgroundColor: 'transparent',
             borderLeft: '#feeaa4'
+        } : designColor === 'purple' ? {
+            backgroundColor: 'transparent',
+            borderLeft: '#e9d7f3'
+        } : designColor === 'emerald' ? {
+            backgroundColor: 'transparent',
+            borderLeft: '#9affb2'
         } : {
             backgroundColor: 'transparent',
             borderLeft: '#d1f0a0'
