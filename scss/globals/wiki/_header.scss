@@ -110,10 +110,10 @@ body.wiki-font {
     テーマ別スタイル
 ========================= */
 @each $name, $colors in $themes {
+    /* エラー出てるけど仕様です */
     $selector: if(
-    $name == default,
-        ":not(.pink,.blue,.yellow,.purple,.emerald)",
-        ".#{$name}"
+        sass($name == default): ":not(.pink,.blue,.yellow,.purple,.emerald)";
+        else: ".#{$name}"
     );
     body.wiki-font#{$selector} {
 
