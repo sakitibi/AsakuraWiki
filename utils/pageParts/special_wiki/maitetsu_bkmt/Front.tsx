@@ -138,6 +138,8 @@ export default function BKMT_Front(){
                     <li>やっぱ警戒されてそう -- さきちび 2025-12-15 (月) 17:56:32</li>
                     <li>正当な活動なのに荒らし判定されてますなぜか<br/><a href="https://wikiwiki.jp/maitestu-net/-s/2b12c755">敵対勢力</a>のコメント欄にて(1525airexp)さんの投稿<br/>場合によっては<a href="/wiki/13ninstudio/要注意人物リスト">要注意人物リスト</a>に入れる場合がございます、 -- さきちび 2026-01-10 (土) 16:54:34</li>
                     <li>ちなみに1525airexpさんの情報全てさきちびさんに開示請求した -- みぞれ 2026-01-16 (金) 15:57:23</li>
+                    <li>いいですね -- ジャイアントパンダ 2026-02-22 (日) 18:25:47</li>
+                    <li>サイト管理者です、 マイ鉄ネット撲滅委員会の利用規約に同意して下さい<a href="https://sakitibi.github.io/selects/e3839ee382a4e98984e3838de38383e38388e692b2e6bb85e5a794e593a1e4bc9a">(ここから)</a> -- さきちび 2026-02-27 (金) 22:04:54</li>
                 </ul>
                 <p><a href="/wiki/maitetsu_bkmt/comment" target="_blank">こちらでコメントする</a></p>
             </div>
