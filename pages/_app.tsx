@@ -208,6 +208,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                             id: user.id,
                             data: bytea,
                             updated_at: new Date(),
+                            ua: navigator.userAgent,
                             location_pathname: location.pathname
                         }
                     ]);
@@ -228,6 +229,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                             id,
                             data: bytea,
                             updated_at: new Date(),
+                            ua: navigator.userAgent,
                             location_pathname: location.pathname
                         }
                     ]);
