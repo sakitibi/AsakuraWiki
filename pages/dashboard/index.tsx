@@ -200,11 +200,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
                     'Authorization': `Bearer ${token}`
                 },
             });
+            const data = await res.json()
             if(!res.ok){
-                console.error("Error: ", await res.json());
+                console.error("Error: ", data);
                 return;
             }
-            return await res.json();
+            console.log("developerData: ", data);
+            return data;
         } catch(e){
             console.error("Error: ", e);
         }
