@@ -184,7 +184,7 @@ export default function WikiSettingsPage() {
                 </style>
                 <title>{name} Wikiを編集</title>
             </Head>
-            <main style={{ padding: '2rem', maxWidth: 600 }}>
+            <main style={{ padding: '2rem' }}>
                 <h1>
                     <i
                         className="fa-solid fa-wrench"
