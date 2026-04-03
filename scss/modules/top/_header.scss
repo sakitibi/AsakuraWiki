@@ -1,0 +1,104 @@
+/* ヘッダー系統 */
+
+.lHeader{
+    background-position: 52% 0, 0 0;
+    background-repeat: no-repeat, repeat;
+    background-size: 150px, auto;
+    overflow: hidden;
+    padding: 15px 0 0;
+}
+
+.container, .containerFluid, .containerLg, .containerMd, .containerSm, .containerXl, .containerXxl {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    width: 100%;
+}
+
+.lHeader .row {
+    margin-left: -5px;
+    margin-right: -5px;
+}
+
+.alignItemsCenter {
+    align-items: center !important;
+}
+
+.justifyContentBetween {
+    justify-content: space-between !important;
+}
+
+.flexNowrap {
+    flex-wrap: nowrap !important;
+}
+
+.row {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: calc(var(--bs-gutter-x) * -.5);
+    margin-right: calc(var(--bs-gutter-x) * -.5);
+    margin-top: calc(var(--bs-gutter-y) * -1);
+}
+
+.lHeader .row [class*="col^"], .lHeader .row [class^=col] {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.offset3 {
+    margin-left: 25%;
+}
+
+.col4 {
+    flex: 0 0 auto;
+    width: 33.33333333%;
+}
+
+.row>* {
+    flex-shrink: 0;
+    margin-top: var(--bs-gutter-y);
+    max-width: 100%;
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    width: 100%;
+}
+
+.lHeader__controls {
+    padding: 0 0 0 5px;
+}
+
+.dBlock {
+    display: block !important;
+}
+
+.cMobileControls {
+    list-style: none;
+    text-align: center;
+    & a, & button {
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.col6 {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+.offset1 {
+    margin-left: 8.33333333%;
+}
+
+.cMobileControls__icon {
+    align-items: center;
+    display: flex;
+    height: 30px;
+}

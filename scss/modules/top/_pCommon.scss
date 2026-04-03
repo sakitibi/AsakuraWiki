@@ -1,0 +1,59 @@
+/* p~ の共通mixin定義 */
+
+@mixin pCommon($bgcolor){
+    background-color: $bgcolor;
+    background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white.png");
+    border-radius: 10px;
+    padding: 18px;
+}
+
+@mixin pCommon__title($color){
+    border-bottom: 1px solid $color;
+    color: $color;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 14px;
+    padding: 0 0 14px;
+    text-align: center;
+}
+
+@mixin pCommon__item($color, $imgcolor){
+    align-items: center !important;
+    background-color: #fff !important;
+    border-radius: 5px !important;
+    color: $color !important;
+    display: flex !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    justify-content: center !important;
+    padding: 10px !important;
+    text-align: center !important;
+    -webkit-text-decoration: none !important;
+    text-decoration: none !important;
+
+    &::before {
+        margin-right: 10px;
+        margin-left: -16px;
+        display: inline-block;
+        content: '';
+        height: 12px;
+        width: 6px;
+        background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/right_arrow_#{$imgcolor}.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+}
+
+.pContact__list,.pForBeginner__list { /* これは完全一致なのでmixinを使用しない */
+    margin: 0;
+    padding: 0;
+    list-style: none !important;
+}
+
+.pContact__item,.pForBeginner__item { /* 1つ上と同じ理由 */
+    margin: 0;
+    padding: 0;
+    &:not(:first-child) {
+        margin-top: 10px;
+    }
+}

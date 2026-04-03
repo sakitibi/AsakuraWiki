@@ -1,0 +1,8 @@
+@use '../variables';
+@use 'sass:list';
+
+@for $i from 1 through 7 {
+    .size#{$i}{
+        font-size: list.nth(variables.$font-sizes, $i);
+    }
+}
