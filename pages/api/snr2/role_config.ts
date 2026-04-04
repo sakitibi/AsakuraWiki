@@ -6,11 +6,33 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+const ALLOWED_ORIGINS = [
+  "https://asakura-wiki.vercel.app",
+  "https://sakitibi.github.io"
+];
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // --- CORS 設定 ---
+  // 特定のドメインからのアクセスを許可
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'null');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-id');
+
+  // プリフライトリクエスト (ブラウザの事前確認リクエスト) への即時応答
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  // ----------------
+
   const { method, headers, body, query } = req;
   const adminIdHeader = headers['x-admin-id'] as string;
 
-  // 1. POST: 新規作成 (初回登録用)
+  // 1. POST: 新規作成
   if (method === 'POST') {
     const { config_id, admin_id, config } = body;
     const { data, error } = await supabase
@@ -24,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // --- GET & PUT 用の共通検証 ---
   const configId = (method === 'GET' ? query.config_id : body.config_id) as string;
+  
   if (!configId || !adminIdHeader) {
     return res.status(400).json({ error: 'Missing config_id or x-admin-id header' });
   }
@@ -36,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (fetchError || !existing) return res.status(404).json({ error: 'Config not found' });
   
-  // admin_idの一致検証
+  // admin_id の一致検証
   if (existing.admin_id !== adminIdHeader) {
     return res.status(403).json({ error: 'Admin ID mismatch' });
   }
