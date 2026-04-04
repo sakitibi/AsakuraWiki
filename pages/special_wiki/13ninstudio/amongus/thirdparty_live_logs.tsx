@@ -42,7 +42,7 @@ export default function AmongusOthersRoomJoinedLogs() {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="https://youtu.be/YksfzqGF1dk?t=690">
+                                            <a href="https://youtu.be/YksfzqGF1dk?t=675">
                                                 2026/04/04 23:07 ~ 2026/04/04 23:11 13人TV = 緑: クルー<br/>
                                                 インポスター: コーラル
                                                 かくれんぼモード
