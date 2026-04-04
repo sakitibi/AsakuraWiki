@@ -36,7 +36,7 @@ export default function AmongusOthersRoomJoinedLogs() {
                                     <ul>
                                         <li>
                                             <a href="https://youtu.be/YksfzqGF1dk?t=2726">
-                                                2026/04/04 23:41 ~ 2026/04/04 23:45 13人TV = 緑: クルー<br/>
+                                                2026/04/04 23:41 ~ 2026/04/04 23:44 13人TV = 緑: クルー<br/>
                                                 インポスター: 紫
                                                 かくれんぼモード
                                             </a>
