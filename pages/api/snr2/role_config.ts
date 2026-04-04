@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { config } = body;
     const { error: updateError } = await supabase
       .from('snr2_role_configs')
-      .update({ config })
+      .update({ config, updated_at: new Date() })
       .eq('config_id', configId)
       .eq('admin_id', adminIdHeader)
 
