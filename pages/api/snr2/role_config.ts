@@ -75,7 +75,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { error: updateError } = await supabase
       .from('snr2_role_configs')
       .update({ config })
-      .eq('config_id', configId);
+      .eq('config_id', configId)
+      .eq('admin_id', adminIdHeader)
 
     if (updateError) return res.status(500).json({ error: updateError.message });
     return res.status(200).json({ message: 'Success: Config updated' });
