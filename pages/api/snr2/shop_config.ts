@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { data, error } = await supabase
-      .from('snr2_shop_config')
+      .from('snr2_shop_configs')
       .insert([{ config_id, admin_id, config }])
       .select();
 
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { data: existing, error: fetchError } = await supabase
-    .from('snr2_shop_config')
+    .from('snr2_shop_configs')
     .select('admin_id, config')
     .eq('config_id', configId)
     .single();
@@ -77,7 +77,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (method === 'PUT') {
     const { config } = body;
     const { error: updateError } = await supabase
-      .from('snr2_shop_config')
+      .from('snr2_shop_configs')
       .update({ config, updated_at: new Date() })
       .eq('config_id', configId)
       .eq('admin_id', adminIdHeader);
