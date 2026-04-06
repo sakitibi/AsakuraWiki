@@ -43,19 +43,22 @@ export default function WikiEditPage({
                         <i className="fa-solid fa-file-pen"></i>
                         ページ編集
                     </h1>
-                    <form onSubmit={(e:React.FormEvent) => {
-                        e.preventDefault();
-                        handleUpdate(
-                            setLoading,
-                            editMode,
-                            user,
-                            wikiSlugStr,
-                            pageSlugStr,
-                            title,
-                            content,
-                            router
-                        );
-                    }}>
+                    <form
+                        onSubmit={(e:React.FormEvent) => {
+                            e.preventDefault();
+                            handleUpdate(
+                                setLoading,
+                                editMode,
+                                user,
+                                wikiSlugStr,
+                                pageSlugStr,
+                                title,
+                                content,
+                                router
+                            );
+                        }}
+                        id="wikipage_editorform"
+                    >
                         <label>
                         タイトル:
                         <input

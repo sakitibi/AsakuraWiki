@@ -61,6 +61,10 @@ header{
     text-align: center;
 }
 
+#wikipage_editorform label{
+    display: block;
+}
+
 $spacers: (
     0: 0,
     1: .25rem,
