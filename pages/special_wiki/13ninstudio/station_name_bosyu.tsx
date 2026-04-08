@@ -32,7 +32,6 @@ export default function StationNameBosyu() {
                                     <h2>駅名候補欄</h2>
                                 </summary>
                                 <ul>
-                                    <li>能入</li>
                                     <li>由依</li>
                                     <li>本原</li>
                                     <li>板岸</li>
