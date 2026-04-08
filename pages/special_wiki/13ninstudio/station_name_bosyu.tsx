@@ -37,8 +37,6 @@ export default function StationNameBosyu() {
                                     <li>本原</li>
                                     <li>板岸</li>
                                     <li>花純</li>
-                                    <li>花音</li>
-                                    <li>杉山</li>
                                 </ul>
                             </details>
                         </div>
