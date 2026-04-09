@@ -346,7 +346,10 @@ export default function WikiPage() {
                                     )}
                                     {asakura_member_list_found ? null : (
                                         <Script
-                                            src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
+                                            src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_main.js'
+                                        />
+                                        <Script
+                                            src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_util.js'
                                         />
                                     )}
                                 </div>
