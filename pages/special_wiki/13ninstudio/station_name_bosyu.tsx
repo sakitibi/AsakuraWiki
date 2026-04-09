@@ -1,9 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { User } from '@supabase/auth-helpers-react';
+import { supabaseClient } from '@/lib/supabaseClient';
 import Head from 'next/head';
 import Script from 'next/script';
+import { asakuraMenberUserId } from '@/utils/user_list';
 
 export default function StationNameBosyu() {
     const designColor: "default" = "default";
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
+    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     // 初期表示
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -34,7 +48,6 @@ export default function StationNameBosyu() {
                                 <ul>
                                     <li>由依</li>
                                     <li>本原</li>
-                                    <li>板岸</li>
                                     <li>花純</li>
                                     <li>{'{地名}'}井原</li>
                                     <li>今谷</li>
@@ -46,7 +59,16 @@ export default function StationNameBosyu() {
                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                         </div>
                     </article>
-                    <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js' />
+                    {asakura_member_list_found ? null : (
+                        <>
+                            <Script
+                                src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_main.js'
+                            />
+                            <Script
+                                src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_util.js'
+                            />    
+                        </>
+                    )}
                 </div>
             </div>
         </>
