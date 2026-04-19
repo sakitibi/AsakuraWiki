@@ -1,38 +1,33 @@
-table {
+table:not(#MC_article_Table) {
     border-collapse: collapse;
     padding: 0;
     border: 0;
     text-align: left;
-}
 
-table thead td, table tfoot td {
-    color: inherit;
-    background-color: #d1f0a0;
-}
+    thead td, tfoot td, thead th, tfoot th {
+        color: inherit;
+        background-color: #d1f0a0;
+    }
 
-table thead th, table tfoot th {
-    color: inherit;
-    background-color: #d1f0a0;
-}
+    th {
+        padding: 3px;
+        margin: 1px;
+        text-align: center;
+        color: inherit;
+        background-color: #d1f0a0;
+        border: 1px solid #a9a9a9;
+    }
 
-table th {
-    padding: 3px;
-    margin: 1px;
-    text-align: center;
-    color: inherit;
-    background-color: #d1f0a0;
-    border: 1px solid #a9a9a9;
-}
+    td {
+        padding: 3px;
+        margin: 1px;
+        color: inherit;
+        background-color: #fff;
+        border: 1px solid #a9a9a9;
+    }
 
-table td {
-    padding: 3px;
-    margin: 1px;
-    color: inherit;
-    background-color: #fff;
-    border: 1px solid #a9a9a9;
-}
-
-table.conflict_diff > thead th {
-    background-color: #d1f0a0;
-    border: 1px solid #a9a9a9;
+    &.conflict_diff > thead th {
+        background-color: #d1f0a0;
+        border: 1px solid #a9a9a9;
+    }
 }

@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const authHeader = req.headers.authorization;
         if (authHeader?.startsWith('Bearer ')) {
             const token = authHeader.split(' ')[1];
-            const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token);
+            const { data: { user } } = await supabaseServer.auth.getUser(token);
             if (user) userId = user.id;
         }
 

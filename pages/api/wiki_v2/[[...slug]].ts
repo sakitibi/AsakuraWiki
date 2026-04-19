@@ -125,7 +125,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
 
                 // 2. 圧縮処理
-                const replacedContent = content.replace(/&now;/g, formatNow());
+                const replacedContent:string = content.replace(/&now;/g, formatNow());
                 const compressed = Pako.gzip(replacedContent, { level: 9 });
                 const base64Content = Buffer.from(compressed).toString('base64');
                 

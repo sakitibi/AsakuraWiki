@@ -43,7 +43,7 @@ export default function MinecraftRelayManyManyMany(){
                         <h1 className={styles.MC_Heading_1}>マイクラリレー 〜 メニー! メニー! メニー! 〜</h1>
                         <p>ロシア語ページ無くてごめんなさい、</p>
                         <p>
-                            なお、【マイクラリレー2025 〜 メニー！メニー！メニー！】ダイジェスト動画<br/>
+                            <strong>重要!</strong> 【マイクラリレー2025 〜 メニー！メニー！メニー！】ダイジェスト動画<br/>
                             という動画がYoutube上に出回ってるのを発見しましたが、<br/>
                             それは<strong>{company}と無関係の偽動画です!!</strong> 本物はダイジェスト動画をアップしておりません。
                         </p>
@@ -53,7 +53,7 @@ export default function MinecraftRelayManyManyMany(){
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <div className={styles.MC_articleGridA_sectionRef}></div>
                             <div className={styles.MC_Link_Style_RichText}>
-                                <table style={TableStyles}>
+                                <table style={TableStyles} id="MC_article_Table">
                                     <colgroup>
                                         <col width="100"/>
                                         <col width="343"/>

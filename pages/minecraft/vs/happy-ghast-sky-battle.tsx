@@ -163,7 +163,7 @@ export default function MinecraftVS(){
                                             <h2 style={{ textAlign: 'center' }}>&nbsp;【{team}チーム】</h2>
                                             <div className={styles.MC_articleGridA_sectionRef}></div>
                                             <div className={styles.MC_Link_Style_RichText}>
-                                                <table style={TableStyles}>
+                                                <table style={TableStyles} id="MC_article_Table">
                                                     <colgroup>
                                                         <col width="200"/>
                                                     </colgroup>
