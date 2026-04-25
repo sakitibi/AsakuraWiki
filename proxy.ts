@@ -12,6 +12,7 @@ export function proxy(_: NextRequest) {
         https://sakitibi.github.io
         https://www.googletagmanager.com
         https://counter.wikiwiki.jp
+        https://www.google.com
         https://www.google-analytics.com
         https://gppjfculpjyjqzfuqfev.supabase.co
         wss://gppjfculpjyjqzfuqfev.supabase.co
