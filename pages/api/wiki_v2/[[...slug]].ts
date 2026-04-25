@@ -5,7 +5,7 @@ import Pako from 'pako';
 import { adminerUserId } from '@/utils/user_list';
 import { randomUUID } from 'node:crypto';
 
-// Turso クライアントの初期化
+// Turso クライアント
 const turso = createClient({
     url: process.env.NEXT_PUBLIC_TURSO_DATABASE_URL!,
     authToken: process.env.NEXT_PUBLIC_TURSO_AUTH_TOKEN!,
@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const wikiSlug = parts[0];
         const pageSlug = parts.length > 1 ? parts.slice(1).join('/') : 'FrontPage';
 
-        // 認証処理
+        // 認証
         let userId: string | null = null;
         const authHeader = req.headers.authorization;
         if (authHeader?.startsWith('Bearer ')) {
@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         const isAdmin = adminerUserId.includes(userId || '');
 
-        // Wiki設定の取得 (Supabase利用を継続)
+        // Wiki設定取得
         const { data: wiki } = await supabaseServer
             .from('wikis')
             .select('*')
@@ -62,13 +62,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // GET: 読み取り
         // ======================
         if (req.method === 'GET') {
-            // Wiki内の全ページスラッグ一覧
             if (parts.length === 1) {
                 const result = await turso.execute({
                     sql: "SELECT slug FROM wiki_pages WHERE wiki_slug = ?",
                     args: [wikiSlug]
                 });
-
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
                     title: wiki.name,
@@ -77,23 +75,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
             }
 
-            // 個別ページ詳細
             const result = await turso.execute({
-                sql: "SELECT title, content, updated_at, author_id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
+                sql: "SELECT title, content, updated_at, author_id, freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
                 args: [wikiSlug, pageSlug]
             });
 
             if (result.rows.length === 0) return res.status(404).json({ error: 'Page not found' });
 
             const row = result.rows[0];
-            // BLOBデータをBase64に変換してフロントエンドに渡す
-            const base64Content = Buffer.from(row.content as unknown as Uint8Array).toString('base64');
+            const base64Content = Buffer.from(row.content as any).toString('base64');
 
             return res.status(200).json({
                 title: row.title,
-                content: base64Content, // フロントエンドのPakoで解凍可能
+                content: base64Content,
                 updated_at: row.updated_at,
-                author_id: row.author_id
+                author_id: row.author_id,
+                freeze: Boolean(row.freeze) // 確実にBoolean化
             });
         }
 
@@ -106,23 +103,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
 
-            if (!isAdmin && wiki.edit_mode === 'private' && !userId) {
-                return res.status(403).json({ error: 'Access denied' });
+            // 1. 現在の凍結状態をチェック
+            const currentRecord = await turso.execute({
+                sql: "SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
+                args: [wikiSlug, targetSlug]
+            });
+            const isFrozen = currentRecord.rows.length > 0 && Boolean(currentRecord.rows[0].freeze);
+
+            // 2. 権限バリデーション
+            if (!isAdmin) {
+                if (isFrozen) {
+                    return res.status(403).json({ error: 'This page is frozen.' });
+                }
+                if (wiki.edit_mode === 'private' && !userId) {
+                    return res.status(403).json({ error: 'Access denied' });
+                }
             }
 
-            // 圧縮処理
+            // 3. データ準備
             const replacedContent = content.replace(/&now;/g, formatNow());
             const compressed = Pako.gzip(replacedContent, { level: 9 });
             const uint8Array = new Uint8Array(compressed);
 
-            // Tursoに保存 (INSERT OR REPLACE で既存なら更新)
+            // 4. 保存
+            // freezeは「既存の状態を維持」するか、新規なら「false (0)」にする
             await turso.execute({
-                sql: `INSERT OR REPLACE INTO wiki_pages (id, slug, wiki_slug, title, content, updated_at, author_id) 
-                      VALUES (COALESCE((SELECT id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), ?), ?, ?, ?, ?, ?, ?)`,
+                sql: `INSERT OR REPLACE INTO wiki_pages (id, slug, wiki_slug, title, content, updated_at, author_id, freeze) 
+                      VALUES (
+                        COALESCE((SELECT id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), ?), 
+                        ?, ?, ?, ?, ?, ?,
+                        COALESCE((SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), 0)
+                      )`,
                 args: [
-                    wikiSlug, targetSlug, randomUUID(), // IDの決定
+                    wikiSlug, targetSlug, randomUUID(), 
                     targetSlug, wikiSlug, title || "Untitled",
-                    uint8Array, new Date().toISOString(), userId
+                    uint8Array as any, new Date().toISOString(), userId,
+                    wikiSlug, targetSlug
                 ]
             });
 
@@ -134,7 +150,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // ======================
         if (req.method === 'DELETE') {
             if (pageSlug === "FrontPage") return res.status(400).json({ error: 'Cannot delete FrontPage' });
-            if (!isAdmin && wiki.owner_id !== userId) return res.status(403).json({ error: 'Permission denied' });
+
+            const currentRecord = await turso.execute({
+                sql: "SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
+                args: [wikiSlug, pageSlug]
+            });
+            const isFrozen = currentRecord.rows.length > 0 && Boolean(currentRecord.rows[0].freeze);
+
+            if (!isAdmin) {
+                if (isFrozen) return res.status(403).json({ error: 'This page is frozen.' });
+                if (wiki.owner_id !== userId) return res.status(403).json({ error: 'Permission denied' });
+            }
 
             await turso.execute({
                 sql: "DELETE FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
@@ -144,10 +170,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(200).json({ success: true });
         }
 
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).end();
 
     } catch (e: any) {
         console.error('Wiki Engine Error:', e);
-        return res.status(500).json({ error: 'Internal Server Error', details: e.message });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
