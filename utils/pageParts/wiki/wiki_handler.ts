@@ -144,7 +144,7 @@ export const handleFreeze = async(
             },
             body: JSON.stringify({
                 title: currentPage.title,
-                content: currentPage.content, // API側がBase64でも生テキストでも受け取れるよう調整が必要
+                content: Pako.ungzip(base64ToUint8Array(currentPage.content), { to: "string" }), // API側がBase64でも生テキストでも受け取れるよう調整が必要
                 freeze: !currentPage.freeze   // 新しいフラグを送信
             }),
         });

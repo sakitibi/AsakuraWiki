@@ -178,6 +178,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     } catch (e: any) {
         console.error('Wiki Engine Error:', e);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: `Internal Server Error: ${e}` });
     }
 }
