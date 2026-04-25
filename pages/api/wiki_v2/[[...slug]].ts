@@ -97,6 +97,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // ======================
         // PUT / POST: 保存
         // ======================
+// ======================
+        // PUT / POST: 保存
+        // ======================
         if (req.method === 'PUT' || req.method === 'POST') {
             const { content, title, freeze, slug: bodySlug } = req.body;
             if (content === undefined) return res.status(400).json({ error: "Content is required" });
@@ -125,25 +128,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const compressed = Pako.gzip(replacedContent, { level: 9 });
             const uint8Array = new Uint8Array(compressed);
 
-            // 4. 保存
-            // freezeは「既存の状態を維持」するか、新規なら「false (0)」にする
+            // 5. 保存実行
+            // SQLの?を8個にし、freezeを直接指定する形に修正して引数のズレを解消
             await turso.execute({
                 sql: `INSERT OR REPLACE INTO wiki_pages (id, slug, wiki_slug, title, content, updated_at, author_id, freeze) 
                       VALUES (
                         COALESCE((SELECT id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), ?), 
-                        ?, ?, ?, ?, ?, ?,
-                        COALESCE((SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), 0)
+                        ?, ?, ?, ?, ?, ?, ?
                       )`,
                 args: [
-                    wikiSlug, pageSlug, randomUUID(), // ID用
-                    pageSlug,
+                    wikiSlug, targetSlug, randomUUID(),
+                    targetSlug,
                     wikiSlug,
                     title || "Untitled",
                     uint8Array as any,
                     new Date().toISOString(),
                     userId,
                     freeze
-                ]
+                ] // 合計 10個
             });
 
             return res.status(200).json({ success: true });
