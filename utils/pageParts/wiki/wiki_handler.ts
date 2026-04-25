@@ -2,6 +2,8 @@ import { editMode } from "@/utils/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { NextRouter } from "next/router";
 import { supabaseClient } from "@/lib/supabaseClient";
+import { base64ToUint8Array } from "@/utils/wikiFetch";
+import Pako from "pako";
 
 /**
  * ページ更新 (PUT)
@@ -35,7 +37,7 @@ export const handleUpdate = async (
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ title, content }),
+            body: JSON.stringify({ title, content: Pako.ungzip(base64ToUint8Array(content)) }),
         });
 
         if (!res.ok) {

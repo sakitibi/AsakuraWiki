@@ -12,7 +12,7 @@ export interface Page {
 /**
  * Base64文字列をUint8Arrayに変換する（Blobからのデータ用）
  */
-function base64ToUint8Array(base64: string): Uint8Array {
+export function base64ToUint8Array(base64: string): Uint8Array {
     const binString = atob(base64);
     return Uint8Array.from(binString, (m) => m.codePointAt(0)!);
 }
