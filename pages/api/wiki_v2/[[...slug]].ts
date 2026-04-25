@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // PUT / POST: 保存
         // ======================
         if (req.method === 'PUT' || req.method === 'POST') {
-            const { content, title, slug: bodySlug } = req.body;
+            const { content, title, freeze, slug: bodySlug } = req.body;
             if (content === undefined) return res.status(400).json({ error: "Content is required" });
 
             const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
@@ -135,10 +135,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         COALESCE((SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), 0)
                       )`,
                 args: [
-                    wikiSlug, targetSlug, randomUUID(), 
-                    targetSlug, wikiSlug, title || "Untitled",
-                    uint8Array as any, new Date().toISOString(), userId,
-                    wikiSlug, targetSlug
+                    wikiSlug, pageSlug, randomUUID(), // ID用
+                    pageSlug,
+                    wikiSlug,
+                    title || "Untitled",
+                    uint8Array as any,
+                    new Date().toISOString(),
+                    userId,
+                    freeze
                 ]
             });
 
