@@ -96,7 +96,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     useEffect(() => {
         if (isBot || typeof window === 'undefined') return;
 
-        const originalFetch = window.fetch;
+        /*const originalFetch = window.fetch;
         window.fetch = async (input, init) => {
             const url =
                 typeof input === 'string'
@@ -114,7 +114,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
 
         return () => {
             window.fetch = originalFetch;
-        };
+        };*/
     }, [isBot]);
 
     /* ===============================
