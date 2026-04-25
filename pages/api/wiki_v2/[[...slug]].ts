@@ -104,7 +104,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === 'PUT' || req.method === 'POST') {
             const { content, title, freeze, updated_at: bodyUpdatedAt, slug: bodySlug } = req.body;
             if (content === undefined) return res.status(400).json({ error: "Content is required" });
-
+            let Nextfreeze: boolean | undefined = freeze;
+            if (freeze === undefined) {
+                Nextfreeze = false;
+            }
             const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
 
             // 1. 現在の凍結状態をDBから直接確認
