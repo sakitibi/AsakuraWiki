@@ -121,7 +121,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (!isAdmin) {
                 if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
                 if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
-                if (wiki.cli_used === false && !userId === wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
+                if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
+                if (wiki.cli_used === false && isCli && !userId === wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
             }
 
             const finalContent = content.replace(/&now;/g, formatNow());
