@@ -102,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // PUT / POST: 保存
         // ======================
         if (req.method === 'PUT' || req.method === 'POST') {
-            const { content, title, freeze, updated_at: bodyUpdatedAt, slug: bodySlug } = req.body;
+            const { content, title, freeze, slug: bodySlug } = req.body;
             if (content === undefined) return res.status(400).json({ error: "Content is required" });
             let Nextfreeze: boolean | undefined = freeze;
             if (freeze === undefined) {
@@ -121,6 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (!isAdmin) {
                 if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
                 if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
+                if (wiki.cli_used === false && !userId === wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
             }
 
             const finalContent = content.replace(/&now;/g, formatNow());
@@ -128,7 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const uint8Array = new Uint8Array(compressed);
 
             // 4. 保存パラメータの決定
-            const updatedAt = (isCli && bodyUpdatedAt) ? bodyUpdatedAt : new Date().toISOString();
+            const updatedAt = new Date().toISOString();
 
             // 5. 保存実行 (INSERT OR REPLACE)
             await turso.execute({
@@ -145,7 +146,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     uint8Array as any,
                     updatedAt,
                     userId,
-                    freeze
+                    Nextfreeze
                 ]
             });
 
