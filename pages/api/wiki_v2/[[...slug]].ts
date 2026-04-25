@@ -1,18 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from '@/lib/supabaseClientServer';
+import { createClient } from '@libsql/client';
 import Pako from 'pako';
-import { put, list, del, head } from '@vercel/blob';
 import { adminerUserId } from '@/utils/user_list';
+import { randomUUID } from 'node:crypto';
 
-// Blobに保存するデータの型
-interface BlobPageData {
-    title: string;
-    content: string; // Base64 (Gzipped)
-    updated_at: string;
-    author_id: string | null;
-}
-
-const getBlobPath = (wiki: string, page: string) => `asakura-wiki-blob/${wiki}/${page}.json`;
+// Turso クライアントの初期化
+const turso = createClient({
+    url: process.env.NEXT_PUBLIC_TURSO_DATABASE_URL!,
+    authToken: process.env.NEXT_PUBLIC_TURSO_AUTH_TOKEN!,
+});
 
 function formatNow() {
     const date = new Date();
@@ -28,7 +25,6 @@ function formatNow() {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // CORS設定
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -37,22 +33,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const { slug: rawSlug } = req.query;
-        
-        // 文字列か配列かに関わらず、確実に配列に変換する
-        const parts = Array.isArray(rawSlug) 
-            ? rawSlug 
-            : (rawSlug ? [rawSlug] : []);
-
-        if (parts.length === 0) {
-            return res.status(400).json({ error: 'Wiki slug is required' });
-        }
+        const parts = Array.isArray(rawSlug) ? rawSlug : (rawSlug ? [rawSlug] : []);
+        if (parts.length === 0) return res.status(400).json({ error: 'Wiki slug is required' });
 
         const wikiSlug = parts[0];
-        // 個別ページが指定されていない場合は空文字にするロジックを明確化
         const pageSlug = parts.length > 1 ? parts.slice(1).join('/') : 'FrontPage';
-        const blobPath = getBlobPath(wikiSlug, pageSlug);
 
-        // ====== ユーザー認証 (Supabase) ======
+        // 認証処理
         let userId: string | null = null;
         const authHeader = req.headers.authorization;
         if (authHeader?.startsWith('Bearer ')) {
@@ -62,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         const isAdmin = adminerUserId.includes(userId || '');
 
-        // Wiki設定の取得 (編集モード等のメタデータはDB管理)
+        // Wiki設定の取得 (Supabase利用を継続)
         const { data: wiki } = await supabaseServer
             .from('wikis')
             .select('*')
@@ -75,94 +62,71 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // GET: 読み取り
         // ======================
         if (req.method === 'GET') {
+            // Wiki内の全ページスラッグ一覧
             if (parts.length === 1) {
-                const blobPrefix = `asakura-wiki-blob/${wikiSlug}/`; // 基準となるパス
-                const { blobs } = await list({ 
-                    prefix: blobPrefix,
-                    token: process.env.BLOB_READ_WRITE_TOKEN 
+                const result = await turso.execute({
+                    sql: "SELECT slug FROM wiki_pages WHERE wiki_slug = ?",
+                    args: [wikiSlug]
                 });
 
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
                     title: wiki.name,
-                    page_slugs: blobs.map(b => {
-                        return b.pathname
-                            .replace(blobPrefix, '') // "asakura-wiki-blob/wiki/folder/sub.json" -> "folder/sub.json"
-                            .replace('.json', '');   // "folder/sub.json" -> "folder/sub"
-                    }),
+                    page_slugs: result.rows.map(r => r.slug),
                     cli_used: wiki.cli_used
                 });
             }
 
-            // ページ詳細の取得
-            try {
-                const blobInfo = await head(blobPath);
-                const response = await fetch(blobInfo.url);
-                const data: BlobPageData = await response.json();
-                
-                // フロントエンド側で展開するため、そのまま返す（効率的）
-                return res.status(200).json(data);
-            } catch {
-                return res.status(404).json({ error: 'Page not found' });
-            }
+            // 個別ページ詳細
+            const result = await turso.execute({
+                sql: "SELECT title, content, updated_at, author_id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
+                args: [wikiSlug, pageSlug]
+            });
+
+            if (result.rows.length === 0) return res.status(404).json({ error: 'Page not found' });
+
+            const row = result.rows[0];
+            // BLOBデータをBase64に変換してフロントエンドに渡す
+            const base64Content = Buffer.from(row.content as unknown as Uint8Array).toString('base64');
+
+            return res.status(200).json({
+                title: row.title,
+                content: base64Content, // フロントエンドのPakoで解凍可能
+                updated_at: row.updated_at,
+                author_id: row.author_id
+            });
         }
 
         // ======================
         // PUT / POST: 保存
         // ======================
         if (req.method === 'PUT' || req.method === 'POST') {
-            try {
-                const { content, title, slug: bodySlug } = req.body;
+            const { content, title, slug: bodySlug } = req.body;
+            if (content === undefined) return res.status(400).json({ error: "Content is required" });
 
-                if (content === undefined) throw new Error("Content is undefined");
-                
-                const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
-                const targetPath = getBlobPath(wikiSlug, targetSlug);
+            const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
 
-                // 権限チェック
-                if (!isAdmin && wiki.edit_mode === 'private' && !userId) {
-                    return res.status(403).json({ error: 'Access denied' });
-                }
-
-                // 2. 圧縮処理
-                const replacedContent:string = content.replace(/&now;/g, formatNow());
-                const compressed = Pako.gzip(replacedContent, { level: 9 });
-                const base64Content = Buffer.from(compressed).toString('base64');
-                
-                const payload: BlobPageData = {
-                    title: title || "Untitled",
-                    content: base64Content,
-                    updated_at: new Date().toISOString(),
-                    author_id: userId
-                };
-
-                // --- ここで上書き問題を回避するための前処理 ---
-                // 型定義に 'overwrite' がない場合、一度消すのが最も確実です
-                try {
-                    await del(targetPath, { token: process.env.BLOB_READ_WRITE_TOKEN });
-                } catch (e) {
-                    // ファイルが存在しない場合は無視して進む
-                }
-
-                // 4. Blobへ送信
-                const blobResult = await put(targetPath, JSON.stringify(payload), {
-                    access: 'public',
-                    contentType: 'application/json',
-                    addRandomSuffix: false, 
-                    cacheControlMaxAge: 0,
-                    token: process.env.BLOB_READ_WRITE_TOKEN,
-                });
-
-                return res.status(200).json({ success: true, url: blobResult.url });
-
-            } catch (err: any) {
-                console.error("Critical API Error:", err);
-                return res.status(500).json({ 
-                    error: 'Blob storage operation failed', 
-                    details: err.message,
-                    step: "PUT_PROCESS" 
-                });
+            if (!isAdmin && wiki.edit_mode === 'private' && !userId) {
+                return res.status(403).json({ error: 'Access denied' });
             }
+
+            // 圧縮処理
+            const replacedContent = content.replace(/&now;/g, formatNow());
+            const compressed = Pako.gzip(replacedContent, { level: 9 });
+            const uint8Array = new Uint8Array(compressed);
+
+            // Tursoに保存 (INSERT OR REPLACE で既存なら更新)
+            await turso.execute({
+                sql: `INSERT OR REPLACE INTO wiki_pages (id, slug, wiki_slug, title, content, updated_at, author_id) 
+                      VALUES (COALESCE((SELECT id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), ?), ?, ?, ?, ?, ?, ?)`,
+                args: [
+                    wikiSlug, targetSlug, randomUUID(), // IDの決定
+                    targetSlug, wikiSlug, title || "Untitled",
+                    uint8Array, new Date().toISOString(), userId
+                ]
+            });
+
+            return res.status(200).json({ success: true });
         }
 
         // ======================
@@ -172,7 +136,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (pageSlug === "FrontPage") return res.status(400).json({ error: 'Cannot delete FrontPage' });
             if (!isAdmin && wiki.owner_id !== userId) return res.status(403).json({ error: 'Permission denied' });
 
-            await del(blobPath);
+            await turso.execute({
+                sql: "DELETE FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
+                args: [wikiSlug, pageSlug]
+            });
+
             return res.status(200).json({ success: true });
         }
 
@@ -180,6 +148,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     } catch (e: any) {
         console.error('Wiki Engine Error:', e);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error', details: e.message });
     }
 }

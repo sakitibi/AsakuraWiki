@@ -1,10 +1,17 @@
-const { createClient } = require('@supabase/supabase-js')
-const { list } = require('@vercel/blob')
+const { createClient: createSupabaseClient } = require('@supabase/supabase-js')
+const { createClient: createLibsqlClient } = require('@libsql/client')
 
-const supabase = createClient(
+// Supabaseクライアント (Store用)
+const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 )
+
+// Tursoクライアント (Wiki用)
+const turso = createLibsqlClient({
+    url: process.env.NEXT_PUBLIC_TURSO_DATABASE_URL,
+    authToken: process.env.NEXT_PUBLIC_TURSO_AUTH_TOKEN,
+})
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
@@ -14,38 +21,36 @@ module.exports = {
 
     additionalPaths: async () => {
         // ==========================================
-        // 1. 新エンジン (Vercel Blob) から Wiki ページを取得
+        // 1. 新エンジン (Turso) から Wiki ページを取得
         // ==========================================
         const wikiPaths = []
         try {
-            // Blob内の 'asakura-wiki-blob/' プレフィックスが付いた全ファイルをスキャン
-            const { blobs } = await list({
-                prefix: 'asakura-wiki-blob/',
-                token: process.env.BLOB_READ_WRITE_TOKEN
-            })
+            // wiki_pages テーブルから全ページの情報を取得
+            const result = await turso.execute(
+                "SELECT wiki_slug, slug, updated_at FROM wiki_pages"
+            )
 
-            blobs.forEach(blob => {
-                // パス例: asakura-wiki-blob/wiki-slug/page-slug.json
-                const parts = blob.pathname.replace('asakura-wiki-blob/', '').split('/')
-                const wikiSlug = parts[0]
-                const pageSlugWithExt = parts.slice(1).join('/')
-                const pageSlug = pageSlugWithExt.replace('.json', '')
+            result.rows.forEach(row => {
+                const wikiSlug = row.wiki_slug;
+                const pageSlug = row.slug;
+                const lastmod = row.updated_at;
 
-                if (wikiSlug) {
+                if (wikiSlug && pageSlug) {
+                    // FrontPage はルート扱い (/wiki/slug)、それ以外はサブパス
                     const path = pageSlug === 'FrontPage' 
                         ? `/wiki/${wikiSlug}` 
                         : `/wiki/${wikiSlug}/${pageSlug}`
                     
                     wikiPaths.push({
                         loc: path,
-                        lastmod: blob.uploadedAt.toISOString(), // Blobの更新日時を使用
+                        lastmod: new Date(lastmod).toISOString(), // DBの更新日時を使用
                         changefreq: 'weekly',
                         priority: 0.8,
                     })
                 }
             })
         } catch (e) {
-            console.error('Sitemap Wiki Error:', e)
+            console.error('Sitemap Wiki (Turso) Error:', e)
         }
 
         // ==========================================
