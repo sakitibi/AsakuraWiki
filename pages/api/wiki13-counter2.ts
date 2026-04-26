@@ -5,6 +5,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     try {
+        const random = Math.random();
         const response = await fetch(
             "https://rc.wikiwiki.jp/api/v3/comments/maitestu-net/交流室",
             {
@@ -12,7 +13,7 @@ export default async function handler(
                 headers: {
                     "User-Agent": "akidukisystems",
                 },
-                body: 'name=匿名しゃけ&msg=そういえば1年以上前の熟成牛タンっていう荒らしどうなったんだろ'
+                body: `name=匿名しゃけ&msg=そういえば1年以上前の熟成牛タンっていう荒らしどうなったんだろう。#${random}`
             }
         );
 
