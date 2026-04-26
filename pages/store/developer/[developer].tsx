@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import styles from '@/css/store.module.css';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
@@ -42,11 +41,12 @@ export default function Store({ apps, developers, developersStr }: StorePageProp
             <Head>
                 <meta charSet='UTF-8' />
                 <title>{developers.developer_name} 13ninGamesStore</title>
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/store.module.css" />
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
-            <div className={styles.contentsWrapper}>
+            <div className="contentsWrapper">
                 <HeaderJp handleClick={handleClick} />
-                <div className={styles.contents}>
+                <div className="contents">
                     <LeftMenuJp URL={`/store/developer/${developersStr}`} rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         {apps.length > 0 ? (
@@ -57,7 +57,7 @@ export default function Store({ apps, developers, developersStr }: StorePageProp
                                         <div style={{ display: 'flex', gap: '20px' }}>
                                             {data.isChecked && (
                                                 <a
-                                                    className={styles.developersApplinks}
+                                                    className="developersApplinks"
                                                     href={`/store/details/${data.appid}`}
                                                 >
                                                     <img

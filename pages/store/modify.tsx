@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import styles from '@/css/store.module.css';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
@@ -139,11 +138,12 @@ export default function Store() {
             <Head>
                 <meta charSet='UTF-8' />
                 <title>13ninGamesStoreに公開</title>
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/store.module.css" />
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
-            <div className={styles.contentsWrapper}>
+            <div className="contentsWrapper">
                 <HeaderJp handleClick={handleClick} />
-                <div className={styles.contents}>
+                <div className="contents">
                     <LeftMenuJp URL="/store/modify" rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>

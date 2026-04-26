@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import styles from '@/css/store.module.css';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useEffect, useState } from 'react';
@@ -70,7 +69,7 @@ export default function Store() {
                 const rect = btn.getBoundingClientRect();
 
                 const ripple = document.createElement("span");
-                ripple.className = styles.ripple;
+                ripple.className = "ripple";
 
                 ripple.style.left = `${e.clientX - rect.left}px`;
                 ripple.style.top  = `${e.clientY - rect.top}px`;
@@ -105,11 +104,12 @@ export default function Store() {
             <Head>
                 <meta charSet='UTF-8' />
                 <title>{apps?.app_title} 13ninGamesStore</title>
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/store.module.css" />
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
-            <div className={styles.contentsWrapper}>
+            <div className="contentsWrapper">
                 <HeaderJp handleClick={handleClick} />
-                <div className={styles.contents}>
+                <div className="contents">
                     <LeftMenuJp URL={`/store/details/${appDetailsStr}`} rupages='false' />
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <>
@@ -121,13 +121,13 @@ export default function Store() {
                                         <div id="details-container">
                                             {apps.isChecked ? (
                                                 <div id="details-contents">
-                                                    <h1 id={styles.appTitle}>{apps.app_title}</h1>
+                                                    <h1 id="appTitle">{apps.app_title}</h1>
                                                     <p>
-                                                        <a id={styles.appDeveloper} href={`/store/developer/${apps.developer_id}`}>
+                                                        <a id="appDeveloper" href={`/store/developer/${apps.developer_id}`}>
                                                             {apps.developer}
                                                         </a>
                                                     </p>
-                                                    <div id={styles.appIconContainer}>
+                                                    <div id="appIconContainer">
                                                         <p>
                                                             <img
                                                                 src={apps.appicon_url}
@@ -140,7 +140,7 @@ export default function Store() {
                                                     <p>{apps.download_counter}ダウンロード</p>
                                                     <div style={{ display: 'flex' }}>
                                                         <button
-                                                            id={styles.installButton}
+                                                            id="installButton"
                                                             className="installButton"
                                                             onClick={async() => await InstallHandler(apps.download_url, apps.download_counter + 1)}
                                                         >
