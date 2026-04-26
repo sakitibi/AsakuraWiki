@@ -1,50 +1,4 @@
-import { useState } from "react";
-import { Collapse } from "react-bootstrap";
-
-interface CollapseItemProps {
-    title: string;
-    children: React.ReactNode;
-    eventKey: string;
-}
-
-const CollapseItem = ({ title, children, eventKey }: CollapseItemProps) => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <>
-            <li>
-                <a
-                    style={{ 
-                        color: "inherit", 
-                        textDecoration: "none", 
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px" 
-                    }}
-                    onClick={(e) => {
-                        e.preventDefault(); // aタグのデフォルト挙動を防止
-                        setOpen(!open);
-                    }}
-                    aria-controls={eventKey}
-                    aria-expanded={open}
-                    className={open ? "" : "collapsed"}
-                >
-                    {title}
-                    <i className={`fa-duotone fa-regular fa-caret-${open ? 'up' : 'down'} fa-fw`}></i>
-                </a>
-            </li>
-            
-            <Collapse in={open}>
-                <div id={eventKey}>
-                    <div className="alert alert-dark mt-2" role="alert">
-                        {children}
-                    </div>
-                </div>
-            </Collapse>
-        </>
-    );
-};
+import CollapseItem from "@/components/elements/Collapse";
 
 export default function RulesComponents1(){
     return(
@@ -63,13 +17,7 @@ export default function RulesComponents1(){
                     </CollapseItem>
                 </li>
                 <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-2" aria-expanded="false">
-                        著作権、財産、プライバシー等を侵害する内容
-                        <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
-                    </a>
-                </li>
-                <div id="rules1-2" className="collapse">
-                    <div className="alert alert-dark" role="alert">
+                    <CollapseItem title="著作権、財産、プライバシー等を侵害する内容" eventKey="rules1-2">
                         <p>他者の著作権、財産、肖像権、プライバシーを侵害しない範囲での利用が求められます。引用やコンテンツの利用は、法律の範囲内で適切に行ってください。</p>
                         <p style={{ margin:"15px" }}>
                             <i className="fa-solid fa-message-exclamation fa-fw fa-lg fa-flip-horizontal"></i>
@@ -84,16 +32,10 @@ export default function RulesComponents1(){
                             <li>他人の写真や映像を無断で公開する</li>
                             <b><i className="fa-solid fa-arrow-turn-down-right fa-fw"></i>肖像権侵害の可能性</b>
                         </ol>
-                    </div>
-                </div>
-                <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-3" aria-expanded="false">
-                        第三者に危害や損害を与える内容(例外有り)
-                        <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
-                    </a>
+                    </CollapseItem>
                 </li>
-                <div id="rules1-3" className="collapse">
-                    <div className="alert alert-dark" role="alert">
+                <li>
+                    <CollapseItem title="第三者に危害や損害を与える内容(例外有り)" eventKey="rules1-3">
                         <p>
                             <b>第三者に対して危害や損害を与える可能性のある内容や行為は禁止されています。</b>具体的には、暴力、脅迫、詐欺、嫌がらせ、ハラスメントなど、<br/>他者に直接的または間接的に損害を与える行為が該当します。また、これらの行為を助長する内容も同様に禁止されています。
                         </p>
@@ -108,16 +50,10 @@ export default function RulesComponents1(){
                             <li><a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>などの荒らしは悪くないと主張する行為</li>
                             <li>晒し上げ(例外有り,荒らしに対しては完全無効)（特定の個人、ハンドルネーム、または名前や個人情報を公開して批判や攻撃を誘導する行為）</li>
                         </ol>
-                    </div>
-                </div>
-                <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-4" aria-expanded="false">
-                        <strong style={{ color: "red" }}>ネットワークやシステムに過度な負荷をかける行為</strong>
-                        <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
-                    </a>
+                    </CollapseItem>
                 </li>
-                <div id="rules1-4" className="collapse">
-                    <div className="alert alert-dark" role="alert">
+                <li>
+                    <CollapseItem title="ネットワークやシステムに過度な負荷をかける行為" eventKey="rules1-4" isStrong={true}>
                         <p>
                             <b>本サービスのネットワークやシステムに過度な負荷をかける行為は禁止です。</b>これには、大量のデータ送信、繰り返しのリクエスト、不正アクセス、バグや脆弱性の悪用が含まれます。<br/>さらに、大量リクエスト攻撃（DDoS攻撃など）や過剰リクエストツールの使用を誘導・実行する行為、およびそれを助長する行為も禁止されています。
                         </p>
@@ -126,16 +62,10 @@ export default function RulesComponents1(){
                             <b>システムの安定性を損なう行為は厳禁です。これらの行為は、<br/>電子計算機損壊等業務妨害罪に該当し、法的措置が取られる可能性があります。</b>
                         </p>
                         <p>しかし、荒らしサイト(akidukisystems.com)などへの大量リクエスト攻撃（DDoS攻撃など）や過剰リクエストツールの使用を誘導・実行は特例でOKとなっています、</p>
-                    </div>
-                </div>
-                <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-5" aria-expanded="false">
-                        荒らし行為
-                        <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
-                    </a>
+                    </CollapseItem>
                 </li>
-                <div id="rules1-5" className="collapse">
-                    <div className="alert alert-dark" role="alert">
+                <li>
+                    <CollapseItem title="荒らし行為" eventKey="rules1-5">
                         <p>
                             <b>荒らし行為は禁止されています。</b>意図的に他の利用者に迷惑をかけたり、コミュニティの健全な運営を妨げる行為が対象です。<br/>スパム投稿や煽り、破壊的な編集、議論妨害などが該当します。
                         </p>
@@ -153,8 +83,8 @@ export default function RulesComponents1(){
                             <li>荒らし目的の画像や不適切な画像を貼る行為</li>
                             <li>議論を妨害する行為（誤情報の流布や情報操作、議論を混乱させる発言）</li>
                         </ol>
-                    </div>
-                </div>
+                    </CollapseItem>
+                </li>
             </ul>
         </>
     )
