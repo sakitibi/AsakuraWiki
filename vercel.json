@@ -1,0 +1,16 @@
+{
+    "functions": {
+        "node_modules/": {
+        "includeFiles": ["css/*.map"]
+        }
+    },
+    "github": {
+        "silent": true
+    },
+    "builds": [
+        {
+            "src": "package.json",
+            "use": "@vercel/static"
+        }
+    ]
+}
