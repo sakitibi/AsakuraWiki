@@ -9,17 +9,15 @@ const through2 = require('through2');
 
 function compileSass() {
   return gulp.src('scss/**/*.scss')
-    // 1. 初期化
     .pipe(sourcemaps.init())
     
-    // 2. Sassコンパイル
     .pipe(sass({ 
       includePaths: ['node_modules'],
       loadPaths: ['node_modules'],
       quietDeps: true 
     }).on('error', sass.logError))
 
-    // 3. Sass直後のマルチソースなマップ情報を一時保存
+    // 1. 【重要】Sass直後の完璧なマップ情報を「丸ごと」保存する
     .pipe(through2.obj(function(file, enc, cb) {
       if (file.sourceMap) {
         file.savedMap = JSON.parse(JSON.stringify(file.sourceMap));
@@ -27,32 +25,28 @@ function compileSass() {
       cb(null, file);
     }))
 
-    // 4. 階層移動
     .pipe(flatten())
-
-    // 5. 圧縮（PostCSS）
     .pipe(postcss([cssnano()])) 
     
-    // 6. 消された @use 先の情報を無理やり復元
+    // 2. 【重要】破壊されたマップ情報を、保存しておいた情報で「強制置換」する
     .pipe(through2.obj(function(file, enc, cb) {
       if (file.savedMap && file.sourceMap) {
-        // sourcesをファイル名のみにし、.cssを.scssに修正
-        file.sourceMap.sources = file.savedMap.sources.map(s => 
-          path.basename(s).replace(/\.css$/, '.scss')
-        );
-        // パーシャルの中身（_body.scss等）をすべて復元
+        // 保存していた sources と sourcesContent を復元
+        file.sourceMap.sources = file.savedMap.sources.map(s => path.basename(s));
         file.sourceMap.sourcesContent = file.savedMap.sourcesContent;
+        // メインファイル名が .css になっていたら .scss に戻す
+        file.sourceMap.sources = file.sourceMap.sources.map(s => s.replace(/\.css$/, '.scss'));
       }
       cb(null, file);
     }))
 
-    // 7. インラインで書き出し（第一引数にパスを指定しない）
-    .pipe(sourcemaps.write({
-      includeContent: true // ソースコード自体をCSSに埋め込む
+    // 3. すでに情報は復元済みなので、そのまま書き出す
+    .pipe(sourcemaps.write('./', {
+      includeContent: true,
+      sourceRoot: '../scss'
     }))
     
-    // 8. 出力（Next.jsプリセットなら public/css が安全）
-    .pipe(gulp.dest('public/css'));
+    .pipe(gulp.dest('css'));
 }
 
 exports.default = compileSass;
