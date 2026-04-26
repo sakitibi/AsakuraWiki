@@ -6,12 +6,13 @@ export default async function handler(
 ) {
     try {
         const response = await fetch(
-            "https://rc.wikiwiki.jp/api/v3/comments/maitestu-net/%E8%AD%9C%E4%BB%A3%E9%89%84%E9%81%93",
+            "https://rc.wikiwiki.jp/api/v3/comments/maitestu-net/交流室",
             {
-                method: "GET",
+                method: "POST",
                 headers: {
                     "User-Agent": "akidukisystems",
                 },
+                body: 'name=匿名しゃけ&msg=そういえば1年以上前の熟成牛タンっていう荒らしどうなったんだろ'
             }
         );
 
