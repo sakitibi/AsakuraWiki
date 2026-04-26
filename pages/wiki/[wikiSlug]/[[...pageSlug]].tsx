@@ -17,7 +17,6 @@ import wikiFetch, { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
 import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
-import styles from '@/css/wikis.module.css';
 import { asakuraMenberUserId } from '@/utils/user_list';
 
 // Chromium系判定
@@ -254,6 +253,7 @@ export default function WikiPage() {
                             {page.title}
                             {isEdit ? ' を編集' : null}
                         </title>
+                        <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/wikis.module.css" />
                     </Head>
                     {isEdit ? (
                         <WikiEditPage
@@ -273,8 +273,8 @@ export default function WikiPage() {
                     ) : (
                         <>
                             <div id="contents-wrapper" style={{display: 'flex'}}>
-                                <div className={styles.container} style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
-                                    <article style={{ padding: '2rem', maxWidth: 1000 }} className={`columnCenter ${styles.clearfix}`}>
+                                <div className="container" style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
+                                    <article style={{ padding: '2rem', maxWidth: 1000 }} className="columnCenter clearfix">
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
@@ -356,7 +356,7 @@ export default function WikiPage() {
                                     )}
                                 </div>
                             </div>
-                            <div className={`footer_${designColor} ${styles.clearfix}`}>
+                            <div className={`footer_${designColor} clearfix`}>
                                 <div style={{ display: "inline-block" }}>
                                     レンタルWiki by
                                     <a href="/" title='無料レンタルWikiサービス'>

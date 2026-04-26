@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import type { Context } from '@/components/plugins/parsePluginTypes';
-import styles from '@/css/wikis.module.css'; // ← 適宜調整
 
 interface FunctionCallRendererProps{
     name: string;
@@ -38,7 +37,7 @@ export default function FunctionCallRenderer({ name, args, context }: FunctionCa
         });
     }, [name, args, context]);
     return (
-        <div className={styles.functionCall}>
+        <div className="functionCall">
             <strong>{name}:</strong> {result}
         </div>
     );

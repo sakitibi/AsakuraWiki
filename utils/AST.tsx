@@ -5,7 +5,6 @@ import { Context, ASTNode } from '@/components/plugins/parsePluginTypes';
 import ExportBlock from '@/components/plugins/ExportBlock';
 import ImportBlock from '@/components/plugins/ImportBlock';
 import Fold from '@/components/plugins/Fold';
-import styles from '@/css/wikis.module.css';
 import { tokenize } from '@/utils/parsePlugins';
 
 export function buildAST(src: string, context: Context): ASTNode[] {
@@ -149,7 +148,7 @@ export function renderAST(
         }
         else if (node.type === 'function') {
             return (
-                <div key={`fd${idx}`} className={styles.functionBlock}>
+                <div key={`fd${idx}`} className="functionBlock">
                     <strong>Function: {node.name}</strong>
                     <div>Args: {node.args.join(', ')}</div>
                     <pre>{node.body}</pre>

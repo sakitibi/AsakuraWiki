@@ -4,7 +4,6 @@ import { handleUpdate } from "@/utils/pageParts/wiki/wiki_handler";
 import { editMode } from "@/utils/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { NextRouter } from "next/router";
-import styles from '@/css/wikis.module.css';
 
 interface WikiEditPageProps{
     title: string;
@@ -37,8 +36,8 @@ export default function WikiEditPage({
 }: WikiEditPageProps){
     return(
         <div id="contents-wrapper" style={{display: 'flex'}}>
-            <div className={styles.container} style={{display: 'grid', gridTemplateColumns: "1fr"}}>
-                <article style={{ padding: '2rem', maxWidth: 1000 }} className={`columnCenter ${styles.clearfix}`}>
+            <div className="container" style={{display: 'grid', gridTemplateColumns: "1fr"}}>
+                <article style={{ padding: '2rem', maxWidth: 1000 }} className="columnCenter clearfix">
                     <h1>
                         <i className="fa-solid fa-file-pen"></i>
                         ページ編集
