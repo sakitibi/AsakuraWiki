@@ -17,8 +17,6 @@ export default function RulesComponents2(){
                         <b><i className="fa-solid fa-arrow-turn-down-right fa-fw"></i>これは、根拠のない侮辱的な表現で、企業全体を攻撃しています。</b></p>
                         <p>「○○ゲーム会社はユーザーを騙しているだけで、まともなゲームを出したことがない。」<br/>
                         <b><i className="fa-solid fa-arrow-turn-down-right fa-fw"></i>根拠のない批判であり、悪意を持った名誉棄損に該当します。</b></p>
-                        <p>「○○ゲーム会社はユーザーを騙しているだけで、まともなゲームを出したことがない。」<br/>
-                        <b><i className="fa-solid fa-arrow-turn-down-right fa-fw"></i>根拠のない批判であり、悪意を持った名誉棄損に該当します。</b></p>
                         <li>企業に対する批判の例<b>（許容される例）</b>:</li>
                         <p>「○○ゲーム会社の新作はバグが多く、プレイが困難だ。次回作ではもっとテストをしてほしい。」<br/>
                         <b><i className="fa-solid fa-arrow-turn-down-right fa-fw"></i>具体的な問題点を指摘し、改善を求めている批判です。</b></p>
