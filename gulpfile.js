@@ -17,7 +17,7 @@ function compileSass() {
       quietDeps: true 
     }).on('error', sass.logError))
 
-    // 1. 【重要】Sass直後の完璧なマップ情報を「丸ごと」保存する
+    // 1. Sass直後の情報を退避
     .pipe(through2.obj(function(file, enc, cb) {
       if (file.sourceMap) {
         file.savedMap = JSON.parse(JSON.stringify(file.sourceMap));
@@ -28,24 +28,26 @@ function compileSass() {
     .pipe(flatten())
     .pipe(postcss([cssnano()])) 
     
-    // 2. 【重要】破壊されたマップ情報を、保存しておいた情報で「強制置換」する
+    // 2. 情報を復元
     .pipe(through2.obj(function(file, enc, cb) {
       if (file.savedMap && file.sourceMap) {
-        // 保存していた sources と sourcesContent を復元
         file.sourceMap.sources = file.savedMap.sources.map(s => path.basename(s));
         file.sourceMap.sourcesContent = file.savedMap.sourcesContent;
-        // メインファイル名が .css になっていたら .scss に戻す
         file.sourceMap.sources = file.sourceMap.sources.map(s => s.replace(/\.css$/, '.scss'));
       }
       cb(null, file);
     }))
 
-    // 3. すでに情報は復元済みなので、そのまま書き出す
-    .pipe(sourcemaps.write('./', {
+    // 3. マップのみ public/css に書き出す
+    // sourceMappingURL の値を '../public/css/xxx.map' にならないよう、絶対パス風に指定
+    .pipe(sourcemaps.write('../public/css', {
       includeContent: true,
-      sourceRoot: '../scss'
+      sourceRoot: '/scss',
+      // CSSの中に書き込まれるソースマップへのリンクを調整
+      destPath: 'public/css' 
     }))
     
+    // 4. CSS本体は css ディレクトリへ
     .pipe(gulp.dest('css'));
 }
 
