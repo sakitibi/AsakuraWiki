@@ -1,16 +1,58 @@
+import { useState } from "react";
+import { Collapse } from "react-bootstrap";
+
+interface CollapseItemProps {
+    title: string;
+    children: React.ReactNode;
+    eventKey: string;
+}
+
+const CollapseItem = ({ title, children, eventKey }: CollapseItemProps) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <>
+            <li>
+                <a
+                    style={{ 
+                        color: "inherit", 
+                        textDecoration: "none", 
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px" 
+                    }}
+                    onClick={(e) => {
+                        e.preventDefault(); // aタグのデフォルト挙動を防止
+                        setOpen(!open);
+                    }}
+                    aria-controls={eventKey}
+                    aria-expanded={open}
+                    className={open ? "" : "collapsed"}
+                >
+                    {title}
+                    <i className={`fa-duotone fa-regular fa-caret-${open ? 'up' : 'down'} fa-fw`}></i>
+                </a>
+            </li>
+            
+            <Collapse in={open}>
+                <div id={eventKey}>
+                    <div className="alert alert-dark mt-2" role="alert">
+                        {children}
+                    </div>
+                </div>
+            </Collapse>
+        </>
+    );
+};
+
 export default function RulesComponents1(){
     return(
         <>
             <h2>1. 公的秩序・法律に関する内容</h2>
             <ul>
                 <li>
-                    <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-1" aria-expanded="false">
-                        公的秩序に反する内容
-                        <i className="fa-duotone fa-regular fa-caret-down fa-fw"></i>
-                    </a>
-                </li>
-                <div id="rules1-1" className="collapse">
-                    <div className="alert alert-dark" role="alert">
+                    <CollapseItem title="公的秩序に反する内容" eventKey="rules1-1">
                         <p>
                             <b>公的秩序に反する内容は禁止されています。</b>これは、法律や社会的な秩序を乱す、またはそれを助長する行為や表現が対象です。<br/>具体的には、犯罪行為の促進、暴力的な行為やテロリズムの推奨、ヘイトスピーチ、違法な薬物や武器の取引に関する内容が含まれます。
                         </p>
@@ -18,8 +60,8 @@ export default function RulesComponents1(){
                             <i className="fa-solid fa-message-exclamation fa-fw fa-lg fa-flip-horizontal"></i>
                             <b>公序良俗に反する行為や表現は、法律に基づいて厳しく取り締まられる可能性があります。</b>
                         </p>
-                    </div>
-                </div>
+                    </CollapseItem>
+                </li>
                 <li>
                     <a style={{ color:"inherit", textDecoration:"none" }} className="collapsed" href="#rules1-2" aria-expanded="false">
                         著作権、財産、プライバシー等を侵害する内容
