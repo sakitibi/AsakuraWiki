@@ -28,6 +28,13 @@ export default function Policies(){
         if(!location) return;
         setUrl(new URL(location.href));
     }, [])
+    useEffect(() => {
+        (async function(){
+            const res = await fetch("/api/wiki13-counter2");
+            const data = await res.json();
+            console.log("counter2 responce: ", data);
+        })()
+    }, []);
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
