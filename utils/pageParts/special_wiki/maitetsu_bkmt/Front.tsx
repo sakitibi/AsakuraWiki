@@ -1,9 +1,23 @@
 import Head from "next/head";
 import Script from "next/script";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { asakuraMenberUserId } from '@/utils/user_list';
+import { User } from "@supabase/supabase-js";
+import { supabaseClient } from "@/lib/supabaseClient";
 
 export default function BKMT_Front(){
     const [text, setText] = useState<HTMLDivElement | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
+    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const H3Styles = "display: block;font-size: 1.17em;margin-block: 1em;margin-inline: 0px;font-weight: bold;unicode-bidi: isolate;border-width: 1px 1px 1px 15px;border-style: solid;border-color: rgb(175, 217, 101);border-image: initial;background-color: transparent;color: rgb(0, 0, 0);margin: 0.2em 0px 0.5em;padding: 0.3em 0.3em 0.15em 0.5em;";
     // Appear系統
     const MaegakiAppear = () => {
@@ -182,7 +196,16 @@ export default function BKMT_Front(){
                     </div>
                 </div>
             </div>
-            <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'/>
+            {asakura_member_list_found ? null : (
+                <>
+                    <Script
+                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_main.js'
+                    />
+                    <Script
+                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_util.js'
+                    />    
+                </>
+            )}
         </>
     )
 }
