@@ -274,7 +274,7 @@ export default function WikiPage() {
                         <>
                             <div id="contents-wrapper" style={{display: 'flex'}}>
                                 <div className="container" style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
-                                    <article style={{ padding: '2rem', maxWidth: 1000 }} className="columnCenter clearfix">
+                                    <article style={{ padding: '2rem', minWidth: 700, maxWidth: 1000 }} className="columnCenter clearfix">
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
