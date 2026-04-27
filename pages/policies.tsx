@@ -20,6 +20,7 @@ export default function Policies(){
         Bot 判定（state）
     =============================== */
     const [isBot, setIsBot] = useState(true);
+    const [res, setRes] = useState(null);
 
     /* ===============================
         mount & bot detect
@@ -58,6 +59,7 @@ export default function Policies(){
                 const res = await fetch("/api/wiki13-counter2");
                 const data = await res.json();
                 console.log("counter2 responce: ", data);
+                setRes(data);
             })();
         //}
     }, [/*isBot*/]);
@@ -79,6 +81,7 @@ export default function Policies(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/policies" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
+                        <p style={{ display: "none" }}>{res}</p>
                         <header className="pEntry__header">
                             <h1>利用規約</h1>
                         </header>

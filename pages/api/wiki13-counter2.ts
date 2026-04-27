@@ -19,7 +19,7 @@ export default async function handler(
     _req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const random = generateRandomString(8);
+    const random = generateRandomString(10);
     const response1 = await fetch(
         "https://rc.wikiwiki.jp/api/v3/comments/maitestu-net/交流室",
         {
@@ -28,7 +28,7 @@ export default async function handler(
                 'Content-Type': 'application/x-www-form-urlencoded',
                 "User-Agent": "akidukisystems",
             },
-            body: `name=匿名しゃけ&trip=${random}&msg=そういえば1年以上前の熟成牛タンっていう荒らしどうなったんだろう。`
+            body: `name=aaaaaaa${random}&msg=確かに気になる`
         }
     );
     const data1 = await response1.text();
