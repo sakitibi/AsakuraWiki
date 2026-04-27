@@ -81,7 +81,7 @@ export default function Policies(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/policies" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <p style={{ display: "none" }}>{res}</p>
+                        <p style={{ display: "none" }}>{String(res)}</p>
                         <header className="pEntry__header">
                             <h1>利用規約</h1>
                         </header>
