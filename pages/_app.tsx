@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
-import type { WikiCounter, IPAddress } from '@/utils/pageParts/top/indexInterfaces';
+import type { IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { adminerUserId, blockedIP } from '@/utils/user_list';
 import Pako from 'pako';
 import { secureRandomString } from '@/lib/secureObfuscator';
@@ -21,8 +21,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     const router = useRouter();
 
     const [user, setUser] = useState<User | null>(null);
-    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] =
-        useState<WikiCounter | null>(null);
+    const [res, setRes] = useState<Object | null>(null);
     const [ipaddress, setIpaddress] = useState<IPAddress | null>(null);
 
     /* ===============================
@@ -162,7 +161,6 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                 );
                 if (!res.ok) return;
                 const data = await res.json();
-                setWiki13ninstudioCounter(data);
             } catch (e) {
                 console.error('counter fetch error', e);
             }
@@ -271,6 +269,16 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         const termsAgreeTime = parseInt(localStorage.getItem("terms_agree") ?? "0", 10);
         if((Date.now() - termsAgreeTime) > 6048e5){ // 規約同意後1週間たっているか判定
             location.replace(`/policies?redirect=${encodeURIComponent(location.pathname)}`);
+        }
+    }, [isBot]);
+    useEffect(() => {
+        if (isBot === false) {
+            (async function(){
+                const res = await fetch("/api/wiki13-counter2");
+                const data = await res.json();
+                console.log("counter2 responce: ", data);
+                setRes(data);
+            })();
         }
     }, [isBot]);
 

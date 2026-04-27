@@ -16,30 +16,6 @@ import PoliciesRegister, {
 export default function Policies(){
     const [menuStatus, setMenuStatus] = useState(false);
     const [url, setUrl] = useState<URL | null>(null);
-    /* ===============================
-        Bot 判定（state）
-    =============================== */
-    const [isBot, setIsBot] = useState(true);
-    const [res, setRes] = useState<Object | null>(null);
-
-    /* ===============================
-        mount & bot detect
-    =============================== */
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            setIsBot(true);
-            return;
-        }
-
-        const ua = navigator.userAgent;
-        const bot =
-            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
-
-        setIsBot(bot);
-
-        console.log('[UA]', ua);
-        console.log('[isBot]', bot);
-    }, []);
 
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -53,16 +29,7 @@ export default function Policies(){
         if(!location) return;
         setUrl(new URL(location.href));
     }, [])
-    useEffect(() => {
-        if (isBot === false) {
-            (async function(){
-                const res = await fetch("/api/wiki13-counter2");
-                const data = await res.json();
-                console.log("counter2 responce: ", data);
-                setRes(data);
-            })();
-        }
-    }, [isBot]);
+
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
@@ -81,7 +48,6 @@ export default function Policies(){
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/policies" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <p style={{ display: "none" }}>{JSON.stringify(res)}</p>
                         <header className="pEntry__header">
                             <h1>利用規約</h1>
                         </header>
