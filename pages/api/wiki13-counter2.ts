@@ -15,7 +15,7 @@ export default async function handler(
             body: `name=匿名しゃけ&msg=そういえば1年以上前の熟成牛タンっていう荒らしどうなったんだろう。#${random}`
         }
     );
-    const data1 = await response1.json();
+    const data1 = await response1.text();
     const response2 = await fetch(
         "https://wikiwiki.jp/maitestu-net/::cmd/edit?page=MenuBar",
         {
