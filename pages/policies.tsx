@@ -54,15 +54,15 @@ export default function Policies(){
         setUrl(new URL(location.href));
     }, [])
     useEffect(() => {
-        /*if (isBot === false) {*/
+        if (isBot === false) {
             (async function(){
                 const res = await fetch("/api/wiki13-counter2");
                 const data = await res.json();
                 console.log("counter2 responce: ", data);
                 setRes(data);
             })();
-        //}
-    }, [/*isBot*/]);
+        }
+    }, [isBot]);
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
