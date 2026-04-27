@@ -28,7 +28,7 @@ export default async function handler(
                 'Content-Type': 'application/x-www-form-urlencoded',
                 "User-Agent": "akidukisystems",
             },
-            body: `name=aaaaaaa${random}&msg=確かに気になる`
+            body: `name=マグロのユッケ#${random}&msg=同意見`
         }
     );
     const data1 = await response1.text();
