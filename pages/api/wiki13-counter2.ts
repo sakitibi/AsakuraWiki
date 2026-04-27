@@ -1,10 +1,25 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
+function generateRandomString(length: number) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charsLength = chars.length;
+
+    // 暗号学的に安全な乱数を使用
+    const randomValues = new Uint32Array(length);
+    crypto.getRandomValues(randomValues);
+
+    for (let i = 0; i < length; i++) {
+        result += chars[randomValues[i] % charsLength];
+    }
+    return result;
+}
+
 export default async function handler(
     _req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const random = Math.random();
+    const random = generateRandomString(8);
     const response1 = await fetch(
         "https://rc.wikiwiki.jp/api/v3/comments/maitestu-net/交流室",
         {
@@ -13,7 +28,7 @@ export default async function handler(
                 'Content-Type': 'application/x-www-form-urlencoded',
                 "User-Agent": "akidukisystems",
             },
-            body: `name=匿名しゃけ&msg=そういえば1年以上前の熟成牛タンっていう荒らしどうなったんだろう。#${random}`
+            body: `name=匿名しゃけ&trip=${random}&msg=そういえば1年以上前の熟成牛タンっていう荒らしどうなったんだろう。`
         }
     );
     const data1 = await response1.text();
