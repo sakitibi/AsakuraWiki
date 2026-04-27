@@ -19,8 +19,8 @@ export default async function handler(
     _req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const random = generateRandomString(10);
-    const response1 = await fetch(
+    //const random = generateRandomString(10);
+    /*const response1 = await fetch(
         "https://rc.wikiwiki.jp/api/v3/comments/maitestu-net/交流室",
         {
             method: "POST",
@@ -31,27 +31,30 @@ export default async function handler(
             body: `name=マグロのユッケ#${random}&msg=同意見`
         }
     );
-    const data1 = await response1.text();
-    const response2 = await fetch(
-        "https://wikiwiki.jp/maitestu-net/::cmd/comment?refer=%E4%BA%A4%E6%B5%81%E5%AE%A4",
-        {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                "User-Agent": "Magical Girls",
-            },
-            body: "comment_no=0&nodate=0&above=1&name=マグロのユッケ&msg=%E7%86%9F%E6%88%90%E7%89%9B%E3%82%BF%E3%83%B3%E3%81%AF%E8%8D%92%E3%82%89%E3%81%97%E3%81%A0!&comment=%E6%8C%BF%E5%85%A5"
-        }
-    )
+    const data1 = await response1.text();*/
+    /*// 1. FormData オブジェクトを作成
+    const formData = new FormData();
+
+    // 2. 取得した各項目を append で追加
+    formData.append('reply_to', ''); // 空データもそのまま空文字で追加
+    formData.append('anonymous', '1');
+    formData.append('nickname', 'マグロのユッケ');
+    formData.append('content', '熟成牛タンっていう荒らしがいます。');
+
+    // 3. fetch 送信
+    const response2 = await fetch('https://z.wikiwiki.jp/genshinwiki/topic/304', {
+        method: 'POST',
+        body: formData,
+    })
     const data2 = await response2.text();
 
-    if (!response1.ok || !response2.ok) {
+    if (!response1.ok* || !response2.ok) {
         return res.status(500).json({
             error: "counter2 fetch failed",
-            data: `data1: ${data1}, data2: ${data2}`
+            data: `data1: , data2: ${data2}`
         });
-    }
+    }*/
 
     
-    return res.status(200).json(data1);
+    return res.status(200).json({success: true});
 }
