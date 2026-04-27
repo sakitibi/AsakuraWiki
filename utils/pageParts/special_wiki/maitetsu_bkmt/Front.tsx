@@ -141,6 +141,8 @@ export default function BKMT_Front(){
                     <li>いいですね -- ジャイアントパンダ 2026-02-22 (日) 18:25:47</li>
                     <li>サイト管理者です、 マイ鉄ネット撲滅委員会の利用規約に同意して下さい<a href="https://sakitibi.github.io/selects/e3839ee382a4e98984e3838de38383e38388e692b2e6bb85e5a794e593a1e4bc9a">(ここから)</a> -- さきちび 2026-02-27 (金) 22:04:54</li>
                     <li>朗報 調査の結果、wikiwikiのrtcommentから制限無しに活動できることを発見しました! -- さきちび 2026-04-27 (月) 22:37:52</li>
+                    <li>自分も解析 リバースエンジニアリングをした結果 <br/>なんとzawazawaのzcommentも制限無しに活動できることを発見しました! -- みぞれ 2026-04-27 (月) 23:54:04</li>
+                    <li>5月中旬ぐらいに第二回の他Wikiで注意喚起を検討します! -- みぞれ 2026-04-27 (月) 23:54:35</li>
                 </ul>
                 <p><a href="/wiki/maitetsu_bkmt/comment" target="_blank">こちらでコメントする</a></p>
             </div>
