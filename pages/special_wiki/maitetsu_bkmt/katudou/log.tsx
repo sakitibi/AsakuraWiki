@@ -1,7 +1,22 @@
+import { supabaseClient } from "@/lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
 import Head from "next/head";
 import Script from "next/script";
+import { useEffect, useState } from "react";
+import { asakuraMenberUserId } from '@/utils/user_list';
 
 export default function Log(){
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
+    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const Disabled = () => {
         location.reload();
     }
@@ -34,7 +49,16 @@ export default function Log(){
                     </div>
                 </div>
             </div>
-            <Script src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'/>
+            {asakura_member_list_found ? null : (
+                <>
+                    <Script
+                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_main.js'
+                    />
+                    <Script
+                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_util.js'
+                    />    
+                </>
+            )}
         </>
     )
 }
