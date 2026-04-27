@@ -1,7 +1,6 @@
 {
   "name": "AsakuraWiki",
-  "version": "2.0.100",
-  "main": "main/.Scripts/index.js",
+  "version": "2.0.101",
   "description": "",
   "author": {
     "name": "13ninstudio, Inc",
@@ -9,7 +8,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"next dev\" \"electron .\"",
+    "dev": "concurrently \"next dev\"",
     "build": "next build && tsc -p tsconfig.json",
     "start": "npm run start",
     "postbuild": "next-sitemap"
