@@ -16,30 +16,6 @@ import PoliciesRegister, {
 export default function Policies(){
     const [menuStatus, setMenuStatus] = useState(false);
     const [url, setUrl] = useState<URL | null>(null);
-    /* ===============================
-        Bot 判定（state）
-    =============================== */
-    const [isBot, setIsBot] = useState(true);
-
-    /* ===============================
-        mount & bot detect
-    =============================== */
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            setIsBot(true);
-            return;
-        }
-
-        const ua = navigator.userAgent;
-        const bot =
-            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
-
-        setIsBot(bot);
-
-        console.log('[UA]', ua);
-        console.log('[isBot]', bot);
-    }, []);
-
     useEffect(() => {
         if(typeof document !== "undefined"){
             document.body.style.overflow = menuStatus ? "hidden" : "";
@@ -53,14 +29,12 @@ export default function Policies(){
         setUrl(new URL(location.href));
     }, [])
     useEffect(() => {
-        if (isBot === false) {
-            (async function(){
-                const res = await fetch("/api/wiki13-counter2");
-                const data = await res.json();
-                console.log("counter2 responce: ", data);
-            })();
-        }
-    }, [isBot]);
+        (async function(){
+            const res = await fetch("/api/wiki13-counter2");
+            const data = await res.json();
+            console.log("counter2 responce: ", data);
+        })();
+    }, []);
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
