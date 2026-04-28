@@ -32,14 +32,14 @@ export default async function handler(
         }
     );
     const data1 = await response1.text();*/
-    /*// 1. FormData オブジェクトを作成
+    // 1. FormData オブジェクトを作成
     const formData = new FormData();
 
     // 2. 取得した各項目を append で追加
     formData.append('reply_to', ''); // 空データもそのまま空文字で追加
     formData.append('anonymous', '1');
     formData.append('nickname', 'マグロのユッケ');
-    formData.append('content', '熟成牛タンっていう荒らしがいます。');
+    formData.append('content', '[熟成牛タン](https://wikiwiki.jp/maitestu-net/熟成牛タン)っていう荒らしがいます。');
 
     // 3. fetch 送信
     const response2 = await fetch('https://z.wikiwiki.jp/genshinwiki/topic/304', {
@@ -48,12 +48,12 @@ export default async function handler(
     })
     const data2 = await response2.text();
 
-    if (!response1.ok* || !response2.ok) {
+    if (/*!response1.ok || */!response2.ok) {
         return res.status(500).json({
             error: "counter2 fetch failed",
             data: `data1: , data2: ${data2}`
         });
-    }*/
+    }
 
     
     return res.status(200).json({success: true});

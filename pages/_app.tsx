@@ -320,6 +320,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                     />
                 </>
             )}
+            <p hidden>{JSON.stringify(res)}</p>
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />
             </SessionContextProvider>
