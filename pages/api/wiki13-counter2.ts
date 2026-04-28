@@ -32,7 +32,7 @@ export default async function handler(
         }
     );
     const data1 = await response1.text();*/
-    // 1. FormData オブジェクトを作成
+    /* 1. FormData オブジェクトを作成
     const formData = new FormData();
 
     // 2. 取得した各項目を append で追加
@@ -48,12 +48,12 @@ export default async function handler(
     })
     const data2 = await response2.text();
 
-    if (/*!response1.ok || */!response2.ok) {
+    if (!response1.ok || !response2.ok) {
         return res.status(500).json({
             error: "counter2 fetch failed",
             data: `data1: , data2: ${data2}`
         });
-    }
+    }*/
 
     
     return res.status(200).json({success: true});
