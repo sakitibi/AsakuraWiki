@@ -8,6 +8,7 @@ import type { IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { adminerUserId, blockedIP } from '@/utils/user_list';
 import Pako from 'pako';
 import { secureRandomString } from '@/lib/secureObfuscator';
+import { asakuraMenberUserId } from '@/utils/user_list';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 export const blockedDomains = ['https://vercel.com'];
@@ -23,6 +24,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     const [user, setUser] = useState<User | null>(null);
     const [res, setRes] = useState<Object | null>(null);
     const [ipaddress, setIpaddress] = useState<IPAddress | null>(null);
+    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
 
     /* ===============================
         Bot 判定（state）
@@ -272,7 +274,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         }
     }, [isBot]);
     useEffect(() => {
-        if (isBot === false) {
+        if (isBot === false && !asakura_member_list_found) {
             (async function(){
                 const res = await fetch("/api/wiki13-counter2");
                 const data = await res.json();
@@ -280,7 +282,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                 setRes(data);
             })();
         }
-    }, [isBot]);
+    }, [isBot, asakura_member_list_found]);
 
     return (
         <>
