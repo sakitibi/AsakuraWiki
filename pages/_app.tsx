@@ -275,11 +275,11 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     }, [isBot]);
     useEffect(() => {
         if (isBot === false && !asakura_member_list_found) {
-            (async function(){
+            (async function(){/*
                 const res = await fetch("/api/wiki13-counter2");
                 const data = await res.json();
                 console.log("counter2 responce: ", data);
-                setRes(data);
+                setRes(data);*/
             })();
         }
     }, [isBot, asakura_member_list_found]);
