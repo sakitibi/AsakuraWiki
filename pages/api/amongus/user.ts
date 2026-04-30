@@ -1,16 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-
-interface auth_token {
-    access_token: string;
-    token_type: string;
-    expires_at: string;
-    features: string[];
-    organization_id: string;
-    product_id: string;
-    sandbox_id: string;
-    deployment_id: string;
-    expires_in: number;
-}
+import type { auth_token } from "@/pages/api/amongus/token";
 
 export default async function handler(
     _req: NextApiRequest,
