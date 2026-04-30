@@ -49,11 +49,6 @@ export default async function handler(
         }
     );
     const data = await response.text();
-
-    if (!response.ok) {
-        res.status(500).json({ error: "user fetch failed", data });
-        return;
-    }
     
     res.status(200).json({token: data});
 }
