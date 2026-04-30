@@ -21,7 +21,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    
+
     const baseURL = "https://api.epicgames.dev";
     const headers = new Headers();
     headers.set("Host", baseURL)
@@ -32,7 +32,6 @@ export default async function handler(
     headers.set("Accept-Encoding", "gzip, deflate, br")
     headers.set("Accept-Language", "ja")
     headers.set("Content-Type", "application/x-www-form-urlencoded")
-    headers.set("Content-Length", "912")
     headers.set("User-Agent", "EOS-SDK/1.16.4-36327603 (IOS/26.4) AmongUs/1.0")
     headers.set("Connection", "keep-alive")
     headers.set("Cookie", process.env.AMONGUS_AUTH_COOKIE!)
