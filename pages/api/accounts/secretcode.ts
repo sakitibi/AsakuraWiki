@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { JWTPayload, SignJWT } from 'jose';
 import { supabaseServer } from '@/lib/supabaseClientServer';
-import { decodeBase64Unicode } from '@/lib/base64';
 
 function RandomRange(){
     return Math.floor(Math.random() * 2147483647).toString(36);
