@@ -4,6 +4,7 @@ export default async function handler(
     _req: NextApiRequest,
     res: NextApiResponse
 ) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
     try {
         const headers = new Headers();
         headers.set("Host", "api.epicgames.dev")

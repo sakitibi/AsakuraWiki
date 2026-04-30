@@ -16,6 +16,7 @@ export default async function handler(
     _req: NextApiRequest,
     res: NextApiResponse
 ) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
     // Amongusのトークンを取得
     const res1 = await fetch("/api/amongus/token");
     const data1:auth_token = await res1.json();
