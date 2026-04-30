@@ -28,7 +28,7 @@ export default async function handler(
         );
 
         if (!response.ok) {
-            res.status(500).json({ error: "counter fetch failed" });
+            res.status(500).json({ error: "token fetch failed" });
             return;
         }
 
