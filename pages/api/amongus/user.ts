@@ -7,7 +7,7 @@ export default async function handler(
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     // Amongusのトークンを取得
-    const res1 = await fetch("/api/amongus/token");
+    const res1 = await fetch("https://asakura-wiki.vercel.app/api/amongus/token");
     if (!res1.ok) {
         const errdata = await res1.text();
         return res.status(500).json({error: "token error", data: errdata});
