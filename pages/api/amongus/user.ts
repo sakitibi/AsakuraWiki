@@ -43,6 +43,9 @@ export default async function handler(
         }
     );
     const data = await response.text();
+    if (!response.ok) {
+        return res.status(401).json({error: data, auth_token});
+    }
     
     return res.status(200).json({token: data});
 }
