@@ -19,6 +19,10 @@ export default async function handler(
     res.setHeader('Access-Control-Allow-Origin', '*');
     // Amongusのトークンを取得
     const res1 = await fetch("/api/amongus/token");
+    if (!res1.ok) {
+        const errdata = await res1.text();
+        return res.status(500).json({error: "token error", data: errdata});
+    }
     const data1:auth_token = await res1.json();
     const auth_token = data1.access_token;
 
@@ -51,5 +55,5 @@ export default async function handler(
     );
     const data = await response.text();
     
-    res.status(200).json({token: data});
+    return res.status(200).json({token: data});
 }

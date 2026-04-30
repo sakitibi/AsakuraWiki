@@ -29,13 +29,12 @@ export default async function handler(
         );
 
         if (!response.ok) {
-            res.status(500).json({ error: "token fetch failed" });
-            return;
+            return res.status(500).json({ error: "token fetch failed" });
         }
 
         const data = await response.json();
-        res.status(200).json(data);
+        return res.status(200).json(data);
     } catch (error) {
-        res.status(500).json({ error: "network error" });
+        return res.status(500).json({ error: "network error" });
     }
 }
