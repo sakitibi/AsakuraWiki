@@ -49,13 +49,13 @@ export default async function handler(
                 })
             }
         );
+        const data = await response.text();
 
         if (!response.ok) {
-            res.status(500).json({ error: "user fetch failed" });
+            res.status(500).json({ error: "user fetch failed", data });
             return;
         }
-
-        const data = await response.text();
+        
         res.status(200).json({token: data});
     } catch (error) {
         res.status(500).json({ error: "network error" });
