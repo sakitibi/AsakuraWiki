@@ -50,7 +50,6 @@ export default async function handler(
         headers.set("Authorization", `Bearer ${data1.access_token}`)
         headers.set("Content-Type", "application/json")
         headers.set("Content-Length", "55")
-        headers.set("Cookie", process.env.AMONGUS_AUTH_COOKIE!)
         const response2 = await fetch("https://api.epicgames.dev/user/v9/product-users/search", {
             method: "POST",
             headers,
