@@ -6,4 +6,3 @@ secrets
 node_modules
 static
 .next
-compile
