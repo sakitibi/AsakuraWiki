@@ -55,7 +55,7 @@ export default async function handler(
         {
             method: "POST",
             headers,
-            body: `grant_type=external_auth&external_auth_type=apple_id_token&external_auth_token=${data1_temp.access_token}&deployment_id=503cd077a7804777aee5a6eeb5cfe62d&nonce=njFK0RQhQmqhrQdtOt3mNQ&display_name=13%E4%BA%BATV%E3%83%90%E3%83%B365%E5%9B%9E`
+            body: `grant_type=external_auth&external_auth_type=apple_id_token&external_auth_token=${data1_temp.access_token}&deployment_id=503cd077a7804777aee5a6eeb5cfe62d&display_name=13%E4%BA%BATV%E3%83%90%E3%83%B365%E5%9B%9E`
         }
     );
 
