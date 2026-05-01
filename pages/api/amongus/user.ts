@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { auth_token } from "@/pages/api/amongus/token";
 
 export default async function handler(
     _req: NextApiRequest,
@@ -12,8 +11,8 @@ export default async function handler(
         const errdata = await res1.text();
         return res.status(500).json({error: "token error", data: errdata});
     }
-    const data1:auth_token = await res1.json();
-    const auth_token = data1.access_token;
+    const data1 = await res1.json();
+    const auth_token = data1.token;
 
     // ヘッダーをセット
     const headers = new Headers();
