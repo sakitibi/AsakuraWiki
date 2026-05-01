@@ -14,8 +14,11 @@ export default async function handler(
             .select("value")
             .eq("id", "a7869bcb-1c09-b4b2-4939-d382a5f27247")
             .single()
-        if (!data || error) {
+        if (error) {
             return res.status(500).json({error: error});
+        }
+        if (!data.value) {
+            return res.status(500).json({error: "token is null"});
         }
         return res.status(200).json({token: data.value ?? null})
     }
