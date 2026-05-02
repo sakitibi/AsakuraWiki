@@ -13,6 +13,7 @@ export default function LoginPage() {
     async function secretCodeAPIFetched(): Promise<any> {
         try {
             const encrypted = upack.SEncoder.encodeSEncode(new TextEncoder().encode(secretCode.trim()).buffer);
+            console.log("encrypted: ", encrypted);
             const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',
                 headers: {
