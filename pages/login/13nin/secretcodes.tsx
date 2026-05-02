@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { decryptV2, encryptedDataProps } from '@/lib/secureObfuscator';
-import { ungzipFromBase64 } from "@/lib/base64";
+import { encodeBase64Unicode, ungzipFromBase64 } from "@/lib/base64";
 import Head from 'next/head';
 import upack from '@/node_modules/upack.js/src/index';
 
@@ -12,7 +12,7 @@ export default function LoginPage() {
     const [errorMsg, setErrorMsg] = useState<string>('');
     async function secretCodeAPIFetched(): Promise<any> {
         try {
-            const encrypted = upack.SEncoder.encodeSEncode(new TextEncoder().encode(secretCode.trim()).buffer);
+            const encrypted = encodeBase64Unicode(upack.SEncoder.encodeSEncode(new TextEncoder().encode(secretCode.trim()).buffer));
             console.log("encrypted: ", encrypted);
             const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',

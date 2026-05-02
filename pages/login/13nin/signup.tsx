@@ -3,7 +3,7 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { notuseUsername } from '@/utils/user_list';
 import { encryptedDataProps, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
-import { gzipAndBase64 } from '@/lib/base64';
+import { encodeBase64Unicode, gzipAndBase64 } from '@/lib/base64';
 import upack from '@/node_modules/upack.js/src/index';
 
 export type GenderTypes = "men" | "woman";
@@ -68,9 +68,9 @@ export default function SignUpPage() {
             const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
             if (updatedInputs) {
                 const session = await supabaseClient.auth.getSession();
-                const token = upack.SEncoder.encodeSEncode(
+                const token = encodeBase64Unicode(upack.SEncoder.encodeSEncode(
                     (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer
-                );
+                ));
                 const res = await fetch('/api/accounts/users', {
                     method: 'POST',
                     headers: {
