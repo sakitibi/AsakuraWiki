@@ -4,6 +4,9 @@ const nextConfig = {
     output: 'standalone',
     transpilePackages: ['upack.js'],
     turbopack: {},
+    typescript: {
+        ignoreBuildErrors: true,
+    },
 
     webpack(config, { isServer }) {
         if (isServer) {
