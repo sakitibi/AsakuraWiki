@@ -2,6 +2,7 @@
 const nextConfig = {
     productionBrowserSourceMaps: true,
     output: 'standalone',
+    transpilePackages: ['upack.js'],
     turbopack: {},
 
     webpack(config, { isServer }) {

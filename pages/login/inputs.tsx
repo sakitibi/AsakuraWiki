@@ -6,14 +6,14 @@ import {
     encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
 import { User } from "@supabase/auth-helpers-react";
-import type { CountrieTypes, JenderTypes } from "@/pages/login/13nin/signup";
+import type { CountrieTypes, GenderTypes } from "@/pages/login/13nin/signup";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { gzipAndBase64 } from "@/lib/base64";
 
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
     const [countries, setCountries] = useState<CountrieTypes>('japan');
-    const [jender, setJender] = useState<JenderTypes>('men');
+    const [gender, setGender] = useState<GenderTypes>('men');
     const [username, setUsername] = useState<string>('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +46,7 @@ export default function AccountsSetup(){
             // メタデータ暗号化
             const updatedInputs:encryptedDataProps[] | undefined = await secureEncrypt(
                 user?.email!, "null", birthday, username, countries,
-                jender, shimei
+                gender, shimei
             );
             // 暗号化メタデータ送信
             try {
@@ -136,9 +136,9 @@ export default function AccountsSetup(){
                         <label>
                             性別
                             <select
-                                value={jender}
+                                value={gender}
                                 onChange={(e) =>
-                                    setJender(e.target.value as JenderTypes)
+                                    setGender(e.target.value as GenderTypes)
                                 }
                                 required
                             >

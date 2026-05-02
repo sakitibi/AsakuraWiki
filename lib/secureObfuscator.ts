@@ -89,7 +89,7 @@ export async function encrypt(
     birthday: string,
     username: string,
     contries: string,
-    jender: string,
+    gender: string,
     shimei: string
 ): Promise<encryptedDataProps[] | undefined> {
     try{
@@ -99,7 +99,7 @@ export async function encrypt(
             await encryptText(birthday, email, 100000, 128),
             await encryptText(username, email, 100000, 128),
             await encryptText(contries, email, 100000, 128),
-            await encryptText(jender, email, 100000, 128),
+            await encryptText(gender, email, 100000, 128),
             await encryptText(shimei, email, 100000, 128),
         ];
         console.log("encryptedArray: ", encryptedArray);

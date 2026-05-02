@@ -4,8 +4,9 @@ import { notuseUsername } from '@/utils/user_list';
 import { encryptedDataProps, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 import { gzipAndBase64 } from '@/lib/base64';
+import upack from '@/node_modules/upack.js/src/index';
 
-export type JenderTypes = "men" | "woman";
+export type GenderTypes = "men" | "woman";
 export type CountrieTypes = "japan" | "russia" | "others";
 
 export default function SignUpPage() {
@@ -13,7 +14,7 @@ export default function SignUpPage() {
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
     const [countries, setCountries] = useState<CountrieTypes>('japan');
-    const [jender, setJender] = useState<JenderTypes>('men');
+    const [gender, setGender] = useState<GenderTypes>('men');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export default function SignUpPage() {
         // メタデータ暗号化
         const updatedInputs:encryptedDataProps[] | undefined = await secureEncrypt(
             email, password, birthday, username, countries,
-            jender, shimei
+            gender, shimei
         );
 
         // Supabase にユーザー登録（email/passwordは平文でOK）
@@ -46,7 +47,7 @@ export default function SignUpPage() {
                     birthday,
                     countries,
                     shimei,
-                    jender
+                    gender
                 }
             }
         });
@@ -67,7 +68,9 @@ export default function SignUpPage() {
             const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
             if (updatedInputs) {
                 const session = await supabaseClient.auth.getSession();
-                const token = session?.data?.session?.access_token;
+                const token = upack.SEncoder.encodeSEncode(
+                    (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer
+                );
                 const res = await fetch('/api/accounts/users', {
                     method: 'POST',
                     headers: {
@@ -128,9 +131,9 @@ export default function SignUpPage() {
                     <label>
                         性別
                         <select
-                            value={jender}
+                            value={gender}
                             onChange={(e) =>
-                                setJender(e.target.value as JenderTypes)
+                                setGender(e.target.value as GenderTypes)
                             }
                             required
                         >

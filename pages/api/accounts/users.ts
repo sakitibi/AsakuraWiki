@@ -1,6 +1,7 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminerUserId } from '@/utils/user_list';
+import upack from '@/node_modules/upack.js/src/index';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -45,7 +46,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         let userEmail: string | null = null;
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
-            const token = authHeader.split(' ')[1]
+            const token = new TextDecoder().decode(upack.SEncoder.decodeSEncode(authHeader.split(' ')[1]))
             const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
             if (authError) console.error('Supabase auth error:', authError)
             if (user) userId = user.id

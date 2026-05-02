@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { User } from '@supabase/auth-helpers-react';
 import { gzipAndBase64 } from '@/lib/base64';
 
-export type JenderTypes = "men" | "woman";
+export type GenderTypes = "men" | "woman";
 export type CountrieTypes = "japan" | "russia" | "others";
 
 export default function ModifyPage() {
@@ -14,7 +14,7 @@ export default function ModifyPage() {
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
     const [countries, setCountries] = useState<CountrieTypes>('japan');
-    const [jender, setJender] = useState<JenderTypes>('men');
+    const [gender, setGender] = useState<GenderTypes>('men');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -55,7 +55,7 @@ export default function ModifyPage() {
             // メタデータ暗号化
             const updatedInputs: encryptedDataProps[] | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
-                jender, shimei
+                gender, shimei
             );
 
             // 暗号化メタデータ送信
@@ -171,9 +171,9 @@ export default function ModifyPage() {
                     <label>
                         性別
                         <select
-                            value={jender}
+                            value={gender}
                             onChange={(e) =>
-                                setJender(e.target.value as JenderTypes)
+                                setGender(e.target.value as GenderTypes)
                             }
                             required
                         >
