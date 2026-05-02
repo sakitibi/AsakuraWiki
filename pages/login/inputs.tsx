@@ -9,6 +9,7 @@ import { User } from "@supabase/auth-helpers-react";
 import type { CountrieTypes, GenderTypes } from "@/pages/login/13nin/signup";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { gzipAndBase64 } from "@/lib/base64";
+import upack from '@/node_modules/upack.js/src/index';
 
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
@@ -59,7 +60,9 @@ export default function AccountsSetup(){
                 const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
                 if (updatedInputs) {
                     const session = await supabaseClient.auth.getSession();
-                    const token = session?.data?.session?.access_token;
+                    const token = upack.SEncoder.encodeSEncode(
+                        (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer
+                    );
                     const res = await fetch('/api/accounts/users', {
                         method: 'POST',
                         headers: {
