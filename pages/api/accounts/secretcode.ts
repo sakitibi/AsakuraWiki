@@ -48,10 +48,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     if (req.method === 'GET') {
         try {
             // ====== 認証ユーザー取得 ======
-            const secretcode = decodeBase64Unicode(
-                new TextDecoder().decode(upack.SEncoder.decodeSEncode(req.headers.authorization ?? ""))
-            )
-            console.log("secretcode: ", secretcode);
+            const secretcode = new TextDecoder().decode(
+                upack.SEncoder.decodeSEncode(decodeBase64Unicode(req.headers.authorization ?? ""))
+            );
             const { data, error } = await supabaseServer
                 .from('user_metadatas')
                 .select('metadatas,email')
