@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { JWTPayload, SignJWT } from 'jose';
 import { supabaseServer } from '@/lib/supabaseClientServer';
+import upack from '@/node_modules/upack.js/src/index';
 
 function RandomRange(){
     return Math.floor(Math.random() * 2147483647).toString(36);
@@ -46,7 +47,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     if (req.method === 'GET') {
         try {
             // ====== 認証ユーザー取得 ======
-            const secretcode = req.headers.authorization
+            const secretcode = new TextDecoder().decode(upack.SEncoder.decodeSEncode(req.headers.authorization ?? ""))
             console.log("secretcode: ", secretcode);
             const { data, error } = await supabaseServer
                 .from('user_metadatas')
