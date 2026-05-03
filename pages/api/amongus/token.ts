@@ -1,5 +1,6 @@
 import { supabaseClient } from "@/lib/supabaseClient";
 import type { NextApiRequest, NextApiResponse } from "next";
+import upack from '@/node_modules/upack.js/src/index';
 
 function isOneHourEarlier(referenceDate: Date) {
     if (!(referenceDate instanceof Date)) {
@@ -35,7 +36,10 @@ export default async function handler(
         if (!data.value || isOneHourEarlier(date)) {
             return res.status(500).json({error: "token is null"});
         }
-        return res.status(200).json({token: data.value ?? null})
+        const encrypted = upack.SEncoder.encodeSEncode(
+            new TextEncoder().encode(data.value).buffer
+        )
+        return res.status(200).json({token: encrypted ?? null})
     }
 
     if (req.method === "PUT") {

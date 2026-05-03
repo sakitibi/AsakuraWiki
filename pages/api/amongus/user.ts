@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import upack from '@/node_modules/upack.js/src/index';
 
 export default async function handler(
     _req: NextApiRequest,
@@ -12,7 +13,7 @@ export default async function handler(
         return res.status(500).json({error: "token error", data: errdata});
     }
     const data1 = await res1.json();
-    const auth_token = data1.token;
+    const auth_token = new TextDecoder().decode(upack.SEncoder.decodeSEncode(data1.token));
 
     // ヘッダーをセット
     const headers = new Headers();
