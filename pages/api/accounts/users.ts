@@ -48,7 +48,10 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
             const token = decodeBase64Unicode(new TextDecoder().decode(
-                upack.SEncoder.decodeSEncode(authHeader.split(' ')[1])
+                upack.SEncoder.decodeSEncode(
+                    authHeader.split(' ')[1],
+                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+                )
             ));
             const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
             if (authError) console.error('Supabase auth error:', authError)

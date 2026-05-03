@@ -13,7 +13,12 @@ export default function LoginPage() {
     async function secretCodeAPIFetched(): Promise<any> {
         try {
             // セキュリティの為に独自エンコードを導入
-            const encrypted = encodeBase64Unicode(upack.SEncoder.encodeSEncode(new TextEncoder().encode(secretCode.trim()).buffer));
+            const encrypted = encodeBase64Unicode(
+                upack.SEncoder.encodeSEncode(
+                    new TextEncoder().encode(secretCode.trim()).buffer,
+                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+                )
+            );
             console.log("encrypted: ", encrypted);
             const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',
