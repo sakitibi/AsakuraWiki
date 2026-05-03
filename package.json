@@ -1,6 +1,6 @@
 {
   "name": "AsakuraWiki",
-  "version": "2.0.102",
+  "version": "2.0.103",
   "description": "",
   "author": {
     "name": "13ninstudio, Inc",
@@ -30,7 +30,7 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.3",
     "undici": "^7.16.0",
-    "upack.js": "1.0.39"
+    "upack.js": "1.0.40"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
