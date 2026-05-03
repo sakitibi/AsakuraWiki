@@ -34,10 +34,10 @@ export default async function handler(
             headers
         }
     );
-    const data = await response.text();
+    const data = await response.json();
     if (!response.ok) {
         return res.status(401).json({error: data, auth_token});
     }
     
-    return res.status(200).json({token: data});
+    return res.status(200).json({data});
 }
