@@ -115,7 +115,7 @@ export default function AccountsSetup(){
     },[user]);
     useEffect(() => {
         if(typeof window !== "undefined"){
-            if(user?.app_metadata.provider === "email" || isSetuped){
+            if(isSetuped){
                 window.location.replace("/dashboard");
             }
         }
