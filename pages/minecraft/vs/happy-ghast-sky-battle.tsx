@@ -157,30 +157,126 @@ export default function MinecraftVS(){
                         <p>参加者:</p>
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <ul>
-                                {Object.entries(userlists).map(([team, users]: [string, TeamTableProps[]]) => (
-                                    <>
-                                        <li key={team}>
-                                            <h2 style={{ textAlign: 'center' }}>&nbsp;【{team}チーム】</h2>
-                                            <div className={styles.MC_articleGridA_sectionRef}></div>
-                                            <div className={styles.MC_Link_Style_RichText}>
-                                                <table style={TableStyles} id="MC_article_Table">
-                                                    <colgroup>
-                                                        <col width="200"/>
-                                                    </colgroup>
-                                                    <tbody>
-                                                        {users.slice(0,5).map(vsuser => (
-                                                            <tr style={{height: '21.0px'}}>
-                                                                <td style={TdStyles} key={vsuser.user_id}>
-                                                                    <a href={vsuser.user_link}>{vsuser.user_name}</a>{vsuser.score} 点
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </li>
-                                    </>
-                                ))}
+                                <li>
+                                    <h2 style={{ textAlign: 'center' }}>&nbsp;【緑チーム】</h2>
+                                    <div className={styles.MC_articleGridA_sectionRef}></div>
+                                    <div className={styles.MC_Link_Style_RichText}>
+                                        <table style={TableStyles} id="MC_article_Table">
+                                            <colgroup>
+                                                <col width="200"/>
+                                            </colgroup>
+                                            <tbody>
+                                                <tr style={{height: '21.0px'}}>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/o71wDDAxg_Q&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=8">つばきちゃん</a>5005 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/og9isVtPjbM&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=14">つばきつばきちゃん</a>4510 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/CpJVL0GEwr0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=7">さきちび</a>6755 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/iWqRItVK8-E&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=9">つばきくん</a>4505 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/A1grfNW5kjo&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=15">あげるくん</a>4620 点
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2 style={{ textAlign: 'center' }}>&nbsp;【赤チーム】</h2>
+                                    <div className={styles.MC_articleGridA_sectionRef}></div>
+                                    <div className={styles.MC_Link_Style_RichText}>
+                                        <table style={TableStyles} id="MC_article_Table">
+                                            <colgroup>
+                                                <col width="200"/>
+                                            </colgroup>
+                                            <tbody>
+                                                <tr style={{height: '21.0px'}}>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/DV-gO9YZTkQ&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=5">みぞれ</a>4395 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/BXF3WYagNBU&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=7">ウパパロン</a>4370 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/YWNvL6tqjXc&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=8">Train Builder</a>4300 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/F0vr4HyFNvU&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=9">凸もり</a>4620 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/ytR6OJGpuFQ&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=6">赤髪のとも</a>4200 点
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2 style={{ textAlign: 'center' }}>&nbsp;【青チーム】</h2>
+                                    <div className={styles.MC_articleGridA_sectionRef}></div>
+                                    <div className={styles.MC_Link_Style_RichText}>
+                                        <table style={TableStyles} id="MC_article_Table">
+                                            <colgroup>
+                                                <col width="200"/>
+                                            </colgroup>
+                                            <tbody>
+                                                <tr style={{height: '21.0px'}}>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/zjyIKM1FjYo&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=1">HIKAKIN</a>4530 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/ds57POecYR0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=2">のあ</a>4205 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/6Szn2MpVMfQ&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=3">おんりー</a>4535 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/a62TCUc6a_0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=4">めめんともり</a>4495 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/QNi8T4d77ZY&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=5">Latte</a>4450 点
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </li>
+                                <li>
+                                    <h2 style={{ textAlign: 'center' }}>&nbsp;【黄チーム】</h2>
+                                    <div className={styles.MC_articleGridA_sectionRef}></div>
+                                    <div className={styles.MC_Link_Style_RichText}>
+                                        <table style={TableStyles} id="MC_article_Table">
+                                            <colgroup>
+                                                <col width="200"/>
+                                            </colgroup>
+                                            <tbody>
+                                                <tr style={{height: '21.0px'}}>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/o71wDDAxg_Q&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=8">MK</a>4355 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/og9isVtPjbM&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=14">おらふくん</a>4500 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/CpJVL0GEwr0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=7">Kazu</a>4810 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/iWqRItVK8-E&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=9">おおはらMEN</a>4735 点
+                                                    </td>
+                                                    <td style={TdStyles}>
+                                                        <a href="https://youtu.be/A1grfNW5kjo&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=15">三枝りん</a>4520 点
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </li>
                             </ul>
                         </section>
                         <p>ルールは以下の通り</p>

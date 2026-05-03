@@ -14,7 +14,7 @@ export default function MinecraftVSAdminer(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [UserId, setUserId] = useState<any>(null);
     const [UserName, setUserName] = useState<string | null>(null);
-    const [Teams, setTeams] = useState<'赤' | '青' | '緑' | '黄' | null>(null);
+    const [Teams, setTeams] = useState<'ハンターズ' | 'ランナーズ' | null>(null);
     const [EditMode, setEditMode] = useState<'add' | 'edit'>('add');
     const [Score, setScore] = useState<number>(0);
     const [loading, setLoading] = useState(false);
@@ -45,7 +45,7 @@ export default function MinecraftVSAdminer(){
         if (!Teams) return; // null のときは fetch しない
         const fetchData = async () => {
             const { data, error } = await supabaseClient
-                .from("minecraft_vs_happy-ghast-sky-battle")
+                .from("minecraft_vs_hunt-and-run")
                 .select("team_total")
                 .eq("team", Teams)
                 .maybeSingle();
@@ -69,7 +69,7 @@ export default function MinecraftVSAdminer(){
                 // チーム合計を取得（既存ユーザー分）
                 let newTeamScore = Score ?? 0;
                 const { data: teamData, error: teamError } = await supabaseClient
-                    .from("minecraft_vs_happy-ghast-sky-battle")
+                    .from("minecraft_vs_hunt-and-run")
                     .select("team_total")
                     .eq("team", Teams);
 
@@ -81,7 +81,7 @@ export default function MinecraftVSAdminer(){
 
                 // 新規ユーザー追加
                 const { data, error } = await supabaseClient
-                    .from("minecraft_vs_happy-ghast-sky-battle")
+                    .from("minecraft_vs_hunt-and-run")
                     .insert([{
                         user_name: UserName,
                         user_id: UserId,
@@ -99,7 +99,7 @@ export default function MinecraftVSAdminer(){
                 // 現在のチーム合計から対象ユーザーの古い score を除く
                 let newTeamScore = Score ?? 0;
                 const { data: teamData, error: teamError } = await supabaseClient
-                    .from("minecraft_vs_happy-ghast-sky-battle")
+                    .from("minecraft_vs_hunt-and-run")
                     .select("user_name, score, team_total")
                     .eq("team", Teams);
 
@@ -113,7 +113,7 @@ export default function MinecraftVSAdminer(){
 
                 // ユーザー更新
                 const { error } = await supabaseClient
-                    .from("minecraft_vs_happy-ghast-sky-battle")
+                    .from("minecraft_vs_hunt-and-run")
                     .update({
                         user_name: UserName,
                         team: Teams,
@@ -175,13 +175,11 @@ export default function MinecraftVSAdminer(){
                                             チーム
                                             <br/>
                                             <select
-                                                onChange={(e) => setTeams(e.target.value as '赤' | '青' | '緑' | '黄')}
+                                                onChange={(e) => setTeams(e.target.value as 'ハンターズ' | 'ランナーズ')}
                                                 required
                                             >
-                                                <option value="赤" selected>赤チーム</option>
-                                                <option value="青">青チーム</option>
-                                                <option value="緑">緑チーム</option>
-                                                <option value="黄">黄チーム</option>
+                                                <option value="ハンターズ" selected>ハンターズ</option>
+                                                <option value="ランナーズ">ランナーズ</option>
                                             </select>
                                         </label>
                                         <br/>
