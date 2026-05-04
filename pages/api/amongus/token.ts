@@ -38,7 +38,7 @@ export default async function handler(
         }
         const encrypted = upack.SEncoder.encodeSEncode(
             new TextEncoder().encode(data.value).buffer,
-            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
         )
         return res.status(200).json({
             obfuscate: "upack.js",

@@ -16,7 +16,7 @@ export default async function handler(
     const auth_token_raw = 
         upack.SEncoder.decodeSEncode(
             data1.token,
-            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
         );
     console.log("auth_token_raw: ", auth_token_raw);
     const auth_token = new TextDecoder().decode(auth_token_raw || new Uint8Array());
@@ -52,7 +52,7 @@ export default async function handler(
     const auth_token_with_lobby = 
     upack.SEncoder.encodeSEncode(
         new TextEncoder().encode(data2).buffer,
-        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
     );
     if (!response.ok) {
         return res.status(401).json({error: data2, auth_token});

@@ -62,7 +62,7 @@ export default function AccountsSetup(){
                     const session = await supabaseClient.auth.getSession();
                     const token = encodeBase64Unicode(upack.SEncoder.encodeSEncode(
                         (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
-                        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+                        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
                     ));
                     const res = await fetch('/api/accounts/users', {
                         method: 'POST',

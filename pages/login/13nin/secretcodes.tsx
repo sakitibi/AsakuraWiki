@@ -16,7 +16,7 @@ export default function LoginPage() {
             const encrypted = encodeBase64Unicode(
                 upack.SEncoder.encodeSEncode(
                     new TextEncoder().encode(secretCode.trim()).buffer,
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
                 )!
             );
             console.log("encrypted: ", encrypted);
