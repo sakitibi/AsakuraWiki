@@ -85,7 +85,7 @@ export default function MinecraftVSAdminer(){
                     .insert([{
                         user_name: UserName,
                         user_id: UserId,
-                        team: Teams ?? '赤',
+                        team: Teams ?? 'ハンターズ',
                         score: Score ?? 0,
                         team_total: newTeamScore,
                         live_link: liveLink
