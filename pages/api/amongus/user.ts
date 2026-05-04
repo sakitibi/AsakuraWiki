@@ -17,7 +17,7 @@ export default async function handler(
         upack.SEncoder.decodeSEncode(
             data1.token,
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
-        )
+        )!
     );
 
     // ヘッダーをセット

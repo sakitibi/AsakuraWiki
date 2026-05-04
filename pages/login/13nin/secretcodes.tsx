@@ -17,7 +17,7 @@ export default function LoginPage() {
                 upack.SEncoder.encodeSEncode(
                     new TextEncoder().encode(secretCode.trim()).buffer,
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
-                )
+                )!
             );
             console.log("encrypted: ", encrypted);
             const res = await fetch("/api/accounts/secretcode", {

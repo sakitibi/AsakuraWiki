@@ -52,7 +52,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 upack.SEncoder.decodeSEncode(
                     decodeBase64Unicode(req.headers.authorization ?? ""),
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
-                )
+                )!
             );
             const { data, error } = await supabaseServer
                 .from('user_metadatas')
