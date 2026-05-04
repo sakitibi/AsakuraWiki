@@ -37,18 +37,6 @@ export const TdStyles: React.CSSProperties = {
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [userlists, setUsers] = useState<Object>([]);
-    const [ruleBookImg, setRuleBookImg] = useState<number>(0);
-    const MAX_INDEX = 3;
-    const imgURITemp = "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule";
-    const RuleBookSrcArray:string[] = [
-        `${imgURITemp}1_2.png`,
-        `${imgURITemp}3_4.png`,
-        `${imgURITemp}5_6.png`,
-        `${imgURITemp}9_10.png`
-    ];
-    if(typeof ruleBookImg === 'undefined'){
-        setRuleBookImg(0);
-    }
     useEffect(() => {
         if(typeof document !== "undefined"){
             document.body.style.overflow = menuStatus ? "hidden" : "";
@@ -110,24 +98,6 @@ export default function MinecraftVS(){
         };
     }, []);
     console.log("Current userlists:", userlists);
-    const RuleImgChanges = () => {
-        const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! as HTMLImageElement
-        RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
-        console.log("RuleImgChangesData: ", ruleBookImg, RuleBookImgSource, RuleBookSrcArray[Number(ruleBookImg)])
-    }
-    // 次の画像へ
-    // ruleBookImg が変わったら必ず呼ばれる
-    useEffect(() => {
-        RuleImgChanges();
-    }, [ruleBookImg]);
-
-    const RuleImgAdds = () => {
-        setRuleBookImg((prev) => (prev + 1) > MAX_INDEX ? 0 : prev + 1);
-    };
-
-    const RuleImgRemoves = () => {
-        setRuleBookImg((prev) => (prev - 1) < 0 ? MAX_INDEX : prev - 1);
-    };
     return(
         <>
             <Head>
@@ -137,7 +107,7 @@ export default function MinecraftVS(){
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/minecraft/vs/happy-ghast-sky-battle" rupages="false"/>
+                    <LeftMenuJp URL="/minecraft/vs/hunt-and-run" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1 className={styles.MC_Heading_1}>マイクラバーサス 〜 ハント・アンド・ラン 〜 赤ちゃんモブを見つけよう！</h1>
                         <p className={styles.MC_articleHeroA_header_subheadline}>開催期間 2025年5月5日 12:30~15:30</p>
@@ -188,18 +158,33 @@ export default function MinecraftVS(){
                         <p>ルールは以下の通り</p>
                         <div className={styles.MC_AEM_Wrapper}>
                             <div className={styles.MC_CarouselD}>
-                                <picture>
-                                    <img
-                                        src="https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule1_2.png"
-                                        alt={RuleBookSrcArray[ruleBookImg] ?? ""}
-                                        id="rule-book-img"
-                                        className={styles.MC_Carousel_track_slide_media_img}
-                                    />
-                                </picture>
-                                <div style={{ display: 'flex' }}>
-                                    <button onClick={RuleImgRemoves}><span>前へ</span></button>
-                                    <button onClick={RuleImgAdds}><span>次へ</span></button>
-                                </div>
+                                <h2><b>ゲームルール</b></h2>
+                                <p>プレイヤーは「ハンター」と「ランナー」という 2 つの陣営に分かれ、追う側と逃げる側で戦う、</p>
+                                <p>これまでのマイクラバーサスとは異なる新しいゲーム形式となっています。</p>
+                                <h3>ポイントの稼ぎ方</h3>
+                                <p>今回の勝敗は、制限時間内にどちらのチームがより多くのポイントを獲得できるかで決まります。しかし、ポイントの獲得方法は、ハンターとランナーで異なります。</p>
+                                <p><b>【ハンター】</b></p>
+                                <p>ランナーを攻撃して捕まえる (倒す) ことでポイントを獲得。</p>
+                                <p>「ロックオン状態」のランナーを捕まえることによって、より多くのポイントを獲得できます。</p>
+                                <p><b>【ランナー】</b></p>
+                                <p>エメラルドを集め、指定の場所に納品することでポイントを獲得。</p>
+                                <p>ハンターに見つからずに活動し続けること、そして効率よくエメラルドを集めることが勝利の鍵となります。</p>
+                                <h3>ロックオン状態</h3>
+                                <p>以下の条件でランナーは「ロックオン状態」となります：</p>
+                                <ul>
+                                    <li>エメラルド所持中</li>
+                                    <li>一定時間エメラルド納品がなかった場合</li>
+                                    <li>ミッション中の特定条件</li>
+                                </ul>
+                                <p>ロックオン状態になると、ハンターに位置が把握されやすくなり、攻撃対象になりやすいです。さらに、ロックオン状態で捕まった場合、</p>
+                                <p>ハンターに より多くのポイントを渡してしまうだけでなく、一定時間をケージで過ごすことになってしまいます。</p>
+                                <h3>ケージ</h3>
+                                <p>ロックオン状態のランナーが捕まると、言わば牢屋のような建造物である「ケージ」の中でリスポーンすることになります。</p>
+                                <p>ケージの中にはアスレチックコースが用意されていて、クリアすることで自力での脱出が可能になっています。他にも以下の条件で脱出が可能です。</p>
+                                <ul>
+                                    <li>仲間がケージの解除ボタンを押してくれた時</li>
+                                    <li>捕まってから 5 分が経過した時</li>
+                                </ul>
                             </div>
                         </div>
                         {/*<h2>結果</h2>
