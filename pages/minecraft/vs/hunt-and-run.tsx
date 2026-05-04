@@ -202,11 +202,11 @@ export default function MinecraftVS(){
                                 </div>
                             </div>
                         </div>
-                        <h2>結果</h2>
+                        {/*<h2>結果</h2>
                         <p>1位 緑チーム 25395点</p>
                         <p>2位 黄チーム 22920点</p>
                         <p>3位 青チーム 22215点</p>
-                        <p>4位 赤チーム 21885点</p>
+                        <p>4位 赤チーム 21885点</p>*/}
                     </main>
                     <RightMenuJp/>
                 </div>
