@@ -19,6 +19,7 @@ export default async function handler(
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
         )!
     );
+    console.log("auth_token: ", auth_token);
 
     // ヘッダーをセット
     const headers = new Headers();
