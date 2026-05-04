@@ -40,7 +40,10 @@ export default async function handler(
             new TextEncoder().encode(data.value).buffer,
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
         )
-        return res.status(200).json({token: encrypted ?? null})
+        return res.status(200).json({
+            obfuscate: "upack.js",
+            token: encrypted ?? null
+        })
     }
 
     if (req.method === "PUT") {

@@ -47,10 +47,18 @@ export default async function handler(
             })
         }
     );
-    const data = await response.text();
+    const data2 = await response.text();
+    const auth_token_with_lobby = 
+    upack.SEncoder.encodeSEncode(
+        new TextEncoder().encode(data2).buffer,
+        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
+    );
     if (!response.ok) {
-        return res.status(401).json({error: data, auth_token});
+        return res.status(401).json({error: data2, auth_token});
     }
     
-    return res.status(200).json({token: data});
+    return res.status(200).json({
+        obfuscate: "upack.js",
+        token: auth_token_with_lobby
+    });
 }
