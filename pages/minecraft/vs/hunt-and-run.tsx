@@ -6,7 +6,6 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import React, { useState, useEffect } from "react";
-import { supabaseServer } from "@/lib/supabaseClientServer";
 import { supabaseClient } from "@/lib/supabaseClient";
 
 interface TeamTableProps{
@@ -62,7 +61,7 @@ export default function MinecraftVS(){
         setMenuStatus(prev => !prev);
     };
     const fetchUsers = async () => {
-        const { data, error } = await supabaseServer
+        const { data, error } = await supabaseClient
             .from("minecraft_vs_hunt-and-run")
             .select("user_name, team, user_id, live_link, score");
 

@@ -6,15 +6,6 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import React, { useState, useEffect } from "react";
-import { supabaseServer } from "@/lib/supabaseClientServer";
-import { supabaseClient } from "@/lib/supabaseClient";
-
-interface TeamTableProps{
-    user_name:string;
-    user_id:string;
-    user_link:string;
-    score: number;
-}
 
 export const TableStyles: React.CSSProperties = {
     borderStyle: 'none',
@@ -37,7 +28,6 @@ export const TdStyles: React.CSSProperties = {
 
 export default function MinecraftVS(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
-    const [userlists, setUsers] = useState<Object>([]);
     const [ruleBookImg, setRuleBookImg] = useState<number>(0);
     const MAX_INDEX = 3;
     const imgURITemp = "https://sakitibi.github.io/AsakuraWiki-Images/minecraft/vs/FIX_rule";
@@ -61,56 +51,6 @@ export default function MinecraftVS(){
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-    const fetchUsers = async () => {
-        const { data, error } = await supabaseServer
-            .from("minecraft_vs_happy-ghast-sky-battle")
-            .select("user_name, team, user_id, live_link, score");
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        if (data) {
-            const grouped = data.reduce((acc: any, user) => {
-                if (!acc[user.team]) acc[user.team] = [];
-                acc[user.team].push({
-                    user_name: user.user_name,
-                    user_id: user.user_id,
-                    user_link: user.live_link,
-                    score: user.score
-                });
-                return acc;
-            }, {});
-
-            setUsers(grouped);
-        }
-    };
-
-    useEffect(() => {
-        fetchUsers();
-
-        const channel = supabaseClient
-            .channel("realtime-users")
-            .on(
-                "postgres_changes",
-                {
-                    event: "*", // INSERT / UPDATE / DELETE
-                    schema: "public",
-                    table: "minecraft_vs_happy-ghast-sky-battle",
-                },
-                () => {
-                    // 何か変わったら再取得
-                    fetchUsers();
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabaseClient.removeChannel(channel);
-        };
-    }, []);
-    console.log("Current userlists:", userlists);
     const RuleImgChanges = () => {
         const RuleBookImgSource:HTMLImageElement = document.getElementById("rule-book-img")! as HTMLImageElement
         RuleBookImgSource.src = RuleBookSrcArray[Number(ruleBookImg)];
