@@ -44,7 +44,7 @@ export default function MinecraftVSAdminer(){
     useEffect(() => {
         if (!Teams) return; // null のときは fetch しない
         const fetchData = async () => {
-            const { data, error } = await supabaseClient
+            const { error } = await supabaseClient
                 .from("minecraft_vs_hunt-and-run")
                 .select("team_total")
                 .eq("team", Teams)

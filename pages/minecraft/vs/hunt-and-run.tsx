@@ -5,33 +5,15 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import MenuJp from '@/utils/pageParts/top/jp/Menu';
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { supabaseClient } from "@/lib/supabaseClient";
+import { TableStyles, TdStyles } from "@/pages/minecraft/vs/happy-ghast-sky-battle";
 
 interface TeamTableProps{
     user_name:string;
     user_id:string;
     user_link:string;
     score: number;
-}
-
-export const TableStyles: React.CSSProperties = {
-    borderStyle: 'none',
-    tableLayout: 'fixed',
-    fontSize: '10.0pt',
-    fontFamily: 'Arial',
-    width: '0.0px'
-}
-export const TdStyles: React.CSSProperties = {
-    paddingRight: '3.0px',
-    paddingLeft: '3.0px',
-    borderWidth: '1.0px',
-    borderStyle: 'solid',
-    borderColor: '#000 #000 #ccc',
-    overflow: 'hidden',
-    verticalAlign: 'bottom',
-    color: '#15c',
-    textAlign: 'center'
 }
 
 export default function MinecraftVS(){

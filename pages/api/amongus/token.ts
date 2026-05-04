@@ -37,7 +37,7 @@ export default async function handler(
             return res.status(500).json({error: "token is null"});
         }
         const encrypted = upack.SEncoder.encodeSEncode(
-            new TextEncoder().encode(data.value).buffer,
+            new TextEncoder().encode(data.value),
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY
         )
         return res.status(200).json({
