@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
+import { supabaseClient } from "@/lib/supabaseClient";
 
 export default async function handler(
     _req: NextApiRequest,
@@ -57,7 +58,17 @@ export default async function handler(
     if (!response.ok) {
         return res.status(401).json({error: data2, auth_token});
     }
-    
+    const { error } = await supabaseClient
+        .from("wiki_variables")
+        .update([{
+            value: data2,
+            updated_at: new Date()
+        }])
+        .eq("id", "9cc08dca-cf55-4639-9ad1-42e1b67f53b9")
+        .single();
+    if (error) {
+        return res.status(500).json({error});
+    }
     return res.status(200).json({
         obfuscate: "upack.js",
         token: auth_token_with_lobby

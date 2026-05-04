@@ -2,7 +2,7 @@ import { supabaseClient } from "@/lib/supabaseClient";
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
 
-function isOneHourEarlier(referenceDate: Date) {
+export function isOneHourEarlier(referenceDate: Date) {
     if (!(referenceDate instanceof Date)) {
         throw new Error("referenceDate は有効な Date オブジェクトである必要があります");
     }

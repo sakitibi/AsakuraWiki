@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
+import { supabaseClient } from "@/lib/supabaseClient";
+import { isOneHourEarlier } from "@/pages/api/amongus/token";
 
 export default async function handler(
     req: NextApiRequest,
@@ -40,10 +42,30 @@ export default async function handler(
             headers
         }
     );
-    const data = await response.json();
+    const data2 = await response.json();
     if (!response.ok) {
-        return res.status(401).json({error: data, auth_token});
+        const { data: backup_token, error: backup_error } = await supabaseClient
+            .from("wiki_variables")
+            .select("value,updated_at")
+            .eq("id", "9cc08dca-cf55-4639-9ad1-42e1b67f53b9")
+            .single();
+        if (backup_error || isOneHourEarlier(backup_token.updated_at)){
+            return res.status(500).json({error: backup_error, token: backup_token});
+        }
+        headers.set("authorization", `Bearer ${backup_token.value}`);
+        const response2 = await fetch(
+            `https://matchmaker-as.among.us:443/api/games/filtered?filter=${filter}`,
+            {
+                method: "GET",
+                headers
+            }
+        );
+        if (!response2.ok) {
+            return res.status(401).json({error: data2, auth_token});
+        }
+        const data3 = await response2.json();
+        return res.status(200).json(data3);
     }
     
-    return res.status(200).json({data});
+    return res.status(200).json(data2);
 }
