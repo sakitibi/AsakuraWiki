@@ -170,15 +170,23 @@ export default function MinecraftVS(){
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/o71wDDAxg_Q&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=8">つばきちゃん</a>5005 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/og9isVtPjbM&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=14">つばきつばきちゃん</a>4510 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/CpJVL0GEwr0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=7">さきちび</a>6755 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/iWqRItVK8-E&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=9">つばきくん</a>4505 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/A1grfNW5kjo&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=15">あげるくん</a>4620 点
                                                     </td>
@@ -200,15 +208,23 @@ export default function MinecraftVS(){
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/DV-gO9YZTkQ&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=5">みぞれ</a>4395 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/BXF3WYagNBU&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=7">ウパパロン</a>4370 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/YWNvL6tqjXc&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=8">Train Builder</a>4300 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/F0vr4HyFNvU&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=9">凸もり</a>4620 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/ytR6OJGpuFQ&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=6">赤髪のとも</a>4200 点
                                                     </td>
@@ -230,15 +246,23 @@ export default function MinecraftVS(){
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/zjyIKM1FjYo&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=1">HIKAKIN</a>4530 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/ds57POecYR0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=2">のあ</a>4205 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/6Szn2MpVMfQ&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=3">おんりー</a>4535 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/a62TCUc6a_0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=4">めめんともり</a>4495 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/QNi8T4d77ZY&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=5">Latte</a>4450 点
                                                     </td>
@@ -260,15 +284,23 @@ export default function MinecraftVS(){
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/o71wDDAxg_Q&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=8">MK</a>4355 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/og9isVtPjbM&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=14">おらふくん</a>4500 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/CpJVL0GEwr0&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=7">Kazu</a>4810 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/iWqRItVK8-E&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=9">おおはらMEN</a>4735 点
                                                     </td>
+                                                </tr>
+                                                <tr style={{height: '21.0px'}}>
                                                     <td style={TdStyles}>
                                                         <a href="https://youtu.be/A1grfNW5kjo&list=PLDsY7IAMYhhjdBgjvQiS20ab9dlBw6lpF&index=15">三枝りん</a>4520 点
                                                     </td>

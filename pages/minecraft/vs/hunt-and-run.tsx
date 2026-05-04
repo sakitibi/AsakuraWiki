@@ -156,6 +156,7 @@ export default function MinecraftVS(){
                             <p>果たして勝利をつかむのはハンターか、それともランナーか？</p>
                             <p>それでは早速、今回の参加メンバーを見ていきましょう！</p>
                         </div>
+                        <p>司会: さきちび あげるくん あげるちゃん あみりい</p>
                         <p>参加者:</p>
                         <section className={`${styles.MC_Bg_Inherit} ${styles.MC_Theme_Vanilla}`}>
                             <ul>
