@@ -171,7 +171,7 @@ export default function MinecraftVS(){
                                                         <col width="200"/>
                                                     </colgroup>
                                                     <tbody>
-                                                        {users.slice(0,5).map(vsuser => (
+                                                        {users.map(vsuser => (
                                                             <tr style={{height: '21.0px'}}>
                                                                 <td style={TdStyles} key={vsuser.user_id}>
                                                                     <a href={vsuser.user_link}>{vsuser.user_name}</a>{vsuser.score} 点
