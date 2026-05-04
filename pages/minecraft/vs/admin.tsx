@@ -141,7 +141,7 @@ export default function MinecraftVSAdminer(){
             <div className={styles.contentsWrapper}>
                 <HeaderJp handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/minecraft/vs"/>
+                    <LeftMenuJp URL="/minecraft/vs/admin" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         {adminer_user_id_list ? (
                             <>
@@ -163,6 +163,7 @@ export default function MinecraftVSAdminer(){
                                                 disabled={EditMode === "edit"}
                                             />
                                         </label>
+                                        <br/>
                                         <label>
                                             ユーザー名
                                             <input
@@ -171,6 +172,7 @@ export default function MinecraftVSAdminer(){
                                                 onChange={(e) => setUserName(e.target.value)}
                                             />
                                         </label>
+                                        <br/>
                                         <label>
                                             チーム
                                             <br/>
@@ -191,6 +193,7 @@ export default function MinecraftVSAdminer(){
                                                 onChange={(e) => setScore(Number(e.target.value))}
                                             />
                                         </label>
+                                        <br/>
                                         <label>
                                             配信リンク
                                             <input
@@ -200,6 +203,7 @@ export default function MinecraftVSAdminer(){
                                                 disabled={EditMode === "edit"}
                                             />
                                         </label>
+                                        <br/>
                                         <label>
                                             追加または編集
                                             <br/>
