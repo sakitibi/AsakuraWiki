@@ -173,6 +173,7 @@ export default function MinecraftVS(){
                                     <li>クレジット表記をする 例: 「マイクラバーサスは13ninstudioの企画です」</li>
                                     <li><a href="/policies">13nin利用規約</a>を厳守する</li>
                                     <li>配信者のガイドラインを厳守する</li>
+                                    <li>このページのリンクを概要欄に貼る</li>
                                 </ul>
                             </div>
                         </div>
