@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { asakuraMenberUserId } from '@/utils/user_list';
 import Head from 'next/head';
 import Script from 'next/script';
 import DarkOakForestLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/DarkOakForestLine';
@@ -11,6 +12,8 @@ import YellowLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Met
 import BrownLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/BrownLine';
 import GreenLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/GreenLine';
 import AirPortLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/AirPortLine';
+import { User } from '@supabase/supabase-js';
+import { supabaseClient } from '@/lib/supabaseClient';
 
 export const StopStation = () => {
     return(
@@ -51,6 +54,8 @@ export default function WikiPage() {
     // state
     const [error]     = useState<string | null>(null)
     const [urlObj]   = useState<URL | null>(null)
+    const [user, setUser] = useState<User | null>(null);
+    const [isBot, setIsBot] = useState(true);
     const [navfold, setNavfold] = useState<boolean[]>([
         false,
         false,
@@ -62,6 +67,35 @@ export default function WikiPage() {
         false,
         false
     ]);
+
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+
+        if (typeof window === 'undefined') {
+            setIsBot(true);
+            return;
+        }
+
+        const ua = navigator.userAgent;
+        const bot =
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
+
+        setIsBot(bot);
+
+        console.log('[UA]', ua);
+        console.log('[isBot]', bot);
+    }, []);
+    
+    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const designColor:"default" = "default";
 
     useEffect(() => {
@@ -224,9 +258,16 @@ export default function WikiPage() {
                             <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                         </div>
                     </article>
-                    <Script
-                        src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette.js'
-                    />
+                    {isBot || asakura_member_list_found ? null : (
+                        <>
+                            <Script
+                                src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_main.js'
+                            />
+                            <Script
+                                src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_util.js'
+                            />    
+                        </>
+                    )}
                 </div>
             </div>
         </>

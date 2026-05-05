@@ -8,7 +8,6 @@ import { supabaseClient } from "@/lib/supabaseClient";
 export default function BKMT_Front(){
     const [text, setText] = useState<HTMLDivElement | null>(null);
     const [user, setUser] = useState<User | null>(null);
-    const [mounted, setMounted] = useState(false);
     const [isBot, setIsBot] = useState(true);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
@@ -20,7 +19,6 @@ export default function BKMT_Front(){
         });
     }, []);
     useEffect(() => {
-        setMounted(true);
 
         if (typeof window === 'undefined') {
             setIsBot(true);
