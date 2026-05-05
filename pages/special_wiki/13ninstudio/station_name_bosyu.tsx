@@ -46,7 +46,6 @@ export default function StationNameBosyu() {
                                     <h2>駅名候補欄</h2>
                                 </summary>
                                 <ul>
-                                    <li>由依</li>
                                     <li>本原</li>
                                     <li>{'{地名}'}井原</li>
                                     <li>今谷</li>
