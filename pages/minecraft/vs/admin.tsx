@@ -17,7 +17,6 @@ export default function MinecraftVSAdminer(){
     const [Teams, setTeams] = useState<'ハンターズ' | 'ランナーズ' | null>(null);
     const [EditMode, setEditMode] = useState<'add' | 'edit'>('add');
     const [Score, setScore] = useState<number>(0);
-    const [loading, setLoading] = useState(false);
     const [liveLink, setLiveLink] = useState<string | null>(null);
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -55,12 +54,10 @@ export default function MinecraftVSAdminer(){
     }, [Teams]);
     const AddUsers = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
 
         // 必須チェック
         if (!UserId || !UserName || !Teams) {
             console.error("UserId, UserName, Teams must be set");
-            setLoading(false);
             return;
         }
 
@@ -128,14 +125,11 @@ export default function MinecraftVSAdminer(){
         } catch (err: any) {
             console.error("Error in AddUsers:", err.message || err);
         }
-
-        setLoading(false);
     };
-    if (loading) return <p>読み込み中...</p>;
     return(
         <>
             <Head>
-                <title>マイクラバーサス ハッピーガスト スカイバトル! 公式</title>
+                <title>マイクラバーサス ハント・アンド・ラン 公式</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -145,7 +139,7 @@ export default function MinecraftVSAdminer(){
                     <main style={{ padding: '2rem', flex: 1 }}>
                         {adminer_user_id_list ? (
                             <>
-                                <h1>マイクラバーサス ハッピーガスト スカイバトル! 管理画面</h1>
+                                <h1>マイクラバーサス ハント・アンド・ラン 管理画面</h1>
                                 <div id="user_adds">
                                     <h2>ユーザー{EditMode === "edit" ? (
                                         <span>編集</span>
