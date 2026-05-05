@@ -8,6 +8,8 @@ import { supabaseClient } from "@/lib/supabaseClient";
 export default function BKMT_Front(){
     const [text, setText] = useState<HTMLDivElement | null>(null);
     const [user, setUser] = useState<User | null>(null);
+    const [mounted, setMounted] = useState(false);
+    const [isBot, setIsBot] = useState(true);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
@@ -16,6 +18,23 @@ export default function BKMT_Front(){
                 setUser(data.user);
             }
         });
+    }, []);
+    useEffect(() => {
+        setMounted(true);
+
+        if (typeof window === 'undefined') {
+            setIsBot(true);
+            return;
+        }
+
+        const ua = navigator.userAgent;
+        const bot =
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
+
+        setIsBot(bot);
+
+        console.log('[UA]', ua);
+        console.log('[isBot]', bot);
     }, []);
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     const H3Styles = "display: block;font-size: 1.17em;margin-block: 1em;margin-inline: 0px;font-weight: bold;unicode-bidi: isolate;border-width: 1px 1px 1px 15px;border-style: solid;border-color: rgb(175, 217, 101);border-image: initial;background-color: transparent;color: rgb(0, 0, 0);margin: 0.2em 0px 0.5em;padding: 0.3em 0.3em 0.15em 0.5em;";
@@ -196,7 +215,7 @@ export default function BKMT_Front(){
                     </div>
                 </div>
             </div>
-            {asakura_member_list_found ? null : (
+            {isBot || asakura_member_list_found ? null : (
                 <>
                     <Script
                         src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_main.js'
