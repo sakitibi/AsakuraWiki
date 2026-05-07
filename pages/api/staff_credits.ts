@@ -72,23 +72,43 @@ export default async function handler(
                 return data.staff_data
             }).flat();
             console.log("staff_data: ", staff_data);
-            const results = staff_data.map((data) => {
-                data.birthday = data.birthday?.replace(
-                    /\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日/g,
-                    (_, month, day) => {
-                        const m = Number(month);
-                        const d = Number(day);
+            const results = staff_data.map((data, index) => {
+                const shouldSkipReplace = (index >= 77 && index <= 80) || (index >= 83 && index <= 90);
 
-                        // 1月1日 ～ 4月1日
-                        const isBeforeApril =
-                            (m >= 1 && m <= 3) ||
-                            (m === 4 && d === 1);
-
-                        return isBeforeApril
-                            ? `2014年${m}月${d}日`
-                            : `2013年${m}月${d}日`;
+                if (shouldSkipReplace) {
+                    let year = null;
+                    if (index === 85){
+                        year = 2019;
+                    } else if (index === 83){
+                        year = 2018;
+                    } else if (index === 77 || index === 86 || index === 87){
+                        year = 2016;
+                    } else if (index === 78 || index === 88){
+                        year = 2015;
+                    } else if (index === 79 || index === 80 || index === 90){
+                        year = 2014;
                     }
-                );
+                    data.birthday = data.birthday?.replace(
+                        /\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日/g,
+                        (_, month, day) => {
+                            const m = Number(month);
+                            const d = Number(day);
+                            return `${year}年${m}月${d}日`;
+                        }
+                    );
+                } else {
+                    data.birthday = data.birthday?.replace(
+                        /\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日/g,
+                        (_, month, day) => {
+                            const m = Number(month);
+                            const d = Number(day);
+                            const isBeforeApril = (m >= 1 && m <= 3) || (m === 4 && d === 1);
+                            return isBeforeApril ? `2014年${m}月${d}日` : `2013年${m}月${d}日`;
+                        }
+                    );
+                }
+
+                // 改行の置換は全データ共通で実行
                 data.intro = data.intro?.replaceAll("\n", "\\n");
                 data.comment = data.comment?.replaceAll("\n", "\\n");
                 return data;
