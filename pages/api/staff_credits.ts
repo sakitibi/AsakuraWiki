@@ -43,7 +43,6 @@ export default async function handler(
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-    res.setHeader('Content-Type', 'application/octet-stream');
     // 取得したいURLのリスト
     const urls = [
         'https://sakitibi.github.io/13nin.com/staff_credits/staff_data_1_64.json.br',
@@ -95,14 +94,17 @@ export default async function handler(
             console.log("results: ", results);
 
             const jsonString = JSON.stringify(results);
-
-            const compressedBuffer = brotliCompressSync(jsonString, {
+            // 文字列を明示的に Buffer に変換してから圧縮
+            const compressedBuffer = brotliCompressSync(Buffer.from(jsonString), {
                 params: {
                     [constants.BROTLI_PARAM_QUALITY]: 11,
                 },
             });
 
-            return res.status(200).json(compressedBuffer);
+            res.setHeader('Content-Type', 'application/octet-stream');
+            res.setHeader('Content-Length', compressedBuffer.length);
+
+            return res.status(200).send(compressedBuffer);
         }
 
         if (req.method === "OPTIONS") {
