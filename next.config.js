@@ -3,6 +3,9 @@ const nextConfig = {
     productionBrowserSourceMaps: true,
     output: 'standalone',
     transpilePackages: ['upack.js'],
+    api: {
+        bodyParser: false, // デフォルトのパースをオフにする
+    },
     turbopack: {},
     typescript: {
         ignoreBuildErrors: true,
