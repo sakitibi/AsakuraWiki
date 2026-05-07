@@ -67,9 +67,11 @@ export default async function handler(
                 return res.status(401).json({error: "Unauthorized"});
             }
             const array = await Promise.all(urls.map(url => fetchAndDecompress(url)));
+            console.log("array: ", array);
             const staff_data: JSONProps[] = array.map((data) => {
                 return data.staff_data
             });
+            console.log("staff_data: ", staff_data);
             const results = staff_data.map((data) => {
                 return data.birthday?.replace(
                     /\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日/g,
@@ -88,6 +90,7 @@ export default async function handler(
                     }
                 );
             });
+            console.log("results: ", results);
 
             return res.status(200).json([results[0], results[1]]);
         }
