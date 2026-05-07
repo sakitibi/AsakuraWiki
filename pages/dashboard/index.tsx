@@ -193,7 +193,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         try{
             const session = await supabase.auth.getSession();
             const token = session?.data?.session?.access_token;
-            const res:Response = await fetch("/api/store/developers", {
+            const res:Response = await fetch("https://asakura-wiki.vercel.app/api/store/developers", {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
