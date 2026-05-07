@@ -107,10 +107,6 @@ export default async function handler(
                         }
                     );
                 }
-
-                // 改行の置換は全データ共通で実行
-                data.intro = data.intro?.replaceAll("\n", "\\n");
-                data.comment = data.comment?.replaceAll("\n", "\\n");
                 return data;
             });
             console.log("results: ", results);
