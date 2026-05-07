@@ -1,6 +1,6 @@
 //import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { brotliDecompressSync } from 'zlib';
+import { constants, brotliCompressSync, brotliDecompressSync } from 'zlib';
 /*import upack from '@/node_modules/upack.js/src/index';
 import { decodeBase64Unicode } from '@/lib/base64';
 import { adminerUserId } from '@/utils/user_list';*/
@@ -41,8 +41,9 @@ export default async function handler(
     res: NextApiResponse
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    res.setHeader('Content-Type', 'application/octet-stream');
     // 取得したいURLのリスト
     const urls = [
         'https://sakitibi.github.io/13nin.com/staff_credits/staff_data_1_64.json.br',
@@ -93,7 +94,15 @@ export default async function handler(
             });
             console.log("results: ", results);
 
-            return res.status(200).json(results);
+            const jsonString = JSON.stringify(results);
+
+            const compressedBuffer = brotliCompressSync(jsonString, {
+                params: {
+                    [constants.BROTLI_PARAM_QUALITY]: 11,
+                },
+            });
+
+            return res.status(200).json(compressedBuffer);
         }
 
         if (req.method === "OPTIONS") {
