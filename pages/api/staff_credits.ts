@@ -73,7 +73,7 @@ export default async function handler(
             }).flat();
             console.log("staff_data: ", staff_data);
             const results = staff_data.map((data) => {
-                return data.birthday?.replace(
+                data.birthday = data.birthday?.replace(
                     /\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日/g,
                     (_, month, day) => {
                         const m = Number(month);
@@ -89,6 +89,7 @@ export default async function handler(
                             : `2013年${m}月${d}日`;
                     }
                 );
+                return data;
             });
             console.log("results: ", results);
 
