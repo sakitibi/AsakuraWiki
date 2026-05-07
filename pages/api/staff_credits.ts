@@ -93,7 +93,7 @@ export default async function handler(
             });
             console.log("results: ", results);
 
-            return res.status(200).json([results[0], results[1]]);
+            return res.status(200).json(results);
         }
 
         if (req.method === "OPTIONS") {
