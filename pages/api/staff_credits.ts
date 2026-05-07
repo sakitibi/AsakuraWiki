@@ -70,7 +70,7 @@ export default async function handler(
             console.log("array: ", array);
             const staff_data: JSONProps[] = array.map((data) => {
                 return data.staff_data
-            });
+            }).flat();
             console.log("staff_data: ", staff_data);
             const results = staff_data.map((data) => {
                 return data.birthday?.replace(
