@@ -29,7 +29,7 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
         label: '開式宣言', 
         phase: 'OPENING', 
         message: 'これより第十四回退社式を執り行います', 
-        soundFile: 'retirement_opening.mp3', 
+        soundFile: 'opening_fanfare.mp3', 
         color: 'bg-indigo-700',
         description: '音：厳かなチャイム'
     },
