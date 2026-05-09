@@ -1,7 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as zip from '@zip.js/zip.js';
-import fs from 'fs';
-import path from 'path';
 
 // レスポンスの型定義
 interface ExtractedFile {
@@ -24,7 +22,8 @@ export default async function handler(
 
     try {
         // 1. ファイル読み込み
-        const fileBuffer = fs.readFileSync(path.resolve(zipFilePath));
+        const responce = await fetch(zipFilePath);
+        const fileBuffer = await responce.arrayBuffer();
         const reader = new zip.ZipReader(new zip.Uint8ArrayReader(new Uint8Array(fileBuffer)));
         const entries = await reader.getEntries();
 
