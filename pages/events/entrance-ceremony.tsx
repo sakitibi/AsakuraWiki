@@ -70,9 +70,12 @@ export default function CeremonyPage() {
         if (payload.message) setMessage(payload.message);
 
         // 音声再生
-        if (payload.soundFile && audioRef.current) {
-            audioRef.current.src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
-            audioRef.current.play().catch(e => console.log("Audio play blocked", e));
+        const audioRef = document.getElementsByClassName("entrance_closing") as HTMLCollectionOf<HTMLAudioElement>;
+        if (payload.soundFile && audioRef.length > 0) {
+            for (let i = 0;i < audioRef.length; i++){
+                audioRef[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
+                audioRef[i].play().catch(e => console.log("Audio play blocked", e));
+            }
         }
 
         // 紙吹雪
@@ -89,9 +92,13 @@ export default function CeremonyPage() {
     // 入場ボタン（音声権限取得）
     const handleJoin = () => {
         setIsJoined(true);
-        // 空再生でオーディオコンテキストをアクティブ化
-        if (audioRef.current) {
-            audioRef.current.play().catch(() => {});
+        for (let i = 0; i < 30;i++) {
+            const audioRef = document.createElement("audio");
+            audioRef.classList.add("entrance_closing")
+            document.body.appendChild(audioRef);
+            if (audioRef) {
+                audioRef.play().catch(() => {}); // 音声権限の有効化
+            }
         }
     };
 
@@ -119,8 +126,6 @@ export default function CeremonyPage() {
         <Head>
             <title>Ceremony Live | {phase}</title>
         </Head>
-
-        <audio ref={audioRef} preload="auto" />
 
         {/* メインコンテンツ */}
         <main className="flex h-screen flex-col items-center justify-center p-4">
