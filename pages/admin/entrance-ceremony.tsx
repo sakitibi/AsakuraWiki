@@ -67,6 +67,14 @@ export default function AdminControlPage() {
         });
     }, []);
 
+    useEffect(() => {
+        document.body.classList.add('ceremony');
+
+        return () => {
+            document.body.classList.remove('ceremony');
+        };
+    }, []);
+
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
 
     const executeTrigger = async (config: CeremonyConfig) => {

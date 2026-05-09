@@ -1,6 +1,6 @@
 {
   "name": "AsakuraWiki",
-  "version": "2.0.104",
+  "version": "2.0.105",
   "description": "",
   "author": {
     "name": "13ninstudio, Inc",
@@ -40,6 +40,7 @@
     "@types/pako": "^2.0.4",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "autoprefixer": "^10.5.0",
     "concurrently": "^8.2.0",
     "cssnano": "^7.1.7",
     "gulp": "^5.0.1",
@@ -48,7 +49,9 @@
     "gulp-sass": "^6.0.1",
     "gulp-sourcemaps": "^3.0.0",
     "next-sitemap": "^4.2.3",
+    "postcss": "^8.5.14",
     "sass": "^1.99.0",
+    "tailwindcss": "^3.4.19",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }

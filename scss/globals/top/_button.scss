@@ -9,7 +9,8 @@ body {
         .wiki-font.yellow,
         .wiki-font.purple,
         .wiki-font.emerald,
-        .wiki-font.default
+        .wiki-font.default,
+        .ceremony
     ) {
         button:not(#menu-button,.navfold-summary,.fold-button,.installButton) {
             position: relative;
