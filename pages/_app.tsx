@@ -23,7 +23,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     const router = useRouter();
 
     const [user, setUser] = useState<User | null>(null);
-    const [res, setRes] = useState<Object | null>(null);
+    //const [res, setRes] = useState<Object | null>(null);
     const [ipaddress, setIpaddress] = useState<IPAddress | null>(null);
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
 
@@ -325,7 +325,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                     />
                 </>
             )}
-            <p hidden>{JSON.stringify(res)}</p>
+            {/*<p hidden>{JSON.stringify(res)}</p>*/}
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />
             </SessionContextProvider>
