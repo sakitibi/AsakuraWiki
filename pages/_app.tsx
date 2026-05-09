@@ -270,7 +270,9 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         ) return;
         const termsAgreeTime = parseInt(localStorage.getItem("terms_agree") ?? "0", 10);
         if((Date.now() - termsAgreeTime) > 6048e5){ // 規約同意後1週間たっているか判定
-            location.replace(`/policies?redirect=${encodeURIComponent(location.pathname)}`);
+            location.replace(
+                `/policies?redirect=${encodeURIComponent(location.pathname)}${encodeURIComponent(location.search)}`
+            );
         }
     }, [isBot]);
     useEffect(() => {
