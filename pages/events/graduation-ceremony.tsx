@@ -5,7 +5,7 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
 
 // 型定義
-type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'CLOSING';
+type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | 'CLOSING';
 
 export default function RetirementPage() {
     const [isJoined, setIsJoined] = useState(false);

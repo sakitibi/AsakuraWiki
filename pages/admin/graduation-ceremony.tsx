@@ -4,7 +4,7 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
 
 // 型定義
-type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'CLOSING';
+type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | 'CLOSING';
 
 interface CeremonyConfig {
     label: string;
@@ -51,11 +51,19 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
     },
     { 
         label: '門出の言葉', 
-        phase: 'CLOSING', 
+        phase: 'KADODE', 
         message: '門出の言葉 音楽: 旅立ちの日に', 
         soundFile: 'retirement_closing.mp3', 
         color: 'bg-emerald-800',
         description: 'BGM：旅立ちの日に'
+    },
+    { 
+        label: '閉式', 
+        phase: 'CLOSING', 
+        message: '本日は誠におめでとうございました', 
+        soundFile: 'closing_bgm.mp3', 
+        color: 'bg-slate-800',
+        description: 'BGM：幾田りら with'
     },
 ];
 
