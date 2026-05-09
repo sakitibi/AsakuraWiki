@@ -27,7 +27,7 @@ const CEREMONY_STEPS: CeremonyConfig[] = [
         label: '開式（ファンファーレ）', 
         phase: 'OPENING', 
         message: 'ただいまより、式典を執り行います', 
-        soundFile: 'opening_fanfare.mp3', 
+        soundFile: 'opening_fanfare.ogg', 
         color: 'bg-blue-600' 
     },
     { 
@@ -40,7 +40,6 @@ const CEREMONY_STEPS: CeremonyConfig[] = [
         label: 'サプライズ（祝砲・拍手）', 
         phase: 'SURPRISE', 
         message: 'おめでとうございます！', 
-        soundFile: 'applause.mp3', 
         triggerConfetti: true, 
         color: 'bg-pink-600' 
     },
@@ -48,7 +47,7 @@ const CEREMONY_STEPS: CeremonyConfig[] = [
         label: '閉式', 
         phase: 'CLOSING', 
         message: '本日は誠におめでとうございました', 
-        soundFile: 'closing_bgm.mp3', 
+        soundFile: 'closing_bgm.ogg', 
         color: 'bg-slate-800' 
     },
 ];

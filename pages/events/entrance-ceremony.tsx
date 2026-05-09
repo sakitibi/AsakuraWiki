@@ -70,7 +70,7 @@ export default function CeremonyPage() {
 
         // 音声再生
         if (payload.soundFile && audioRef.current) {
-            audioRef.current.src = `/sounds/${payload.soundFile}`;
+            audioRef.current.src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
             audioRef.current.play().catch(e => console.log("Audio play blocked", e));
         }
 
