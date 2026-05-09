@@ -105,15 +105,22 @@ export default function RetirementPage() {
                     <title>退社式 会場入口</title>
                 </Head>
                 <div className="text-center border border-amber-900/50 p-12 bg-slate-900 shadow-2xl rounded-sm">
-                    <h1 className="mb-2 text-3xl tracking-widest text-amber-200">退社式 ・ 感謝の会</h1>
+                    <h1 className="mb-2 text-3xl tracking-widest text-amber-200">退社式</h1>
                     <p className="mb-10 text-slate-400 text-sm italic">Farewell Ceremony Entrance</p>
+                    
                     <button
                         onClick={handleJoin}
-                        className="group relative inline-block px-12 py-4 font-bold text-white transition-all duration-300 active:scale-95"
+                        className="group relative inline-block px-12 py-4 font-bold text-white transition-all duration-300 active:scale-95 bg-transparent border-none cursor-pointer"
                     >
-                        <span className="absolute inset-0 border border-amber-500 transform transition-transform group-hover:scale-105"></span>
-                        <span className="relative">会場へ入場する</span>
+                        {/* 背景枠：ここに amber-500 を適用 */}
+                        <span className="absolute inset-0 border border-amber-500 transform transition-transform group-hover:scale-105 bg-transparent"></span>
+                        
+                        {/* 文字部分：z-10 を追加して枠より上に、かつ背景を透明に */}
+                        <span className="relative z-10 bg-transparent text-amber-200 group-hover:text-white transition-colors">
+                            会場へ入場する
+                        </span>
                     </button>
+                    
                     <p className="mt-6 text-xs text-slate-500 uppercase tracking-tighter">※ 音声あり / リアルタイム更新</p>
                 </div>
             </div>
