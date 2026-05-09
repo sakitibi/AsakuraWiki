@@ -55,6 +55,14 @@ export default function CeremonyPage() {
         };
     }, [isJoined]);
 
+    useEffect(() => {
+        document.body.classList.add('ceremony');
+
+        return () => {
+            document.body.classList.remove('ceremony');
+        };
+    }, []);
+
     // 演出実行ロジック
     const handleRealtimeEvent = (payload: BroadcastPayload) => {
         if (payload.phase) setPhase(payload.phase);
