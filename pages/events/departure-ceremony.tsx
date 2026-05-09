@@ -12,8 +12,6 @@ export default function RetirementPage() {
     const [phase, setPhase] = useState<Phase>('WAITING');
     const [message, setMessage] = useState('感謝の会 開始までお待ちください');
     
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-
     useEffect(() => {
         document.body.classList.add('ceremony');
 
@@ -47,9 +45,12 @@ export default function RetirementPage() {
         if (payload.message) setMessage(payload.message);
 
         // 音声再生
-        if (payload.soundFile && audioRef.current) {
-            audioRef.current.src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
-            audioRef.current.play().catch(e => console.log("Audio play blocked", e));
+        const audioRef = document.getElementsByClassName("retirement_closing") as HTMLCollectionOf<HTMLAudioElement>;
+        if (payload.soundFile && audioRef.length > 0) {
+            for (let i = 0;i < audioRef.length; i++){
+                audioRef[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
+                audioRef[i].play().catch(e => console.log("Audio play blocked", e));
+            }
         }
 
         // 退社式専用：金銀の紙吹雪で門出を祝う (サイドから噴射する豪華版)
@@ -84,8 +85,13 @@ export default function RetirementPage() {
     // 入場処理
     const handleJoin = () => {
         setIsJoined(true);
-        if (audioRef.current) {
-            audioRef.current.play().catch(() => {}); // 音声権限の有効化
+        for (let i = 0; i < 30;i++) {
+            const audioRef = document.createElement("audio");
+            audioRef.classList.add("retirement_closing")
+            document.body.appendChild(audioRef);
+            if (audioRef) {
+                audioRef.play().catch(() => {}); // 音声権限の有効化
+            }
         }
     };
 
@@ -118,9 +124,6 @@ export default function RetirementPage() {
             <Head>
                 <title>Farewell Ceremony | {phase}</title>
             </Head>
-
-            <audio ref={audioRef} preload="auto" />
-
             {/* 背景の装飾的なグラデーション（退社式の重厚感） */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black opacity-50 pointer-events-none" />
 
