@@ -26,6 +26,7 @@ export default function Custom404({
                         <img src="https://sakitibi.github.io/AsakuraWiki-Images/yuinel.png"
                             width="180"
                             height="180"
+                            style={{display: "inline-block"}}
                         />
                     </p>
                     <p>お探しのページは存在しません。</p>
