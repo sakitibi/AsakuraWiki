@@ -98,7 +98,7 @@ export default function CeremonyPage() {
     if (!isJoined) {
         return (
             <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white">
-                <h1 className="mb-8 text-3xl font-serif">入社式 ・ 退社式 会場</h1>
+                <h1 className="mb-8 text-3xl font-serif">入社式 会場</h1>
                 <button
                 onClick={handleJoin}
                 className="rounded-full bg-amber-500 px-12 py-4 text-xl font-bold transition-all hover:bg-amber-400 active:scale-95"
