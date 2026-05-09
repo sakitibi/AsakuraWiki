@@ -1,8 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        "./pages/**/*.{js,ts,jsx,tsx}",
-        "./components/**/*.{js,ts,jsx,tsx}",
+        "./pages/admin/entrance-ceremony.tsx",
+        "./pages/admin/departure-ceremony.tsx",
+        "./pages/events/entrance-ceremony.tsx",
+        "./pages/events/departure-ceremony.tsx",
     ],
     theme: {
         extend: {},
