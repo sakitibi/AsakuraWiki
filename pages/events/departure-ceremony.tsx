@@ -14,6 +14,14 @@ export default function RetirementPage() {
     
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
+    useEffect(() => {
+        document.body.classList.add('ceremony');
+
+        return () => {
+            document.body.classList.remove('ceremony');
+        };
+    }, []);
+
     // 1. 初期状態の取得 (DBから) - ページ読み込み時に実行
     useEffect(() => {
         const fetchCurrentStatus = async () => {
