@@ -17,7 +17,7 @@ export default async function handler(
     if (req.method === "GET") {
         // 送信先（ユーザー指定）
         const targetUrl =
-            "https://picnet8.jp/list/ebfbc6b462e149bf69814d99d567b7de/2de04bc795f2722dd8018d1c1148153a/images";
+            "https://picnet8.jp/list/ebfbc6b462e149bf69814d99d567b7de/4fd557b1bc341d4bb0d5ccb57cef9769/images";
         const { data: picnet8jp_session } = await supabaseServer
             .from("wiki_variables")
             .select("value")
