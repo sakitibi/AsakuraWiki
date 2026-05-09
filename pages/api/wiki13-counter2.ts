@@ -42,7 +42,7 @@ export default async function handler(
         formData.append('reply_to', ''); // 空データもそのまま空文字で追加
         formData.append('anonymous', '1');
         formData.append('nickname', 'マグロのユッケ');
-        formData.append('content', '[熟成牛タン](https://wikiwiki.jp/maitestu-net/熟成牛タン)っていう悪質な荒らしがいます。');
+        formData.append('content', '緊急 [熟成牛タン](https://wikiwiki.jp/maitestu-net/熟成牛タン)っていう悪質な荒らしがいます。');
 
         // 3. fetch 送信
         const response2 = await fetch('https://z.wikiwiki.jp/genshinwiki/topic/304', {
