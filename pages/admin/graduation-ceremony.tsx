@@ -127,7 +127,7 @@ export default function RetirementAdminPage() {
     return (
         <>
             {asakura_member_list_found ? (
-                <div className="min-h-screen bg-gray-50 p-6 md:p-12">
+                <div className="min-h-screen bg-gray-50 p-6 md:p-12 tailwind-scope">
                     <div className="max-w-3xl mx-auto">
                         <header className="mb-10 text-center">
                             <h1 className="text-3xl font-bold text-slate-800 font-serif">退社式 進行管理パネル</h1>

@@ -105,7 +105,7 @@ export default function CeremonyPage() {
     // 入場前の画面
     if (!isJoined) {
         return (
-            <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white">
+            <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white" tailwind-scope>
                 <h1 className="mb-8 text-3xl font-serif">入社式 会場</h1>
                 <button
                 onClick={handleJoin}
@@ -120,7 +120,7 @@ export default function CeremonyPage() {
 
     // 式典本番の画面
     return (
-        <div className={`min-h-screen transition-colors duration-1000 ${
+        <div className={`min-h-screen transition-colors duration-1000 tailwind-scope ${
         phase === 'SURPRISE' ? 'bg-white' : 'bg-slate-50'
         }`}>
         <Head>
