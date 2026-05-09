@@ -9,6 +9,7 @@ import { adminerUserId, blockedIP } from '@/utils/user_list';
 import Pako from 'pako';
 import { secureRandomString } from '@/lib/secureObfuscator';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import '@/styles/globals.css';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 export const blockedDomains = ['https://vercel.com'];

@@ -13,6 +13,9 @@
 @use 'wiki/navfold';
 @use 'wiki/table';
 @use "bootstrap/scss/bootstrap" as *;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 input:not([type=submit],[type=checkbox]) {
     width: 100%;
