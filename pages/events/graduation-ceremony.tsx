@@ -14,9 +14,11 @@ export default function RetirementPage() {
     
     useEffect(() => {
         document.body.classList.add('ceremony');
+        document.body.classList.add('tailwind-scope')
 
         return () => {
             document.body.classList.remove('ceremony');
+            document.body.classList.remove('tailwind-scope');
         };
     }, []);
 
@@ -98,7 +100,7 @@ export default function RetirementPage() {
     // 3. 入場前の待機画面
     if (!isJoined) {
         return (
-            <div className="flex h-screen flex-col items-center justify-center bg-slate-950 text-white font-serif tailwind-scope">
+            <div className="flex h-screen flex-col items-center justify-center bg-slate-950 text-white font-serif">
                 <Head>
                     <title>退社式 会場入口</title>
                 </Head>
@@ -120,7 +122,7 @@ export default function RetirementPage() {
 
     // 4. 式典本番の画面
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 font-serif overflow-hidden tailwind-scope">
+        <div className="min-h-screen bg-slate-950 text-slate-100 font-serif overflow-hidden">
             <Head>
                 <title>Farewell Ceremony | {phase}</title>
             </Head>

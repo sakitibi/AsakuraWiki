@@ -23,7 +23,7 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
         phase: 'WAITING', 
         message: '退社式 開始まで少々お待ちください', 
         color: 'bg-slate-600',
-        description: 'BGM：待機用ピアノ曲'
+        description: 'BGM：なし'
     },
     { 
         label: '開式宣言', 
@@ -31,14 +31,14 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
         message: 'これより第十四回退社式を執り行います', 
         soundFile: 'opening_fanfare.mp3', 
         color: 'bg-indigo-700',
-        description: '音：厳かなチャイム'
+        description: '音：クラシック曲'
     },
     { 
         label: '思い出の回想', 
         phase: 'SPEECH', 
         message: 'これまでの歩みを振り返ります', 
         color: 'bg-blue-800',
-        description: '演出：しっとりしたBGM推奨'
+        description: '演出：なし'
     },
     { 
         label: '感謝の花束・拍手', 
@@ -47,15 +47,15 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
         soundFile: 'applause_long.mp3', 
         triggerConfetti: true, 
         color: 'bg-amber-600',
-        description: '演出：盛大な拍手 ＋ 紙吹雪'
+        description: 'BGM：クラシック曲'
     },
     { 
-        label: '門出の挨拶', 
+        label: '門出の言葉', 
         phase: 'CLOSING', 
-        message: '新しいステージでのご活躍を応援しております', 
+        message: '門出の言葉 音楽: 旅立ちの日に', 
         soundFile: 'retirement_closing.mp3', 
         color: 'bg-emerald-800',
-        description: '音：明るい未来を感じる曲'
+        description: 'BGM：旅立ちの日に'
     },
 ];
 
@@ -74,9 +74,11 @@ export default function RetirementAdminPage() {
 
     useEffect(() => {
         document.body.classList.add('ceremony');
+        document.body.classList.add('tailwind-scope')
 
         return () => {
             document.body.classList.remove('ceremony');
+            document.body.classList.remove('tailwind-scope');
         };
     }, []);
 
@@ -127,7 +129,7 @@ export default function RetirementAdminPage() {
     return (
         <>
             {asakura_member_list_found ? (
-                <div className="min-h-screen bg-gray-50 p-6 md:p-12 tailwind-scope">
+                <div className="min-h-screen bg-gray-50 p-6 md:p-12">
                     <div className="max-w-3xl mx-auto">
                         <header className="mb-10 text-center">
                             <h1 className="text-3xl font-bold text-slate-800 font-serif">退社式 進行管理パネル</h1>

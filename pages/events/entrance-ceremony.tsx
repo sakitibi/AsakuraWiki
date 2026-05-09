@@ -58,9 +58,11 @@ export default function CeremonyPage() {
 
     useEffect(() => {
         document.body.classList.add('ceremony');
+        document.body.classList.add('tailwind-scope')
 
         return () => {
             document.body.classList.remove('ceremony');
+            document.body.classList.remove('tailwind-scope');
         };
     }, []);
 
@@ -105,7 +107,7 @@ export default function CeremonyPage() {
     // 入場前の画面
     if (!isJoined) {
         return (
-            <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white" tailwind-scope>
+            <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white">
                 <h1 className="mb-8 text-3xl font-serif">入社式 会場</h1>
                 <button
                 onClick={handleJoin}
@@ -120,7 +122,7 @@ export default function CeremonyPage() {
 
     // 式典本番の画面
     return (
-        <div className={`min-h-screen transition-colors duration-1000 tailwind-scope ${
+        <div className={`min-h-screen transition-colors duration-1000 ${
         phase === 'SURPRISE' ? 'bg-white' : 'bg-slate-50'
         }`}>
         <Head>

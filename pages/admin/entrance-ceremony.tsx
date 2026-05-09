@@ -68,9 +68,11 @@ export default function AdminControlPage() {
 
     useEffect(() => {
         document.body.classList.add('ceremony');
+        document.body.classList.add('tailwind-scope')
 
         return () => {
             document.body.classList.remove('ceremony');
+            document.body.classList.remove('tailwind-scope');
         };
     }, []);
 
@@ -123,7 +125,7 @@ export default function AdminControlPage() {
     return (
         <>
             {asakura_member_list_found ? (
-                <div className="min-h-screen bg-gray-100 p-8 tailwind-scope">
+                <div className="min-h-screen bg-gray-100 p-8">
                     <div className="max-w-2xl mx-auto">
                         <header className="mb-8">
                             <h1 className="text-2xl font-bold text-gray-800">式典進行コントロールパネル</h1>
