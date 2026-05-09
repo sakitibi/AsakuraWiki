@@ -26,6 +26,7 @@ export default function CeremonyPage() {
             const { data } = await supabaseClient
                 .from('ceremony_state')
                 .select('*')
+                .eq("id", 1)
                 .single();
             
             if (data) {

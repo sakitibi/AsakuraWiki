@@ -83,11 +83,11 @@ export default function AdminControlPage() {
             // テーブル名 'ceremony_state'、id: 1 のレコードを更新する想定
             const { error: dbError } = await supabaseClient
                 .from('ceremony_state')
-                .update({ 
+                .upsert([{ 
                     current_phase: config.phase, 
                     message: config.message,
                     updated_at: new Date().toISOString()
-                })
+                }])
                 .eq('id', 1);
 
             if (dbError) throw dbError;

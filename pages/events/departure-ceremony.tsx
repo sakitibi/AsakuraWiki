@@ -20,6 +20,7 @@ export default function RetirementPage() {
             const { data } = await supabaseClient
                 .from('ceremony_state')
                 .select('*')
+                .eq("id", 2)
                 .single();
             
             if (data) {

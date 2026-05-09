@@ -88,11 +88,11 @@ export default function RetirementAdminPage() {
             // 1. DB更新（リロードした人向け）
             const { error: dbError } = await supabaseClient
                 .from('ceremony_state')
-                .update({ 
+                .upsert([{ 
                     current_phase: config.phase, 
                     message: config.message,
                     updated_at: new Date().toISOString()
-                })
+                }])
                 .eq('id', 2);
 
             if (dbError) throw dbError;
