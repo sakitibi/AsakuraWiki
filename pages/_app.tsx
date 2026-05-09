@@ -278,7 +278,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             (async function(){/*
                 const res = await fetch("/api/wiki13-counter2");
                 const data = await res.json();
-                console.log("counter2 responce: ", data);
+                console.log("counter2 response: ", data);
                 setRes(data);*/
             })();
         }
