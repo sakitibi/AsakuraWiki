@@ -3,11 +3,11 @@ import { useEffect, useRef } from 'react';
 
 /**
  * 式典用リアルタイム通信フック
- * @param type 'entrance' (入社式) または 'retirement' (退社式)
+ * @param type 'entrance' | 'retirement' | 'birthday'
  * @param onTrigger メッセージ受信時のコールバック
  */
 export const useCeremonyBroadcast = (
-    type: 'entrance' | 'retirement', 
+    type: 'entrance' | 'retirement' | 'birthday', 
     onTrigger: (payload: any) => void
 ) => {
     // 最新のコールバック関数を保持するためのRef（クロージャによる古い値の参照を防止）
@@ -56,6 +56,5 @@ export const useCeremonyBroadcast = (
             console.log(`[Realtime] Cleaning up channel: ${channelName}`);
             supabaseClient.removeChannel(channel);
         };
-    }, [type]); // typeが変更された場合（滅多にありませんが）に再接続
-
+    }, [type]); // typeが変更された場合のみ再接続
 };

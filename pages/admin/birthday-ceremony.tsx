@@ -5,21 +5,6 @@ import { asakuraMenberUserId } from '@/utils/user_list';
 import { JSONProps } from '../api/staff_credits';
 import { brotliDecompressSync } from 'zlib';
 
-// ユーザー情報の型定義
-interface MemberData {
-    id: number;
-    name: string;
-    kana: string;
-    dept: string;
-    location: string;
-    seat: string;
-    joined: string;
-    team: string;
-    birthday: string;
-    intro: string;
-    comment: string;
-}
-
 type BirthdayPhase = 'WAITING' | 'OPENING' | 'CAKE_TIME' | 'PRESENT' | 'CLOSING';
 
 interface CeremonyConfig {
@@ -36,8 +21,8 @@ export default function BirthdayAdminPage() {
     const [loading, setLoading] = useState(false);
     const [lastAction, setLastAction] = useState<string>('');
     const [user, setUser] = useState<User | null>(null);
-    const [members, setMembers] = useState<MemberData[]>([]);
-    const [birthdayUser, setBirthdayUser] = useState<MemberData | null>(null);
+    const [members, setMembers] = useState<JSONProps[]>([]);
+    const [birthdayUser, setBirthdayUser] = useState<JSONProps | null>(null);
 
     // 1. ログインユーザーとメンバーリストの取得
     useEffect(() => {
