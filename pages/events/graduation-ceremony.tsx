@@ -4,8 +4,15 @@ import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
 
-// 型定義
+// 型定義（退社式専用：KADODEを含む）
 export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | 'CLOSING';
+
+interface BroadcastPayload {
+    phase: Phase;
+    message: string;
+    soundFile?: string;
+    triggerConfetti?: boolean;
+}
 
 export default function RetirementPage() {
     const [isJoined, setIsJoined] = useState(false);
@@ -14,6 +21,9 @@ export default function RetirementPage() {
     
     // isJoinedの状態をRealtime通信内で正しく参照するためのRef
     const isJoinedRef = useRef(false);
+    // 音声要素を管理するためのRef
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
     useEffect(() => {
         isJoinedRef.current = isJoined;
     }, [isJoined]);
@@ -28,7 +38,7 @@ export default function RetirementPage() {
         };
     }, []);
 
-    // 1. 初期状態の取得
+    // 1. 初期状態の取得 (退社式 ID: 2 を指定)
     useEffect(() => {
         const fetchCurrentStatus = async () => {
             const { data } = await supabaseClient
@@ -45,24 +55,21 @@ export default function RetirementPage() {
         fetchCurrentStatus();
     }, []);
 
-    // 2. Realtime 購読
-    useCeremonyBroadcast((payload) => {
+    // 2. Realtime 購読 (退社式用チャンネル 'retirement' を指定)
+    useCeremonyBroadcast('retirement', (payload: BroadcastPayload) => {
         // Refを使用して最新の入場状態をチェック
         if (!isJoinedRef.current) return; 
 
         if (payload.phase) setPhase(payload.phase);
         if (payload.message) setMessage(payload.message);
 
-        // 音声再生
-        const audioElements = document.getElementsByClassName("retirement_closing") as HTMLCollectionOf<HTMLAudioElement>;
-        if (payload.soundFile && audioElements.length > 0) {
-            for (let i = 0; i < audioElements.length; i++) {
-                audioElements[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
-                audioElements[i].play().catch(e => console.log("Audio play blocked", e));
-            }
+        // 音声再生 (audio要素を再利用する安定した方法)
+        if (payload.soundFile && audioRef.current) {
+            audioRef.current.src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
+            audioRef.current.play().catch(e => console.log("Audio play blocked", e));
         }
 
-        // 金銀の紙吹雪 (zIndexを追加して最前面へ)
+        // 金銀の紙吹雪 (退社式らしい演出)
         if (payload.triggerConfetti) {
             const duration = 5 * 1000;
             const animationEnd = Date.now() + duration;
@@ -73,8 +80,8 @@ export default function RetirementPage() {
                     angle: 60,
                     spread: 55,
                     origin: { x: 0, y: 0.8 },
-                    colors: ['#FFD700', '#C0C0C0'],
-                    zIndex: 9999 // これが重要
+                    colors: ['#FFD700', '#C0C0C0'], // ゴールド・シルバー
+                    zIndex: 9999
                 });
                 confetti({
                     particleCount: 2,
@@ -82,7 +89,7 @@ export default function RetirementPage() {
                     spread: 55,
                     origin: { x: 1, y: 0.8 },
                     colors: ['#FFD700', '#C0C0C0'],
-                    zIndex: 9999 // これが重要
+                    zIndex: 9999
                 });
 
                 if (Date.now() < animationEnd) {
@@ -93,16 +100,12 @@ export default function RetirementPage() {
         }
     });
 
-    // 入場処理
+    // 入場処理（ユーザー操作による音声アンロック）
     const handleJoin = () => {
         setIsJoined(true);
-        // 音声アンロック用に要素生成
-        for (let i = 0; i < 30; i++) {
-            const audio = document.createElement("audio");
-            audio.classList.add("retirement_closing");
-            audio.style.display = "none";
-            document.body.appendChild(audio);
-            audio.play().catch(() => {}); 
+        if (audioRef.current) {
+            // 空再生によりブラウザの音声制限を解除
+            audioRef.current.play().catch(() => {});
         }
     };
 
@@ -122,12 +125,14 @@ export default function RetirementPage() {
                         className="group relative inline-block px-12 py-4 font-bold text-white transition-all duration-300 active:scale-95 bg-transparent border-none cursor-pointer outline-none"
                     >
                         <span className="absolute inset-0 border border-amber-500 transform transition-transform group-hover:scale-105 bg-transparent"></span>
-                        <span className="relative z-10 bg-transparent text-amber-200 group-hover:text-white transition-colors">
+                        <span className="relative z-10 bg-transparent text-amber-200 group-hover:text-white transition-colors px-6">
                             会場へ入場する
                         </span>
                     </button>
                     
                     <p className="mt-6 text-xs text-slate-500 uppercase tracking-tighter">※ 音声あり / リアルタイム更新</p>
+                    {/* 非表示のオーディオ要素 */}
+                    <audio ref={audioRef} style={{ display: 'none' }} preload="auto" />
                 </div>
             </div>
         );
@@ -139,6 +144,9 @@ export default function RetirementPage() {
             <Head>
                 <title>Graduation Ceremony | {phase}</title>
             </Head>
+            {/* 音声要素 */}
+            <audio ref={audioRef} style={{ display: 'none' }} preload="auto" />
+            
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black opacity-50 pointer-events-none" />
 
             <main className="relative flex h-screen flex-col items-center justify-center p-6 text-center">

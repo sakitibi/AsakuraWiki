@@ -1,8 +1,16 @@
 import { supabaseClient } from '@/lib/supabaseClient';
 import { useEffect, useRef } from 'react';
 
-export const useCeremonyBroadcast = (onTrigger: (payload: any) => void) => {
-    // 最新のコールバック関数を保持するためのRef
+/**
+ * 式典用リアルタイム通信フック
+ * @param type 'entrance' (入社式) または 'retirement' (退社式)
+ * @param onTrigger メッセージ受信時のコールバック
+ */
+export const useCeremonyBroadcast = (
+    type: 'entrance' | 'retirement', 
+    onTrigger: (payload: any) => void
+) => {
+    // 最新のコールバック関数を保持するためのRef（クロージャによる古い値の参照を防止）
     const triggerRef = useRef(onTrigger);
 
     // 常に最新の onTrigger を Ref に入れる
@@ -11,38 +19,43 @@ export const useCeremonyBroadcast = (onTrigger: (payload: any) => void) => {
     }, [onTrigger]);
 
     useEffect(() => {
-        // チャンネルの購読を開始
-        const channel = supabaseClient.channel('ceremony_room', {
+        // 管理画面の送信名に合わせてチャンネル名を動的に決定
+        const channelName = `ceremony_room_${type}`;
+
+        const channel = supabaseClient.channel(channelName, {
             config: { 
                 broadcast: { self: false },
-                // 接続を安定させるための設定（必要に応じて）
-                presence: { key: 'ceremony' }
+                presence: { key: type }
             }
         });
 
-        console.log('Connecting to Supabase Realtime...');
+        console.log(`[Realtime] Connecting to ${channelName}...`);
 
         channel
             .on('broadcast', { event: 'trigger' }, ({ payload }) => {
-                console.log('Broadcast received:', payload);
-                // Ref経由で最新の関数を実行
+                console.log(`[Realtime] Broadcast received from ${channelName}:`, payload);
+                // Ref経由で常に最新の関数を実行
                 if (triggerRef.current) {
                     triggerRef.current(payload);
                 }
             })
             .subscribe((status) => {
                 if (status === 'SUBSCRIBED') {
-                    console.log('✅ Successfully subscribed to broadcast');
+                    console.log(`✅ [Realtime] Successfully subscribed to ${channelName}`);
                 }
                 if (status === 'CHANNEL_ERROR') {
-                    console.error('❌ Channel subscription error');
+                    console.error(`❌ [Realtime] Subscription error on ${channelName}`);
+                }
+                if (status === 'TIMED_OUT') {
+                    console.warn(`⚠️ [Realtime] Connection timed out on ${channelName}`);
                 }
             });
 
         // アンマウント時にのみ解除
         return () => {
-            console.log('Cleaning up channel...');
+            console.log(`[Realtime] Cleaning up channel: ${channelName}`);
             supabaseClient.removeChannel(channel);
         };
-    }, []); // 依存配列を空にすることで、再接続の繰り返しを防ぐ
+    }, [type]); // typeが変更された場合（滅多にありませんが）に再接続
+
 };

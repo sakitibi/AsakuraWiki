@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
+import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
 
 // 型定義
 export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'CLOSING';
@@ -13,14 +14,14 @@ interface BroadcastPayload {
     triggerConfetti?: boolean;
 }
 
-export default function CeremonyPage() {
+export default function EntranceCeremonyPage() {
     const [isJoined, setIsJoined] = useState(false);
     const [phase, setPhase] = useState<Phase>('WAITING');
     const [message, setMessage] = useState('式典開始までしばらくお待ちください');
     
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    // 1. 初期状態の取得 (DBから)
+    // 1. 初期状態の取得 (DBから id: 1 を取得)
     useEffect(() => {
         const fetchCurrentStatus = async () => {
             const { data } = await supabaseClient
@@ -30,36 +31,22 @@ export default function CeremonyPage() {
                 .single();
             
             if (data) {
-                setPhase(data.current_phase);
+                setPhase(data.current_phase as Phase);
                 setMessage(data.message);
             }
         };
         fetchCurrentStatus();
     }, []);
 
-    // 2. Realtime 購読
-    useEffect(() => {
-        if (!isJoined) return;
-
-        const channel = supabaseClient.channel('ceremony_room', {
-            config: { broadcast: { self: false } }
-        });
-
-        channel
-            .on('broadcast', { event: 'trigger' }, ({ payload }: { payload: BroadcastPayload }) => {
-                handleRealtimeEvent(payload);
-            })
-            .subscribe();
-
-        return () => {
-            supabaseClient.removeChannel(channel);
-        };
-    }, [isJoined]);
+    // 2. Realtime 購読 (カスタムフックを使用)
+    useCeremonyBroadcast('entrance', (payload: BroadcastPayload) => {
+        if (!isJoined) return; // 入場前は処理しない
+        handleRealtimeEvent(payload);
+    });
 
     useEffect(() => {
         document.body.classList.add('ceremony');
-        document.body.classList.add('tailwind-scope')
-
+        document.body.classList.add('tailwind-scope');
         return () => {
             document.body.classList.remove('ceremony');
             document.body.classList.remove('tailwind-scope');
@@ -72,93 +59,77 @@ export default function CeremonyPage() {
         if (payload.message) setMessage(payload.message);
 
         // 音声再生
-        const audioRef = document.getElementsByClassName("entrance_closing") as HTMLCollectionOf<HTMLAudioElement>;
-        if (payload.soundFile && audioRef.length > 0) {
-            for (let i = 0;i < audioRef.length; i++){
-                audioRef[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
-                audioRef[i].play().catch(e => console.log("Audio play blocked", e));
-            }
+        if (payload.soundFile && audioRef.current) {
+            audioRef.current.src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
+            audioRef.current.play().catch(e => console.log("Audio play blocked", e));
         }
 
-        // 紙吹雪
+        // 紙吹雪（桜色・ピンク系）
         if (payload.triggerConfetti) {
             confetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#FFC0CB', '#FFD700', '#FFFFFF'] // 桜色やゴールド
+                colors: ['#FFC0CB', '#FFB6C1', '#FFFFFF', '#FFD700']
             });
         }
     };
 
-    // 入場ボタン（音声権限取得）
+    // 入場ボタン
     const handleJoin = () => {
         setIsJoined(true);
-        for (let i = 0; i < 30;i++) {
-            const audioRef = document.createElement("audio");
-            audioRef.classList.add("entrance_closing")
-            document.body.appendChild(audioRef);
-            if (audioRef) {
-                audioRef.play().catch(() => {}); // 音声権限の有効化
-            }
+        if (audioRef.current) {
+            audioRef.current.play().catch(() => {}); // ブラウザの音声権限を有効化
         }
     };
 
-    // 入場前の画面
     if (!isJoined) {
         return (
-            <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white">
-                <h1 className="mb-8 text-3xl font-serif">入社式 会場</h1>
+            <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white p-6 text-center">
+                <h1 className="mb-8 text-4xl font-serif tracking-widest text-pink-200">令和六年度 入社式</h1>
                 <button
-                onClick={handleJoin}
-                className="rounded-full bg-amber-500 px-12 py-4 text-xl font-bold transition-all hover:bg-amber-400 active:scale-95"
+                    onClick={handleJoin}
+                    className="rounded-full bg-pink-600 px-16 py-5 text-xl font-bold transition-all hover:bg-pink-500 hover:scale-105 active:scale-95 shadow-xl"
                 >
-                    会場に入場する
+                    式典会場に入場する
                 </button>
-                <p className="mt-4 text-sm text-slate-400">※音声をONにしてお進みください</p>
+                <p className="mt-6 text-sm text-slate-400">※音声をONにしてお進みください</p>
+                <audio ref={audioRef} preload="auto" />
             </div>
         );
     }
 
-    // 式典本番の画面
     return (
         <div className={`min-h-screen transition-colors duration-1000 ${
-        phase === 'SURPRISE' ? 'bg-white' : 'bg-slate-50'
+            phase === 'SURPRISE' ? 'bg-pink-50' : 'bg-slate-50'
         }`}>
-        <Head>
-            <title>Ceremony Live | {phase}</title>
-        </Head>
+            <Head>
+                <title>入社式 Live | {phase}</title>
+            </Head>
+            <audio ref={audioRef} preload="auto" />
 
-        {/* メインコンテンツ */}
-        <main className="flex h-screen flex-col items-center justify-center p-4">
-            {/* フェーズ表示（控えめ） */}
-            <div className="absolute top-8 left-8 text-xs tracking-widest text-slate-400 uppercase">
-                Current Status: {phase}
-            </div>
+            <main className="flex h-screen flex-col items-center justify-center p-4">
+                <div className="absolute top-8 left-8 text-xs tracking-[0.3em] text-slate-400 uppercase font-mono">
+                    Entrance Ceremony / {phase}
+                </div>
 
-            {/* メッセージテロップ */}
-            <div className="max-w-4xl text-center">
-                <p className="mb-4 text-lg text-amber-700 font-medium tracking-tighter transition-opacity duration-500">
-                    {phase === 'WAITING' ? 'Welcome' : 'Live Presentation'}
-                </p>
-                <h2 className="text-5xl md:text-7xl font-serif leading-tight text-slate-800 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                    {message}
-                </h2>
-            </div>
+                <div className="max-w-4xl text-center space-y-6">
+                    <p className="text-xl text-pink-700 font-medium tracking-[0.2em] animate-pulse">
+                        {phase === 'WAITING' ? 'Welcome to our Team' : 'Live Presentation'}
+                    </p>
+                    <h2 className="text-5xl md:text-8xl font-serif leading-tight text-slate-800 drop-shadow-sm">
+                        {message}
+                    </h2>
+                </div>
 
-            {/* 演出用の装飾（フェーズごと） */}
-            {phase === 'OPENING' && (
-                <div className="mt-12 h-1 w-24 bg-amber-500 animate-pulse" />
-            )}
-        </main>
+                {phase === 'OPENING' && (
+                    <div className="mt-16 h-[2px] w-32 bg-pink-300 animate-bounce" />
+                )}
+            </main>
 
-        {/* 背景の装飾などはここで制御 */}
-        <style jsx global>{`
-            body {
-                margin: 0;
-                font-family: "Hiragino Mincho ProN", "MS Mincho", serif;
-            }
-        `}</style>
+            <style jsx global>{`
+                body { margin: 0; font-family: "Hiragino Mincho ProN", serif; }
+            `}</style>
         </div>
     );
 }
