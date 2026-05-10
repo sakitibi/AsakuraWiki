@@ -19,8 +19,6 @@ export default function EntranceCeremonyPage() {
     const [phase, setPhase] = useState<Phase>('WAITING');
     const [message, setMessage] = useState('式典開始までしばらくお待ちください');
     
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-
     // 1. 初期状態の取得 (DBから id: 1 を取得)
     useEffect(() => {
         const fetchCurrentStatus = async () => {
@@ -59,9 +57,12 @@ export default function EntranceCeremonyPage() {
         if (payload.message) setMessage(payload.message);
 
         // 音声再生
-        if (payload.soundFile && audioRef.current) {
-            audioRef.current.src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
-            audioRef.current.play().catch(e => console.log("Audio play blocked", e));
+        const audioRef = document.getElementsByClassName("entrance_closing") as HTMLCollectionOf<HTMLAudioElement>;
+        if (payload.soundFile && audioRef.length > 0) {
+            for (let i = 0;i < audioRef.length; i++){
+                audioRef[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
+                audioRef[i].play().catch(e => console.log("Audio play blocked", e));
+            }
         }
 
         // 紙吹雪（桜色・ピンク系）
@@ -78,8 +79,14 @@ export default function EntranceCeremonyPage() {
     // 入場ボタン
     const handleJoin = () => {
         setIsJoined(true);
-        if (audioRef.current) {
-            audioRef.current.play().catch(() => {}); // ブラウザの音声権限を有効化
+        for (let i = 0; i < 30;i++) {
+            const audioRef = document.createElement("audio");
+            audioRef.classList.add("entrance_closing")
+            audioRef.style.display = "none";
+            document.body.appendChild(audioRef);
+            if (audioRef) {
+                audioRef.play().catch(() => {}); // 音声権限の有効化
+            }
         }
     };
 
@@ -94,7 +101,6 @@ export default function EntranceCeremonyPage() {
                     式典会場に入場する
                 </button>
                 <p className="mt-6 text-sm text-slate-400">※音声をONにしてお進みください</p>
-                <audio ref={audioRef} preload="auto" />
             </div>
         );
     }
@@ -106,7 +112,6 @@ export default function EntranceCeremonyPage() {
             <Head>
                 <title>入社式 Live | {phase}</title>
             </Head>
-            <audio ref={audioRef} preload="auto" />
 
             <main className="flex h-screen flex-col items-center justify-center p-4">
                 <div className="absolute top-8 left-8 text-xs tracking-[0.3em] text-slate-400 uppercase font-mono">

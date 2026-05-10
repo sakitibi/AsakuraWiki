@@ -21,8 +21,6 @@ export default function RetirementPage() {
     
     // isJoinedの状態をRealtime通信内で正しく参照するためのRef
     const isJoinedRef = useRef(false);
-    // 音声要素を管理するためのRef
-    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
         isJoinedRef.current = isJoined;
@@ -64,9 +62,12 @@ export default function RetirementPage() {
         if (payload.message) setMessage(payload.message);
 
         // 音声再生 (audio要素を再利用する安定した方法)
-        if (payload.soundFile && audioRef.current) {
-            audioRef.current.src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
-            audioRef.current.play().catch(e => console.log("Audio play blocked", e));
+        const audioElements = document.getElementsByClassName("retirement_closing") as HTMLCollectionOf<HTMLAudioElement>;
+        if (payload.soundFile && audioElements.length > 0) {
+            for (let i = 0; i < audioElements.length; i++) {
+                audioElements[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
+                audioElements[i].play().catch(e => console.log("Audio play blocked", e));
+            }
         }
 
         // 金銀の紙吹雪 (退社式らしい演出)
@@ -103,9 +104,13 @@ export default function RetirementPage() {
     // 入場処理（ユーザー操作による音声アンロック）
     const handleJoin = () => {
         setIsJoined(true);
-        if (audioRef.current) {
-            // 空再生によりブラウザの音声制限を解除
-            audioRef.current.play().catch(() => {});
+        // 音声アンロック用に要素生成
+        for (let i = 0; i < 30; i++) {
+            const audio = document.createElement("audio");
+            audio.classList.add("retirement_closing");
+            audio.style.display = "none";
+            document.body.appendChild(audio);
+            audio.play().catch(() => {}); 
         }
     };
 
@@ -131,8 +136,6 @@ export default function RetirementPage() {
                     </button>
                     
                     <p className="mt-6 text-xs text-slate-500 uppercase tracking-tighter">※ 音声あり / リアルタイム更新</p>
-                    {/* 非表示のオーディオ要素 */}
-                    <audio ref={audioRef} style={{ display: 'none' }} preload="auto" />
                 </div>
             </div>
         );
@@ -144,9 +147,6 @@ export default function RetirementPage() {
             <Head>
                 <title>Graduation Ceremony | {phase}</title>
             </Head>
-            {/* 音声要素 */}
-            <audio ref={audioRef} style={{ display: 'none' }} preload="auto" />
-            
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black opacity-50 pointer-events-none" />
 
             <main className="relative flex h-screen flex-col items-center justify-center p-6 text-center">
