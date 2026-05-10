@@ -117,10 +117,10 @@ export default function BirthdayCeremonyPage() {
     });
 
     useEffect(() => {
-        document.body.classList.add('ceremony-birthday');
+        document.body.classList.add('ceremony');
         document.body.classList.add('tailwind-scope');
         return () => {
-            document.body.classList.remove('ceremony-birthday');
+            document.body.classList.remove('ceremony');
             document.body.classList.remove('tailwind-scope');
         };
     }, []);
