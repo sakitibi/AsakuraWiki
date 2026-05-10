@@ -39,8 +39,9 @@ export default function BirthdayAdminPage() {
                 const res = await fetch('/api/staff_credits', {
                     headers
                 });
-                const buffer = await res.arrayBuffer();
-                const decompressed = brotliDecompressSync(new Uint8Array(buffer));
+                const arrayBuffer = await res.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                const decompressed = brotliDecompressSync(buffer);
                 const data = JSON.parse(decompressed.toString('utf-8'));
 
                 // 今日誕生日の人を判定
