@@ -40,13 +40,13 @@ export default async function handler(
             
             const allEntries = await reader.getEntries();
             
-            const imageEntries = allEntries.filter((entry): entry is zip.Entry & { getData: Function } => 
+            const validEntries = allEntries.filter((entry): entry is zip.Entry & { getData: Function } => 
                 !entry.directory && 
-                !!entry.getData && 
-                /\.(jpg|jpeg|png|gif|webp)$/i.test(entry.filename)
+                !!entry.getData &&
+                !entry.filename.includes('__MACOSX') // システムゴミファイルは除外
             );
 
-            const targetedEntries = imageEntries.slice(sliceStart, sliceEnd);
+            const targetedEntries = validEntries.slice(sliceStart, sliceEnd);
             const results: ExtractedFile[] = [];
 
             for (const entry of targetedEntries) {
@@ -69,9 +69,9 @@ export default async function handler(
 
             await reader.close();
 
-            res.setHeader('X-Total-Count', imageEntries.length.toString());
+            res.setHeader('X-Total-Count', validEntries.length.toString());
             res.setHeader('X-Slice-Start', sliceStart.toString());
-            res.setHeader('X-Slice-End', (sliceEnd ?? imageEntries.length).toString());
+            res.setHeader('X-Slice-End', (sliceEnd ?? validEntries.length).toString());
 
             return res.status(200).json(results);
 
