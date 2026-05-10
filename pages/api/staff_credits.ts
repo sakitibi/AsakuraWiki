@@ -111,9 +111,10 @@ export default async function handler(
                 return data;
             });
             console.log("results: ", results);
+            res.setHeader('Content-Type', 'application/octet-stream');
             if (req.headers["x-data-type"] === "gzip") {
                 const compressed = Pako.gzip(JSON.stringify(results), {level: 9});
-                return res.status(200).json(compressed);
+                return res.status(200).send(compressed);
             } else {
                 const jsonString = JSON.stringify(results);
                 // 文字列を明示的に Buffer に変換してから圧縮
@@ -122,8 +123,6 @@ export default async function handler(
                         [constants.BROTLI_PARAM_QUALITY]: 11,
                     },
                 });
-
-                res.setHeader('Content-Type', 'application/octet-stream');
                 res.setHeader('Content-Length', compressedBuffer.length);
                 return res.status(200).send(compressedBuffer);
             }
