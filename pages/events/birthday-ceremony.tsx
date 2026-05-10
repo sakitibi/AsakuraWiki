@@ -3,13 +3,12 @@ import Head from 'next/head';
 import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
-import { brotliDecompressSync } from 'zlib';
 import { JSONProps } from '@/pages/api/staff_credits';
 
 // 型定義
-export type Phase = 'WAITING' | 'OPENING' | 'CAKE_TIME' | 'PRESENT' | 'CLOSING' | 'SPEECH';
+type Phase = 'WAITING' | 'OPENING' | 'CAKE_TIME' | 'PRESENT' | 'CLOSING' | 'SPEECH';
 
-interface BroadcastPayload {
+export interface BroadcastPayload {
     phase: Phase;
     message: string;
     soundFile?: string;

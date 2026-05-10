@@ -3,16 +3,11 @@ import { User } from '@supabase/supabase-js';
 import { useEffect, useState, useMemo } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { JSONProps } from '../api/staff_credits';
-import { brotliDecompressSync } from 'zlib';
+import { BroadcastPayload } from '@/pages/events/birthday-ceremony';
 
-type BirthdayPhase = 'WAITING' | 'OPENING' | 'CAKE_TIME' | 'PRESENT' | 'CLOSING';
 
-interface CeremonyConfig {
+interface CeremonyConfig extends BroadcastPayload {
     label: string;
-    phase: BirthdayPhase;
-    message: string;
-    soundFile?: string;
-    triggerConfetti?: boolean;
     color: string;
     description: string;
 }
@@ -49,9 +44,6 @@ export default function BirthdayAdminPage() {
                 const found = data.find((m: JSONProps) => m.birthday?.includes(monthDay));
                 if (found) {
                     setBirthdayUser(found);
-                } else {
-                    // テスト用に、もし今日誕生日の人がいなければ一人目をセットする例
-                    setBirthdayUser(data[0]); 
                 }
             } catch (e) {
                 console.error("Failed to fetch members", e);
