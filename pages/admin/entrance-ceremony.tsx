@@ -25,7 +25,7 @@ const ENTRANCE_STEPS: CeremonyConfig[] = [
         label: '開式（ファンファーレ）', 
         phase: 'OPENING', 
         message: 'ただいまより、入社式を執り行います', 
-        soundFile: 'entrance_fanfare.mp3', 
+        soundFile: 'opening_fanfare.mp3', 
         color: 'bg-blue-600' 
     },
     { 
@@ -45,7 +45,7 @@ const ENTRANCE_STEPS: CeremonyConfig[] = [
         label: '閉式', 
         phase: 'CLOSING', 
         message: '本日は誠におめでとうございました', 
-        soundFile: 'entrance_closing.mp3', 
+        soundFile: 'closing_bgm.mp3', 
         color: 'bg-slate-800' 
     },
 ];
