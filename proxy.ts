@@ -4,11 +4,9 @@ export function proxy(_: NextRequest) {
     const csp = `
         default-src
         'self'
-        https://asakura-wiki.vercel.app
         https://sakitibi.github.io;
         connect-src
         'self'
-        https://asakura-wiki.vercel.app
         https://sakitibi.github.io
         https://www.googletagmanager.com
         https://counter.wikiwiki.jp
@@ -17,7 +15,11 @@ export function proxy(_: NextRequest) {
         https://gppjfculpjyjqzfuqfev.supabase.co
         wss://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
-        script-src * 'unsafe-inline' 'unsafe-eval';
+        script-src * 'unsafe-inline' 'unsafe-eval' blob:;
+        worker-src
+        'self'
+        https://sakitibi.github.io
+        blob:;
         style-src * 'unsafe-inline';
         font-src * data:;
         img-src *;
