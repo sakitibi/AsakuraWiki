@@ -36,13 +36,11 @@ export default function BirthdayAdminPage() {
             try {
                 const headers = new Headers();
                 headers.set("Authorization", process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!);
+                headers.set("x-data-type", "json");
                 const res = await fetch('/api/staff_credits', {
                     headers
                 });
-                const arrayBuffer = await res.arrayBuffer();
-                const buffer = Buffer.from(arrayBuffer);
-                const decompressed = brotliDecompressSync(buffer);
-                const data = JSON.parse(decompressed.toString('utf-8'));
+                const data = await res.json();
 
                 // 今日誕生日の人を判定
                 const today = new Date();

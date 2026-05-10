@@ -41,7 +41,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-data-type');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
     // 取得したいURLのリスト
     const urls = [
@@ -110,19 +110,21 @@ export default async function handler(
                 return data;
             });
             console.log("results: ", results);
+            if (req.headers["x-data-type"] === "json") {
+                return res.status(200).json(results);
+            } else {
+                const jsonString = JSON.stringify(results);
+                // 文字列を明示的に Buffer に変換してから圧縮
+                const compressedBuffer = brotliCompressSync(Buffer.from(jsonString), {
+                    params: {
+                        [constants.BROTLI_PARAM_QUALITY]: 11,
+                    },
+                });
 
-            const jsonString = JSON.stringify(results);
-            // 文字列を明示的に Buffer に変換してから圧縮
-            const compressedBuffer = brotliCompressSync(Buffer.from(jsonString), {
-                params: {
-                    [constants.BROTLI_PARAM_QUALITY]: 11,
-                },
-            });
-
-            res.setHeader('Content-Type', 'application/octet-stream');
-            res.setHeader('Content-Length', compressedBuffer.length);
-
-            return res.status(200).send(compressedBuffer);
+                res.setHeader('Content-Type', 'application/octet-stream');
+                res.setHeader('Content-Length', compressedBuffer.length);
+                return res.status(200).send(compressedBuffer);
+            }
         }
 
         if (req.method === "OPTIONS") {

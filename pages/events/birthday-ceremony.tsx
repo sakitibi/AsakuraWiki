@@ -34,13 +34,11 @@ export default function BirthdayCeremonyPage() {
             try {
                 const headers = new Headers();
                 headers.set("Authorization", process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!);
+                headers.set("x-data-type", "json");
                 const res = await fetch('/api/staff_credits', {
                     headers
                 });
-                const arrayBuffer = await res.arrayBuffer();
-                const buffer = Buffer.from(arrayBuffer);
-                const decompressed = brotliDecompressSync(buffer);
-                const data = JSON.parse(decompressed.toString('utf-8'));
+                const data = await res.json();
 
                 const today = new Date();
                 const monthDay = `${today.getMonth() + 1}月${today.getDate()}日`;
