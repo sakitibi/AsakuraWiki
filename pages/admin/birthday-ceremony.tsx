@@ -40,7 +40,7 @@ export default function BirthdayAdminPage() {
                     headers
                 });
                 const buffer = await res.arrayBuffer();
-                const decompressed = brotliDecompressSync(buffer);
+                const decompressed = brotliDecompressSync(new Uint8Array(buffer));
                 const data = JSON.parse(decompressed.toString('utf-8'));
 
                 // 今日誕生日の人を判定
