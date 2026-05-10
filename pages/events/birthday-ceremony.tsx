@@ -38,7 +38,7 @@ export default function BirthdayCeremonyPage() {
                     headers
                 });
                 const buffer = await res.arrayBuffer();
-                const decompressed = brotliDecompressSync(buffer);
+                const decompressed = brotliDecompressSync(new Uint8Array(buffer));
                 const data = JSON.parse(decompressed.toString('utf-8'));
 
                 const today = new Date();
