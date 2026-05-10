@@ -2,9 +2,7 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
-
-// 演出設定の型定義
-type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'CLOSING';
+import { Phase } from '@/pages/events/entrance-ceremony';
 
 interface CeremonyConfig {
     label: string;

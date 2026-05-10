@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
 
 // 型定義
-type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'CLOSING';
+export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'CLOSING';
 
 interface BroadcastPayload {
     phase: Phase;

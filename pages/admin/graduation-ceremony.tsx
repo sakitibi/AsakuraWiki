@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import { Phase } from '@/pages/events/graduation-ceremony';
 
 // 型定義
-type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | 'CLOSING';
-
 interface CeremonyConfig {
     label: string;
     phase: Phase;
