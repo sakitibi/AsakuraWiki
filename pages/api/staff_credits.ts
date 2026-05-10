@@ -1,5 +1,6 @@
 //import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
+import Pako from 'pako';
 import { constants, brotliCompressSync, brotliDecompressSync } from 'zlib';
 /*import upack from '@/node_modules/upack.js/src/index';
 import { decodeBase64Unicode } from '@/lib/base64';
@@ -110,8 +111,9 @@ export default async function handler(
                 return data;
             });
             console.log("results: ", results);
-            if (req.headers["x-data-type"] === "json") {
-                return res.status(200).json(results);
+            if (req.headers["x-data-type"] === "gzip") {
+                const compressed = Pako.gzip(JSON.stringify(results), {level: 9});
+                return res.status(200).json(compressed);
             } else {
                 const jsonString = JSON.stringify(results);
                 // 文字列を明示的に Buffer に変換してから圧縮

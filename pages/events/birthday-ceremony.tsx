@@ -4,6 +4,7 @@ import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
 import { JSONProps } from '@/pages/api/staff_credits';
+import Pako from 'pako';
 
 // 型定義
 type Phase = 'WAITING' | 'OPENING' | 'CAKE_TIME' | 'PRESENT' | 'CLOSING' | 'SPEECH';
@@ -33,11 +34,11 @@ export default function BirthdayCeremonyPage() {
             try {
                 const headers = new Headers();
                 headers.set("Authorization", process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!);
-                headers.set("x-data-type", "json");
+                headers.set("x-data-type", "gzip");
                 const res = await fetch('/api/staff_credits', {
                     headers
                 });
-                const data = await res.json();
+                const data: JSONProps[] = JSON.parse(Pako.ungzip(await res.arrayBuffer(), {to: "string"}));
 
                 const today = new Date();
                 const monthDay = `${today.getMonth() + 1}月${today.getDate()}日`;
