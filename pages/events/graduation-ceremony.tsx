@@ -137,7 +137,7 @@ export default function RetirementPage() {
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 font-serif overflow-hidden tailwind-scope">
             <Head>
-                <title>Farewell Ceremony | {phase}</title>
+                <title>Graduation Ceremony | {phase}</title>
             </Head>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black opacity-50 pointer-events-none" />
 
