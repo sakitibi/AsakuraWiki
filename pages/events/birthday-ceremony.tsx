@@ -42,8 +42,8 @@ export default function BirthdayCeremonyPage() {
                 const today = new Date();
                 const monthDay = `${today.getMonth() + 1}月${today.getDate()}日`;
                 
-                // 今日誕生日の人を特定（いなければリストの先頭をデモ表示）
-                const found = data.find((m:JSONProps) => m.birthday?.includes(monthDay)) || data[0];
+                // 今日誕生日の人を特定
+                const found = data.find((m:JSONProps) => m.birthday?.includes(monthDay)) || null;
                 setBirthdayUser(found);
             } catch (e) {
                 console.error("Failed to fetch birthday user", e);
