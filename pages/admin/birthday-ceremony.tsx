@@ -21,7 +21,6 @@ export default function BirthdayAdminPage() {
     const [loading, setLoading] = useState(false);
     const [lastAction, setLastAction] = useState<string>('');
     const [user, setUser] = useState<User | null>(null);
-    const [members, setMembers] = useState<JSONProps[]>([]);
     const [birthdayUser, setBirthdayUser] = useState<JSONProps | null>(null);
 
     // 1. ログインユーザーとメンバーリストの取得
@@ -43,7 +42,6 @@ export default function BirthdayAdminPage() {
                 const buffer = await res.arrayBuffer();
                 const decompressed = brotliDecompressSync(buffer);
                 const data = JSON.parse(decompressed.toString('utf-8'));
-                setMembers(data);
 
                 // 今日誕生日の人を判定
                 const today = new Date();
