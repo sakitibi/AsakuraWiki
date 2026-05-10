@@ -1,9 +1,10 @@
-import { supabaseClient } from '@/lib/supabaseClient';
+import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
+import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
-import { Phase } from '@/pages/events/entrance-ceremony';
+import { Phase } from '@/pages/events/graduation-ceremony';
 
+// 型定義
 interface CeremonyConfig {
     label: string;
     phase: Phase;
@@ -11,49 +12,15 @@ interface CeremonyConfig {
     soundFile?: string;
     triggerConfetti?: boolean;
     color: string;
+    description: string;
 }
 
-// 演出ボタンのプリセット設定
-const CEREMONY_STEPS: CeremonyConfig[] = [
-    { 
-        label: '待機開始', 
-        phase: 'WAITING', 
-        message: '開式まで少々お待ちください', 
-        color: 'bg-slate-500' 
-    },
-    { 
-        label: '開式（ファンファーレ）', 
-        phase: 'OPENING', 
-        message: 'ただいまより、式典を執り行います', 
-        soundFile: 'opening_fanfare.mp3', 
-        color: 'bg-blue-600' 
-    },
-    { 
-        label: '祝辞・辞令交付', 
-        phase: 'SPEECH', 
-        message: '辞令交付ならびに祝辞', 
-        color: 'bg-indigo-600' 
-    },
-    { 
-        label: 'サプライズ（祝砲・拍手）', 
-        phase: 'SURPRISE', 
-        message: 'おめでとうございます！', 
-        triggerConfetti: true, 
-        color: 'bg-pink-600' 
-    },
-    { 
-        label: '閉式', 
-        phase: 'CLOSING', 
-        message: '本日は誠におめでとうございました', 
-        soundFile: 'closing_bgm.mp3', 
-        color: 'bg-slate-800' 
-    },
-];
+// 退社式用演出プリセット
+const RETIREMENT_STEPS: CeremonyConfig[] = [/**省略.. */];
 
-export default function AdminControlPage() {
+export default function RetirementAdminPage() {
     const [loading, setLoading] = useState(false);
-    const [lastAction, setLastAction] = useState<string>('');
-    const [user, setUser] = useState<User | null>(null);
+    const [lastAction, setLastAction] = useState<string>('');    const [user, setUser] = useState<User | null>(null);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
@@ -79,8 +46,7 @@ export default function AdminControlPage() {
     const executeTrigger = async (config: CeremonyConfig) => {
         setLoading(true);
         try {
-            // 1. DBの更新（後から入った人やリロード対策）
-            // テーブル名 'ceremony_state'、id: 1 のレコードを更新する想定
+            // 1. DB更新（リロードした人向け）
             const { error: dbError } = await supabaseClient
                 .from('ceremony_state')
                 .upsert([{ 
@@ -88,11 +54,11 @@ export default function AdminControlPage() {
                     message: config.message,
                     updated_at: new Date().toISOString()
                 }])
-                .eq('id', 1);
+                .eq('id', 2);
 
             if (dbError) throw dbError;
 
-            // 2. Broadcastの送信（現在繋がっている人への即時命令）
+            // 2. Broadcast送信（現在接続中の人向け）
             const channel = supabaseClient.channel('ceremony_room');
             channel.subscribe(async (status) => {
                 if (status === 'SUBSCRIBED') {
@@ -106,7 +72,6 @@ export default function AdminControlPage() {
                             triggerConfetti: config.triggerConfetti,
                         },
                     });
-                    // 送信後にチャンネルを解除
                     supabaseClient.removeChannel(channel);
                 }
             });
@@ -123,61 +88,73 @@ export default function AdminControlPage() {
     return (
         <>
             {asakura_member_list_found ? (
-                <div className="min-h-screen bg-gray-100 p-8">
-                    <div className="max-w-2xl mx-auto">
-                        <header className="mb-8">
-                            <h1 className="text-2xl font-bold text-gray-800">式典進行コントロールパネル</h1>
-                            <p className="text-sm text-gray-500">ボタンを押すと全参加者の画面が即座に更新されます</p>
+                <div className="min-h-screen bg-gray-50 p-6 md:p-12">
+                    <div className="max-w-3xl mx-auto">
+                        <header className="mb-10 text-center">
+                            <h1 className="text-3xl font-bold text-slate-800 font-serif">退社式 進行管理パネル</h1>
+                            <p className="text-slate-500 mt-2 text-sm italic underline">※ボタンを押すと全参加者の画面がリアルタイムで動きます</p>
                         </header>
 
-                        <div className="grid gap-4">
-                        {CEREMONY_STEPS.map((step) => (
-                            <button
-                                key={step.phase}
-                                disabled={loading}
-                                onClick={() => executeTrigger(step)}
-                                className={`flex items-center justify-between p-6 rounded-lg shadow-sm text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 ${step.color}`}
-                            >
-                                <div className="text-left">
-                                    <span className="block text-xs opacity-80 font-mono">{step.phase}</span>
-                                    <span className="text-xl font-bold">{step.label}</span>
-                                </div>
-                                <div className="text-right text-sm opacity-90 italic">
-                                    {step.soundFile ? '🎵 ' + step.soundFile : '静音'}
-                                    {step.triggerConfetti && ' ✨エフェクト'}
-                                </div>
-                            </button>
-                        ))}
+                        <div className="space-y-4">
+                            {RETIREMENT_STEPS.map((step) => (
+                                <button
+                                    key={step.phase}
+                                    disabled={loading}
+                                    onClick={() => {
+                                        if (window.confirm(`${step.label} を実行してもよろしいですか？`)) {
+                                            executeTrigger(step);
+                                        }
+                                    }}
+                                    className={`w-full flex flex-col md:flex-row md:items-center justify-between p-6 rounded-xl shadow-lg text-white transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50 ${step.color}`}
+                                >
+                                    <div className="text-left">
+                                        <span className="block text-xs opacity-70 tracking-widest font-mono mb-1">{step.phase}</span>
+                                        <span className="text-xl font-bold tracking-wider">{step.label}</span>
+                                    </div>
+                                    <div className="mt-2 md:mt-0 text-left md:text-right">
+                                        <p className="text-sm font-medium border-l-2 md:border-l-0 md:border-r-2 border-white/30 px-3">
+                                            {step.description}
+                                        </p>
+                                    </div>
+                                </button>
+                            ))}
                         </div>
 
-                        {lastAction && (
-                            <div className="mt-8 p-4 bg-green-100 text-green-800 rounded text-center animate-pulse">
-                                最終実行: <strong>{lastAction}</strong> (完了)
-                            </div>
-                        )}
-
-                        <section className="mt-12 p-6 bg-white rounded-lg border border-red-200">
-                            <h3 className="text-red-600 font-bold mb-4">緊急・自由メッセージ送信</h3>
+                        {/* 緊急用メッセージ送信 */}
+                        <div className="mt-12 p-8 bg-white rounded-2xl border-2 border-slate-200 shadow-sm">
+                            <h3 className="text-slate-800 font-bold mb-4 flex items-center">
+                                <span className="mr-2 text-red-500">●</span> 自由テロップ送信
+                            </h3>
                             <textarea 
-                                id="manual-msg"
-                                className="w-full border p-2 rounded mb-2"
-                                placeholder="自由なテキストを入力..."
+                                id="custom-msg"
+                                className="w-full border border-slate-300 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800"
+                                rows={3}
+                                placeholder="例：〇〇さん、本当にお疲れ様でした！"
                             />
                             <button 
                                 onClick={() => {
-                                const el = document.getElementById('manual-msg') as HTMLTextAreaElement;
-                                executeTrigger({
-                                    label: '緊急メッセージ',
-                                    phase: 'SPEECH',
-                                    message: el.value,
-                                    color: 'bg-red-600'
-                                });
+                                    const el = document.getElementById('custom-msg') as HTMLTextAreaElement;
+                                    if (!el.value) return;
+                                    executeTrigger({
+                                        label: '自由テロップ',
+                                        phase: 'SPEECH',
+                                        message: el.value,
+                                        color: 'bg-slate-800',
+                                        description: 'テキストのみ更新'
+                                    });
+                                    el.value = '';
                                 }}
-                                className="w-full bg-red-600 text-white py-2 rounded font-bold"
+                                className="w-full bg-slate-800 text-white py-4 rounded-xl font-bold hover:bg-black transition-colors"
                             >
-                                テロップのみ即時更新
+                                メッセージを今すぐ画面に表示
                             </button>
-                        </section>
+                        </div>
+
+                        {lastAction && (
+                            <div className="mt-8 text-center text-emerald-600 font-bold animate-bounce">
+                                ✔ 前回実行: {lastAction}
+                            </div>
+                        )}
                     </div>
                 </div>
             ) : (
