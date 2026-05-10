@@ -5,7 +5,7 @@ import { constants, brotliCompressSync, brotliDecompressSync } from 'zlib';
 import { decodeBase64Unicode } from '@/lib/base64';
 import { adminerUserId } from '@/utils/user_list';*/
 
-interface JSONProps {
+export interface JSONProps {
     id: number;
     name: string;
     kana: string;
