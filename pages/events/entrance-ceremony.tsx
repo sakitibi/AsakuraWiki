@@ -93,7 +93,7 @@ export default function EntranceCeremonyPage() {
     if (!isJoined) {
         return (
             <div className="flex h-screen flex-col items-center justify-center bg-slate-900 text-white p-6 text-center">
-                <h1 className="mb-8 text-4xl font-serif tracking-widest text-pink-200">令和六年度 入社式</h1>
+                <h1 className="mb-8 text-4xl font-serif tracking-widest text-pink-200">令和八年度 入社式</h1>
                 <button
                     onClick={handleJoin}
                     className="rounded-full bg-pink-600 px-16 py-5 text-xl font-bold transition-all hover:bg-pink-500 hover:scale-105 active:scale-95 shadow-xl"
