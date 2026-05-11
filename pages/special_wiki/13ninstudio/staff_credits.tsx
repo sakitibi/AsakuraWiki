@@ -1,13 +1,28 @@
 import { supabaseClient } from "@/lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Redirecting(){
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
     const Redirect = async () => {
-        const session = await supabaseClient.auth.getSession();
-        const token = session?.data?.session?.access_token
-        if(typeof location !== "undefined" && typeof window !== "undefined"){
-            location.href = `https://sakitibi.github.io/13nin.com/staff_credits?login=${token}`;
+        if (user) {
+            const session = await supabaseClient.auth.getSession();
+            const token = session?.data?.session?.access_token
+            if(typeof location !== "undefined" && typeof window !== "undefined"){
+                location.replace(`https://sakitibi.github.io/13nin.com/staff_credits?login=${token}`);
+            }
+        } else {
+            location.replace("/login");
         }
     }
     useEffect(() => {
