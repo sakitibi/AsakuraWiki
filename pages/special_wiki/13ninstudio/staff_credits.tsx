@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function Redirecting(){
     const [user, setUser] = useState<User | null>(null);
-    const [isBot, setIsBot] = useState(true);
+    const [isBot, setIsBot] = useState<boolean | null>(null);
     useEffect(() => {
         const ua = navigator.userAgent;
         const bot = /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
@@ -21,7 +21,7 @@ export default function Redirecting(){
         });
     }, []);
     const Redirect = async () => {
-        if (isBot) {
+        if (isBot === true) {
             location.replace("https://sakitibi.github.io/13nin.com/staff_credits");
         } else {
             if (user) {
@@ -36,8 +36,9 @@ export default function Redirecting(){
         }
     }
     useEffect(() => {
+        if (isBot === null) return;
         Redirect();
-    }, []);
+    }, [isBot]);
     return(
         <>
             <Head>
