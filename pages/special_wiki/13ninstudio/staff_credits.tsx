@@ -20,19 +20,21 @@ export default function Redirecting(){
             }
         });
     }, []);
-    const Redirect = async () => {
+    const Redirect = () => {
         if (isBot === true) {
             location.replace("https://sakitibi.github.io/13nin.com/staff_credits");
         } else {
-            if (user) {
-                const session = await supabaseClient.auth.getSession();
-                const token = session?.data?.session?.access_token
-                if(typeof location !== "undefined" && typeof window !== "undefined"){
-                    location.replace(`https://sakitibi.github.io/13nin.com/staff_credits?login=${token}`);
+            setTimeout(async() => {
+                if (user) {
+                    const session = await supabaseClient.auth.getSession();
+                    const token = session?.data?.session?.access_token
+                    if(typeof location !== "undefined" && typeof window !== "undefined"){
+                        location.replace(`https://sakitibi.github.io/13nin.com/staff_credits?login=${token}`);
+                    }
+                } else {
+                    location.replace("/login");
                 }
-            } else {
-                location.replace("/login");
-            }
+            }, 1000);
         }
     }
     useEffect(() => {
