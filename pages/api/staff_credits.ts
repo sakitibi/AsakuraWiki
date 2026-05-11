@@ -1,10 +1,8 @@
-//import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Pako from 'pako';
 import { constants, brotliCompressSync, brotliDecompressSync } from 'zlib';
-/*import upack from '@/node_modules/upack.js/src/index';
-import { decodeBase64Unicode } from '@/lib/base64';
-import { adminerUserId } from '@/utils/user_list';*/
+import { adminerUserId } from '@/utils/user_list';
+import { supabaseServer } from '@/lib/supabaseClientServer';
 
 export interface JSONProps {
     id: number;
@@ -51,20 +49,15 @@ export default async function handler(
     ];
 
     try {
-        //let userId: string | null = null;
-        const authHeader = req.headers.authorization/*new TextDecoder().decode(
-            upack.SEncoder.decodeSEncode(
-                decodeBase64Unicode(req.headers.authorization ?? ""),
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
-            )!
-        );
+        let userId: string | null = null;
+        const authHeader = req.headers.authorization;
         const { data: { user } } = await supabaseServer.auth.getUser(authHeader);
         if (user) userId = user.id;
-        const isAdmin = adminerUserId.includes(userId || '');*/
+        const isAdmin = adminerUserId.includes(userId || '');
 
         if (req.method === "GET") {
             // すべてのURLを並列で実行
-            if (authHeader !== process.env.NEXT_PUBLIC_UPACK_SECRET_KEY) {
+            if (!isAdmin) {
                 return res.status(401).json({error: "Unauthorized"});
             }
             const array = await Promise.all(urls.map(url => fetchAndDecompress(url)));
