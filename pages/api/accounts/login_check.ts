@@ -1,4 +1,5 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
+import { adminerUserId } from '@/utils/user_list';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
@@ -23,9 +24,10 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             if (user) userId = user.id
         }
         if (userId) {
-            return res.status(200).json({success: true});
+            const isAdmin = adminerUserId.includes(userId || '');
+            return res.status(200).json({success: true, isAdmin});
         } else {
-            return res.status(401).json({error: "error 401 unauthorized.", success: false});
+            return res.status(401).json({error: "error 401 unauthorized.", success: false, isAdmin: false});
         }
     } else if (req.method === "OPTIONS") {
         return res.status(200).end();
