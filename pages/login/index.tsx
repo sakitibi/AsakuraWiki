@@ -19,7 +19,7 @@ export default function LoginPage() {
                 <p>ログイン方法を選択してください：</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
                     <Link href="/login/13nin/">
-                        <button style={buttonStyle}><span>13ninアカウントでログイン</span></button>
+                        <button style={buttonStyle}><span>13ninアカウントでログイン(推奨)</span></button>
                     </Link>
                     <Link href="/login/13nin/secretcodes">
                         <button style={buttonStyle}><span>あさクラシークレットコードでログイン</span></button>
@@ -35,6 +35,9 @@ export default function LoginPage() {
                     </Link>
                     <Link href="/login/discord">
                         <button style={buttonStyle}><span>Discordでログイン</span></button>
+                    </Link>
+                    <Link href="/login/figma">
+                        <button style={buttonStyle}><span>Figmaでログイン</span></button>
                     </Link>
                 </div>
             </main>
