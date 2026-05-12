@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 
-export default function BitbucketLogin() {
+export default function FigmaLogin() {
     useEffect(() => {
         if(typeof window !== "undefined"){
             supabaseClient.auth.signInWithOAuth({
