@@ -71,6 +71,11 @@ module.exports = {
             priority: 0.5,
         })))
 
-        return [...wikiPaths, ...storePaths]
+        return [...wikiPaths, ...storePaths, {
+            loc: "/api/html",
+            lastmod: new Date().toISOString(),
+            changefreq: 'weekly',
+            priority: 0.6,
+        }]
     },
 }
