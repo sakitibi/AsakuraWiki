@@ -35,8 +35,6 @@ export default function NewsPage() {
                         <h1>2026/02/23 大事なお知らせ</h1>
                         <p>13ninstudioはゲーム開発事業から完全撤退します</p>
                         <p>JSObfuscatorも撤退しました</p>
-                        <p>バージョンはおそらくV2.0.80で凍結されます</p>
-                        <p>13ninstudioはゲーム実況メインになります</p>
                     </main>
                     <RightMenuJp/>
                 </div>
