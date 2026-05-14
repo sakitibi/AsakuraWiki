@@ -46,6 +46,7 @@ export default async function handler(
     const urls = [
         'https://sakitibi.github.io/13nin.com/staff_credits/staff_data_1_64.json.br',
         'https://sakitibi.github.io/13nin.com/staff_credits/staff_data_65_128.json.br',
+        'https://sakitibi.github.io/13nin.com/staff_credits/staff_data_129_192.json.br',
     ];
 
     try {
