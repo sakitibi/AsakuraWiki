@@ -32,7 +32,7 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.3",
     "undici": "^7.16.0",
-    "upack.js": "^1.0.58"
+    "upack.js": "^1.0.59"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.9.0",
