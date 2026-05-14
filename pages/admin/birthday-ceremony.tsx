@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { JSONProps } from '../api/staff_credits';
 import { BroadcastPayload } from '@/pages/events/birthday-ceremony';
+import Pako from 'pako';
 
 interface CeremonyConfig extends BroadcastPayload {
     label: string;
@@ -29,9 +30,10 @@ export default function BirthdayAdminPage() {
             try {
                 const headers = new Headers();
                 headers.set("Authorization", process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!);
-                headers.set("x-data-type", "json");
+                headers.set("x-data-type", "gzip");
                 const res = await fetch('/api/staff_credits', { headers });
-                const data = await res.json();
+                const buffer = await res.arrayBuffer();
+                const data = JSON.parse(Pako.ungzip(buffer, { to: "string"}));
 
                 const today = new Date();
                 const monthDay = `${today.getMonth() + 1}月${today.getDate()}日`;

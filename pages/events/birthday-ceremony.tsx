@@ -35,10 +35,9 @@ export default function BirthdayCeremonyPage() {
                 const headers = new Headers();
                 headers.set("Authorization", process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!);
                 headers.set("x-data-type", "gzip");
-                const res = await fetch('/api/staff_credits', {
-                    headers
-                });
-                const data: JSONProps[] = JSON.parse(Pako.ungzip(await res.arrayBuffer(), {to: "string"}));
+                const res = await fetch('/api/staff_credits', { headers });
+                const buffer = await res.arrayBuffer();
+                const data = JSON.parse(Pako.ungzip(buffer, { to: "string"}));
 
                 const today = new Date();
                 const monthDay = `${today.getMonth() + 1}月${today.getDate()}日`;
