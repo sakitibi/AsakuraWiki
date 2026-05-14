@@ -7,7 +7,7 @@ const ROWS = 32;
 interface ResponseData {
     matrix: number[][];
     color: string;
-};
+}
 
 export default function handler(
     req: NextApiRequest,
@@ -19,46 +19,50 @@ export default function handler(
 
     const { text = "", color = "#FF0000" } = req.body;
 
-    // 1. 128x32のCanvasを作成
+    // 1. Canvasの作成
     const canvas = createCanvas(COLS, ROWS);
     const ctx = canvas.getContext('2d');
 
+    // アンチエイリアスを切る（ドットをハッキリさせる）
     ctx.antialias = 'none';
 
-    // 背景を真っ黒に塗りつぶし
+    // --- 描画処理 ---
+    // 背景を真っ黒で初期化
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, COLS, ROWS);
     
-    // フォント設定
-    ctx.font = 'bold 26px "sans-serif"'; 
+    // 文字の描画設定
+    ctx.font = 'bold 24px sans-serif'; 
     ctx.fillStyle = '#FFFFFF';
     ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
+    ctx.textAlign = 'left'; // centerより制御しやすい左詰めに変更
     
-    // 文字を描画（中央配置）
-    ctx.fillText(text, COLS / 2, ROWS / 2);
+    // 文字の幅を計測して、中央に来るようにX座標を計算
+    const textWidth = ctx.measureText(text).width;
+    const startX = Math.max(0, (COLS - textWidth) / 2);
+    
+    // 文字を描画
+    ctx.fillText(text, startX, ROWS / 2);
 
-    // 2. ピクセルデータを取得してビット配列(0/1)に変換
-    const imageData = ctx.getImageData(0, 0, COLS, ROWS).data;
+    // 2. ビット配列への変換
+    const imgData = ctx.getImageData(0, 0, COLS, ROWS);
+    const data = imgData.data;
     const matrix: number[][] = [];
 
     for (let y = 0; y < ROWS; y++) {
         const row: number[] = [];
         for (let x = 0; x < COLS; x++) {
-            // RGBAの構造は [R, G, B, A, R, G, B, A, ...]
             const index = (y * COLS + x) * 4;
-            const r = imageData[index]; 
+            // R, G, B いずれかが高い（白に近い）かチェック
+            const r = data[index];
+            const g = data[index + 1];
+            const b = data[index + 2];
             
-            // R値が128(中間値)より大きければ「1」、それ以外は「0」
-            // アンチエイリアスをオフにしていれば、ここが明確に分かれます
-            row.push(r > 128 ? 1 : 0);
+            // 閾値を128に設定。白いピクセル（255,255,255）なら 1 になる
+            row.push(r > 128 || g > 128 || b > 128 ? 1 : 0);
         }
         matrix.push(row);
     }
 
-    // クライアントが期待する形式でレスポンスを返す
-    res.status(200).json({ 
-        matrix, 
-        color 
-    });
+    res.status(200).json({ matrix, color });
 }
