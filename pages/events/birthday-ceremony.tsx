@@ -32,8 +32,10 @@ export default function BirthdayCeremonyPage() {
     useEffect(() => {
         const fetchBirthdayUser = async () => {
             try {
+                const session = await supabaseClient.auth.getSession();
+                const token = session?.data?.session?.access_token;
                 const headers = new Headers();
-                headers.set("Authorization", process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!);
+                headers.set("Authorization", token || "");
                 headers.set("x-data-type", "gzip");
                 const res = await fetch('/api/staff_credits', { headers });
                 const buffer = await res.arrayBuffer();
