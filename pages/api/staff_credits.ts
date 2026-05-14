@@ -108,7 +108,7 @@ export default async function handler(
             res.setHeader('Content-Type', 'application/octet-stream');
             if (req.headers["x-data-type"] === "gzip") {
                 const compressed = Pako.gzip(JSON.stringify(results), {level: 9});
-                return res.status(200).send(compressed);
+                return res.status(200).send(Buffer.from(compressed));
             } else {
                 const jsonString = JSON.stringify(results);
                 // 文字列を明示的に Buffer に変換してから圧縮
@@ -118,7 +118,7 @@ export default async function handler(
                     },
                 });
                 res.setHeader('Content-Length', compressedBuffer.length);
-                return res.status(200).send(compressedBuffer);
+                return res.status(200).send(Buffer.from(compressedBuffer));
             }
         }
 

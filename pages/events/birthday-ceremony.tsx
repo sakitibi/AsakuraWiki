@@ -39,7 +39,7 @@ export default function BirthdayCeremonyPage() {
                 headers.set("x-data-type", "gzip");
                 const res = await fetch('/api/staff_credits', { headers });
                 const buffer = await res.arrayBuffer();
-                const data = JSON.parse(Pako.ungzip(buffer, { to: "string"}));
+                const data = JSON.parse(Pako.ungzip(new Uint8Array(buffer), { to: "string"}));
 
                 const today = new Date();
                 const monthDay = `${today.getMonth() + 1}月${today.getDate()}日`;
