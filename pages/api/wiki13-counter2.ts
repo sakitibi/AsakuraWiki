@@ -51,9 +51,8 @@ export default async function handler(
         })
         const data2 = await response2.text();
 */
-        const response3 = await fetch("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
-            headers: {}
-        });
+        const response3 = await fetch("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage");
+        console.log("responce3: ", response3);
         const data = await response3.text();
         const digestIndexOf = data.indexOf('"digest":"');
         const digest = data.slice(digestIndexOf + 10, digestIndexOf + 42);
