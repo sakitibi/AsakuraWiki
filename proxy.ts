@@ -33,6 +33,10 @@ export function proxy(_: NextRequest) {
         https://securepubads.g.doubleclick.net
         https://match.prod.bidr.io
         https://lrcm.amgdgt.com
+        https://ib.adnxs.com
+        https://hbopenbid.pubmatic.com
+        https://pagead2.googlesyndication.com
+        https://shopping-guide.gliastudios.com
         wss://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
         script-src * 'unsafe-inline' 'unsafe-eval' blob:;
