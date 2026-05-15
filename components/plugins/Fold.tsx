@@ -1,6 +1,4 @@
-import React, { ReactNode, useState } from "react";
-import { FoldBlock, Context } from "@/components/plugins/parsePluginTypes";
-import { extractBracedBlock, parseWikiContent } from "@/utils/parsePlugins";
+import React, { useState } from "react";
 
 interface FoldProps{
     title: React.ReactNode;
@@ -8,7 +6,7 @@ interface FoldProps{
     children: React.ReactNode;
 }
 
-export async function extractFolds(
+/*export async function extractFolds(
     content: string,
     offset:number = 0,
     context: Context
@@ -63,7 +61,8 @@ export async function extractFolds(
         }
         const parsedBody:ReactNode[] = await parseWikiContent(
             bodyForInline,
-            context
+            context,
+            designColor
         );
 
         blocks.push({
@@ -95,7 +94,7 @@ export async function extractFolds(
         `=> extractAccordions returning ${blocks.length} blocks at offset=${offset}`
     );
     return blocks;
-}
+}*/
 
 export default function Fold({ title, initiallyOpen, children }: FoldProps){
     const [open, setOpen] = useState(initiallyOpen);

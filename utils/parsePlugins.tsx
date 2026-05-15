@@ -1,21 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Context, Token, extractBracedBlockProps } from '@/components/plugins/parsePluginTypes';
 import { resolveImports } from '@/components/plugins/ImportBlock';
 import type { designColor } from '@/utils/wiki_settings';
 import { buildAST, renderAST } from '@/utils/AST';
-import { fetchColorParsePlugin } from '@/utils/fetchColor';
-
-export function useDesignColor(slug: string) {
-    const [color, setColor] = useState<designColor | null>(null);
-    useEffect(() => {
-        fetchColorParsePlugin(
-            slug,
-            setColor
-        );
-    }, [slug]);
-
-    return color;
-}
 
 export function isValidLineRange(range: string): boolean {
     const trimmed:string = range.trim()

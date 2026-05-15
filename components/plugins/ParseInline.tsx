@@ -2,14 +2,16 @@ import Header from "@/components/plugins/Header";
 import type { Context } from "@/components/plugins/parsePluginTypes";
 import type { ReactNode } from "react";
 import parseOtherInline from "@/components/plugins/ParseOtherInline";
+import { designColor } from "@/utils/wiki_settings";
 
 interface parseInlineProps{
     text: string;
     context: Context;
+    designColor: designColor
 }
 
 /** インラインプラグインを処理します */
-export default function parseInline({text, context}: parseInlineProps): React.ReactNode[] {
+export default function parseInline({text, context, designColor}: parseInlineProps): React.ReactNode[] {
     const { wikiSlug, pageSlug } = context;
     const nodes: React.ReactNode[] = [];
     let nodeKey:number = 0;
@@ -29,6 +31,7 @@ export default function parseInline({text, context}: parseInlineProps): React.Re
                     level={stars}
                     title={title}
                     anchor={anchor}
+                    designColor={designColor}
                 />
             );
             return;

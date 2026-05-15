@@ -1,13 +1,19 @@
 import { NextRouter, useRouter } from "next/router";
-import { useDesignColor } from "@/utils/parsePlugins";
+import { designColor } from "@/utils/wiki_settings";
+
+interface HeaderProps{
+    title: string;
+    level: '*' | '**' | '***';
+    anchor: string;
+    designColor: designColor;
+}
 
 /** Header コンポーネント */
-export default function Header({ title, level, anchor }: { title: string; level: '*' | '**' | '***'; anchor: string}) {
+export default function Header({ title, level, anchor, designColor }: HeaderProps) {
     const router:NextRouter = useRouter()
     const { wikiSlug } = router.query;
     const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const Tag:"h2" | "h3" | "h4" = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
-    const designColor:string | null = useDesignColor(wikiSlugStr);
     return (
         <div style={{ margin: '1em 0', marginBottom: '10px' }}>
             <Tag className={`header_${designColor}`}>
