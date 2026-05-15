@@ -36,7 +36,7 @@ export default async function handler(
         );
         const data1 = await response1.text();*/
         // 1. FormData オブジェクトを作成
-        const formData = new FormData();
+        /*const formData = new FormData();
 
         // 2. 取得した各項目を append で追加
         formData.append('reply_to', ''); // 空データもそのまま空文字で追加
@@ -50,13 +50,20 @@ export default async function handler(
             body: formData,
         })
         const data2 = await response2.text();
-
-        if (/*!response1.ok ||*/ !response2.ok) {
+*/
+        const response3 = await fetch("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
+            headers: {}
+        });
+        const data = await response3.text();
+        const digestIndexOf = data.indexOf('"digest":"');
+        const digest = data.slice(digestIndexOf + 10, digestIndexOf + 42);
+/*
+        if (!response1.ok || !response2.ok) {
             return res.status(500).json({
                 error: "counter2 fetch failed",
                 data: `data1: , data2: ${data2}`
             });
-        }
-        return res.status(200).json({success: true});
+        }*/
+        return res.status(200).json({success: true, data: digest});
     }
 }
