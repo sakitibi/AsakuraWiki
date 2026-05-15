@@ -23,7 +23,7 @@ export function proxy(_: NextRequest) {
         blob:;
         style-src * 'unsafe-inline';
         font-src * data:;
-        img-src *;
+        img-src * data:;
         media-src *;
         frame-src *;
     `.replace(/\n/g, ' ').trim();
