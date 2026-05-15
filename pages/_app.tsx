@@ -94,7 +94,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     /* ===============================
         fetch ドメインブロック（人間のみ）
     =============================== */
-    useEffect(() => {
+    /*useEffect(() => {
         if (isBot || typeof window === 'undefined') return;
 
         const originalFetch = window.fetch;
@@ -116,7 +116,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         return () => {
             window.fetch = originalFetch;
         };
-    }, [isBot]);
+    }, [isBot]);*/
 
     /* ===============================
         GA（人間のみ）
