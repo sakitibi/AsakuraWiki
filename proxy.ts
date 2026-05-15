@@ -14,6 +14,25 @@ export function proxy(_: NextRequest) {
         https://www.google.com
         https://www.google-analytics.com
         https://gppjfculpjyjqzfuqfev.supabase.co
+        https://cdn.jsdelivr.net
+        https://cdn.wikiwiki.jp
+        https://y.one.impact-ad.jp
+        https://grid-bidder.criteo.com
+        https://fastlane.rubiconproject.com
+        https://htlb.casalemedia.com
+        https://prebid.a-mo.net
+        https://prebid-asia.creativecdn.com
+        https://s-rtb-pb.send.microad.jp/prebid
+        https://ad.as.amanad.adtdp.com
+        https://shb.richaudience.com
+        https://mp.4dex.io
+        https://d.socdm.com
+        https://api.w.inmobi.com
+        https://sp.gmossp-sp.jp
+        https://sync.inmobi.com
+        https://securepubads.g.doubleclick.net
+        https://match.prod.bidr.io
+        https://lrcm.amgdgt.com
         wss://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
         script-src * 'unsafe-inline' 'unsafe-eval' blob:;
