@@ -28,7 +28,19 @@ export default async function handler(
         const htmlContent = await response.text();
         const $ = cheerio.load(htmlContent);
 
-        // --- CSSの取得と加工関数 ---
+        $('img[src]').each((_, el) => {
+            const src = $(el).attr('src');
+            if (src && !src.startsWith('data:') && !src.startsWith('http')) {
+                try {
+                    // 相対パスを絶対パスに変換
+                    const absoluteSrc = new URL(src, pageUrl).href;
+                    $(el).attr('src', absoluteSrc);
+                } catch (e) {
+                    console.error(`Failed to resolve img src: ${src}`, e);
+                }
+            }
+        });
+
         const processCss = async (cssText: string, baseUrl: string) => {
             const urlRegex = /url\((?!['"]?data:)(['"]?)([^'")]*)\1\)/g;
             const matches = Array.from(cssText.matchAll(urlRegex));
