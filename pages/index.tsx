@@ -214,102 +214,60 @@ export default function Home() {
         );
     }
 
-    /* ===============================
-        normal render
-    =============================== */
-    if(!isBot){
-        return (
-            <>
-                <Head>
-                    <title>{AsakuraWikiTitle}</title>
-                    {mounted && !user && (
-                        <link
-                            rel="stylesheet"
-                            href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"
-                        />
-                    )}
-                </Head>
-
-                <MenuJp
-                    handleClick={() => setMenuStatus(v => !v)}
-                    menuStatus={menuStatus}
-                />
-
-                <div className={styles.contentsWrapper}>
-                    <HeaderJp handleClick={() => setMenuStatus(v => !v)} />
-
-                    <div className={styles.contents}>
-                        <LeftMenuJp URL="/" />
-
-                        <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
-                            {user ? (
-                                <LoginedUI
-                                    wiki13ninstudioCounter={
-                                        wiki13ninstudioCounter
-                                    }
-                                    wiki13ninstudioCounterTotal={
-                                        wiki13ninstudioCounterTotal
-                                    }
-                                    loadingLiked={loadingLiked}
-                                    loadingRecent={loadingRecent}
-                                    loading={loading}
-                                    likedWikis={likedWikis}
-                                    pages={pages}
-                                    recentPages={recentPages}
-                                    goCreateWiki={() =>
-                                        (location.href =
-                                            '/dashboard/create-wiki')
-                                    }
-                                    H2Styles={H2Styles}
-                                />
-                            ) : (
-                                <LogoutedUI />
-                            )}
-                        </main>
-
-                        <RightMenuJp />
-                    </div>
-
-                    <FooterJp />
-                </div>
-            </>
-        );
-    } else {
-        return (
-            <>
-                <Head>
-                    <title>
-                        {clientError
-                            ? 'Error | あさクラWiki'
-                            : AsakuraWikiTitle}
-                    </title>
-                    <meta property="og:title" content={AsakuraWikiTitle} />
-                    <meta property="og:site_name" content={AsakuraWikiTitle} />
-                    <meta
-                        name="description"
-                        content={
-                            clientError
-                                ? 'Client-side error occurred'
-                                : 'なんと半周年!これまでを大切に、これからも進化し続けます。'
-                        }
+    return (
+        <>
+            <Head>
+                <title>{AsakuraWikiTitle}</title>
+                {mounted && !user && (
+                    <link
+                        rel="stylesheet"
+                        href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"
                     />
-                </Head>
-                <div className={styles.contentsWrapper}>
-                    <main style={{ padding: '2rem' }}>
-                        {clientError ? (
-                            <>
-                                <h1>Application Error</h1>
-                                <p>{(clientError as ClientError).message}</p>
-                            </>
+                )}
+            </Head>
+
+            <MenuJp
+                handleClick={() => setMenuStatus(v => !v)}
+                menuStatus={menuStatus}
+            />
+
+            <div className={styles.contentsWrapper}>
+                <HeaderJp handleClick={() => setMenuStatus(v => !v)} />
+
+                <div className={styles.contents}>
+                    <LeftMenuJp URL="/" />
+
+                    <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
+                        {user && !isBot ? (
+                            <LoginedUI
+                                wiki13ninstudioCounter={
+                                    wiki13ninstudioCounter
+                                }
+                                wiki13ninstudioCounterTotal={
+                                    wiki13ninstudioCounterTotal
+                                }
+                                loadingLiked={loadingLiked}
+                                loadingRecent={loadingRecent}
+                                loading={loading}
+                                likedWikis={likedWikis}
+                                pages={pages}
+                                recentPages={recentPages}
+                                goCreateWiki={() =>
+                                    (location.href =
+                                        '/dashboard/create-wiki')
+                                }
+                                H2Styles={H2Styles}
+                            />
                         ) : (
-                            <>
-                                <h1>あさクラWiki {versions[2]}</h1>
-                                <p>なんと半周年!これまでを大切に、これからも進化し続けます。</p>
-                            </>
+                            <LogoutedUI />
                         )}
                     </main>
+
+                    <RightMenuJp />
                 </div>
-            </>
-        );
-    }
+
+                <FooterJp />
+            </div>
+        </>
+    );
 }

@@ -3,8 +3,8 @@ export default function LogoutedUI(){
         <>
             <div className="text-dark">
                 <strong className="masthead-notice rounded-3 p-2">Что нового в Asakura Wiki</strong>
-                <h2>Безопасный upack</h2>
-                <p>Мы всегда будем защищать вашу важную информацию.</p>
+                <h2>Стандартизация процесса проектирования и приобретения проектной документации.</h2>
+                <p>Снижает чрезмерную нагрузку на сервер.</p>
             </div>
             <h1 className="mb-3 fw-semibold lh-1">Создайте свою собственную вики с<br/>множеством функций Asakura Wiki.</h1>
             <p className="lead mb-4">
