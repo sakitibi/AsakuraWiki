@@ -51,7 +51,13 @@ export default async function handler(
         })
         const data2 = await response2.text();
 */
-        const response3 = await fetch("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage");
+        const response3 = await fetch("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0',
+                'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                'accept-encoding': 'gzip, deflate, br, zstd'
+            }
+        });
         console.log("responce3: ", response3);
         const data = await response3.text();
         const digestIndexOf = data.indexOf('"digest":"');
