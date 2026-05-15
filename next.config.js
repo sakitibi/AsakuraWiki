@@ -4,9 +4,6 @@ const nextConfig = {
     output: 'standalone',
     transpilePackages: ['upack.js'],
     turbopack: {},
-    experimental: {
-        serverComponentsExternalPackages: ['playwright-core', '@sparticuz/chromium'],
-    },
     typescript: {
         ignoreBuildErrors: true,
     },

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import chromium from '@sparticuz/chromium';
+import chromium from '@sparticuz/chromium-min';
 import puppeteer, { Browser } from 'puppeteer-core';
 
 function generateRandomString(length: number) {
@@ -60,11 +60,23 @@ export default async function handler(
         let browser: Browser | null = null;
 
         try {
+            const isServerless = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+
+            // 1. リモートのChromiumバイナリURLを指定（これでローカルのフォルダ不在エラーを完全回避）
+            if (isServerless) {
+                chromium.setGraphicsMode = false;
+            }
             // 1. サーバーレス環境でのブラウザ起動設定
             browser = await puppeteer.launch({
-                args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
-                executablePath: await chromium.executablePath(),
-                headless: true, // 常にバックグラウンド実行
+                // 引数に必要な設定をスプレッド演算子で結合
+                args: isServerless 
+                    ? [...chromium.args, '--hide-scrollbars', '--disable-web-security'] 
+                    : ['--disable-web-security'],
+                // サーバーレス時はリモートのtarパッケージから展開、ローカル時はPC内のChromeを使用
+                executablePath: isServerless 
+                    ? await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar')
+                    : undefined,
+                headless: true,
             });
 
             const page = await browser.newPage();
