@@ -119,7 +119,12 @@ export default function WikiPage() {
             setMenubar(menuPage ?? null);
 
             if (menuPage?.content) {
-                const parsed = await parseWikiContent(menuPage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+                if (!designColor) return;
+                const parsed = await parseWikiContent(
+                    menuPage.content,
+                    { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} },
+                    designColor
+                );
                 setParsedMenubar(parsed);
             } else {
                 setParsedMenubar(null);
@@ -131,7 +136,12 @@ export default function WikiPage() {
             setSidebar(sidePage ?? null);
 
             if (sidePage?.content) {
-                const parsed = await parseWikiContent(sidePage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} });
+                if (!designColor) return;
+                const parsed = await parseWikiContent(
+                    sidePage.content,
+                    { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} },
+                    designColor
+                );
                 setParsedSidebar(parsed);
             } else {
                 setParsedSidebar(null);
@@ -183,11 +193,16 @@ export default function WikiPage() {
     const previewText = isEdit ? content : page?.content ?? ''
     useEffect(() => {
         const fetchParsedPreview = async () => {
-            const result = await parseWikiContent(previewText, {
-                wikiSlug: wikiSlugStr,
-                pageSlug: pageSlugStr,
-                variables: {},
-            });
+            if (!designColor) return;
+            const result = await parseWikiContent(
+                previewText,
+                {
+                    wikiSlug: wikiSlugStr,
+                    pageSlug: pageSlugStr,
+                    variables: {},
+                },
+                designColor
+            );
             setParsedPreview(result);
         };
 

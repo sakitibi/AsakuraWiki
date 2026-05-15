@@ -6,6 +6,7 @@ import ExportBlock from '@/components/plugins/ExportBlock';
 import ImportBlock from '@/components/plugins/ImportBlock';
 import Fold from '@/components/plugins/Fold';
 import { tokenize } from '@/utils/parsePlugins';
+import { designColor } from './wiki_settings';
 
 export function buildAST(src: string, context: Context): ASTNode[] {
     const tokens = tokenize(src);
@@ -90,7 +91,8 @@ export function buildAST(src: string, context: Context): ASTNode[] {
 
 export function renderAST(
     nodes: ASTNode[],
-    context: Context
+    context: Context,
+    designColor: designColor
 ): React.ReactNode[] {
     return nodes.map((node, idx) => {
         if (node.type === 'text') {
@@ -108,8 +110,9 @@ export function renderAST(
                     title={node.title}
                     level={node.level}
                     initiallyOpen={node.isOpen}
+                    designColor={designColor}
                 >
-                    {renderAST(node.children, context)}
+                    {renderAST(node.children, context, designColor)}
                 </Accordion>
             );
         }
@@ -120,7 +123,7 @@ export function renderAST(
                     title={node.title}
                     initiallyOpen={node.isOpen}
                 >
-                    {renderAST(node.children, context)}
+                    {renderAST(node.children, context, designColor)}
                 </Fold>
             );
         }

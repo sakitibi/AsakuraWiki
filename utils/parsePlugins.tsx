@@ -161,11 +161,12 @@ export function tokenize(src: string): Token[] {
 
 export async function parseWikiContent(
     content: string,
-    context: Context
+    context: Context,
+    designColor: designColor
 ): Promise<React.ReactNode[]> {
     await resolveImports(content, context); // ← import変数を注入
     // トークン→AST化
     const ast = buildAST(content, context);
     // AST→React ノード
-    return renderAST(ast, context);
+    return renderAST(ast, context, designColor);
 }
