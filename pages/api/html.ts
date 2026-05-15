@@ -16,6 +16,11 @@ export default async function handler(
         return res.status(400).send('<h1>Error: Missing page parameter</h1>');
     }
 
+    // これを入れないとエラーになる
+    if (pageUrl.startsWith(process.env.NEXT_PUBLIC_API_BASE_URL!)) {
+        return res.status(302).redirect(pageUrl);
+    }
+
     try {
         const response = await fetch(pageUrl);
         if (!response.ok) throw new Error(`Failed to fetch page: ${response.status}`);
