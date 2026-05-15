@@ -9,6 +9,7 @@ export function proxy(_: NextRequest) {
         'self'
         https://sakitibi.github.io
         https://www.googletagmanager.com
+        https://wikiwiki.jp
         https://counter.wikiwiki.jp
         https://www.google.com
         https://www.google-analytics.com

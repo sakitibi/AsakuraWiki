@@ -16,10 +16,6 @@ export default async function handler(
         return res.status(400).send('<h1>Error: Missing page parameter</h1>');
     }
 
-    if (pageUrl.startsWith(process.env.NEXT_PUBLIC_API_BASE_URL!)) {
-        return res.status(302).redirect(pageUrl);
-    }
-
     try {
         const response = await fetch(pageUrl);
         if (!response.ok) throw new Error(`Failed to fetch page: ${response.status}`);
@@ -27,30 +23,58 @@ export default async function handler(
         const htmlContent = await response.text();
         const $ = cheerio.load(htmlContent);
 
+        // --- CSSの取得と加工関数 ---
+        const processCss = async (cssText: string, baseUrl: string) => {
+            const urlRegex = /url\((?!['"]?data:)(['"]?)([^'")]*)\1\)/g;
+            const matches = Array.from(cssText.matchAll(urlRegex));
+
+            for (const match of matches) {
+                const originalMatch = match[0];
+                const rawUrl = match[2];
+
+                try {
+                    // 相対パスを絶対URLに変換
+                    const absoluteUrl = new URL(rawUrl, baseUrl).href;
+                    
+                    // 画像/フォントファイルをfetch
+                    const res = await fetch(absoluteUrl);
+                    if (!res.ok) continue;
+
+                    const buffer = await res.arrayBuffer();
+                    const contentType = res.headers.get('content-type') || 'application/octet-stream';
+                    
+                    // Base64に変換
+                    const base64 = Buffer.from(buffer).toString('base64');
+                    const dataUri = `data:${contentType};base64,${base64}`;
+
+                    // CSS内のURLを置換
+                    cssText = cssText.replace(originalMatch, `url("${dataUri}")`);
+                } catch (e) {
+                    console.error(`Failed to inline asset: ${rawUrl}`, e);
+                }
+            }
+            return cssText;
+        };
+
         // 1. すべての <link rel="stylesheet"> を抽出
         const linkTags = $('link[rel="stylesheet"][href]');
-        const cssPromises: Promise<string>[] = [];
+        const cssTasks = linkTags.map(async (_, el) => {
+            const href = $(el).attr('href');
+            if (!href) return '';
+            
+            const absoluteHref = new URL(href, pageUrl).href;
+            const res = await fetch(absoluteHref);
+            if (!res.ok) return '';
+            
+            const rawCss = await res.text();
+            // 取得したCSS内の相対パスをData URI化
+            return await processCss(rawCss, absoluteHref);
+        }).get();
 
-        linkTags.each((_: any, el) => {
-            let href = $(el).attr('href');
-            if (href) {
-                // 相対パスを絶対パスに変換
-                const absoluteHref = new URL(href, pageUrl).href;
-                
-                // CSSを取得するプロミスを配列に入れる
-                cssPromises.push(
-                    fetch(absoluteHref)
-                        .then(res => res.ok ? res.text() : '')
-                        .catch(() => '') // エラー時は空文字を返す
-                );
-            }
-        });
-
-        // 2. すべてのCSS取得が終わるまで待機
-        const cssContents = await Promise.all(cssPromises);
+        const cssContents = await Promise.all(cssTasks);
         const combinedCss = cssContents.join('\n');
 
-        // 3. 既存のlinkタグを削除し、新しいstyleタグを注入
+        // 2. 既存のlinkを削除し、加工済みCSSを注入
         linkTags.remove();
         $('head').append(`<style>${combinedCss}</style>`);
 
