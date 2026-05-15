@@ -37,6 +37,11 @@ export function proxy(_: NextRequest) {
         https://hbopenbid.pubmatic.com
         https://pagead2.googlesyndication.com
         https://shopping-guide.gliastudios.com
+        https://a.flux.jp
+        https://ep1.adtrafficquality.google
+        https://token.rubiconproject.com
+        https://eus.rubiconproject.com
+        https://csync.loopme.me
         wss://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
         script-src * 'unsafe-inline' 'unsafe-eval' blob:;
