@@ -149,7 +149,7 @@ export default function WikiPage() {
         }
 
         loadMenuAndSidebar();
-    }, [wikiSlugStr, pageSlugStr]);
+    }, [wikiSlugStr, pageSlugStr, designColor]);
 
     useEffect(() => {
         console.log('更新された editMode:', editMode);
@@ -207,7 +207,7 @@ export default function WikiPage() {
         };
 
         fetchParsedPreview();
-    }, [previewText, wikiSlugStr, pageSlugStr]);
+    }, [previewText, wikiSlugStr, pageSlugStr, designColor]);
 
     useEffect(() => {
         setEditContent(content);
