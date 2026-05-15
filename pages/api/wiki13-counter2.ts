@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import chromium from '@sparticuz/chromium';
-import { chromium as playwright } from 'playwright-core';
+import { Browser, chromium as playwright } from 'playwright-core';
 
 function generateRandomString(length: number) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -54,13 +54,13 @@ export default async function handler(
         const data2 = await response2.text();
 */
         let digest = null;
-        let browser;
+        let browser: Browser | null = null;
         try {
             // ブラウザの起動
             browser = await playwright.launch({
                 args: chromium.args,
                 executablePath: await chromium.executablePath(),
-                headless: chromium.headless,
+                headless: true, // サーバーレス環境では常に true
             });
             const context = await browser.newContext({
                 userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0',
