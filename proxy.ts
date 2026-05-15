@@ -42,6 +42,7 @@ export function proxy(_: NextRequest) {
         https://token.rubiconproject.com
         https://eus.rubiconproject.com
         https://csync.loopme.me
+        https://imp-bidapi.i-mobile.co.jp
         wss://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
         script-src * 'unsafe-inline' 'unsafe-eval' blob:;
