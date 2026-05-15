@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import type { Context } from '@/components/plugins/parsePluginTypes';
+import { designColor } from '@/utils/wiki_settings';
 
 interface FunctionCallRendererProps{
     name: string;
     args: string[];
     context: Context;
+    designColor: designColor
 }
 
-export default function FunctionCallRenderer({ name, args, context }: FunctionCallRendererProps) {
+export default function FunctionCallRenderer({ name, args, context, designColor }: FunctionCallRendererProps) {
     const [result, setResult] = useState<React.ReactNode>('...');
     useEffect(() => {
         console.log('[FunctionCallRenderer] 呼び出し:', { name, args });
@@ -31,7 +33,7 @@ export default function FunctionCallRenderer({ name, args, context }: FunctionCa
         const rendered = returnExpr.replace(/{{\s*(\w+)\s*}}/g, (_, key) => argMap[key] ?? '');
         console.log('[FunctionCallRenderer] テンプレート置換後:', rendered);
 
-        parseWikiContent(rendered, context).then(res => {
+        parseWikiContent(rendered, context, designColor).then(res => {
             console.log('[FunctionCallRenderer] 最終描画結果:', res);
             setResult(<>{res}</>);
         });

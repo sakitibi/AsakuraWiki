@@ -13,6 +13,7 @@ import versions from "@/utils/version";
 import type { ReactNode } from "react";
 import FunctionCallRenderer from "@/components/plugins/functionCall";
 import { isSafari } from "@/pages/wiki/[wikiSlug]/[[...pageSlug]]";
+import { designColor } from "@/utils/wiki_settings";
 
 /** 既存の #calendar2 や #comment 系を処理するヘルパー */
 export default function parseOtherInline(
@@ -24,6 +25,7 @@ export default function parseOtherInline(
         constContext?: Record<string, string>;
     },
     baseKey: number,
+    designColor: designColor
 ): React.ReactNode[] {
     const nodes: React.ReactNode[] = []
     const safeTrim = (v: unknown) => typeof v === 'string' ? v.trim() : ''
@@ -256,6 +258,7 @@ export default function parseOtherInline(
                     showTitle={showTitle}
                     stylesheetURL={stylesheetURL}
                     lineRange={lineRange}
+                    designColor={designColor}
                 />
             )
             last = m.index + token.length
@@ -268,7 +271,7 @@ export default function parseOtherInline(
         // CENTER:
         else if (m[14]) {
             const centered:string = safeTrim(m[14]);
-            const inner:ReactNode[] = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1);
+            const inner:ReactNode[] = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1, designColor);
             nodes.push(
                 <div key={key} style={{ textAlign: 'center' }}>
                     <>{Array.isArray(inner) ? inner : [inner]}</>
@@ -279,7 +282,7 @@ export default function parseOtherInline(
 
         else if (m[15]) {
             const aligned:string = safeTrim(m[15]);
-            const inner:ReactNode[] = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
+            const inner:ReactNode[] = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1, designColor);
             nodes.push(
                 <div key={key} style={{ textAlign: 'left' }}>
                     <>{Array.isArray(inner) ? inner : [inner]}</>
@@ -290,7 +293,7 @@ export default function parseOtherInline(
 
         else if (m[16]) {
             const aligned:string = safeTrim(m[16]);
-            const inner:ReactNode[] = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1);
+            const inner:ReactNode[] = parseOtherInline(aligned, wikiSlug, pageSlug, context, baseKey + 1, designColor);
             nodes.push(
                 <div key={key} style={{ textAlign: 'right' }}>
                     <>{Array.isArray(inner) ? inner : [inner]}</>
@@ -313,7 +316,7 @@ export default function parseOtherInline(
             const hasBlockPlugin:boolean = /#accordion|#fold|#sel_container|#sel_row/.test(braceBlock.body);
             const content:string | ReactNode[] = hasBlockPlugin
                 ? braceBlock.body
-                : parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1);
+                : parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1, designColor);
 
             nodes.push(
                 <span key={key} style={{ fontSize: `${fontSize}px` }}>
@@ -337,7 +340,7 @@ export default function parseOtherInline(
             const color:string = args[0]
             const background:string = args[1]
 
-            const content:ReactNode[] = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1)
+            const content:ReactNode[] = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1, designColor)
 
             nodes.push(
                 <span
@@ -360,7 +363,7 @@ export default function parseOtherInline(
             if (labeledLink) {
                 const label:string = labeledLink[1].trim()
                 const url:string = labeledLink[2].trim()
-                const inner:ReactNode[] = parseOtherInline(label, wikiSlug, pageSlug, context, baseKey + 1)
+                const inner:ReactNode[] = parseOtherInline(label, wikiSlug, pageSlug, context, baseKey + 1, designColor)
                 nodes.push(<a key={key} href={url}>{inner}</a>)
                 last = m.index + token.length // ✅ここを追加
                 continue
@@ -563,6 +566,7 @@ export default function parseOtherInline(
                     name={name}
                     args={args}
                     context={context}
+                    designColor={designColor}
                 />
             );
             last = m.index + token.length;

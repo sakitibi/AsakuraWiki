@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
+import { designColor } from '@/utils/wiki_settings'
 
 interface IncludePageProps {
-    wikiSlug: string
-    page: string
-    showTitle?: boolean
-    stylesheetURL?: string
-    lineRange?: string // ←追加！
+    wikiSlug: string;
+    page: string;
+    showTitle?: boolean;
+    stylesheetURL?: string;
+    lineRange?: string;
+    designColor: designColor;
 }
 
 export default function IncludePage({
@@ -15,6 +17,7 @@ export default function IncludePage({
     showTitle = true,
     stylesheetURL,
     lineRange,
+    designColor
 }: IncludePageProps) {
     const [error, setError] = useState<string | null>(null)
     const [parsedNodes, setParsedNodes] = useState<React.ReactNode[]>([])
@@ -60,11 +63,15 @@ export default function IncludePage({
                         text = lines.slice(start - 1, end).join('\n')
                     }
 
-                    const nodes = await parseWikiContent(text, {
-                        wikiSlug,
-                        pageSlug: page,
-                        variables: {},
-                    })
+                    const nodes = await parseWikiContent(
+                        text,
+                        {
+                            wikiSlug,
+                            pageSlug: page,
+                            variables: {}
+                        },
+                        designColor
+                    )
 
                     setParsedNodes(nodes)
                     setError(null)

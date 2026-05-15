@@ -38,7 +38,14 @@ export default function parseInline({text, context, designColor}: parseInlinePro
         }
 
         // 2) その他の行のインライン解析
-        const parsedLine:ReactNode[] = parseOtherInline(line, wikiSlug!, pageSlug!, context, nodeKey);
+        const parsedLine:ReactNode[] = parseOtherInline(
+            line,
+            wikiSlug!,
+            pageSlug!,
+            context,
+            nodeKey,
+            designColor
+        );
         nodes.push(...parsedLine);
         nodeKey += parsedLine.length || 1;
     });
