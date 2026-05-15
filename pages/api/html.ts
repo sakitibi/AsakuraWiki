@@ -41,6 +41,23 @@ export default async function handler(
             }
         });
 
+        $('a[href]').each((_, el) => {
+            const href = $(el).attr('href');
+            
+            // 無効なリンク、アンカーリンク、javascript等は除外
+            if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+                try {
+                    const absoluteUrl = new URL(href, pageUrl).href;
+
+                    const proxyUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/html?page=${encodeURIComponent(absoluteUrl)}`;
+                    
+                    $(el).attr('href', proxyUrl);
+                } catch (e) {
+                    console.error(`Failed to resolve a href: ${href}`, e);
+                }
+            }
+        });
+
         const processCss = async (cssText: string, baseUrl: string) => {
             const urlRegex = /url\((?!['"]?data:)(['"]?)([^'")]*)\1\)/g;
             const matches = Array.from(cssText.matchAll(urlRegex));
