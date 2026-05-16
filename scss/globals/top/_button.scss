@@ -95,7 +95,7 @@ body {
             @include mixin.position(rgb(123, 37, 252), rgb(65, 8, 130));
         }
         &.emerald button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(#7ef9a1, #00db7c);
+            @include mixin.position(#11998e, #38ef7d);
         }
         &.default button:not(#menu-button,.navfold-summary,.fold-button)::before {
             @include mixin.position(#1ce369, #076727);

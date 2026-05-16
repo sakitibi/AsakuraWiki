@@ -11,7 +11,7 @@ export default function LogoutedUI(){
             <p className="lead mb-4">
                 <strong className="text-brand block md:ml-0">パワフルで拡張性の高い、機能満載のレンタルWikiサービスです。</strong><br/>
                 <span className="block text-foreground">askrEditorでビルドしてカスタマイズし、あらかじめ用意されたグリッドシステムとコンポーネントを利用し、</span><br/>
-                魔法のように強力なWikiオリジナルプラグインで<strong className="text-brand block md:ml-0">Wikiに命を吹き込むことができます。</strong>
+                魔法のように強力なWikiオリジナルプラグインで<strong className="text-brand block md:ml-0">Wikiに宿らせることができます。</strong>
             </p>
             <div className="flex items-center gap-2">
                 <a
