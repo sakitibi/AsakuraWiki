@@ -1,7 +1,6 @@
-@use 'mixin';
+@use 'mixin' as *;
 @use 'sass:map';
 
-// list-style 定義
 $list-styles-ul: (
     list1: disc,
     list2: circle,
@@ -14,7 +13,7 @@ $list-styles-ol: (
     list3: lower-alpha
 );
 
-$wiki_background_color: (
+$wiki-background-colors: (
     "default": #d1f0a0,
     "pink": #feeef6,
     "blue": #f0f8ff,
@@ -23,25 +22,26 @@ $wiki_background_color: (
     "emerald": #9affb2
 );
 
+$columns: (
+    columnLeft: 1,
+    columnCenter: 2,
+    columnRight: 3
+);
+
 body {
-    // ul
+    // 1. リストスタイルの動的生成
     @each $name, $style in $list-styles-ul {
-        ul.#{$name} {
-            list-style-type: $style;
-        }
+        ul.#{$name} { list-style-type: $style; }
     }
-
-    // ol
     @each $name, $style in $list-styles-ol {
-        ol.#{$name} {
-            list-style-type: $style;
-        }
+        ol.#{$name} { list-style-type: $style; }
     }
 
+    // 2. 共通コンポーネント
     .noticeWikiRemoval__icon {
-        flex-shrink: 0;
         display: flex;
         align-items: center;
+        flex-shrink: 0;
         width: 2.5em;
         height: 2.5em;
         margin: 0 1em 0 -0.8em;
@@ -56,8 +56,8 @@ body {
 
     .noticeWikiRemoval__text {
         min-width: 0;
-        word-break: break-word;
         line-height: 1.5;
+        word-break: break-word;
 
         a {
             color: #842029;
@@ -70,9 +70,67 @@ body {
         }
     }
 
+    .pEntry__header {
+        margin-bottom: 25px;
+
+        h1 {
+            padding: 15px;
+            color: #6a6a6a;
+            background-color: #eaeaea;
+            background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white2.png");
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+        }
+    }
+
+    .p-entry__content {
+        color: #444;
+        font-size: 13px;
+
+        @include mq('lg') {
+            font-size: 16px;
+        }
+
+        .danger_list {
+            color: red !important;
+        }
+
+        > h2 {
+            margin: 20px 0 10px;
+            padding: 15px 10px;
+            background-color: #f6f6f6;
+            font-size: 16px;
+        }
+    }
+
+    // 3. レイアウト（Container）の整理
+    .container,
+    .container-fluid,
+    .container-lg,
+    .container-md,
+    .container-sm,
+    .container-xl,
+    .container-xxl {
+        $bs-gutter-x: 1.5rem;
+        width: 100%;
+        padding-inline: calc($bs-gutter-x * 0.5);
+    }
+
+    .container,
+    .container-sm {
+        @include mq('sm') { max-width: 540px; }
+    }
+
+    .container-md {
+        @include mq('md') { max-width: 720px; }
+    }
+
+
+    // 4. 条件付きスタイル（:not(.wiki-font)）
     &:not(.wiki-font) {
         font-family: Noto Sans Japanese, sans-serif !important;
-        @include mixin.defaultGreen;
+        @include defaultGreen;
 
         *,
         *::before,
@@ -83,9 +141,9 @@ body {
         ul {
             &:not(#p-footer-nav, #menu-list) {
                 display: block;
-                list-style-type: disc;
                 margin-block: 1em;
                 padding-inline-start: 40px;
+                list-style-type: disc;
                 unicode-bidi: isolate;
             }
 
@@ -94,138 +152,70 @@ body {
             }
         }
 
-        aside {
+        aside,
+        li {
             display: block;
             unicode-bidi: isolate;
+        }
+
+        li {
+            display: list-item;
         }
 
         a:not(.AdSupport__link) {
             color: #ef8688;
             text-decoration: underline;
         }
-
-        li {
-            display: list-item;
-            unicode-bidi: isolate;
-        }
     }
 
-    .pEntry__header {
-        margin-bottom: 25px;
-
-        h1 {
-            background-color: #eaeaea;
-            background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white2.png");
-            color: #6a6a6a;
-            font-size: 20px;
-            font-weight: 700;
-            padding: 15px;
-            text-align: center;
-        }
-    }
-
-    .p-entry__content {
-        color: #444;
-        font-size: 13px;
-
-        .danger_list {
-            color: red !important;
-        }
-
-        @media (min-width: 992px) {
-            font-size: 16px;
-        }
-
-        > h2 {
-            background-color: #f6f6f6;
-            font-size: 16px;
-            margin: 20px 0 10px;
-            padding: 15px 10px;
-        }
-    }
-    @media (min-width: 768px) {
-        .container,
-        .container-md,
-        .container-sm {
-            max-width: 720px;
-        }
-    }
-
-    @media (min-width: 576px) {
-        .container,
-        .container-sm {
-            max-width: 540px;
-        }
-    }
-
-    .container,
-    .container-fluid,
-    .container-lg,
-    .container-md,
-    .container-sm,
-    .container-xl,
-    .container-xxl {
-        $bs-gutter-x: 1.5rem;
-
-        width: 100%;
-        padding-inline: calc($bs-gutter-x * .5);
-    }
-
+    // 5. 条件付きスタイル（.wiki-font）
     &.wiki-font {
         font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
         font-size: 12px;
-        @include mixin.background;
+        @include background;
 
-        $columns: (
-            columnCenter: 2,
-            columnLeft: 1,
-            columnRight: 3
-        );
-
-        @each $key, $num in $columns{
-            .#{$key}{
+        // グリッドカラムの生成
+        @each $key, $num in $columns {
+            .#{$key} {
                 grid-column: $num / span 1;
                 grid-row: 1 / span 1;
             }
         }
 
-        & .columnRight{
+        .columnRight {
             background-color: white;
         }
 
+        // 背景色に応じたメニューバーの生成
         &:not(.pink, .blue, .yellow, .purple, .emerald) {
-            @include mixin.menubar(map.get($wiki_background_color, default));
+            @include menubar(map.get($wiki-background-colors, "default"));
         }
 
-        @each $key, $color in $wiki_background_color{
+        @each $key, $color in $wiki-background-colors {
             &.#{$key} {
-                @include mixin.menubar($color);
-            }
-            &.#{$key} .columnLeft{
-                background-color: map.get($wiki_background_color, $key);
+                @include menubar($color);
+
+                .columnLeft {
+                    background-color: $color;
+                }
             }
         }
 
         hr {
             height: 1px;
-            background-color: #777;
-            border: 0;
             margin-block: 0.5em;
+            border: 0;
+            background-color: #777;
         }
 
-        & #contents-wrapper {
-            background-color: #fff;
-            border: 1px solid #ccc;
+        #contents-wrapper {
             margin: 0 auto;
             max-width: 930px;
             min-width: 930px;
+            background-color: #fff;
+            border: 1px solid #ccc;
             text-align: left;
-            @media screen and (min-width: 820px) {
-                &{
-                    min-width: 930px;
-                    max-width: 930px;
-                }
-            }
+            // 重複していたメディアクエリの最小化
         }
     }
 }
