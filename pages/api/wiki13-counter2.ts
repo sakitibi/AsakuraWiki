@@ -5,6 +5,7 @@ import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 import 'kind-of';
+import 'is-plain-object'
 
 function generateRandomString(length: number) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
