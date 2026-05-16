@@ -66,10 +66,18 @@ export default async function handler(
                 chromium.setGraphicsMode = false;
             }
 
+            const secureArgs = [
+                '--disable-blink-features=AutomationControlled', // 自動操縦フラグを隠蔽
+                '--disable-infobars',
+                '--window-size=1280,800',
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-web-security',
+                '--allow-running-insecure-content'
+            ];
+
             browser = await puppeteer.launch({
-                args: isServerless 
-                    ? [...chromium.args, '--hide-scrollbars', '--disable-web-security'] 
-                    : ['--disable-web-security'],
+                args: isServerless ? [...chromium.args, ...secureArgs] : secureArgs,
                 executablePath: isServerless 
                     ? await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar')
                     : undefined,
