@@ -87,10 +87,25 @@ export default async function handler(
             }) as unknown as Browser; // 型定義の調整
 
             const page = await browser.newPage();
-            await page.setDefaultNavigationTimeout(45000);
+            page.setDefaultNavigationTimeout(45000);
 
             // 本物のEdge(Mac版)に偽装
-            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0');
+            await page.setUserAgent({
+                userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0',
+                userAgentMetadata: {
+                    brands: [
+                        { brand: 'Chromium', version: '148' },
+                        { brand: 'Microsoft Edge', version: '148' },
+                        { brand: 'Not/A)Brand', version: '99' }
+                    ],
+                    mobile: false,
+                    platform: 'macOS',
+                    platformVersion: '26.5.0',
+                    architecture: 'arm',
+                    bitness: '64',
+                    model: ''
+                }
+            });
             
             // クッキーのセット
             const targetCookieStr = "__posted2=cdf; FCNEC=%5B%5B%22AKsRol8IJ4aV_iL-5fzt1fFr1_bnjvoLXbsEgvVjeyxDD1e30T9AwPV8dvhr3M0MwzAzXhe15k2fMoW1ycqrB_fUIsCqOAMsWNGULpw4st0hc1OcX2czaGIy5u5mL1clWm9BpVwvp_Kdvf-ktM8sHvvYSvaHPWBvzw%3D%3D%22%5D%5D; cto_bundle=OvMAo191NERhZXFQYmtMV1lCOFVMb05NampweEVvc0liZzUwRmlibUxmb3BNYTIyRlo4cm92RHJWVWlkcmdjUmhkODlhSDBtRVF2ZkVtYTBvbiUyRmptRWlaeng3RjJsMlNuMzY0aDFsNFVjaGpZVE5UOEpFVUlhdzRSMzZtd0ZoM3ZBVG9D; FCCDCF=%5Bnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%5B%5B32%2C%22%5B%5C%22286a83c8-9bfc-4d58-930b-f362dbd7f5e5%5C%22%2C%5B1778909967%2C846000000%5D%5D%22%5D%5D%5D; __wwuid=fMoeP9fSRcYnL%2BSV2fP%2FTXZGc0VpdnNOVFRvcU9TY3E5YmJRL0FvempCMGlnZHAzVXg1UkwvVFNlV1J5eml0MmxhR0x0NHF4WjFBU3JZUHE%3D; _ga=GA1.1.1791614899.1778909968; _ga_3Y8FN9EFS7=GS2.1.s1778909967$o1$g0$t1778909967$j60$l0$h0";
