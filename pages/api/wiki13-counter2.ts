@@ -56,68 +56,121 @@ export default async function handler(
         })
         const data2 = await response2.text();
 */
-        let digest;
+let digest: string | null = null;
+        let browser: Browser | null = null;
+
         try {
-            console.log("フィンガープリント擬態モードでWIKIWIKIへアクセス開始...");
+            const isServerless = process.env.NODE_ENV === 'production' || process.env.VERCEL;
 
-            const targetCookie = "__posted2=cdf; FCNEC=%5B%5B%22AKsRol8IJ4aV_iL-5fzt1fFr1_bnjvoLXbsEgvVjeyxDD1e30T9AwPV8dvhr3M0MwzAzXhe15k2fMoW1ycqrB_fUIsCqOAMsWNGULpw4st0hc1OcX2czaGIy5u5mL1clWm9BpVwvp_Kdvf-ktM8sHvvYSvaHPWBvzw%3D%3D%22%5D%5D; cto_bundle=OvMAo191NERhZXFQYmtMV1lCOFVMb05NampweEVvc0liZzUwRmlibUxmb3BNYTIyRlo4cm92RHJWVWlkcmdjUmhkODlhSDBtRVF2ZkVtYTBvbiUyRmptRWlaeng3RjJsMlNuMzY0aDFsNFVjaGpZVE5UOEpFVUlhdzRSMzZtd0ZoM3ZBVG9D; FCCDCF=%5Bnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%5B%5B32%2C%22%5B%5C%22286a83c8-9bfc-4d58-930b-f362dbd7f5e5%5C%22%2C%5B1778909967%2C846000000%5D%5D%22%5D%5D%5D; __wwuid=fMoeP9fSRcYnL%2BSV2fP%2FTXZGc0VpdnNOVFRvcU9TY3E5YmJRL0FvempCMGlnZHAzVXg1UkwvVFNlV1J5eml0MmxhR0x0NHF4WjFBU3JZUHE%3D; _ga=GA1.1.1791614899.1778909968; _ga_3Y8FN9EFS7=GS2.1.s1778909967$o1$g0$t1778909967$j60$l0$h0";
+            if (isServerless) {
+                chromium.setGraphicsMode = false;
+            }
 
+            // Cloudflareのロボット検知（Turnstile / Managed Challenge）を回避する高度な隠蔽引数
+            const secureArgs = [
+                '--disable-blink-features=AutomationControlled', // 自動化の痕跡をブラウザから削除
+                '--disable-infobars',
+                '--window-size=1280,800',
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-web-security',
+                '--allow-running-insecure-content'
+            ];
 
-            const headers = new Headers();
-            headers.append("Host", "wikiwiki.jp");
-            headers.append("Connection", "keep-alive");
-            headers.append("Pragma", "no-cache");
-            headers.append("Cache-Control", "no-cache");
-            headers.append("sec-ch-ua", '"Chromium";v="148", "Microsoft Edge";v="148", "Not/A)Brand";v="99"');
-            headers.append("sec-ch-ua-mobile", "?0");
-            headers.append("sec-ch-ua-platform", '"macOS"');
-            headers.append("Upgrade-Insecure-Requests", "1");
-            headers.append("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0");
-            headers.append("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
-            headers.append("Sec-Fetch-Site", "same-origin");
-            headers.append("Sec-Fetch-Mode", "navigate");
-            headers.append("Sec-Fetch-User", "?1");
-            headers.append("Sec-Fetch-Dest", "document");
-            headers.append("Referer", "https://wikiwiki.jp/maitestu-net/");
-            headers.append("Accept-Encoding", "gzip, deflate, br");
-            headers.append("Accept-Language", "ja");
-            headers.append("Cookie", targetCookie);
-
-            // Fetchリクエストの実行
-            const response = await fetch("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
-                method: "GET",
-                headers: headers,
-                keepalive: true 
+            browser = await puppeteer.launch({
+                args: isServerless ? [...chromium.args, ...secureArgs] : secureArgs,
+                executablePath: isServerless 
+                    ? await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar')
+                    : undefined,
+                headless: true,
             });
 
-            const content = await response.text();
+            const page = await browser.newPage();
+            await page.setDefaultNavigationTimeout(45000);
+
+            // JavaScriptの内部変数を偽装し、Bot検知スクリプトの目を欺く
+            await page.evaluateOnNewDocument(() => {
+                Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+                Object.defineProperty(navigator, 'languages', { get: () => ['ja', 'en-US', 'en'] });
+                Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
+            });
+
+            // Edge(Mac版)に偽装
+            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0');
+            await page.setExtraHTTPHeaders({
+                'accept-language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7',
+                'sec-ch-ua': '"Chromium";v="148", "Microsoft Edge";v="148", "Not/A)Brand";v="99"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"macOS"',
+            });
+
+            // あなたの最新のCookie（.wikiwiki.jp 配下すべてのドメインに適用）
+            const targetCookieStr = "__posted2=cdf; FCNEC=%5B%5B%22AKsRol8IJ4aV_iL-5fzt1fFr1_bnjvoLXbsEgvVjeyxDD1e30T9AwPV8dvhr3M0MwzAzXhe15k2fMoW1ycqrB_fUIsCqOAMsWNGULpw4st0hc1OcX2czaGIy5u5mL1clWm9BpVwvp_Kdvf-ktM8sHvvYSvaHPWBvzw%3D%3D%22%5D%5D; cto_bundle=OvMAo191NERhZXFQYmtMV1lCOFVMb05NampweEVvc0liZzUwRmlibUxmb3BNYTIyRlo4cm92RHJWVWlkcmdjUmhkODlhSDBtRVF2ZkVtYTBvbiUyRmptRWlaeng3RjJsMlNuMzY0aDFsNFVjaGpZVE5UOEpFVUlhdzRSMzZtd0ZoM3ZBVG9D; FCCDCF=%5Bnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%5B%5B32%2C%22%5B%5C%22286a83c8-9bfc-4d58-930b-f362dbd7f5e5%5C%22%2C%5B1778909967%2C846000000%5D%5D%22%5D%5D%5D; __wwuid=fMoeP9fSRcYnL%2BSV2fP%2FTXZGc0VpdnNOVFRvcU9TY3E5YmJRL0FvempCMGlnZHAzVXg1UkwvVFNlV1J5eml0MmxhR0x0NHF4WjFBU3JZUHE%3D; _ga=GA1.1.1791614899.1778909968; _ga_3Y8FN9EFS7=GS2.1.s1778909967$o1$g0$t1778909967$j60$l0$h0";
+
+            const cookies = targetCookieStr.split('; ').map(pair => {
+                const [name, ...valueParts] = pair.split('=');
+                return {
+                    name: name,
+                    value: valueParts.join('='),
+                    domain: '.wikiwiki.jp', 
+                    path: '/'
+                };
+            });
+            await page.setCookie(...cookies);
+
+            console.log("WIKIWIKI編集画面へPuppeteerアクセス開始...");
+            await page.goto("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
+                waitUntil: 'domcontentloaded'
+            });
+
+            // 【新ロジック】「アクセス確認中」画面が表示されている場合、それが消えるまでループで待機する
+            let attempts = 0;
+            let currentTitle = await page.title();
+            console.log("初期ページのタイトル:", currentTitle);
+
+            while (currentTitle.includes("アクセス確認中") && attempts < 10) {
+                console.log(`Cloudflare検証中... 待機します (${attempts + 1}秒目)`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                currentTitle = await page.title();
+                attempts++;
+            }
+
+            const finalUrl = page.url();
+            console.log("検証フェーズ終了時のURL:", finalUrl);
+            console.log("検証フェーズ終了時のページタイトル:", currentTitle);
+
+            // 最終的なHTMLコンテンツの取得
+            const content = await page.content();
 
             // digestの抽出
-            const digestMatch = content.match(/"digest":"([a-f0-9]{32})"/);
+            const digestMatch = content.match(/"digest"\s*:\s*"([a-f0-9]{32})"/);
             
             if (digestMatch) {
                 digest = digestMatch[1];
-                console.log("【偽装成功】digest: ", digest);
+                console.log("【成功】digestを取得しました: ", digest);
+                await browser.close();
                 return res.status(200).json({ success: true, data: digest });
             }
 
-            // ブロックされた場合の解析
-            const titleMatch = content.match(/<title>([^<]+)<\/title>/);
-            const pageTitle = titleMatch ? titleMatch[1] : "タイトル不明";
-            console.error("取得失敗時のページタイトル:", pageTitle);
-
-            if (pageTitle.includes("しばらくお待ちください") || content.includes("Cloudflare")) {
-                return res.status(403).json({ 
-                    success: false, 
-                    error: "Cloudflare Fingerprint Blocked", 
-                    reason: "通信のフィンガープリント（TLS/HTTP2の挙動）がBotと判定されました。VercelのIP自体が弾かれている可能性があります。"
-                });
+            // 失敗時のログ解析
+            if (currentTitle.includes("アクセス確認中") || content.includes("Cloudflare")) {
+                console.error("原因: Cloudflareの「アクセス確認中」画面の自動パズル判定をパスできませんでした。");
+            } else if (content.includes("パスワード")) {
+                console.error("原因: 管理者パスワード入力画面になっており、digestが存在しません。");
+            } else {
+                console.error("原因: 本来の編集画面には到達しましたが、HTML内にdigestが見つかりません。");
             }
 
-            return res.status(404).json({ success: false, error: "Digest missing from HTML" });
+            await browser.close();
+            return res.status(403).json({ 
+                success: false, 
+                error: "Digest not found in HTML",
+                debug: { url: finalUrl, pageTitle: currentTitle }
+            });
 
         } catch (error: any) {
-            console.error("API実行エラー:", error.message);
+            if (browser) await browser.close();
+            console.error("システムエラー:", error.message);
             return res.status(500).json({ success: false, error: error.message });
         }
 /*
