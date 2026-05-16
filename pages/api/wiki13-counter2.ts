@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import chromium from '@sparticuz/chromium-min';
-import puppeteer, { Browser } from 'puppeteer-core';
+import { Browser } from 'puppeteer-core';
+import puppeteer from 'puppeteer-extra';
+import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 function generateRandomString(length: number) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -17,12 +19,15 @@ function generateRandomString(length: number) {
     return result;
 }
 
+puppeteer.use(StealthPlugin());
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     }
@@ -62,19 +67,22 @@ export default async function handler(
         try {
             const incomingCookie = req.query.cookie;
 
+            // Cookieが送られてこなかった場合は、分かりやすいエラーを返す
             if (!incomingCookie || typeof incomingCookie !== 'string') {
                 return res.status(400).json({ 
                     success: false, 
-                    error: "Missing required 'cookie' parameter.",
-                    hint: "ブラウザのEdgeから取得した、cf_clearance等を含むCookie文字列を送信してください。"
+                    error: "Required parameter 'cookie' is missing.",
+                    hint: "EdgeのF12開発者ツールから取得した、cf_clearanceを含むクッキー文字列をパラメータとして送信してください。"
                 });
             }
 
             const isServerless = process.env.NODE_ENV === 'production' || process.env.VERCEL;
+
             if (isServerless) {
                 chromium.setGraphicsMode = false;
             }
 
+            // Cloudflareのロボット検知をすり抜けるための起動引数
             const secureArgs = [
                 '--disable-blink-features=AutomationControlled',
                 '--disable-infobars',
@@ -83,9 +91,10 @@ export default async function handler(
                 '--disable-setuid-sandbox',
                 '--disable-web-security',
                 '--allow-running-insecure-content',
-                '--lang=ja-JP,ja'
+                '--lang=ja-JP,ja' // ブラウザ言語を日本語に強制
             ];
 
+            // puppeteer-extra経由でブラウザを起動
             browser = await puppeteer.launch({
                 args: isServerless ? [...chromium.args, ...secureArgs] : secureArgs,
                 executablePath: isServerless 
@@ -95,9 +104,9 @@ export default async function handler(
             }) as unknown as Browser;
 
             const page = await browser.newPage();
-            await page.setDefaultNavigationTimeout(30000);
+            await page.setDefaultNavigationTimeout(45000);
 
-            // Edgeブラウザ環境の完全再現
+            // 本物の日本語版Edge（Mac）のリクエストヘッダーを模倣
             await page.setExtraHTTPHeaders({
                 'accept-language': 'ja,ja-JP;q=0.9',
                 'sec-ch-ua': '"Chromium";v="148", "Microsoft Edge";v="148", "Not/A)Brand";v="99"',
@@ -105,6 +114,7 @@ export default async function handler(
                 'sec-ch-ua-platform': '"macOS"',
             });
 
+            // 最新の型定義（modelプロパティ必須）に準拠したUser-Agentの指定
             await page.setUserAgent({
                 userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0',
                 userAgentMetadata: {
@@ -118,11 +128,11 @@ export default async function handler(
                     platformVersion: '26.5.0',
                     architecture: 'arm',
                     bitness: '64',
-                    model: ''
+                    model: '' // 型定義エラー回避のための空文字
                 }
             });
 
-            // 外部から渡された「生きたCookie」を解析してブラウザにセット
+            // 外部から送られてきたCookie文字列をパースして配列に変換
             const cookies = incomingCookie.split('; ').map(pair => {
                 const [name, ...valueParts] = pair.split('=');
                 return {
@@ -133,43 +143,52 @@ export default async function handler(
                 };
             });
 
+            // 【最新推奨仕様】pageではなくbrowserオブジェクトレベルでCookieを注入（警告・型エラーの完全解消）
             if (browser) {
                 await browser.setCookie(...cookies);
             }
 
-            console.log("外部提供Cookieを使用してWIKIWIKIへ直接アクセス...");
+            console.log("注入されたCookieを使用してWIKIWIKIへ直接アクセス...");
             await page.goto("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
                 waitUntil: 'domcontentloaded'
             });
 
-            // 有効な cf_clearance があれば、この待機ループは一瞬でスルーされます
+            // 正常なcf_clearanceがあれば基本は一瞬で通過しますが、念のため安全用の5秒待機ループ
             let attempts = 0;
             let currentTitle = await page.title();
+            console.log("初期取得のページタイトル:", currentTitle);
 
             while ((currentTitle.includes("しばらくお待ちください") || currentTitle.includes("アクセス確認中") || currentTitle.includes("Just a moment")) && attempts < 5) {
+                console.log(`検証通過を待機中... (${attempts + 1}秒目)`);
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 currentTitle = await page.title();
                 attempts++;
             }
 
+            const finalUrl = page.url();
             const content = await page.content();
+            
+            // 編集画面のHTML内から digest 属性を正規表現で引っこ抜く
             const digestMatch = content.match(/"digest"\s*:\s*"([a-f0-9]{32})"/);
             
             if (digestMatch) {
-                const digest = digestMatch[1];
+                digest = digestMatch[1];
+                console.log("【成功】外部Cookieにより検問をすり抜け、digestを取得しました: ", digest);
                 await browser.close();
                 return res.status(200).json({ success: true, data: digest });
             }
 
+            // 取得失敗時のデバッグ情報返却
             await browser.close();
             return res.status(403).json({ 
                 success: false, 
-                error: "Digest missing. Cookie might be expired.",
-                pageTitle: currentTitle
+                error: "Digest not found in HTML. The injected cookie might be expired.",
+                debug: { url: finalUrl, pageTitle: currentTitle }
             });
 
         } catch (error: any) {
             if (browser) await browser.close();
+            console.error("システムエラー:", error.message);
             return res.status(500).json({ success: false, error: error.message });
         }
 /*
