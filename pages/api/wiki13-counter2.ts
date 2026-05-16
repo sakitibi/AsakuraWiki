@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import chromium from '@sparticuz/chromium-min';
-import { Browser } from 'puppeteer-core';
+import vanillaPuppeteer from 'puppeteer-core';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
@@ -19,6 +19,7 @@ function generateRandomString(length: number) {
     return result;
 }
 
+(puppeteer as any).vanilla = vanillaPuppeteer;
 puppeteer.use(StealthPlugin());
 
 export default async function handler(
@@ -62,7 +63,7 @@ export default async function handler(
         const data2 = await response2.text();
 */
         let digest: string | null = null;
-        let browser: Browser | null = null;
+        let browser: any = null;
 
         try {
             const incomingCookie = req.query.cookie;
@@ -101,7 +102,7 @@ export default async function handler(
                     ? await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar')
                     : undefined,
                 headless: true,
-            }) as unknown as Browser;
+            });
 
             const page = await browser.newPage();
             await page.setDefaultNavigationTimeout(45000);
@@ -114,7 +115,7 @@ export default async function handler(
                 'sec-ch-ua-platform': '"macOS"',
             });
 
-            // 最新の型定義（modelプロパティ必須）に準拠したUser-Agentの指定
+            // 最新の型定義に準拠したUser-Agentの指定
             await page.setUserAgent({
                 userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0',
                 userAgentMetadata: {
@@ -128,32 +129,38 @@ export default async function handler(
                     platformVersion: '26.5.0',
                     architecture: 'arm',
                     bitness: '64',
-                    model: '' // 型定義エラー回避のための空文字
+                    model: ''
                 }
             });
 
-            // 外部から送られてきたCookie文字列をパースして配列に変換
-            const cookies = incomingCookie.split('; ').map(pair => {
+            // 【マルチドメインCookie割当最適化】
+            // cf_clearance 等の特殊なCookieが確実に送信されるよう、ドメイン指定を2パターン生成して重複登録します
+            const parsedCookies: any[] = [];
+            incomingCookie.split('; ').forEach(pair => {
                 const [name, ...valueParts] = pair.split('=');
-                return {
-                    name: name,
-                    value: valueParts.join('='),
-                    domain: '.wikiwiki.jp', 
-                    path: '/'
-                };
+                const value = valueParts.join('=');
+                
+                // パターン1: サブドメイン全体用（.wikiwiki.jp）
+                parsedCookies.push({
+                    name, value, domain: '.wikiwiki.jp', path: '/'
+                });
+                // パターン2: ルートドメイン直接指定用（wikiwiki.jp）
+                parsedCookies.push({
+                    name, value, domain: 'wikiwiki.jp', path: '/'
+                });
             });
 
-            // 【最新推奨仕様】pageではなくbrowserオブジェクトレベルでCookieを注入（警告・型エラーの完全解消）
+            // browserレベルで一括Cookie注入
             if (browser) {
-                await browser.setCookie(...cookies);
+                await browser.setCookie(...parsedCookies);
             }
 
-            console.log("注入されたCookieを使用してWIKIWIKIへ直接アクセス...");
+            console.log("マルチドメイン対応Cookieを使用してWIKIWIKIへ直接アクセス...");
             await page.goto("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
                 waitUntil: 'domcontentloaded'
             });
 
-            // 正常なcf_clearanceがあれば基本は一瞬で通過しますが、念のため安全用の5秒待機ループ
+            // Cloudflareの検証画面が表示されている場合の最大5秒の待機・監視ループ
             let attempts = 0;
             let currentTitle = await page.title();
             console.log("初期取得のページタイトル:", currentTitle);
@@ -173,7 +180,7 @@ export default async function handler(
             
             if (digestMatch) {
                 digest = digestMatch[1];
-                console.log("【成功】外部Cookieにより検問をすり抜け、digestを取得しました: ", digest);
+                console.log("【成功】検問をすり抜け、digestを取得しました: ", digest);
                 await browser.close();
                 return res.status(200).json({ success: true, data: digest });
             }
