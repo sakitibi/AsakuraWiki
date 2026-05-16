@@ -58,54 +58,66 @@ export default async function handler(
 */
         let digest;
         try {
-            console.log("fetchによるWIKIWIKIリクエスト開始...");
+            console.log("フィンガープリント擬態モードでWIKIWIKIへアクセス開始...");
 
-            // あなたのPCのブラウザから取得した最新のCookieをここに貼り付けてください
-            // ★ cf_clearance や __cf_bm の値が最新であることを確認してください
-            const cookieString = '__posted2=cdf; __flux_u=4310126cadbb43de8e745528567bfc5c; _flux_dataharbor=1; sharedid=a4c1646c-5029-4108-b0c7-b7bfd2367062; sharedid_cst=zix7LPQsHA%3D%3D; __flux_ls=0|0; _yjsu_yjad=1777557457.e7c882f7-498e-4163-a3b2-4e4a2a936cb8; _im_vid=01KQFAWJRA255GWSZDAEKZAMTV; _im_uid.1000283=h.fdccc57189d17cf4; _ga_574T4EBBPP=GS2.1.s1777643887$o1$g1$t1777643898$j49$l0$h0; _ga_GDH84L907P=GS2.2.s1777725526$o1$g0$t1777725526$j60$l0$h0; _ga_59ZET8EY2M=GS2.1.s1778062777$o1$g0$t1778062777$j60$l0$h0; _ga_F8Q0TT8VQ5=GS2.2.s1778062782$o2$g1$t1778062785$j57$l0$h0; __gsas=ID=a0ec81b797e620fd:T=1778062788:RT=1778062788:S=ALNI_MbhcasMQ0JfmsP_iNbJIU4juqAt1g; __wwuid=oA4odJINeuNE8yleDqjHGi9pajVqcTNFcFBIUWFWbmFYMDVpS08yak9DbUY2ZklWWURqM1dzdGlnMTZoeDZ4TzYrQVh0V0NEa1grWkRVTUQ%3D; cf_clearance=sAjPbyVTnHH.aB6pwkDBQOsUazlyMGYKxd91gVflQBo-1778301318-1.2.1.1-NchypnBfsGwNZHqcAo9yd6fwj2.3n_bepGXrRQeoIERfegWPF0x2HGSqaULLx0IwxxUbbGqFcpzqETLmyIQ1q.VIGZoQH1BMcxl8CZ8jDP3meCnOrESIdpuObq.9rnLh5MO4DwTzwevJdp107ZiRHEvWULkJEY5HehX2E8lLg_sSnDXiTedearrM1K4BKccRvsT2qratrOu6sJdhtimJT96iPQjRKL3lAETLTY2XvyQ9CP_d_MsKKH6D1XXo6WDyJ1fkCSftBVAdboMx6FzExc7qFRIqgPWgZVYWPIfzphdSdrK8NkZpe23QjI1_c99k7Q2bRja6u62xZ9MMbSSOwA; _gid=GA1.2.1551201066.1778849434; _ga_FDQCGWFP4C=GS2.2.s1778849434$o5$g0$t1778849434$j60$l0$h0; _ga=GA1.1.1731347394.1777557344; __cf_bm=m8ovwGaX6OsZAxPM5xvjOETJK.dVQiobp79lwmDBo.0-1778850717.6424494-1.0.1.1-mF9HnBgrJjxY9VH9I.1ebJviLYB2tWNjEEcSPE2Pa9KmqKiYHPTc9i5OeqRlpfgJ4GC9BJqK83G5G8zBNGd.fqtLwyySVQLciuyw7E3rFbECRvNiiVeDQag0j8fAOP9Q; cto_bundle=El5MQV9USmdDUllOSkslMkZrdTZKd2hxbzE5WiUyRnRSM1VMSnp2YTlqcmNUNkZDZXhNTmkyZWtaa2ViUDFMU0glMkZ4STdiTTRNZnhSaUdNWlJ4MVM3YWk4Rjg5UW93TWpCVlU1SzclMkZjcHdIVDNlV1lyQWp4WCUyRml0V3duTklZVmJSYXRPZTQ1MWc; cto_bidid=6lThVF9sU0loU1VJYjluYXJMY0RQZ1BDOEdzWiUyRmxp0JmOWp5a2tSdTlsc3hLJTJCYTglMkI2Z0d4bXRIY0JVRlRraDhibzRSelExaFhvd1k2dDN5MVBqbSUyQkpkMkRRJTNEJTNE; __gads=ID=a7dd0714a2b882bf:T=1777557458:RT=1778850733:S=ALNI_MbyyvTWlOpNHLyukWnni6z2SHKF2Q; __gpi=UID=000013ed98010cc1:T=1777557458:RT=1778850733:S=ALNI_MZBhdW7KmimR1JdPrNzlwYKxn0AIQ; __eoi=ID=aaa0234727bfbe49:T=1777557458:RT=1778850733:S=AA-AfjZuCaLn5-8C9vj11PpY2FyF; _ga_3Y8FN9EFS7=GS2.1.s1778848609$o26$g1$t1778851417$j60$l0$h0; __flux_s=1778850717790|1778850717790|0103239de54448a390c3c89627d2b730|2; FCCDCF=%5Bnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%5B%5B32%2C%22%5B%5C%228e5212f4-740a-4ff8-8f79-6571d8ebcac3%5C%22%2C%5B1777557343%2C863000000%5D%5D%22%5D%5D%5D; FCNEC=%5B%5B%22AKsRol8yvddAG0H50UkNQHDdRdpdoX53WPJOflFGWfgB45myjV9_NSQPR_PV8ppbiOI_62Mx7dJfaLwjDF9GhvsvKZo_CcBVTiNsinjq-T2SZUpZcg-RsKoGSEvHX-FLNiaqWDbh4qR0UNEDFEx0gbKLTxxUjhY5qg%3D%3D%22%5D%5D';
+            const targetCookie = "__posted2=cdf; FCNEC=%5B%5B%22AKsRol8IJ4aV_iL-5fzt1fFr1_bnjvoLXbsEgvVjeyxDD1e30T9AwPV8dvhr3M0MwzAzXhe15k2fMoW1ycqrB_fUIsCqOAMsWNGULpw4st0hc1OcX2czaGIy5u5mL1clWm9BpVwvp_Kdvf-ktM8sHvvYSvaHPWBvzw%3D%3D%22%5D%5D; cto_bundle=OvMAo191NERhZXFQYmtMV1lCOFVMb05NampweEVvc0liZzUwRmlibUxmb3BNYTIyRlo4cm92RHJWVWlkcmdjUmhkODlhSDBtRVF2ZkVtYTBvbiUyRmptRWlaeng3RjJsMlNuMzY0aDFsNFVjaGpZVE5UOEpFVUlhdzRSMzZtd0ZoM3ZBVG9D; FCCDCF=%5Bnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%5B%5B32%2C%22%5B%5C%22286a83c8-9bfc-4d58-930b-f362dbd7f5e5%5C%22%2C%5B1778909967%2C846000000%5D%5D%22%5D%5D%5D; __wwuid=fMoeP9fSRcYnL%2BSV2fP%2FTXZGc0VpdnNOVFRvcU9TY3E5YmJRL0FvempCMGlnZHAzVXg1UkwvVFNlV1J5eml0MmxhR0x0NHF4WjFBU3JZUHE%3D; _ga=GA1.1.1791614899.1778909968; _ga_3Y8FN9EFS7=GS2.1.s1778909967$o1$g0$t1778909967$j60$l0$h0";
 
-            // 本物のブラウザからの通常アクセスにみせかけるヘッダー
+
+            const headers = new Headers();
+            headers.append("Host", "wikiwiki.jp");
+            headers.append("Connection", "keep-alive");
+            headers.append("Pragma", "no-cache");
+            headers.append("Cache-Control", "no-cache");
+            headers.append("sec-ch-ua", '"Chromium";v="148", "Microsoft Edge";v="148", "Not/A)Brand";v="99"');
+            headers.append("sec-ch-ua-mobile", "?0");
+            headers.append("sec-ch-ua-platform", '"macOS"');
+            headers.append("Upgrade-Insecure-Requests", "1");
+            headers.append("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0");
+            headers.append("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+            headers.append("Sec-Fetch-Site", "same-origin");
+            headers.append("Sec-Fetch-Mode", "navigate");
+            headers.append("Sec-Fetch-User", "?1");
+            headers.append("Sec-Fetch-Dest", "document");
+            headers.append("Referer", "https://wikiwiki.jp/maitestu-net/");
+            headers.append("Accept-Encoding", "gzip, deflate, br");
+            headers.append("Accept-Language", "ja");
+            headers.append("Cookie", targetCookie);
+
+            // Fetchリクエストの実行
             const response = await fetch("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
                 method: "GET",
-                headers: {
-                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                    "Cookie": cookieString,
-                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-                    "Accept-Language": "ja,ja-JP;q=0.9,en;q=0.8",
-                    "Cache-Control": "no-cache",
-                    "Pragma": "no-cache",
-                    "Sec-Fetch-Dest": "document",
-                    "Sec-Fetch-Mode": "navigate",
-                    "Sec-Fetch-Site": "none",
-                    "Sec-Fetch-User": "?1",
-                    "Upgrade-Insecure-Requests": "1"
-                }
+                headers: headers,
+                keepalive: true 
             });
-
-            console.log("ステータスコード:", response.status);
 
             const content = await response.text();
 
-            // digestの抽出試行
+            // digestの抽出
             const digestMatch = content.match(/"digest":"([a-f0-9]{32})"/);
             
             if (digestMatch) {
                 digest = digestMatch[1];
-                console.log("取得成功 digest (fetch): ", digest);
+                console.log("【偽装成功】digest: ", digest);
                 return res.status(200).json({ success: true, data: digest });
             }
 
-            // 失敗時の解析
-            if (content.includes("しばらくお待ちください") || response.status === 403) {
-                console.error("エラー: fetchでもCloudflareにブロックされました（Cookie失効の可能性高）");
-                return res.status(403).json({ success: false, error: "Cloudflare blocked", httpStatus: response.status });
+            // ブロックされた場合の解析
+            const titleMatch = content.match(/<title>([^<]+)<\/title>/);
+            const pageTitle = titleMatch ? titleMatch[1] : "タイトル不明";
+            console.error("取得失敗時のページタイトル:", pageTitle);
+
+            if (pageTitle.includes("しばらくお待ちください") || content.includes("Cloudflare")) {
+                return res.status(403).json({ 
+                    success: false, 
+                    error: "Cloudflare Fingerprint Blocked", 
+                    reason: "通信のフィンガープリント（TLS/HTTP2の挙動）がBotと判定されました。VercelのIP自体が弾かれている可能性があります。"
+                });
             }
 
-            console.error("エラー: HTML構造の中にdigestが見つかりません。");
-            return res.status(404).json({ success: false, error: "Digest not found in HTML structure" });
+            return res.status(404).json({ success: false, error: "Digest missing from HTML" });
 
         } catch (error: any) {
-            console.error("実行エラー:", error.message);
+            console.error("API実行エラー:", error.message);
             return res.status(500).json({ success: false, error: error.message });
         }
 /*
