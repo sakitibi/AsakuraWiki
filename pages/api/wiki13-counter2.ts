@@ -66,7 +66,7 @@ export default async function handler(
                 chromium.setGraphicsMode = false;
             }
 
-            // Cloudflareのロボット避けを突破するための厳選された引数
+            // 言語設定を含めた、より本物のブラウザに近い強力な隠蔽引数
             const secureArgs = [
                 '--disable-blink-features=AutomationControlled',
                 '--disable-infobars',
@@ -74,22 +74,30 @@ export default async function handler(
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
                 '--disable-web-security',
-                '--allow-running-insecure-content'
+                '--allow-running-insecure-content',
+                '--lang=ja-JP,ja'
             ];
 
-            // puppeteer-extra を使用してブラウザを起動（自動化の痕跡が完全に隠蔽されます）
             browser = await puppeteer.launch({
                 args: isServerless ? [...chromium.args, ...secureArgs] : secureArgs,
                 executablePath: isServerless 
                     ? await chromium.executablePath('https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar')
                     : undefined,
                 headless: true,
-            }) as unknown as Browser; // 型定義の調整
+            }) as unknown as Browser;
 
             const page = await browser.newPage();
-            page.setDefaultNavigationTimeout(45000);
+            await page.setDefaultNavigationTimeout(45000);
 
-            // 本物のEdge(Mac版)に偽装
+            // ページのヘッダーおよび内部の言語設定を「日本語」に完全最適化
+            await page.setExtraHTTPHeaders({
+                'accept-language': 'ja,ja-JP;q=0.9',
+                'sec-ch-ua': '"Chromium";v="148", "Microsoft Edge";v="148", "Not/A)Brand";v="99"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"macOS"',
+            });
+
+            // 先ほど解決した、modelを含んだ正しいオブジェクト形式のUA指定
             await page.setUserAgent({
                 userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0',
                 userAgentMetadata: {
@@ -106,8 +114,8 @@ export default async function handler(
                     model: ''
                 }
             });
-            
-            // クッキーのセット
+
+            // あなたの最新のCookie
             const targetCookieStr = "__posted2=cdf; FCNEC=%5B%5B%22AKsRol8IJ4aV_iL-5fzt1fFr1_bnjvoLXbsEgvVjeyxDD1e30T9AwPV8dvhr3M0MwzAzXhe15k2fMoW1ycqrB_fUIsCqOAMsWNGULpw4st0hc1OcX2czaGIy5u5mL1clWm9BpVwvp_Kdvf-ktM8sHvvYSvaHPWBvzw%3D%3D%22%5D%5D; cto_bundle=OvMAo191NERhZXFQYmtMV1lCOFVMb05NampweEVvc0liZzUwRmlibUxmb3BNYTIyRlo4cm92RHJWVWlkcmdjUmhkODlhSDBtRVF2ZkVtYTBvbiUyRmptRWlaeng3RjJsMlNuMzY0aDFsNFVjaGpZVE5UOEpFVUlhdzRSMzZtd0ZoM3ZBVG9D; FCCDCF=%5Bnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%5B%5B32%2C%22%5B%5C%22286a83c8-9bfc-4d58-930b-f362dbd7f5e5%5C%22%2C%5B1778909967%2C846000000%5D%5D%22%5D%5D%5D; __wwuid=fMoeP9fSRcYnL%2BSV2fP%2FTXZGc0VpdnNOVFRvcU9TY3E5YmJRL0FvempCMGlnZHAzVXg1UkwvVFNlV1J5eml0MmxhR0x0NHF4WjFBU3JZUHE%3D; _ga=GA1.1.1791614899.1778909968; _ga_3Y8FN9EFS7=GS2.1.s1778909967$o1$g0$t1778909967$j60$l0$h0";
 
             const cookies = targetCookieStr.split('; ').map(pair => {
@@ -119,34 +127,35 @@ export default async function handler(
                     path: '/'
                 };
             });
-            await page.setCookie(...cookies);
-
-            console.log("WIKIWIKI編集画面へステルスアクセス開始...");
+            if (browser) {
+                await browser.setCookie(...cookies);
+            }
+            console.log("WIKIWIKI編集画面へ完全日本語ローカライズアクセス開始...");
             await page.goto("https://wikiwiki.jp/maitestu-net/::cmd/edit?page=FrontPage", {
                 waitUntil: 'domcontentloaded'
             });
 
-            // ページが切り替わるまで最大12秒間ループ待機
+            // ページが切り替わるまで最大15秒間ループ待機
             let attempts = 0;
             let currentTitle = await page.title();
             console.log("初期タイトル:", currentTitle);
 
-            while ((currentTitle.includes("しばらくお待ちください") || currentTitle.includes("アクセス確認中")) && attempts < 12) {
-                console.log(`Cloudflare検証クリア待ち... (${attempts + 1}秒目)`);
+            while ((currentTitle.includes("しばらくお待ちください") || currentTitle.includes("アクセス確認中") || currentTitle.includes("Just a moment")) && attempts < 15) {
+                console.log(`Cloudflare判定クリア待ち... (${attempts + 1}秒目)`);
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 currentTitle = await page.title();
                 attempts++;
             }
 
             const finalUrl = page.url();
-            console.log("最終ページタイトル:", currentTitle);
+            console.log("最終判定時のページタイトル:", currentTitle);
 
             const content = await page.content();
             const digestMatch = content.match(/"digest"\s*:\s*"([a-f0-9]{32})"/);
             
             if (digestMatch) {
                 digest = digestMatch[1];
-                console.log("【ステルス突破成功】digest: ", digest);
+                console.log("【偽装完全成功】digest: ", digest);
                 await browser.close();
                 return res.status(200).json({ success: true, data: digest });
             }
