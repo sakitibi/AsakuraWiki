@@ -17,11 +17,6 @@ export default function LeftMenuJp({ URL, rupages }: Props){
                         </Link>
                     </li>
                     <li>
-                        <Link href="/about">
-                            <button><span>当レンタルWikiについて</span></button>
-                        </Link>
-                    </li>
-                    <li>
                         <Link href="/news">
                             <button><span>あさクラニュース</span></button>
                         </Link>
@@ -29,11 +24,6 @@ export default function LeftMenuJp({ URL, rupages }: Props){
                     <li>
                         <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3">
                             <button><span>ログイン/新規登録</span></button>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/store">
-                            <button><span>13ninGamesStore</span></button>
                         </Link>
                     </li>
                     {rupages !== "false" ? (

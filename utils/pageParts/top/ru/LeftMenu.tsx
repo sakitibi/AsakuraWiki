@@ -16,11 +16,6 @@ export default function LeftMenuRu({ URL }: Props){
                         </Link>
                     </li>
                     <li>
-                        <Link href="/ru/about">
-                            <button><span>Об этом вики-сайте по аренде</span></button>
-                        </Link>
-                    </li>
-                    <li>
                         <Link href="/ru/news">
                             <button><span>Новости Асакуры</span></button>
                         </Link>
