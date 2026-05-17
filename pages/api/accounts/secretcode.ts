@@ -4,31 +4,15 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import upack from '@/node_modules/upack.js/src/index';
 import { decodeBase64Unicode } from '@/lib/base64';
 
-function RandomRange(){
-    return Math.floor(Math.random() * 2147483647).toString(36);
-}
-
-function RandomRange5(){
-    return RandomRange() + 
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange() + 
-    RandomRange();
-}
-
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
-const Key = new TextEncoder().encode(
-    RandomRange5() + 
-    RandomRange5().substring(0, 40)
-);
+const Key = new TextEncoder().encode(process.env.NEXT_PUBLIC_UPACK_SECRET_KEY);
 
 async function generateJWT(payload:JWTPayload) {
     const jwt = await new SignJWT(payload)
         .setProtectedHeader({ alg: 'HS256' }) // アルゴリズムを指定
         .setIssuedAt() // 発行日時
-        .setExpirationTime('5y') // 有効期限（5年）
+        .setExpirationTime('6y') // 有効期限（6年）
         .sign(Key); // シークレットキーで署名
-
     return jwt;
 }
 
@@ -76,6 +60,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     } else if(req.method === "POST"){
         let userId: string | null = null
         let userEmail:string | null = null
+        const created_at = new Date();
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
             if(req.body === "false") return res.status(403).json({ error: "not used by secretcodes" });
@@ -86,7 +71,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             if (user) userId = user.id
             if (user) userEmail = user.email ?? ""
             // JWTペイロードを作成
-            const payload = { userId, userEmail };
+            const payload = { userId, userEmail, created_at };
             // JWTを生成
             const jwt = await generateJWT(payload);
             // トークンを返す
