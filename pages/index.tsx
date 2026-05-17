@@ -20,7 +20,6 @@ import {
 } from '@/utils/pageParts/top/jp/indexfetchs';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/auth-helpers-react';
-import versions from '@/utils/version';
 import ClientErrorUI from '@/utils/pageParts/top/clienterrorUI';
 
 export interface ClientError {

@@ -178,84 +178,42 @@ export default function Home() {
         );
     }
 
-    /* ===============================
-        normal render
-    =============================== */
-    if(!isBot){
-        return (
-            <>
-            <Head>
-                <title>БЕСПЛАТНАЯ АРЕНДА WIKI-СЕРВИСА АсакураWiki</title>
-                {!user ? (
-                    <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"/>
-                ) : null}
-            </Head>
-            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
-            <div className={styles.contentsWrapper}>
-                <HeaderRu handleClick={handleClick}/>
-                <div className={styles.contents}>
-                    <LeftMenuRu URL="/"/>
-                    <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
-                        {!!user ? (
-                            <LoginedUI
-                                wiki13ninstudioCounter={wiki13ninstudioCounter}
-                                wiki13ninstudioCounterTotal={wiki13ninstudioCounterTotal}
-                                pages={pages}
-                                loading={loading}
-                                likedWikis={likedWikis}
-                                loadingLiked={loadingLiked}
-                                H2Styles={H2Styles}
-                                goCreateWiki={() =>
-                                    (location.href =
-                                        '/dashboard/create-wiki')
-                                }
-                            />
-                        ) : (
-                            <LogoutedUI/>
-                        )}
-                    </main>
-                    <RightMenuRu/>
-                </div>
-                <FooterRu/>
+    return (
+        <>
+        <Head>
+            <title>БЕСПЛАТНАЯ АРЕНДА WIKI-СЕРВИСА АсакураWiki</title>
+            {!user ? (
+                <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"/>
+            ) : null}
+        </Head>
+        <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
+        <div className={styles.contentsWrapper}>
+            <HeaderRu handleClick={handleClick}/>
+            <div className={styles.contents}>
+                <LeftMenuRu URL="/"/>
+                <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
+                    {user && !isBot ? (
+                        <LoginedUI
+                            wiki13ninstudioCounter={wiki13ninstudioCounter}
+                            wiki13ninstudioCounterTotal={wiki13ninstudioCounterTotal}
+                            pages={pages}
+                            loading={loading}
+                            likedWikis={likedWikis}
+                            loadingLiked={loadingLiked}
+                            H2Styles={H2Styles}
+                            goCreateWiki={() =>
+                                (location.href =
+                                    '/dashboard/create-wiki')
+                            }
+                        />
+                    ) : (
+                        <LogoutedUI/>
+                    )}
+                </main>
+                <RightMenuRu/>
             </div>
-            </>
-        )
-    } else {
-        return (
-            <>
-                <Head>
-                    <title>
-                        {clientError
-                            ? 'Error | АсакураWiki'
-                            : AsakuraWikiTitle}
-                    </title>
-                    <meta property="og:title" content={AsakuraWikiTitle} />
-                    <meta property="og:site_name" content={AsakuraWikiTitle} />
-                    <meta
-                        name="description"
-                        content={
-                            clientError
-                                ? 'Client-side error occurred'
-                                : 'Прошло уже полгода! Мы будем и дальше дорожить нашим прошлым и продолжать развиваться.'
-                        }
-                    />
-                </Head>
-                <div className={styles.contentsWrapper}>
-                    <main style={{ padding: '2rem' }}>
-                    {clientError ? (
-                            <>
-                                <h1>Application Error</h1>
-                                <p>{(clientError as ClientError).message}</p>
-                            </>
-                        ) : (
-                            <>
-                                <h1>АсакураWiki {versions[2]}</h1>
-                                <p>Прошло уже полгода! Мы будем и дальше дорожить нашим прошлым и продолжать развиваться.</p>
-                            </>
-                        )}
-                    </main>
-                </div>
-            </>
-        );
-    }
+            <FooterRu/>
+        </div>
+        </>
+    )
 }
