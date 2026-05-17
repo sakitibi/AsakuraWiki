@@ -29,7 +29,8 @@ export default function Custom404({
                             style={{display: "inline-block"}}
                         />
                     </p>
-                    <p>お探しのページは存在しません。</p>
+                    <p>ごめんなさい。</p>
+                    <p>お探しのページ( {location.pathname} )が見つかりませんでした。</p>
                     <Link href="/">
                         <button>
                             <span>トップへ戻る</span>
