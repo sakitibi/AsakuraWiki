@@ -36,7 +36,7 @@ export default function WikiEditPage({
 }: WikiEditPageProps){
     return(
         <div id="contents-wrapper" style={{display: 'flex'}}>
-            <div className="container" style={{display: 'grid', gridTemplateColumns: "1fr"}}>
+            <div className="wikieditor-container" style={{display: 'grid', gridTemplateColumns: "1fr"}}>
                 <article style={{ padding: '2rem', maxWidth: 1000 }} className="columnCenter clearfix">
                     <h1>
                         <i className="fa-solid fa-file-pen"></i>
@@ -97,7 +97,7 @@ export default function WikiEditPage({
                         }
                         style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
                         >
-                            <span>{loading ? '保存中…' : '保存'}</span>
+                            <span>{loading ? '更新中…' : '更新'}</span>
                         </button>
                     </form>
                 </article>
