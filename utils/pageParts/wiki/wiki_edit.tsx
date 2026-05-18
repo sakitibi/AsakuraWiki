@@ -37,7 +37,7 @@ export default function WikiEditPage({
     return(
         <div id="contents-wrapper" style={{display: 'flex'}}>
             <div className="wikieditor-container" style={{display: 'grid', gridTemplateColumns: "1fr"}}>
-                <article style={{ padding: '2rem', maxWidth: 1000 }} className="columnCenter clearfix">
+                <article style={{ padding: '2rem' }} className="columnCenter clearfix">
                     <h1>
                         <i className="fa-solid fa-file-pen"></i>
                         ページ編集
