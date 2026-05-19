@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
-import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
+import { useCeremonyBroadcast } from '@/utils/useCeremonyBroadcast';
 import { JSONProps } from '@/pages/api/staff_credits';
 import Pako from 'pako';
 

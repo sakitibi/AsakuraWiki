@@ -2,9 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
-import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
+import { useCeremonyBroadcast } from '@/utils/useCeremonyBroadcast';
 
-// 型定義（退社式専用：KADODEを含む）
 export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | 'CLOSING';
 
 interface BroadcastPayload {

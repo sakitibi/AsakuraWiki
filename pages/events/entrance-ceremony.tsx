@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
-import { useCeremonyBroadcast } from '@/hooks/useCeremonyBroadcast';
+import { useCeremonyBroadcast } from '@/utils/useCeremonyBroadcast';
 
 // 型定義
 export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'CLOSING';

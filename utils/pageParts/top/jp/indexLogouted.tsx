@@ -1,6 +1,9 @@
 export default function LogoutedUI(){
     return(
         <>
+            <div id="images-container">
+                {/* 準備中.. */}
+            </div>
             <h1>あさクラWikiへようこそ!</h1>
             <div className="text-dark">
                 <strong className="masthead-notice rounded-3 p-2">あさクラWikiの新機能</strong>
