@@ -1,8 +1,53 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import { supabaseClient } from '@/lib/supabaseClient';
+import { useEffect, useState } from 'react';
 
 export default function LoginPage() {
+    /* ===============================
+        Bot 判定（state）
+    =============================== */
+    const [isBot, setIsBot] = useState(true);
+    const [url, setUrl] = useState<URL | null>(null);
+    const [scaptcha_params, setScaptcha_params] = useState<string | null>(null);
+
+    /* ===============================
+        mount & bot detect
+    =============================== */
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            setIsBot(true);
+            return;
+        }
+
+        const ua = navigator.userAgent;
+        const bot =
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
+
+        setIsBot(bot);
+
+        console.log('[UA]', ua);
+        console.log('[isBot]', bot);
+    }, []);
+    useEffect(() => {
+        if (isBot) return;
+        setUrl(new URL(window.location.href));
+    }, [isBot]);
+    useEffect(() => {
+        if (!url) return;
+        setScaptcha_params(url.searchParams.get("scaptcha_session"));
+    }, [url]);
+    useEffect(() => {
+        if (isBot) return;
+        (async function(){
+            const { data, error } = await supabaseClient
+                .from("scaptcha_session")
+                .select("data,id,created_at")
+                .eq("id", scaptcha_params)
+                .single();
+        })();
+    }, [isBot]);
     return (
         <>
             <Head>
