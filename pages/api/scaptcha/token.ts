@@ -28,6 +28,9 @@ export default async function handler(
             .eq("data", scaptcha_params)
             .single();
         if (error || !data) {
+            if (error) {
+                console.error("Error: ", error.message);
+            }
             return res.status(404).send("Error 404 NotFound");
         }
         return res.status(200).json(data);
