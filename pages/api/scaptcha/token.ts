@@ -35,19 +35,19 @@ export default async function handler(
         if (!req.body) {
             return res.status(401).send("Error 401 Unauthorized");
         }
-        console.log("request body: ", req.body);
-        const redirect_url = req.body.redirecturl;
+        const body = { ...req.body };
+        const redirect_url = body.redirecturl;
         const { error } = await supabaseServer
             .from("scaptcha_session")
             .insert([{
-                data: req.body.secretToken,
+                data: body.secretToken,
                 created_at: new Date()
             }])
             .single();
         if (error) {
             return res.status(500).send("Error 500 Internal Server Error");
         }
-        return res.status(302).redirect(`${redirect_url}?token=${req.body}`);
+        return res.status(302).redirect(`${redirect_url}?token=${body.secretToken}`);
     } else if (req.method === "DELETE") {
         if (!scaptcha_params) {
             return res.status(401).send("Error 401 Unauthorized");
