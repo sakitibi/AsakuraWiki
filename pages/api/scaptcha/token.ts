@@ -22,6 +22,7 @@ export default async function handler(
         if (!scaptcha_params) {
             return res.status(401).send("Error 401 Unauthorized");
         }
+        console.log("scaptcha_params: ", scaptcha_params);
         const { data, error } = await supabaseServer
             .from("scaptcha_session")
             .select("*")
