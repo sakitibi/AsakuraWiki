@@ -56,7 +56,10 @@ export default async function handler(
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         return res.status(200).send(
             `<html><head><title>redirecting..</title></head>
-            <body><script>location.replace("${redirect_url}?token=${body.secretToken}")</script></body></html>`
+            <body><script>
+            localStorage.removeItem("scaptcha_params");
+            location.replace("${redirect_url}?token=${body.secretToken}")
+            </script></body></html>`
         );
     } else if (req.method === "DELETE") {
         if (!scaptcha_params) {
