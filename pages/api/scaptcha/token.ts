@@ -49,7 +49,10 @@ export default async function handler(
             console.error("Error: ", error.message);
             return res.status(500).send("Error 500 Internal Server Error");
         }
-        return res.status(302).redirect(`${redirect_url}?token=${body.secretToken}`);
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        return res.status(200).send(
+            `<script>location.replace(${redirect_url}?token=${body.secretToken})</script>`
+        );
     } else if (req.method === "DELETE") {
         if (!scaptcha_params) {
             return res.status(401).send("Error 401 Unauthorized");
