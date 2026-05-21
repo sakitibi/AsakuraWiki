@@ -45,6 +45,7 @@ export default async function handler(
             }])
             .single();
         if (error) {
+            console.error("Error: ", error.message);
             return res.status(500).send("Error 500 Internal Server Error");
         }
         return res.status(302).redirect(`${redirect_url}?token=${body.secretToken}`);
