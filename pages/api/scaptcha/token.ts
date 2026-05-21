@@ -13,7 +13,7 @@ export default async function handler(
     } else {
         res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
     }
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-scaptcha-session x-scaptcha-redirect-url');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-scaptcha-session');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     const scaptcha_params = req.headers["x-scaptcha-session"];
     if (req.method === "OPTIONS") {
@@ -32,14 +32,14 @@ export default async function handler(
         }
         return res.status(200).json(data);
     } else if (req.method === "POST") {
-        const redirect_url = req.headers["x-scaptcha-redirect-url"] as string | undefined;
+        const redirect_url = req.body.redirecturl;
         if (!req.body || !redirect_url) {
             return res.status(401).send("Error 401 Unauthorized");
         }
         const { error } = await supabaseServer
             .from("scaptcha_session")
             .insert([{
-                data: req.body,
+                data: req.body.secretToken,
                 created_at: new Date()
             }])
             .single();
