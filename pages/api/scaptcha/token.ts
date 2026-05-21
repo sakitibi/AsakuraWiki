@@ -25,7 +25,7 @@ export default async function handler(
         const { data, error } = await supabaseServer
             .from("scaptcha_session")
             .select("*")
-            .eq("id", scaptcha_params)
+            .eq("data", scaptcha_params)
             .single();
         if (error || !data) {
             return res.status(404).send("Error 404 NotFound");
@@ -46,7 +46,7 @@ export default async function handler(
         if (error) {
             return res.status(500).send("Error 500 Internal Server Error");
         }
-        return res.status(302).redirect(redirect_url);
+        return res.status(302).redirect(`${redirect_url}?token=${req.body}`);
     } else if (req.method === "DELETE") {
         if (!scaptcha_params) {
             return res.status(401).send("Error 401 Unauthorized");
@@ -54,7 +54,7 @@ export default async function handler(
         const { error } = await supabaseServer
             .from("scaptcha_session")
             .delete()
-            .eq("id", scaptcha_params)
+            .eq("data", scaptcha_params)
             .single();
         if (error) {
             return res.status(500).send("Error 500 Internal Server Error");

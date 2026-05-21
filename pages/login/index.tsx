@@ -1,8 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
-import { supabaseClient } from '@/lib/supabaseClient';
 import { useEffect, useState } from 'react';
+
+interface ScaptchaSessionProps{
+    data: string;
+    id: string;
+    created_at: string;
+}
 
 export default function LoginPage() {
     /* ===============================
@@ -11,6 +16,8 @@ export default function LoginPage() {
     const [isBot, setIsBot] = useState(true);
     const [url, setUrl] = useState<URL | null>(null);
     const [scaptcha_params, setScaptcha_params] = useState<string | null>(null);
+    const [scaptcha_session, setScaptcha_session] = useState<ScaptchaSessionProps | null>(null);
+    const [isenabled, setIsenabled] = useState<boolean | null>(null);
 
     /* ===============================
         mount & bot detect
@@ -36,55 +43,105 @@ export default function LoginPage() {
     }, [isBot]);
     useEffect(() => {
         if (!url) return;
-        setScaptcha_params(url.searchParams.get("scaptcha_session"));
+        setScaptcha_params(url.searchParams.get("token"));
     }, [url]);
     useEffect(() => {
         if (isBot) return;
+        if (!scaptcha_params) {
+            setIsenabled(false);
+            return;
+        }
         (async function(){
-            const { data, error } = await supabaseClient
-                .from("scaptcha_session")
-                .select("data,id,created_at")
-                .eq("id", scaptcha_params)
-                .single();
+            const res = await fetch("/api/scaptcha/token", {
+                method: "GET",
+                headers: {
+                    "x-scaptcha-session": scaptcha_params!
+                }
+            });
+            if (!res.ok) {
+                console.error("Error scaptcha tokenget failed.");
+                return;
+            }
+            setScaptcha_session(await res.json());
         })();
-    }, [isBot]);
+    }, [isBot, scaptcha_params]);
+
+    useEffect(() => {
+        if (!scaptcha_session || !scaptcha_params) {
+            setIsenabled(false);
+            return;
+        }
+        const date = new Date(scaptcha_session?.created_at).getTime();
+        const now = new Date().getTime();
+        (async function(){
+            if (now > date + 18e5) {
+                setIsenabled(false);
+                const res = await fetch("/api/scaptcha/token", {
+                    method: "DELETE",
+                    headers: {
+                        "x-scaptcha-session": scaptcha_params
+                    }
+                });
+                if (!res.ok) {
+                    console.error("Error delete failed.");
+                }
+                return;
+            } else {
+                setIsenabled(true);
+            }
+        })();
+    }, [scaptcha_session]);
+
     return (
         <>
             <Head>
                 <title>あさクラWikiにログイン</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: '500px', margin: 'auto' }}>
-                <h1>
-                    <i
-                        className="fa-solid fa-key"
-                        style={{ fontSize: 'inherit' }}
-                    ></i>
-                    ログイン
-                </h1>
-                <p>ログイン方法を選択してください：</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-                    <Link href="/login/13nin/">
-                        <button style={buttonStyle}><span>13ninアカウントでログイン(推奨)</span></button>
-                    </Link>
-                    <Link href="/login/13nin/secretcodes">
-                        <button style={buttonStyle}><span>あさクラシークレットコードでログイン</span></button>
-                    </Link>
-                    <Link href="/login/github">
-                        <button style={buttonStyle}><span>GitHubでログイン</span></button>
-                    </Link>
-                    <Link href="/login/gitlab">
-                        <button style={buttonStyle}><span>GitLabでログイン</span></button>
-                    </Link>
-                    <Link href="/login/bitbucket">
-                        <button style={buttonStyle}><span>BitBucketでログイン</span></button>
-                    </Link>
-                    <Link href="/login/discord">
-                        <button style={buttonStyle}><span>Discordでログイン</span></button>
-                    </Link>
-                    <Link href="/login/figma">
-                        <button style={buttonStyle}><span>Figmaでログイン</span></button>
-                    </Link>
-                </div>
+                {isenabled ? (
+                    <>
+                        <h1>
+                            <i
+                                className="fa-solid fa-key"
+                                style={{ fontSize: 'inherit' }}
+                            ></i>
+                            ログイン
+                        </h1>
+                        <p>ログイン方法を選択してください：</p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
+                            <Link href="/login/13nin/">
+                                <button style={buttonStyle}><span>13ninアカウントでログイン(推奨)</span></button>
+                            </Link>
+                            <Link href="/login/13nin/secretcodes">
+                                <button style={buttonStyle}><span>あさクラシークレットコードでログイン</span></button>
+                            </Link>
+                            <Link href="/login/github">
+                                <button style={buttonStyle}><span>GitHubでログイン</span></button>
+                            </Link>
+                            <Link href="/login/gitlab">
+                                <button style={buttonStyle}><span>GitLabでログイン</span></button>
+                            </Link>
+                            <Link href="/login/bitbucket">
+                                <button style={buttonStyle}><span>BitBucketでログイン</span></button>
+                            </Link>
+                            <Link href="/login/discord">
+                                <button style={buttonStyle}><span>Discordでログイン</span></button>
+                            </Link>
+                            <Link href="/login/figma">
+                                <button style={buttonStyle}><span>Figmaでログイン</span></button>
+                            </Link>
+                        </div>
+                    </>
+                ) : isenabled === false ? (
+                    <>
+                        <h1>Error 403 Forbidden</h1>
+                        <p>scaptchaトークンが存在しない、または不正です。</p>
+                    </>
+                ) : (
+                    <>
+                        <h1>読み込み中..</h1>
+                    </>
+                )}
             </main>
             <FooterJp/>
         </>
