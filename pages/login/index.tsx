@@ -45,7 +45,8 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (!url) return;
-        setScaptcha_params(url.searchParams.get("token"));
+        const params = localStorage.getItem("scaptcha_params") ?? url.searchParams.get("token");
+        setScaptcha_params(params);
         history.replaceState(
             { path: location.pathname },
             "",
@@ -90,11 +91,13 @@ export default function LoginPage() {
                         "x-scaptcha-session": scaptcha_params
                     }
                 });
+                localStorage.removeItem("scaptcha_params");
                 if (!res.ok) {
                     console.error("Error delete failed.");
                 }
                 return;
             } else {
+                localStorage.setItem("scaptcha_params", scaptcha_params);
                 setIsenabled(true);
             }
         })();
