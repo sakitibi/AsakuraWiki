@@ -37,14 +37,22 @@ export default function LoginPage() {
         console.log('[UA]', ua);
         console.log('[isBot]', bot);
     }, []);
+
     useEffect(() => {
         if (isBot) return;
         setUrl(new URL(window.location.href));
     }, [isBot]);
+
     useEffect(() => {
         if (!url) return;
         setScaptcha_params(url.searchParams.get("token"));
+        history.replaceState(
+            { path: location.pathname },
+            "",
+            location.pathname
+        );
     }, [url]);
+    
     useEffect(() => {
         if (isBot) return;
         if (!scaptcha_params) {
