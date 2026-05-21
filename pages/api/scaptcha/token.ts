@@ -32,10 +32,11 @@ export default async function handler(
         }
         return res.status(200).json(data);
     } else if (req.method === "POST") {
-        const redirect_url = req.body.redirecturl;
-        if (!req.body || !redirect_url) {
+        if (!req.body) {
             return res.status(401).send("Error 401 Unauthorized");
         }
+        console.log("request body: ", req.body);
+        const redirect_url = req.body.redirecturl;
         const { error } = await supabaseServer
             .from("scaptcha_session")
             .insert([{
