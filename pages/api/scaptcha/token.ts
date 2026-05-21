@@ -13,7 +13,7 @@ export default async function handler(
     } else {
         res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
     }
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-scaptcha-session');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-scaptcha-session x-scaptcha-redirect-url');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
     const scaptcha_params = req.headers["x-scaptcha-session"];
     if (req.method === "OPTIONS") {
@@ -32,7 +32,8 @@ export default async function handler(
         }
         return res.status(200).json(data);
     } else if (req.method === "POST") {
-        if (!req.body) {
+        const redirect_url = req.headers["x-scaptcha-redirect-url"] as string | undefined;
+        if (!req.body || !redirect_url) {
             return res.status(401).send("Error 401 Unauthorized");
         }
         const { error } = await supabaseServer
@@ -45,7 +46,7 @@ export default async function handler(
         if (error) {
             return res.status(500).send("Error 500 Internal Server Error");
         }
-        return res.status(204).end();
+        return res.status(302).redirect(redirect_url);
     } else if (req.method === "DELETE") {
         if (!scaptcha_params) {
             return res.status(401).send("Error 401 Unauthorized");
