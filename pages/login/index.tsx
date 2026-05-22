@@ -56,10 +56,7 @@ export default function LoginPage() {
     
     useEffect(() => {
         if (isBot) return;
-        if (!scaptcha_params) {
-            setIsenabled(false);
-            return;
-        }
+        if (!scaptcha_params) return;
         (async function(){
             const res = await fetch("/api/scaptcha/token", {
                 method: "GET",
@@ -102,6 +99,11 @@ export default function LoginPage() {
             }
         })();
     }, [scaptcha_session]);
+
+    useEffect(() => {
+        if (isenabled !== false) return;
+        location.replace("https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3");
+    }, [isenabled]);
 
     return (
         <>
