@@ -102,8 +102,9 @@ export default function LoginPage() {
 
     useEffect(() => {
         setTimeout(() => {
-            if (isenabled !== false) return;
-            location.replace("https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3");
+            if (isenabled === false) {
+                location.replace("https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3");
+            }
         }, 5000);
     }, [isenabled]);
 
