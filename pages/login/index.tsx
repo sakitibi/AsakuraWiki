@@ -102,7 +102,9 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (isenabled !== false) return;
-        location.replace("https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3");
+        setTimeout(() => {
+            location.replace("https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3");
+        }, 5000);
     }, [isenabled]);
 
     return (
@@ -149,6 +151,7 @@ export default function LoginPage() {
                     <>
                         <h1>Error 403 Forbidden</h1>
                         <p>scaptchaトークンが存在しない、または不正です。</p>
+                        <p>自動的にリダイレクトします。</p>
                     </>
                 ) : (
                     <>
