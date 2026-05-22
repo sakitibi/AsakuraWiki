@@ -44,7 +44,8 @@ export default async function handler(
             .from("scaptcha_session")
             .insert([{
                 data: body.secretToken,
-                created_at: new Date()
+                created_at: new Date(),
+                ua: body.userAgent
             }])
             .single();
         
