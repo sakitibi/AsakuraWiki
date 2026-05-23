@@ -106,7 +106,7 @@ export default function WikiPage() {
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
 
     useEffect(() => {
-        if (isBot) return;
+        if (isBot || !window) return;
         setUrl(new URL(window.location.href));
     }, [isBot]);
 
