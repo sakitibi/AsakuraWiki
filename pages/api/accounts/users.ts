@@ -54,6 +54,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             );
 
             if (decryptedBuffer) {
+                console.log("decryptedBuffer: ", decryptedBuffer);
                 const token = new TextDecoder().decode(decryptedBuffer);
                 console.log("token: ", token);
 
