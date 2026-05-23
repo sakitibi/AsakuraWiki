@@ -18,6 +18,7 @@ interface WikiEditPageProps{
     editMode: editMode;
     user: User | null;
     router: NextRouter;
+    isenabled: boolean;
 }
 
 export default function WikiEditPage({
@@ -32,7 +33,8 @@ export default function WikiEditPage({
     setLoading,
     editMode,
     user,
-    router
+    router,
+    isenabled
 }: WikiEditPageProps){
     return(
         <div id="contents-wrapper" style={{display: 'flex'}}>
@@ -93,7 +95,8 @@ export default function WikiEditPage({
                         type="submit"
                         disabled={
                             loading ||
-                            (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei')
+                            (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei') ||
+                            !isenabled
                         }
                         style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
                         >

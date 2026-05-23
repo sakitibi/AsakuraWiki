@@ -93,8 +93,6 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
-    const [isEdit, setIsEdit] = useState<boolean>(false);
-    const [previewText, setPreviewText] = useState<string>("");
     const [editContent, setEditContent] = useState<string>("");
     const [url, setUrl] = useState<URL | null>(null);
     const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
@@ -270,22 +268,15 @@ export default function WikiPage() {
         );
     }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
 
-    useEffect(() => {
-        if (!isenabled || !cmdStr) return;
-        setIsEdit(
-            cmdStr === 'edit' &&
-            isenabled
-        );
-    }, [cmdStr, isenabled]);
+    const isEdit:boolean = cmdStr === 'edit';
     useEffect(() => {
         CommentSubmitFunc(
             isEdit,
             wikiSlugStr,
             pageSlugStr
         );
-        setPreviewText(isEdit ? content : page?.content ?? '');
-    }, [isEdit]);
-
+    }, []);
+    const previewText = isEdit ? content : page?.content ?? ''
     useEffect(() => {
         const fetchParsedPreview = async () => {
             if (!designColor) return;
@@ -307,7 +298,6 @@ export default function WikiPage() {
     useEffect(() => {
         setEditContent(content);
     }, [content]);
-
     useEffect(() => {
         if(cmdStr === "edit"){
             const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -340,6 +330,11 @@ export default function WikiPage() {
         }
     }, [wikiSlugStr, pageSlugStr]);
 
+    useEffect(() => {
+        console.log("MenuBar: ", menubar);
+        console.log("SideBar: ", sidebar);
+    }, [menubar, sidebar])
+
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
@@ -361,7 +356,7 @@ export default function WikiPage() {
                         </title>
                         <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/wikis.module.css" />
                     </Head>
-                    {isEdit && isenabled ? (
+                    {isEdit ? (
                         <WikiEditPage
                             title={title}
                             setTitle={setTitle}
@@ -375,6 +370,7 @@ export default function WikiPage() {
                             editMode={editMode}
                             user={user}
                             router={router}
+                            isenabled={isenabled || false}
                         />
                     ) : (
                         <>
