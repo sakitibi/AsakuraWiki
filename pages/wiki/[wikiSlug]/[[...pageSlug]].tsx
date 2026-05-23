@@ -94,6 +94,7 @@ export default function WikiPage() {
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [isEdit, setIsEdit] = useState<boolean>(false);
+    const [previewText, setPreviewText] = useState<string>("");
     const [editContent, setEditContent] = useState<string>("");
     const [url, setUrl] = useState<URL | null>(null);
     const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
@@ -282,8 +283,9 @@ export default function WikiPage() {
             wikiSlugStr,
             pageSlugStr
         );
-    }, []);
-    const previewText = isEdit ? content : page?.content ?? ''
+        setPreviewText(isEdit ? content : page?.content ?? '');
+    }, [isEdit]);
+
     useEffect(() => {
         const fetchParsedPreview = async () => {
             if (!designColor) return;
@@ -305,6 +307,7 @@ export default function WikiPage() {
     useEffect(() => {
         setEditContent(content);
     }, [content]);
+
     useEffect(() => {
         if(cmdStr === "edit"){
             const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -336,11 +339,6 @@ export default function WikiPage() {
             location.replace(`/login/discord?client_id=${url.searchParams.get("client_id")}`);
         }
     }, [wikiSlugStr, pageSlugStr]);
-
-    useEffect(() => {
-        console.log("MenuBar: ", menubar);
-        console.log("SideBar: ", sidebar);
-    }, [menubar, sidebar])
 
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
