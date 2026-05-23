@@ -122,7 +122,7 @@ export default function WikiPage() {
             "",
             `/wiki/${wikiSlugStr}/${pageSlugStr}${location.search}`
         );
-    }, [url]);
+    }, [url, wikiSlugStr, pageSlugStr]);
     
     useEffect(() => {
         if (isBot) return;
