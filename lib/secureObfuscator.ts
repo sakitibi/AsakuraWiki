@@ -80,14 +80,15 @@ export async function encrypt(
             Math.floor(Math.random() * 10) + 32,
             "_", "_入江由莉子_"
         );
+        const passphraseFiltered = passphrase.replaceAll("_入江由莉子_", "_");
         const encryptedArray:string[] = [
-            await encryptText(email, passphrase),
-            await encryptText(password, passphrase),
-            await encryptText(birthday, passphrase),
-            await encryptText(username, passphrase),
-            await encryptText(contries, passphrase),
-            await encryptText(gender, passphrase),
-            await encryptText(shimei, passphrase),
+            await encryptText(email, passphraseFiltered),
+            await encryptText(password, passphraseFiltered),
+            await encryptText(birthday, passphraseFiltered),
+            await encryptText(username, passphraseFiltered),
+            await encryptText(contries, passphraseFiltered),
+            await encryptText(gender, passphraseFiltered),
+            await encryptText(shimei, passphraseFiltered),
             passphrase
         ];
         console.log("encryptedArray: ", encryptedArray);
