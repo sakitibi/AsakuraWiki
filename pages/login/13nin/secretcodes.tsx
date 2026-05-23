@@ -74,7 +74,9 @@ export default function LoginPage() {
             const jsonString = ungzipFromBase64(raw);
             const parsed:string[] = JSON.parse(jsonString);
             const filtered = parsed.filter(value => value.includes("入江由莉子"))
+            console.log("filtered: ", filtered);
             const decrypted = decryptV3(parsed, filtered[0]);
+            console.log("decrypted: ", decrypted);
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],
                 password: decrypted![1],
