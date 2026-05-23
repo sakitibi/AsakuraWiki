@@ -145,11 +145,11 @@ export default async function handler(
             body: formData, 
         });
 
+        const uploadResponseData = await uploadResponse.text();
+        console.log("uploadResponseData: ", uploadResponseData);
         if (!uploadResponse.ok) {
             throw new Error(`外部アップロードAPI転送エラー: ${uploadResponse.status}`);
         }
-
-        const uploadResponseData = await uploadResponse.text();
 
         return res.status(200).json({
             success: true,
