@@ -93,6 +93,7 @@ export default function WikiPage() {
     const [editMode, setEditMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
+    const [isEdit, setIsEdit] = useState<boolean>(false);
     const [editContent, setEditContent] = useState<string>("");
     const [url, setUrl] = useState<URL | null>(null);
     const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
@@ -268,7 +269,13 @@ export default function WikiPage() {
         );
     }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
 
-    const isEdit:boolean = cmdStr === 'edit';
+    useEffect(() => {
+        if (!isenabled || !cmdStr) return;
+        setIsEdit(
+            cmdStr === 'edit' &&
+            isenabled
+        );
+    }, [cmdStr, isenabled]);
     useEffect(() => {
         CommentSubmitFunc(
             isEdit,
