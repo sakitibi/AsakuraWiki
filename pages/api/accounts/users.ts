@@ -54,6 +54,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
                 )!
             ));
+            console.log("token: ", token);
             const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
             if (authError) console.error('Supabase auth error:', authError)
             if (user) userId = user.id
