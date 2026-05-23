@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { notuseUsername } from '@/utils/user_list';
-import { encryptedDataProps, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
+import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 import { encodeBase64Unicode, gzipAndBase64 } from '@/lib/base64';
 import upack from '@/node_modules/upack.js/src/index';
@@ -32,7 +32,7 @@ export default function SignUpPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:encryptedDataProps[] | undefined = await secureEncrypt(
+        const updatedInputs:string[] | undefined = await secureEncrypt(
             email, password, birthday, username, countries,
             gender, shimei
         );

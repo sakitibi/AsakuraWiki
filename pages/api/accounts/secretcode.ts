@@ -40,7 +40,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             );
             const { data, error } = await supabaseServer
                 .from('user_metadatas')
-                .select('metadatas,email')
+                .select('metadatas')
                 .eq("secretcode", secretcode)
                 .maybeSingle();
             if (error) return res.status(500).json({ error: error.message });

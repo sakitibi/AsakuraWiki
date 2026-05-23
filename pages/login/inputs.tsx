@@ -45,7 +45,7 @@ export default function AccountsSetup(){
                 return;
             }
             // メタデータ暗号化
-            const updatedInputs:encryptedDataProps[] | undefined = await secureEncrypt(
+            const updatedInputs:string[] | undefined = await secureEncrypt(
                 user?.email!, "null", birthday, username, countries,
                 gender, shimei
             );

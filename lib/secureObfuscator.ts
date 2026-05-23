@@ -1,9 +1,6 @@
 "use client"
 
-import {
-    decodeBase64Unicode as decodeBase64,
-    hexToUtf8 as HexDecode
-} from "@/lib/base64";
+import upack from "upack.js";
 
 export interface encryptedDataProps{
     salt: string;
@@ -20,7 +17,6 @@ export function getCookieValueByRegex(key: string) {
 }
 
 const b64ToBuf = (b64:string) => Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
-const bufToB64 = (buf:string) => btoa(String.fromCharCode(...new Uint8Array(buf as any)));
 
 async function deriveKeyFromPassphrase(passphrase:string, salt:ArrayBuffer, iterations:number, keyLen=256) {
     const enc = new TextEncoder();
@@ -40,23 +36,10 @@ function randomBytes(n:any){
     return a;
 }
 
-async function encryptText(plainText:string, passphrase:string, iterations:number, tagLength:number){
-    const enc = new TextEncoder();
-    const salt = randomBytes(16);
-    const iv = randomBytes(12);
-    const key = await deriveKeyFromPassphrase(passphrase, salt as any, iterations);
-    const ct = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv, tagLength: tagLength },
-        key,
-        enc.encode(plainText)
-    );
-    return {
-        salt: bufToB64(salt as any),
-        iv: bufToB64(iv as any),
-        iterations: iterations,
-        tagLength: tagLength,
-        ciphertext: bufToB64(ct as any)
-    };
+async function encryptText(plainText:string, passphrase:string){
+    const encoded = new TextEncoder().encode(plainText);
+    const encrypted = upack.SEncoder.encodeSEncode(encoded.buffer, passphrase);
+    return encrypted;
 }
 
 async function decryptObject(obj:encryptedDataProps, passphrase:string){
@@ -91,36 +74,26 @@ export async function encrypt(
     contries: string,
     gender: string,
     shimei: string
-): Promise<encryptedDataProps[] | undefined> {
+): Promise<string[] | undefined> {
     try{
-        const encryptedArray:encryptedDataProps[] = [
-            await encryptText(email, email, 100000, 128),
-            await encryptText(password, email, 100000, 128),
-            await encryptText(birthday, email, 100000, 128),
-            await encryptText(username, email, 100000, 128),
-            await encryptText(contries, email, 100000, 128),
-            await encryptText(gender, email, 100000, 128),
-            await encryptText(shimei, email, 100000, 128),
+        const passphrase = upack.SEncoder.randomGenerate(
+            Math.floor(Math.random() * 10) + 32,
+            "_", "_入江由莉子_"
+        );
+        const encryptedArray:string[] = [
+            await encryptText(email, passphrase),
+            await encryptText(password, passphrase),
+            await encryptText(birthday, passphrase),
+            await encryptText(username, passphrase),
+            await encryptText(contries, passphrase),
+            await encryptText(gender, passphrase),
+            await encryptText(shimei, passphrase),
+            passphrase
         ];
         console.log("encryptedArray: ", encryptedArray);
         return encryptedArray;
     } catch(e:any){
         console.error("EncryptedError: ", e);
-    }
-}
-
-export function decrypt(
-    encrypted:string
-): string {
-    try{
-        const decodeBase64Str = HexDecode(decodeBase64(encrypted))
-        console.log("decodeBase64Str: ", decodeBase64Str);
-        const plainStr:string = decodeBase64Str!.split("<")[1];
-        console.log("plainStr: ", plainStr)
-        return plainStr;
-    } catch(e:any){
-        console.error("error: ", e);
-        return String(e)
     }
 }
 
@@ -139,4 +112,19 @@ export async function decryptV2(
         console.error("DecryptV2Error: ", e);
         return;
     }
+}
+
+export function decryptV3(
+    encrypted: string[],
+    passphrase: string
+): string[] | undefined {
+    const decryptedArray = [];
+    for (let i = 0;i < encrypted.length;i++) {
+        const decrypted = upack.SEncoder.decodeSEncode(
+            encrypted[i],
+            passphrase.replaceAll("_入江由莉子_", "_")
+        );
+        decryptedArray.push(new TextDecoder().decode(decrypted));
+    }
+    return decryptedArray;
 }

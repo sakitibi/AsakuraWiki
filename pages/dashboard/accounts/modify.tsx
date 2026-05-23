@@ -53,7 +53,7 @@ export default function ModifyPage() {
             }
 
             // メタデータ暗号化
-            const updatedInputs: encryptedDataProps[] | undefined = await secureEncrypt(
+            const updatedInputs: string[] | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
                 gender, shimei
             );
@@ -73,7 +73,7 @@ export default function ModifyPage() {
                         .update({
                             metadatas: compressed,
                             email,
-                            version: 2
+                            version: 3
                         })
                         .eq("id", user.id);
 

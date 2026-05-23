@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { decryptV2, encryptedDataProps } from '@/lib/secureObfuscator';
+import { decryptV3 } from '@/lib/secureObfuscator';
 import { encodeBase64Unicode, ungzipFromBase64 } from "@/lib/base64";
 import Head from 'next/head';
 import upack from '@/node_modules/upack.js/src/index';
@@ -72,8 +72,9 @@ export default function LoginPage() {
             }
             const raw = fetched!.metadatas; // Supabaseから取得
             const jsonString = ungzipFromBase64(raw);
-            const parsed:encryptedDataProps[] = JSON.parse(jsonString);
-            const decrypted = await decryptV2(parsed, fetched!.email)
+            const parsed:string[] = JSON.parse(jsonString);
+            const filtered = parsed.filter(value => value.includes("入江由莉子"))
+            const decrypted = decryptV3(parsed, filtered[0]);
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],
                 password: decrypted![1],
