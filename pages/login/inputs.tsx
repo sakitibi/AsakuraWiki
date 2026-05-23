@@ -14,7 +14,7 @@ import upack from '@/node_modules/upack.js/src/index';
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
     const [countries, setCountries] = useState<CountrieTypes>('japan');
-    const [gender, setGender] = useState<GenderTypes>('men');
+    const [gender, setGender] = useState<GenderTypes>('man');
     const [username, setUsername] = useState<string>('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -146,7 +146,7 @@ export default function AccountsSetup(){
                                 }
                                 required
                             >
-                                <option selected value="men">男</option>
+                                <option selected value="man">男</option>
                                 <option value="woman">女</option>
                             </select>
                         </label>

@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { User } from '@supabase/auth-helpers-react';
 import { gzipAndBase64 } from '@/lib/base64';
 
-export type GenderTypes = "men" | "woman";
+export type GenderTypes = "man" | "woman";
 export type CountrieTypes = "japan" | "russia" | "others";
 
 export default function ModifyPage() {
@@ -14,7 +14,7 @@ export default function ModifyPage() {
     const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState('');
     const [countries, setCountries] = useState<CountrieTypes>('japan');
-    const [gender, setGender] = useState<GenderTypes>('men');
+    const [gender, setGender] = useState<GenderTypes>('man');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -177,7 +177,7 @@ export default function ModifyPage() {
                             }
                             required
                         >
-                            <option selected value="men">男</option>
+                            <option selected value="man">男</option>
                             <option value="woman">女</option>
                         </select>
                     </label>
