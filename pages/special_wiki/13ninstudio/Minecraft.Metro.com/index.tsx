@@ -99,6 +99,7 @@ export default function WikiPage() {
     const designColor:"default" = "default";
 
     useEffect(() => {
+        if (!document) return;
         document.body.classList.add('wiki-font');
         document.body.classList.add('default');
         return () => {
