@@ -31,27 +31,18 @@ export default async function handler(
         const rawBodyBuffer = Buffer.concat(chunks);
 
         const contentType = req.headers['content-type'] || '';
-        
-        const formData = new FormData();
-        
-        // 固定のテキストデータをセット
-        formData.append("ajax", "1");
-        formData.append("uuid", "ce89a9087415bd430bf5f78a14fe38c3");
-        formData.append("country", "JP");
+        const boundaryMatch = contentType.match(/boundary=(.+)/);
 
         let isFileExtracted = false;
+        let dynamicFileName = "uploaded_file.bin";
+        let fileBuffer: Buffer = Buffer.alloc(0);
 
-        const boundaryMatch = contentType.match(/boundary=(.+)/);
         if (boundaryMatch && rawBodyBuffer.length > 0) {
             const boundary = boundaryMatch[1];
-            
             const targetHeader = 'name="file_1"';
             const headerIndex = rawBodyBuffer.indexOf(Buffer.from(targetHeader));
 
             if (headerIndex !== -1) {
-                
-                // ファイル名を動的に抽出するロジック
-                let dynamicFileName = "uploaded_file.bin"; 
                 const filenameKey = 'filename="';
                 const filenameIndex = rawBodyBuffer.indexOf(Buffer.from(filenameKey), headerIndex);
 
@@ -70,65 +61,104 @@ export default async function handler(
                     }
                 }
 
-                // バイナリデータの開始位置（\r\n\r\n の後ろ）を取得
                 const delimiter = Buffer.from('\r\n\r\n');
                 const fileDataStartIndex = rawBodyBuffer.indexOf(delimiter, headerIndex) + delimiter.length;
-
-                // バイナリデータの終了位置（次のboundaryの直前：\r\n--boundary）を取得
                 const endBoundary = Buffer.from(`\r\n--${boundary}`);
                 const fileDataEndIndex = rawBodyBuffer.indexOf(endBoundary, fileDataStartIndex);
 
                 if (fileDataStartIndex !== -1 && fileDataEndIndex !== -1 && fileDataEndIndex > fileDataStartIndex) {
-                    const fileBuffer = rawBodyBuffer.subarray(fileDataStartIndex, fileDataEndIndex);
-                    
-                    const blob = new Blob([fileBuffer], { type: 'application/octet-stream' });
-                    formData.append("file_1", blob, dynamicFileName);
+                    fileBuffer = rawBodyBuffer.subarray(fileDataStartIndex, fileDataEndIndex);
                     isFileExtracted = true;
                 }
             }
         }
 
-        if (!isFileExtracted || !formData.has("file_1")) {
+        if (!isFileExtracted || fileBuffer.length === 0) {
             return res.status(400).json({
                 success: false,
                 error: "リクエストバイナリから必要なファイル(file_1)を検出できませんでした。"
             });
         }
 
-        const requestHeaders = new Headers();
+        const serverUrl = 'https://d.kuku.lu/_server.php';
         
-        requestHeaders.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0');
-        requestHeaders.set('accept', '*/*');
-        requestHeaders.set('accept-language', 'ja');
-        requestHeaders.set('referer', 'https://d.kuku.lu/');
-        requestHeaders.set('origin', 'https://d.kuku.lu');
-        requestHeaders.set('priority', 'u=1, i');
-        requestHeaders.set('sec-ch-ua', '"Chromium";v="148", "Microsoft Edge";v="148", "Not/A)Brand";v="99"');
-        requestHeaders.set('sec-ch-ua-mobile', '?0');
-        requestHeaders.set('sec-ch-ua-platform', '"macOS"');
-        requestHeaders.set('sec-fetch-dest', 'empty');
-        requestHeaders.set('sec-fetch-mode', 'cors');
-        requestHeaders.set('sec-fetch-site', 'same-site');
+        const serverHeaders = new Headers();
+        serverHeaders.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0');
+        serverHeaders.set('accept', 'application/json, text/javascript, */*; q=0.01');
+        serverHeaders.set('accept-language', 'ja');
+        serverHeaders.set('content-type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        serverHeaders.set('referer', 'https://d.kuku.lu/upload.php?uuid=');
+        serverHeaders.set('origin', 'https://d.kuku.lu');
+        serverHeaders.set('x-requested-with', 'XMLHttpRequest');
 
-        const targetUrl = 'https://tdc1-d.kuku.lu/upload.php'; 
-        
-        const response = await fetch(targetUrl, {
-            method: 'POST',
-            headers: requestHeaders,
-            body: formData,
+        const uploadFilesJson = JSON.stringify({
+            "0": {
+                "filename": dynamicFileName,
+                "size": fileBuffer.length
+            }
         });
 
-        if (!response.ok) {
-            throw new Error(`外部API転送エラー: ${response.status}`);
+        const serverBody = new URLSearchParams();
+        serverBody.set('action', 'getUploadURL');
+        serverBody.set('upload_files', uploadFilesJson);
+
+        console.log("URL発行APIにリクエストを送信中...");
+        const serverResponse = await fetch(serverUrl, {
+            method: 'POST',
+            headers: serverHeaders,
+            body: serverBody.toString()
+        });
+
+        if (!serverResponse.ok) {
+            throw new Error(`URL発行APIエラー: ${serverResponse.status}`);
         }
 
-        const responseData = await response.text();
+        const serverResponseJson = await serverResponse.json();
+        console.log("URL発行APIレスポンス取得完了:", serverResponseJson);
+
+        if (serverResponseJson.result !== "OK" || !serverResponseJson.servers || serverResponseJson.servers.length === 0) {
+            throw new Error("URL発行APIから有効なアップロード先URLを取得できませんでした。");
+        }
+
+        const targetUploadUrl = serverResponseJson.servers[0].url;
+        console.log(`動的アップロード先URLに決定しました: ${targetUploadUrl}`);
+
+        const formData = new FormData();
+        formData.append("ajax", "1");
+        formData.append("uuid", "ce89a9087415bd430bf5f78a14fe38c3");
+        formData.append("country", "JP");
+
+        const blob = new Blob([new Uint8Array(fileBuffer)], { type: 'application/octet-stream' });
+        formData.append("file_1", blob, dynamicFileName);
+
+        const uploadHeaders = new Headers();
+        uploadHeaders.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0');
+        uploadHeaders.set('accept', '*/*');
+        uploadHeaders.set('accept-language', 'ja');
+        uploadHeaders.set('referer', 'https://d.kuku.lu/');
+        uploadHeaders.set('origin', 'https://d.kuku.lu');
+
+        console.log("動的URLへバイナリファイルをアップロード中...");
+        const uploadResponse = await fetch(targetUploadUrl, {
+            method: 'POST',
+            headers: uploadHeaders,
+            body: formData, 
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error(`外部アップロードAPI転送エラー: ${uploadResponse.status}`);
+        }
+
+        const uploadResponseData = await uploadResponse.text();
 
         return res.status(200).json({
             success: true,
-            message: "ログのヘッダー情報を適用し、正常にデータを転送しました。",
-            extractedFileName: formData.get("file_1") instanceof File ? (formData.get("file_1") as File).name : "unknown",
-            apiResponse: responseData
+            message: "レスポンスからURLを動的に抽出し、ファイルのアップロードが正常に完了しました。",
+            extractedFileName: dynamicFileName,
+            fileSize: fileBuffer.length,
+            dynamicTargetUrl: targetUploadUrl,
+            serverApiResponse: serverResponseJson,
+            uploadApiResponse: uploadResponseData
         });
 
     } catch (error: any) {
