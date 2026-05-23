@@ -115,9 +115,9 @@ export default function WikiPage() {
         const params = localStorage.getItem("scaptcha_params") ?? url.searchParams.get("token");
         setScaptcha_params(params);
         history.replaceState(
-            { path: `/wiki/${wikiSlugStr}/${pageSlugStr}${location.search}` },
+            { path: location.href.replace(/[?&]token=([^&]+)/g, "") },
             "",
-            `/wiki/${wikiSlugStr}/${pageSlugStr}${location.search}`
+            location.href.replace(/[?&]token=([^&]+)/g, "")
         );
     }, [url]);
     
