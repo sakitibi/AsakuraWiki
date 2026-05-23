@@ -39,6 +39,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
     } else if (req.method === 'POST') {
         const { metadatas: dataArray } = req.body; // ここで配列を受け取る
+        console.log("dataArray: ", dataArray);
         if (!dataArray) {
             return res.status(400).json({ error: 'data must be a non-empty string' });
         }
