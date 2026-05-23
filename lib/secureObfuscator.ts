@@ -1,6 +1,6 @@
 "use client"
 
-import upack from "upack.js";
+import upack from '@/node_modules/upack.js/src/index';
 
 export interface encryptedDataProps{
     salt: string;
