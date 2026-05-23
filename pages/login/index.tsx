@@ -106,7 +106,7 @@ export default function LoginPage() {
                 <title>あさクラWikiにログイン</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: '500px', margin: 'auto' }}>
-                {isenabled ? (
+                {isenabled || isBot ? (
                     <>
                         <h1>
                             <i

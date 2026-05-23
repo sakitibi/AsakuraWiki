@@ -25,7 +25,7 @@ export default function About() {
         <>
             <Head>
                 <meta charSet='UTF-8'/>
-                <title>blocked by 13ninstudio</title>
+                <title>blocked by {company}</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
