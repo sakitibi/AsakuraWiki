@@ -10,6 +10,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    // CORSヘッダーの設定
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -38,10 +39,8 @@ export default async function handler(
         formData.append("uuid", "ce89a9087415bd430bf5f78a14fe38c3");
         formData.append("country", "JP");
 
-        // ファイルが正しく抽出できたかを管理するフラグ
         let isFileExtracted = false;
 
-        // 5. 生のバイナリ（rawBodyBuffer）から、file_1 のデータとファイル名を動的に抽出
         const boundaryMatch = contentType.match(/boundary=(.+)/);
         if (boundaryMatch && rawBodyBuffer.length > 0) {
             const boundary = boundaryMatch[1];
@@ -51,8 +50,8 @@ export default async function handler(
 
             if (headerIndex !== -1) {
                 
-                // --- ★ ファイル名を動的に抽出するロジック ---
-                let dynamicFileName = "uploaded_file.bin"; // 抽出失敗時のデフォルト名
+                // ファイル名を動的に抽出するロジック
+                let dynamicFileName = "uploaded_file.bin"; 
                 const filenameKey = 'filename="';
                 const filenameIndex = rawBodyBuffer.indexOf(Buffer.from(filenameKey), headerIndex);
 
@@ -62,20 +61,16 @@ export default async function handler(
                     
                     if (fileNameEndIndex !== -1 && fileNameEndIndex > fileNameStartIndex) {
                         const fileNameBuffer = rawBodyBuffer.subarray(fileNameStartIndex, fileNameEndIndex);
-                        
                         const rawFileNameStr = fileNameBuffer.toString('utf-8');
-                        
                         try {
                             dynamicFileName = decodeURIComponent(escape(rawFileNameStr));
                         } catch {
-                            // 変換できない場合はそのまま使用
                             dynamicFileName = rawFileNameStr;
                         }
                     }
                 }
-                // ------------------------------------------
 
-                // ヘッダー直後の、バイナリデータの開始位置（\r\n\r\n の後ろ）を取得
+                // バイナリデータの開始位置（\r\n\r\n の後ろ）を取得
                 const delimiter = Buffer.from('\r\n\r\n');
                 const fileDataStartIndex = rawBodyBuffer.indexOf(delimiter, headerIndex) + delimiter.length;
 
@@ -84,13 +79,9 @@ export default async function handler(
                 const fileDataEndIndex = rawBodyBuffer.indexOf(endBoundary, fileDataStartIndex);
 
                 if (fileDataStartIndex !== -1 && fileDataEndIndex !== -1 && fileDataEndIndex > fileDataStartIndex) {
-                    // 生のBufferから該当のバイナリ部分だけを切り出す
                     const fileBuffer = rawBodyBuffer.subarray(fileDataStartIndex, fileDataEndIndex);
                     
-                    // MIMEタイプを 'application/octet-stream' に指定してBlobを作成
                     const blob = new Blob([fileBuffer], { type: 'application/octet-stream' });
-
-                    // 抽出した動的なファイル名をセットしてFormDataに追加
                     formData.append("file_1", blob, dynamicFileName);
                     isFileExtracted = true;
                 }
@@ -104,10 +95,26 @@ export default async function handler(
             });
         }
 
-        const targetUrl = 'https://tdc1-d.kuku.lu/upload.php'; // 実際の送信先URLに書き換えてください
+        const requestHeaders = new Headers();
+        
+        requestHeaders.set('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0');
+        requestHeaders.set('accept', '*/*');
+        requestHeaders.set('accept-language', 'ja');
+        requestHeaders.set('referer', 'https://d.kuku.lu/');
+        requestHeaders.set('origin', 'https://d.kuku.lu');
+        requestHeaders.set('priority', 'u=1, i');
+        requestHeaders.set('sec-ch-ua', '"Chromium";v="148", "Microsoft Edge";v="148", "Not/A)Brand";v="99"');
+        requestHeaders.set('sec-ch-ua-mobile', '?0');
+        requestHeaders.set('sec-ch-ua-platform', '"macOS"');
+        requestHeaders.set('sec-fetch-dest', 'empty');
+        requestHeaders.set('sec-fetch-mode', 'cors');
+        requestHeaders.set('sec-fetch-site', 'same-site');
+
+        const targetUrl = 'https://tdc1-d.kuku.lu/upload.php'; 
         
         const response = await fetch(targetUrl, {
             method: 'POST',
+            headers: requestHeaders,
             body: formData,
         });
 
@@ -119,7 +126,7 @@ export default async function handler(
 
         return res.status(200).json({
             success: true,
-            message: "req.bodyのバイナリからファイル名とデータを動的に抽出し、正常に転送しました。",
+            message: "ログのヘッダー情報を適用し、正常にデータを転送しました。",
             extractedFileName: formData.get("file_1") instanceof File ? (formData.get("file_1") as File).name : "unknown",
             apiResponse: responseData
         });
