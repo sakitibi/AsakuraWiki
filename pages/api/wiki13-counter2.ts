@@ -50,21 +50,21 @@ export default async function handler(
         );
         const data1 = await response1.text();*/
         // 1. FormData オブジェクトを作成
-        /*const formData = new FormData();
+        const formData = new FormData();
 
         // 2. 取得した各項目を append で追加
         formData.append('reply_to', ''); // 空データもそのまま空文字で追加
         formData.append('anonymous', '1');
-        formData.append('nickname', 'マグロのユッケ');
-        formData.append('content', '緊急 [熟成牛タン](https://wikiwiki.jp/maitestu-net/熟成牛タン)っていう悪質な荒らしがいます。');
+        formData.append('nickname', 'さきちび');
+        formData.append('content', 'リストの背景色変えてー');
 
         // 3. fetch 送信
-        const response2 = await fetch('https://z.wikiwiki.jp/genshinwiki/topic/304', {
+        const response2 = await fetch('https://z.wikiwiki.jp/asakura-wiki/topic/1', {
             method: 'POST',
             body: formData,
         })
         const data2 = await response2.text();
-*/
+/*
         let digest: string | null = null;
         let browser: any = null;
 
@@ -200,7 +200,7 @@ export default async function handler(
             if (browser) await browser.close();
             console.error("システムエラー:", error.message);
             return res.status(500).json({ success: false, error: error.message });
-        }
+        }*/
 /*
         if (!response1.ok || !response2.ok) {
             return res.status(500).json({
@@ -208,6 +208,6 @@ export default async function handler(
                 data: `data1: , data2: ${data2}`
             });
         }*/
-        return res.status(200).json({success: true, data: digest});
+        return res.status(200).json({success: true, /*data: digest*/});
     }
 }
