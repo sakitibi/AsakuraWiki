@@ -62,7 +62,6 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
                 if (authError) console.error('Supabase auth error:', authError)
                 if (user) userId = user.id
-                if (user) userEmail = user.email!
             }
         }
         const { data, error } = await supabaseServer
@@ -70,8 +69,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         .insert([{
             id: userId,
             metadatas: dataArray,
-            secretcode: null,
-            email: userEmail
+            secretcode: null
         }])
         .select();
 
