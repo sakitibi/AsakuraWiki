@@ -48,17 +48,24 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         let userEmail: string | null = null;
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
-            const token = decodeBase64Unicode(new TextDecoder().decode(
-                upack.SEncoder.decodeSEncode(
-                    authHeader.split(' ')[1],
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
-                )!
-            ));
-            console.log("token: ", token);
-            const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
-            if (authError) console.error('Supabase auth error:', authError)
-            if (user) userId = user.id
-            if (user) userEmail = user.email!
+            const decryptedBuffer = upack.SEncoder.decodeSEncode(
+                authHeader.split(' ')[1],
+                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+            );
+
+            if (decryptedBuffer) {
+                const base64JwtStr = new TextDecoder().decode(decryptedBuffer);
+
+                const token = Buffer.from(base64JwtStr, 'base64').toString('utf-8');
+                
+                console.log("token: ", token);
+
+                // 3. 復元した通常のJWTトークンをSupabaseに渡す
+                const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
+                if (authError) console.error('Supabase auth error:', authError)
+                if (user) userId = user.id
+                if (user) userEmail = user.email!
+            }
         }
         const { data, error } = await supabaseServer
         .from('user_metadatas')
