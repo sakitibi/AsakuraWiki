@@ -3,7 +3,7 @@ import Link from 'next/link';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { useEffect, useState } from 'react';
 
-interface ScaptchaSessionProps{
+export interface ScaptchaSessionProps{
     data: string;
     id: string;
     created_at: string;

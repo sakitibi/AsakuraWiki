@@ -18,6 +18,7 @@ import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import { ScaptchaSessionProps } from '@/pages/login';
 
 // Chromium系判定
 export function isSafari() {
@@ -39,7 +40,11 @@ export function isSafari() {
 
 export default function WikiPage() {
     const router:NextRouter = useRouter()
+    const [isBot, setIsBot] = useState(true);
     const [user, setUser] = useState<User | null>(null);
+    const [scaptcha_params, setScaptcha_params] = useState<string | null>(null);
+    const [scaptcha_session, setScaptcha_session] = useState<ScaptchaSessionProps | null>(null);
+    const [isenabled, setIsenabled] = useState<boolean | null>(null);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
@@ -48,6 +53,24 @@ export default function WikiPage() {
                 setUser(data.user);
             }
         });
+    }, []);
+        /* ===============================
+        mount & bot detect
+    =============================== */
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            setIsBot(true);
+            return;
+        }
+
+        const ua = navigator.userAgent;
+        const bot =
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
+
+        setIsBot(bot);
+
+        console.log('[UA]', ua);
+        console.log('[isBot]', bot);
     }, []);
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;
     const cmdStr:string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
@@ -81,9 +104,69 @@ export default function WikiPage() {
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
+
     useEffect(() => {
+        if (isBot) return;
         setUrl(new URL(window.location.href));
-    }, []);
+    }, [isBot]);
+
+    useEffect(() => {
+        if (!url) return;
+        const params = localStorage.getItem("scaptcha_params") ?? url.searchParams.get("token");
+        setScaptcha_params(params);
+        history.replaceState(
+            { path: location.pathname },
+            "",
+            location.pathname
+        );
+    }, [url]);
+    
+    useEffect(() => {
+        if (isBot) return;
+        if (!scaptcha_params) return;
+        (async function(){
+            const res = await fetch("/api/scaptcha/token", {
+                method: "GET",
+                headers: {
+                    "x-scaptcha-session": scaptcha_params!
+                }
+            });
+            if (!res.ok) {
+                console.error("Error scaptcha tokenget failed.");
+                return;
+            }
+            setScaptcha_session(await res.json());
+        })();
+    }, [isBot, scaptcha_params]);
+
+    useEffect(() => {
+        if (!scaptcha_session || !scaptcha_params) {
+            setIsenabled(false);
+            return;
+        }
+        const date = new Date(scaptcha_session?.created_at).getTime();
+        const now = new Date().getTime();
+        (async function(){
+            if (now > date + 18e5) {
+                setIsenabled(false);
+                const res = await fetch("/api/scaptcha/token", {
+                    method: "DELETE",
+                    headers: {
+                        "x-scaptcha-session": scaptcha_params
+                    }
+                });
+                localStorage.removeItem("scaptcha_params");
+                if (!res.ok) {
+                    console.error("Error delete failed.");
+                }
+                return;
+            } else {
+                localStorage.setItem("scaptcha_params", scaptcha_params);
+                setIsenabled(true);
+            }
+        })();
+    }, [scaptcha_session]);
+
     useEffect(() => {
         if (!wikiSlugStr) return;
         fetchColor(
@@ -270,7 +353,7 @@ export default function WikiPage() {
                         </title>
                         <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/wikis.module.css" />
                     </Head>
-                    {isEdit ? (
+                    {isEdit && isenabled ? (
                         <WikiEditPage
                             title={title}
                             setTitle={setTitle}
