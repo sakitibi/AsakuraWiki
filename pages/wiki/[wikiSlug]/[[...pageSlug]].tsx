@@ -111,66 +111,6 @@ export default function WikiPage() {
     }, [isBot]);
 
     useEffect(() => {
-        if (
-            !url || !location ||
-            !wikiSlugStr || !pageSlugStr
-        ) return;
-        const params = localStorage.getItem("scaptcha_params") ?? url.searchParams.get("token");
-        setScaptcha_params(params);
-        history.replaceState(
-            { path: `/wiki/${wikiSlugStr}/${pageSlugStr}${location.search}` },
-            "",
-            `/wiki/${wikiSlugStr}/${pageSlugStr}${location.search}`
-        );
-    }, [url, wikiSlugStr, pageSlugStr]);
-    
-    useEffect(() => {
-        if (isBot) return;
-        if (!scaptcha_params) return;
-        (async function(){
-            const res = await fetch("/api/scaptcha/token", {
-                method: "GET",
-                headers: {
-                    "x-scaptcha-session": scaptcha_params!
-                }
-            });
-            if (!res.ok) {
-                console.error("Error scaptcha tokenget failed.");
-                return;
-            }
-            setScaptcha_session(await res.json());
-        })();
-    }, [isBot, scaptcha_params]);
-
-    useEffect(() => {
-        if (!scaptcha_session || !scaptcha_params) {
-            setIsenabled(false);
-            return;
-        }
-        const date = new Date(scaptcha_session?.created_at).getTime();
-        const now = new Date().getTime();
-        (async function(){
-            if (now > date + 18e5) {
-                setIsenabled(false);
-                const res = await fetch("/api/scaptcha/token", {
-                    method: "DELETE",
-                    headers: {
-                        "x-scaptcha-session": scaptcha_params
-                    }
-                });
-                localStorage.removeItem("scaptcha_params");
-                if (!res.ok) {
-                    console.error("Error delete failed.");
-                }
-                return;
-            } else {
-                localStorage.setItem("scaptcha_params", scaptcha_params);
-                setIsenabled(true);
-            }
-        })();
-    }, [scaptcha_session]);
-
-    useEffect(() => {
         if (!wikiSlugStr) return;
         fetchColor(
             wikiSlugStr,
@@ -370,7 +310,6 @@ export default function WikiPage() {
                             editMode={editMode}
                             user={user}
                             router={router}
-                            isenabled={isenabled || false}
                         />
                     ) : (
                         <>
