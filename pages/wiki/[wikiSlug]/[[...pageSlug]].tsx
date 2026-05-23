@@ -111,13 +111,13 @@ export default function WikiPage() {
     }, [isBot]);
 
     useEffect(() => {
-        if (!url) return;
+        if (!url || !location) return;
         const params = localStorage.getItem("scaptcha_params") ?? url.searchParams.get("token");
         setScaptcha_params(params);
         history.replaceState(
-            { path: location.pathname },
+            { path: `/wiki/${wikiSlugStr}/${pageSlugStr}${location.search}` },
             "",
-            location.pathname
+            `/wiki/${wikiSlugStr}/${pageSlugStr}${location.search}`
         );
     }, [url]);
     
