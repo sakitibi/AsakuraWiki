@@ -2,7 +2,6 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminerUserId } from '@/utils/user_list';
 import upack from '@/node_modules/upack.js/src/index';
-import { decodeBase64Unicode } from '@/lib/base64';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -48,16 +47,14 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         let userEmail: string | null = null;
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
+            const base64JwtStr = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf-8');
             const decryptedBuffer = upack.SEncoder.decodeSEncode(
-                authHeader.split(' ')[1],
+                base64JwtStr,
                 process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
             );
 
             if (decryptedBuffer) {
-                const base64JwtStr = new TextDecoder().decode(decryptedBuffer);
-
-                const token = Buffer.from(base64JwtStr, 'base64').toString('utf-8');
-                
+                const token = new TextDecoder().decode(decryptedBuffer);
                 console.log("token: ", token);
 
                 // 3. 復元した通常のJWTトークンをSupabaseに渡す
