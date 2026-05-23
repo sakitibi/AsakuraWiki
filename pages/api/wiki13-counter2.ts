@@ -208,6 +208,6 @@ export default async function handler(
                 data: `data1: , data2: ${data2}`
             });
         }*/
-        return res.status(200).json({success: true, /*data: digest*/});
+        return res.status(200).json({success: true, data: data2});
     }
 }
