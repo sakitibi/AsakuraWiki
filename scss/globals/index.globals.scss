@@ -75,7 +75,7 @@ input[type="checkbox"]{
     height:20px;
     border:2px solid #ccc;
     border-radius:4px;
-    position:relative
+    position:relative;
     &:checked{
         $color: #06b6d4;
         background: $color;
