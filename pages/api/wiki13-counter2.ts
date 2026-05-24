@@ -49,6 +49,8 @@ export default async function handler(
             }
         );
         const data1 = await response1.text();*/
+        const response1 = await fetch("https://z.wikiwiki.jp/asakura-wiki/topic/1");
+        const data1 = await response1.text();
         // 1. FormData オブジェクトを作成
         const formData = new FormData();
 
@@ -208,6 +210,6 @@ export default async function handler(
                 data: `data1: , data2: ${data2}`
             });
         }*/
-        return res.status(200).json({success: true, data: data2});
+        return res.status(200).json({success: true, data: [data1, data2]});
     }
 }
