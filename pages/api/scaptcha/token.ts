@@ -59,7 +59,8 @@ export default async function handler(
             <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/index.globals.css"/>
             </head><body><script>
             localStorage.removeItem("scaptcha_params");
-            location.replace("${redirect_url}?token=${body.secretToken}")
+            localStorage.setItem("scaptcha_params", ${body.secretToken});
+            location.replace("${redirect_url}");
             </script></body></html>`
         );
     } else if (req.method === "DELETE") {
