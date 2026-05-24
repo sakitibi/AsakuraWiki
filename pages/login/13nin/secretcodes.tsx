@@ -40,6 +40,7 @@ export default function LoginPage() {
             return null;
         }
     }
+    
     useEffect(() => {
         try{
             const session = localStorage.getItem("secretcodeSessions") ?? null;
@@ -50,6 +51,7 @@ export default function LoginPage() {
             console.error("SessionRestoreError: ", e);
         }
     }, []);
+
     const handleLogin = async (e: React.FormEvent) => {
         try{
             e.preventDefault();
