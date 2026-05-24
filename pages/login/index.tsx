@@ -14,7 +14,6 @@ export default function LoginPage() {
         Bot 判定（state）
     =============================== */
     const [isBot, setIsBot] = useState(true);
-    const [url, setUrl] = useState<URL | null>(null);
     const [scaptcha_params, setScaptcha_params] = useState<string | null>(null);
     const [scaptcha_session, setScaptcha_session] = useState<ScaptchaSessionProps | null>(null);
     const [isenabled, setIsenabled] = useState<boolean | null>(null);
@@ -39,20 +38,9 @@ export default function LoginPage() {
     }, []);
 
     useEffect(() => {
-        if (isBot) return;
-        setUrl(new URL(window.location.href));
-    }, [isBot]);
-
-    useEffect(() => {
-        if (!url) return;
-        const params = localStorage.getItem("scaptcha_params") ?? url.searchParams.get("token");
+        const params = localStorage.getItem("scaptcha_params");
         setScaptcha_params(params);
-        history.replaceState(
-            { path: location.pathname },
-            "",
-            location.pathname
-        );
-    }, [url]);
+    }, []);
     
     useEffect(() => {
         if (isBot) return;
