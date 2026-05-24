@@ -6,8 +6,27 @@ import Head from 'next/head';
 import { encodeBase64Unicode, gzipAndBase64 } from '@/lib/base64';
 import upack from '@/node_modules/upack.js/src/index';
 
-export type GenderTypes = "man" | "woman";
+export type GenderTypes = "man" | "woman" | "boy" | "girl";
 export type CountrieTypes = "japan" | "russia" | "others";
+export interface BirthDayProps {
+    year: number;
+    month: number;
+    date: number;
+}
+
+export function getAge(birthday: BirthDayProps) {
+    // 今日の日付
+    const today = new Date();
+    // 今年の誕生日の日付
+    const thisYearsBirthday = new Date(today.getFullYear(), birthday.month - 1, birthday.date);
+    // 年齢を計算
+    let age = today.getFullYear() - birthday.year;
+    // 誕生日がまだ来ていない場合、年齢を1引く
+    if (today < thisYearsBirthday) {
+        age--;
+    }
+    return age;
+}
 
 export default function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -29,6 +48,16 @@ export default function SignUpPage() {
             setErrorMsg('このユーザー名は使用出来ません。');
             setLoading(false);
             return;
+        }
+
+        const checkerBirthday: BirthDayProps = {
+            year: parseInt(birthday.split("-")[0], 10),
+            month: parseInt(birthday.split("-")[1], 10),
+            date: parseInt(birthday.split("-")[2], 10)
+        }
+
+        if (getAge(checkerBirthday) < 18) {
+            setGender(gender === "woman" ? "girl" : "boy");
         }
 
         // メタデータ暗号化
