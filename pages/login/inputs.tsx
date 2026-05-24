@@ -60,7 +60,7 @@ export default function AccountsSetup(){
                 // メタデータ暗号化
                 const updatedInputs:string[] | undefined = await secureEncrypt(
                     user?.email!, "null", birthday, username, countries,
-                    gender, shimei
+                    gender === "woman" ? "girl" : "boy", shimei
                 );
                 // 暗号化メタデータ送信
                 try {

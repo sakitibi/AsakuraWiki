@@ -64,7 +64,7 @@ export default function SignUpPage() {
         setTimeout(async () => {
             const updatedInputs:string[] | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
-                gender, shimei
+                gender === "woman" ? "girl" : "boy", shimei
             );
 
             // Supabase にユーザー登録（email/passwordは平文でOK）

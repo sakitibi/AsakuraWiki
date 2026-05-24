@@ -64,7 +64,7 @@ export default function ModifyPage() {
                 // メタデータ暗号化
                 const updatedInputs: string[] | undefined = await secureEncrypt(
                     email, password, birthday, username, countries,
-                    gender, shimei
+                    gender === "woman" ? "girl" : "boy", shimei
                 );
 
                 // 暗号化メタデータ送信
