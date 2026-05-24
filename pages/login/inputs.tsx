@@ -49,8 +49,6 @@ export default function AccountsSetup(){
                 month: parseInt(birthday.split("-")[1], 10),
                 date: parseInt(birthday.split("-")[2], 10)
             }
-
-            console.log("checkerBirthday: ", checkerBirthday);
     
             if (getAge(checkerBirthday) < 18) {
                 setGender(gender === "woman" ? "girl" : "boy");
