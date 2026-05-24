@@ -60,7 +60,7 @@ export default async function handler(
             </head><body><script>
             localStorage.removeItem("scaptcha_params");
             localStorage.setItem("scaptcha_params", "${body.secretToken}");
-            location.replace("/login");
+            location.replace("${redirect_url}");
             </script></body></html>`
         );
     } else if (req.method === "DELETE") {
