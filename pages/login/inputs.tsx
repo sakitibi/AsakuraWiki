@@ -54,49 +54,51 @@ export default function AccountsSetup(){
                 setGender(gender === "woman" ? "girl" : "boy");
             }
 
-            // メタデータ暗号化
-            const updatedInputs:string[] | undefined = await secureEncrypt(
-                user?.email!, "null", birthday, username, countries,
-                gender, shimei
-            );
-            // 暗号化メタデータ送信
-            try {
-                if (!updatedInputs) {
-                    setErrorMsg("暗号化に失敗しました");
+            setTimeout(async () => {
+                // メタデータ暗号化
+                const updatedInputs:string[] | undefined = await secureEncrypt(
+                    user?.email!, "null", birthday, username, countries,
+                    gender, shimei
+                );
+                // 暗号化メタデータ送信
+                try {
+                    if (!updatedInputs) {
+                        setErrorMsg("暗号化に失敗しました");
+                        setLoading(false);
+                        return;
+                    }
+
+                    const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
+                    if (updatedInputs) {
+                        const session = await supabaseClient.auth.getSession();
+                        const token = encodeBase64Unicode(await upack.SEncoder.encodeSEncode(
+                            (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
+                            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+                        ));
+                        const res = await fetch('/api/accounts/users', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ metadatas: compressed }),
+                        });
+                        const newItem = await res.json();
+                        if(!res.ok){
+                            console.error("Error: ", newItem);
+                            return;
+                        }
+                        setUserMeta([...userMeta, newItem]);
+                        window.location.replace('/dashboard');
+                    }
+                } catch (e) {
+                    console.error("メタデータ送信エラー: ", e);
+                    setErrorMsg('メタデータの送信に失敗しました');
                     setLoading(false);
                     return;
                 }
-
-                const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
-                if (updatedInputs) {
-                    const session = await supabaseClient.auth.getSession();
-                    const token = encodeBase64Unicode(await upack.SEncoder.encodeSEncode(
-                        (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
-                        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
-                    ));
-                    const res = await fetch('/api/accounts/users', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ metadatas: compressed }),
-                    });
-                    const newItem = await res.json();
-                    if(!res.ok){
-                        console.error("Error: ", newItem);
-                        return;
-                    }
-                    setUserMeta([...userMeta, newItem]);
-                    window.location.replace('/dashboard');
-                }
-            } catch (e) {
-                console.error("メタデータ送信エラー: ", e);
-                setErrorMsg('メタデータの送信に失敗しました');
                 setLoading(false);
-                return;
-            }
-            setLoading(false);
+            }, 1000);
         }
     };
     const UserFetched = async() => {

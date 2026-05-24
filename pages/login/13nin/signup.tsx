@@ -61,66 +61,68 @@ export default function SignUpPage() {
         }
 
         // メタデータ暗号化
-        const updatedInputs:string[] | undefined = await secureEncrypt(
-            email, password, birthday, username, countries,
-            gender, shimei
-        );
+        setTimeout(async () => {
+            const updatedInputs:string[] | undefined = await secureEncrypt(
+                email, password, birthday, username, countries,
+                gender, shimei
+            );
 
-        // Supabase にユーザー登録（email/passwordは平文でOK）
-        const { data, error } = await supabaseClient.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    username,
-                    birthday,
-                    countries,
-                    shimei,
-                    gender
+            // Supabase にユーザー登録（email/passwordは平文でOK）
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        username,
+                        birthday,
+                        countries,
+                        shimei,
+                        gender
+                    }
                 }
-            }
-        });
+            });
 
-        if (error || !data.user) {
-            setErrorMsg(error?.message || '登録失敗');
-            setLoading(false);
-            return;
-        }
-
-        // 暗号化メタデータ送信
-        try {
-            if (!updatedInputs) {
-                setErrorMsg("暗号化に失敗しました");
+            if (error || !data.user) {
+                setErrorMsg(error?.message || '登録失敗');
                 setLoading(false);
                 return;
             }
-            const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
-            if (updatedInputs) {
-                const session = await supabaseClient.auth.getSession();
-                const token = encodeBase64Unicode(await upack.SEncoder.encodeSEncode(
-                    (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
-                )!);
-                const res = await fetch('/api/accounts/users', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ metadatas: compressed }),
-                });
-                const newItem = await res.json();
-                setUserMeta([...userMeta, newItem]);
-            }
-        } catch (e) {
-            console.error("メタデータ送信エラー: ", e);
-            setErrorMsg('メタデータの送信に失敗しました');
-            setLoading(false);
-            return;
-        }
 
-        setLoading(false);
-        window.location.href = '/dashboard';
+            // 暗号化メタデータ送信
+            try {
+                if (!updatedInputs) {
+                    setErrorMsg("暗号化に失敗しました");
+                    setLoading(false);
+                    return;
+                }
+                const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
+                if (updatedInputs) {
+                    const session = await supabaseClient.auth.getSession();
+                    const token = encodeBase64Unicode(await upack.SEncoder.encodeSEncode(
+                        (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
+                        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+                    )!);
+                    const res = await fetch('/api/accounts/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ metadatas: compressed }),
+                    });
+                    const newItem = await res.json();
+                    setUserMeta([...userMeta, newItem]);
+                }
+            } catch (e) {
+                console.error("メタデータ送信エラー: ", e);
+                setErrorMsg('メタデータの送信に失敗しました');
+                setLoading(false);
+                return;
+            }
+
+            setLoading(false);
+            window.location.href = '/dashboard';
+        }, 1000);
     };
 
     return (

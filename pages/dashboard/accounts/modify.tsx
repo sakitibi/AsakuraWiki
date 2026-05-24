@@ -60,80 +60,82 @@ export default function ModifyPage() {
                 setGender(gender === "woman" ? "girl" : "boy");
             }
 
-            // メタデータ暗号化
-            const updatedInputs: string[] | undefined = await secureEncrypt(
-                email, password, birthday, username, countries,
-                gender, shimei
-            );
+            setTimeout(async () => {
+                // メタデータ暗号化
+                const updatedInputs: string[] | undefined = await secureEncrypt(
+                    email, password, birthday, username, countries,
+                    gender, shimei
+                );
 
-            // 暗号化メタデータ送信
-            try {
-                if (!updatedInputs) {
-                    setErrorMsg("暗号化に失敗しました");
+                // 暗号化メタデータ送信
+                try {
+                    if (!updatedInputs) {
+                        setErrorMsg("暗号化に失敗しました");
+                        setLoading(false);
+                        return;
+                    }
+
+                    const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
+                    if (updatedInputs) {
+                        const { error } = await supabaseClient
+                            .from("user_metadatas")
+                            .update({
+                                metadatas: compressed,
+                                email,
+                                version: 3
+                            })
+                            .eq("id", user.id);
+
+                        if (error) {
+                            setErrorMsg(error.message);
+                            setLoading(false);
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.error("メタデータ送信エラー: ", e);
+                    setErrorMsg('メタデータの送信に失敗しました');
                     setLoading(false);
                     return;
                 }
 
-                const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
-                if (updatedInputs) {
-                    const { error } = await supabaseClient
-                        .from("user_metadatas")
-                        .update({
-                            metadatas: compressed,
-                            email,
-                            version: 3
-                        })
-                        .eq("id", user.id);
+                const updateAuth: {
+                    email?: string
+                    password?: string
+                } = {}
 
-                    if (error) {
-                        setErrorMsg(error.message);
-                        setLoading(false);
-                        return;
+                if (password && password.length >= 6) {
+                    updateAuth.password = password
+                }
+
+                if (email && email !== initialEmail) {
+                    updateAuth.email = email
+                }
+
+                if (Object.keys(updateAuth).length > 0) {
+                    const res = await fetch('/api/accounts/update-auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId: user.id,
+                            email: updateAuth.email,
+                            password: updateAuth.password,
+                        }),
+                    })
+
+                    const json = await res.json();
+
+                    if (!res.ok) {
+                        setErrorMsg(json.error ?? 'Auth更新に失敗しました')
+                        setLoading(false)
+                        return
                     }
                 }
-            } catch (e) {
-                console.error("メタデータ送信エラー: ", e);
-                setErrorMsg('メタデータの送信に失敗しました');
                 setLoading(false);
-                return;
-            }
-
-            const updateAuth: {
-                email?: string
-                password?: string
-            } = {}
-
-            if (password && password.length >= 6) {
-                updateAuth.password = password
-            }
-
-            if (email && email !== initialEmail) {
-                updateAuth.email = email
-            }
-
-            if (Object.keys(updateAuth).length > 0) {
-                const res = await fetch('/api/accounts/update-auth', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userId: user.id,
-                        email: updateAuth.email,
-                        password: updateAuth.password,
-                    }),
-                })
-
-                const json = await res.json();
-
-                if (!res.ok) {
-                    setErrorMsg(json.error ?? 'Auth更新に失敗しました')
-                    setLoading(false)
-                    return
-                }
-            }
-            setLoading(false);
-            window.location.href = '/dashboard';
+                window.location.href = '/dashboard';
+            }, 1000);
         } catch(e){
             console.error("Error: ", e);
             setLoading(false);
