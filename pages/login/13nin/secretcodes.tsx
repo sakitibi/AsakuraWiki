@@ -73,9 +73,11 @@ export default function LoginPage() {
             const raw = fetched!.metadatas; // Supabaseから取得
             const jsonString = ungzipFromBase64(raw);
             const parsed:string[] = JSON.parse(jsonString);
-            const filtered = parsed.filter(value => value.includes("入江由莉子"))
-            console.log("filtered: ", filtered);
-            const decrypted = await decryptV3(parsed, filtered[0]);
+            const filtered = [
+                parsed.filter(value => value.includes("入江由莉子")),
+                parsed.filter(value => !value.includes("入江由莉子"))
+            ];
+            const decrypted = await decryptV3(filtered[1], filtered[0][0]);
             console.log("decrypted: ", decrypted);
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],
