@@ -68,6 +68,21 @@ header{
     display: block;
 }
 
+input[type="checkbox"]{
+    appearance:none;
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border:2px solid #ccc;
+    border-radius:4px;
+    position:relative
+    &:checked{
+        $color: #06b6d4;
+        background: $color;
+        border-color: $color;
+    }
+}
+
 $spacers: (
     0: 0,
     1: .25rem,
