@@ -19,7 +19,6 @@ export default function LoginPage() {
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
                 )!
             );
-            console.log("encrypted: ", encrypted);
             const res = await fetch("/api/accounts/secretcode", {
                 method: 'GET',
                 headers: {
@@ -57,7 +56,6 @@ export default function LoginPage() {
             setLoading(true);
             setErrorMsg('');
             const fetched = await secretCodeAPIFetched();
-            console.log("fetched: ", fetched);
             if (!fetched) {
                 setErrorMsg("ログイン情報が取得できませんでした");
                 setLoading(false);
@@ -78,12 +76,10 @@ export default function LoginPage() {
                 parsed.filter(value => !value.includes("入江由莉子"))
             ];
             const decrypted = await decryptV3(filtered[1], filtered[0][0]);
-            console.log("decrypted: ", decrypted);
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
+            const { error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],
                 password: decrypted![1],
             });
-            console.log('Login Data:', data);
             console.log('Login Error:', error);
             setLoading(false);
             if (error) {
