@@ -59,7 +59,7 @@ export default async function handler(
             <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/index.globals.css"/>
             </head><body><script>
             localStorage.removeItem("scaptcha_params");
-            localStorage.setItem("scaptcha_params", ${body.secretToken});
+            localStorage.setItem("scaptcha_params", "${body.secretToken}");
             location.replace("/login");
             </script></body></html>`
         );
