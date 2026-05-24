@@ -163,7 +163,7 @@ export default function SignUpPage() {
                     <label>
                         性別
                         <select
-                            value={gender}
+                            value={gender === "woman" || gender === "girl" ? "woman" : "man"}
                             onChange={(e) =>
                                 setGender(e.target.value as GenderTypes)
                             }
