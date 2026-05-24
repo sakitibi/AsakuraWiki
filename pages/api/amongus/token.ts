@@ -36,7 +36,7 @@ export default async function handler(
         if (!data.value || isOneHourEarlier(date)) {
             return res.status(500).json({error: "token is null"});
         }
-        const encrypted = upack.SEncoder.encodeSEncode(
+        const encrypted = await upack.SEncoder.encodeSEncode(
             new TextEncoder().encode(data.value).buffer,
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
         )

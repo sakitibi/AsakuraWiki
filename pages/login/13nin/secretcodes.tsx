@@ -14,7 +14,7 @@ export default function LoginPage() {
         try {
             // セキュリティの為に独自エンコードを導入
             const encrypted = encodeBase64Unicode(
-                upack.SEncoder.encodeSEncode(
+                await upack.SEncoder.encodeSEncode(
                     new TextEncoder().encode(secretCode.trim()).buffer,
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
                 )!
@@ -75,7 +75,7 @@ export default function LoginPage() {
             const parsed:string[] = JSON.parse(jsonString);
             const filtered = parsed.filter(value => value.includes("入江由莉子"))
             console.log("filtered: ", filtered);
-            const decrypted = decryptV3(parsed, filtered[0]);
+            const decrypted = await decryptV3(parsed, filtered[0]);
             console.log("decrypted: ", decrypted);
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],

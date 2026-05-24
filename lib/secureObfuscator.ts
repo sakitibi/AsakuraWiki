@@ -76,7 +76,7 @@ export async function encrypt(
     shimei: string
 ): Promise<string[] | undefined> {
     try{
-        const passphrase = upack.SEncoder.randomGenerate(
+        const passphrase = await upack.SEncoder.randomGenerate(
             Math.floor(Math.random() * 10) + 32,
             "_", "_入江由莉子_"
         );
@@ -115,13 +115,13 @@ export async function decryptV2(
     }
 }
 
-export function decryptV3(
+export async function decryptV3(
     encrypted: string[],
     passphrase: string
-): string[] | undefined {
+): Promise<string[] | undefined> {
     const decryptedArray = [];
     for (let i = 0;i < encrypted.length;i++) {
-        const decrypted = upack.SEncoder.decodeSEncode(
+        const decrypted = await upack.SEncoder.decodeSEncode(
             encrypted[i],
             passphrase.replaceAll("_入江由莉子_", "_")
         );

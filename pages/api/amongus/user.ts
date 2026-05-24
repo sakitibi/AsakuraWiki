@@ -15,7 +15,7 @@ export default async function handler(
     }
     const data1 = await res1.json();
     const auth_token_raw = 
-        upack.SEncoder.decodeSEncode(
+        await upack.SEncoder.decodeSEncode(
             data1.token,
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
         );
@@ -51,7 +51,7 @@ export default async function handler(
     );
     const data2 = await response.text();
     const auth_token_with_lobby = 
-    upack.SEncoder.encodeSEncode(
+    await upack.SEncoder.encodeSEncode(
         new TextEncoder().encode(data2).buffer,
         process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
     );

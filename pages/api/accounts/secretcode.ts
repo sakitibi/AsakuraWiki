@@ -33,7 +33,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         try {
             // ====== 認証ユーザー取得 ======
             const secretcode = new TextDecoder().decode(
-                upack.SEncoder.decodeSEncode(
+                await upack.SEncoder.decodeSEncode(
                     decodeBase64Unicode(req.headers.authorization ?? ""),
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
                 )!

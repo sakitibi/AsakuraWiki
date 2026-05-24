@@ -44,19 +44,16 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
         // ====== 認証ユーザー取得 ======
         let userId: string | null = null
-        let userEmail: string | null = null;
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
             const base64JwtStr = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf-8');
-            const decryptedBuffer = upack.SEncoder.decodeSEncode(
+            const decryptedBuffer = await upack.SEncoder.decodeSEncode(
                 base64JwtStr,
                 process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
             );
 
             if (decryptedBuffer) {
-                console.log("decryptedBuffer: ", decryptedBuffer);
                 const token = new TextDecoder().decode(decryptedBuffer);
-                console.log("token: ", token);
 
                 // 3. 復元した通常のJWTトークンをSupabaseに渡す
                 const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)

@@ -60,7 +60,7 @@ export default function AccountsSetup(){
                 const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
                 if (updatedInputs) {
                     const session = await supabaseClient.auth.getSession();
-                    const token = encodeBase64Unicode(upack.SEncoder.encodeSEncode(
+                    const token = encodeBase64Unicode(await upack.SEncoder.encodeSEncode(
                         (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
                         process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
                     ));
