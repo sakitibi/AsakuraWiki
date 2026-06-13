@@ -1,0 +1,127 @@
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
+import Script from 'next/script';
+import { User } from '@supabase/supabase-js';
+import { supabaseClient } from '@/lib/supabaseClient';
+import { asakuraMenberUserId } from '@/utils/user_list';
+
+export default function AmongusOthersRoomJoinedLogs() {
+    const designColor: "default" = "default";
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
+    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
+
+    // 初期表示
+    useEffect(() => {
+        if(typeof document !== "undefined"){
+            document.body.classList.add('wiki-font');
+            document.body.classList.add('default');
+            return () => {
+                document.body.classList.remove('wiki-font');
+                document.body.classList.remove('default');
+            };
+        }
+    }, [designColor]);
+
+    return (
+        <>
+            <Head>
+                <title>Amongusの13人TVの他配信者さんの部屋での試合記録</title>
+            </Head>
+            <div id="contents-wrapper" style={{display: 'flex'}}>
+                <div id="container" style={{display: 'flex'}}>
+                    <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
+                        <div id="body">
+                            <h1>Amongusの13人TVの他配信者さんの部屋での試合記録</h1>
+                            <p><a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">ルールはこちら</a></p>
+                            <p>該当の他配信者さんが<a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">ルール</a>や<a href="/policies">利用規約</a>に違反した場合は削除されます。</p>
+                            <div id="live_logs">
+                                <section id="UC1HxHVAadoOwBN6k5oozGcw">
+                                    <p><a href="https://youtube.com/channel/UC1HxHVAadoOwBN6k5oozGcw">國産わっふる さん</a></p>
+                                    <ul>
+                                        <li>
+                                            <a href="https://youtu.be/YksfzqGF1dk?t=3153">
+                                                2026/04/04 23:48 ~ 2026/04/04 23:52 13人TV = 緑: クルー<br/>
+                                                インポスター: ローズ
+                                                かくれんぼモード
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://youtu.be/YksfzqGF1dk?t=2726">
+                                                2026/04/04 23:41 ~ 2026/04/04 23:44 13人TV = 緑: クルー<br/>
+                                                インポスター: 紫
+                                                かくれんぼモード
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://youtu.be/YksfzqGF1dk?t=2020">
+                                                2026/04/04 23:29 ~ 2026/04/04 23:33 13人TV = 緑: クルー<br/>
+                                                インポスター: シアン
+                                                かくれんぼモード
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://youtu.be/YksfzqGF1dk?t=1514">
+                                                2026/04/04 23:21 ~ 2026/04/04 23:25 13人TV = 緑: クルー<br/>
+                                                インポスター: オレンジ
+                                                かくれんぼモード
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://youtu.be/YksfzqGF1dk?t=1008">
+                                                2026/04/04 23:12 ~ 2026/04/04 23:16 13人TV = 緑: クルー<br/>
+                                                インポスター: 赤
+                                                かくれんぼモード
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://youtu.be/YksfzqGF1dk?t=675">
+                                                2026/04/04 23:07 ~ 2026/04/04 23:11 13人TV = 緑: クルー<br/>
+                                                インポスター: コーラル
+                                                かくれんぼモード
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://youtu.be/4cvEH0iubLg?t=9656">
+                                                2026/01/27 23:57 ~ 2026/01/28 0:23 13人TV = 緑: ノイズメーカー<br/>
+                                                インポスター: 黄色、ライム、グレー
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://youtu.be/4cvEH0iubLg?t=8508">
+                                                2026/01/27 23:37 ~ 2026/01/27 23:52 13人TV = 緑: 亡霊<br/>
+                                                インポスター: 緑、バナナ、紫
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </section>
+                            </div>
+                        </div>
+                        <br/>
+                        <div id="ad-container" style={{ textAlign: 'center' }}>
+                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
+                        </div>
+                    </article>
+                    {asakura_member_list_found ? null : (
+                        <>
+                            <Script
+                                src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_main.js'
+                            />
+                            <Script
+                                src='https://sakitibi.github.io/13ninadmanager.com/js/13nin_vignette_v2_util.js'
+                            />    
+                        </>
+                    )}
+                </div>
+            </div>
+        </>
+    );
+}

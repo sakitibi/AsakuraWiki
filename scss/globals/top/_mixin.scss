@@ -1,0 +1,61 @@
+// ブレイクポイントの定義
+$breakpoints: (
+    'sm': 576px,
+    'md': 768px,
+    'lg': 992px,
+    'xl': 1200px
+);
+
+// メディアクエリ用のミキシン
+@mixin mq($breakpoint) {
+    @media (width >= map-get($breakpoints, $breakpoint)) {
+        @content;
+    }
+}
+
+// 背景アニメーションのベース
+@mixin background($font-weight: bold) {
+    background-size: 200% 100%;
+    background-attachment: fixed;
+    animation: bg-color 20s linear infinite;
+    font-style: normal;
+    font-weight: $font-weight;
+}
+
+@mixin position($bgcolor1, $bgcolor2) {
+    background-image: linear-gradient(to left, $bgcolor1, $bgcolor2);
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    transition: filter 0.3s ease, transform 0.1s ease;
+}
+
+// 共通のグラデーション背景スタイル
+%gradient-body-base {
+    font-size: 15px;
+    @include background;
+}
+
+@mixin defaultGreen {
+    background-image: linear-gradient(to right, #11998e, #38ef7d, #11998e);
+    @extend %gradient-body-base;
+}
+
+@mixin purple {
+    background-image: linear-gradient(to right, #0f0c20, #33243e, #3a0077, #33243e, #0f0c20);
+    @extend %gradient-body-base;
+}
+
+@mixin snowly($font-weight: bold) {
+    background-image: linear-gradient(to right, #82eeff, #26c7f3, #82eeff);
+    font-size: 15px;
+    @include background($font-weight);
+}
+
+@mixin menubar($bgcolor) {
+    background-color: $bgcolor;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    padding: 5px;
+}

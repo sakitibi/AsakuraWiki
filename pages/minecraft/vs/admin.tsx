@@ -1,0 +1,237 @@
+import Head from "next/head"
+import styles from '@/css/index.module.css';
+import HeaderJp from '@/utils/pageParts/top/jp/Header';
+import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
+import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
+import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import MenuJp from '@/utils/pageParts/top/jp/Menu';
+import React, { useState, useEffect } from "react";
+import { adminerUserId } from "@/utils/user_list";
+import { supabaseClient } from "@/lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
+
+export default function MinecraftVSAdminer(){
+    const [menuStatus, setMenuStatus] = useState<boolean>(false);
+    const [UserId, setUserId] = useState<any>(null);
+    const [UserName, setUserName] = useState<string | null>(null);
+    const [Teams, setTeams] = useState<'ハンターズ' | 'ランナーズ' | null>(null);
+    const [EditMode, setEditMode] = useState<'add' | 'edit'>('add');
+    const [Score, setScore] = useState<number>(0);
+    const [liveLink, setLiveLink] = useState<string | null>(null);
+    useEffect(() => {
+        if(typeof document !== "undefined"){
+            document.body.style.overflow = menuStatus ? "hidden" : "";
+            return () => {
+                document.body.style.overflow = "";
+            };
+        }
+    }, [menuStatus]);
+    const handleClick = () => {
+        setMenuStatus(prev => !prev);
+    };
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data, error }) => {
+            console.log('[getUser]', { data, error });
+
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
+    const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
+    useEffect(() => {
+        if (!Teams) return; // null のときは fetch しない
+        const fetchData = async () => {
+            const { error } = await supabaseClient
+                .from("minecraft_vs_hunt-and-run")
+                .select("team_total")
+                .eq("team", Teams)
+                .maybeSingle();
+            if (error) return console.error(error);
+        };
+        fetchData();
+    }, [Teams]);
+    const AddUsers = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // 必須チェック
+        if (!UserId || !UserName || !Teams) {
+            console.error("UserId, UserName, Teams must be set");
+            return;
+        }
+
+        try {
+            if (EditMode === "add") {
+                // チーム合計を取得（既存ユーザー分）
+                let newTeamScore = Score ?? 0;
+                const { data: teamData, error: teamError } = await supabaseClient
+                    .from("minecraft_vs_hunt-and-run")
+                    .select("team_total")
+                    .eq("team", Teams);
+
+                if (teamError) throw teamError;
+                if (teamData) {
+                    const sum = teamData.reduce((acc, item) => acc + (item.team_total ?? 0), 0);
+                    newTeamScore += sum;
+                }
+
+                // 新規ユーザー追加
+                const { data, error } = await supabaseClient
+                    .from("minecraft_vs_hunt-and-run")
+                    .insert([{
+                        user_name: UserName,
+                        user_id: UserId,
+                        team: Teams ?? 'ハンターズ',
+                        score: Score ?? 0,
+                        team_total: newTeamScore,
+                        live_link: liveLink
+                    }])
+                    .select();
+
+                if (error) throw error;
+                console.log("Insert result:", data);
+
+            } else { // edit モード
+                // 現在のチーム合計から対象ユーザーの古い score を除く
+                let newTeamScore = Score ?? 0;
+                const { data: teamData, error: teamError } = await supabaseClient
+                    .from("minecraft_vs_hunt-and-run")
+                    .select("user_name, score, team_total")
+                    .eq("team", Teams);
+
+                if (teamError) throw teamError;
+                if (teamData) {
+                    const sum = teamData
+                        .filter(item => item.user_name !== UserName)
+                        .reduce((acc, item) => acc + (item.score ?? 0), 0);
+                    newTeamScore += sum;
+                }
+
+                // ユーザー更新
+                const { error } = await supabaseClient
+                    .from("minecraft_vs_hunt-and-run")
+                    .update({
+                        user_name: UserName,
+                        team: Teams,
+                        score: Score ?? 0,
+                        team_total: newTeamScore
+                    })
+                    .eq('user_name', UserName); // ユーザー名 を条件に更新
+
+                if (error) throw error;
+                console.log(`User ${UserName} updated`);
+            }
+        } catch (err: any) {
+            console.error("Error in AddUsers:", err.message || err);
+        }
+    };
+    return(
+        <>
+            <Head>
+                <title>マイクラバーサス ハント・アンド・ラン 公式</title>
+            </Head>
+            <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
+            <div className={styles.contentsWrapper}>
+                <HeaderJp handleClick={handleClick}/>
+                <div className={styles.contents}>
+                    <LeftMenuJp URL="/minecraft/vs/admin" rupages="false"/>
+                    <main style={{ padding: '2rem', flex: 1 }}>
+                        {adminer_user_id_list ? (
+                            <>
+                                <h1>マイクラバーサス ハント・アンド・ラン 管理画面</h1>
+                                <div id="user_adds">
+                                    <h2>ユーザー{EditMode === "edit" ? (
+                                        <span>編集</span>
+                                    ) : (
+                                        <span>追加</span>
+                                    )}
+                                    </h2>
+                                    <form onSubmit={AddUsers}>
+                                        <label>
+                                            ユーザーid(uuid)
+                                            <input
+                                                type="text"
+                                                required
+                                                onChange={(e) => setUserId(e.target.value)}
+                                                disabled={EditMode === "edit"}
+                                            />
+                                        </label>
+                                        <br/>
+                                        <label>
+                                            ユーザー名
+                                            <input
+                                                type="text"
+                                                required
+                                                onChange={(e) => setUserName(e.target.value)}
+                                            />
+                                        </label>
+                                        <br/>
+                                        <label>
+                                            チーム
+                                            <br/>
+                                            <select
+                                                onChange={(e) => setTeams(e.target.value as 'ハンターズ' | 'ランナーズ')}
+                                                required
+                                            >
+                                                <option value="ハンターズ" selected>ハンターズ</option>
+                                                <option value="ランナーズ">ランナーズ</option>
+                                            </select>
+                                        </label>
+                                        <br/>
+                                        <label>
+                                            スコア追加(マイナスで減点)
+                                            <input
+                                                type="number"
+                                                required
+                                                onChange={(e) => setScore(Number(e.target.value))}
+                                            />
+                                        </label>
+                                        <br/>
+                                        <label>
+                                            配信リンク
+                                            <input
+                                                type="text"
+                                                required
+                                                onChange={(e) => setLiveLink(e.target.value)}
+                                                disabled={EditMode === "edit"}
+                                            />
+                                        </label>
+                                        <br/>
+                                        <label>
+                                            追加または編集
+                                            <br/>
+                                            <select
+                                                onChange={(e) => setEditMode(e.target.value as 'add' | 'edit')}
+                                                required
+                                            >
+                                                <option value="add">追加</option>
+                                                <option value="edit">編集</option>
+                                            </select>
+                                        </label>
+                                        <br/>
+                                        <button type="submit">
+                                            <span>ユーザーを{EditMode === "edit" ? (
+                                                <span>編集</span>
+                                            ) : (
+                                                <span>追加</span>
+                                            )}
+                                            </span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <h1>403 Forbidden</h1>
+                                <p>あなたにはこのページを表示する権限がありません、</p>
+                            </>
+                        )}
+                    </main>
+                    <RightMenuJp/>
+                </div>
+                <FooterJp/>
+            </div>
+        </>
+    )
+}

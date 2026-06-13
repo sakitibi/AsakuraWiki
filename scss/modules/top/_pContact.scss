@@ -1,0 +1,18 @@
+/* pContact系統 */
+@use 'pCommon';
+
+.pContact {
+    @include pCommon.pCommon(
+        #deeffc
+    );
+}
+
+.pContact__title {
+    @include pCommon.pCommon__title(#51738f);
+}
+
+.pContact__item {
+    > a {
+        @include pCommon.pCommon__item(#51738f, "blue");
+    }
+}
