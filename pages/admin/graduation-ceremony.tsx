@@ -51,7 +51,7 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
         label: '門出の言葉', 
         phase: 'KADODE', 
         message: '門出の言葉 音楽: 旅立ちの日に', 
-        soundFile: 'retirement_closing.mp3', 
+        soundFile: 'retirement_closing_1.mp3', 
         color: 'bg-emerald-800',
         description: 'BGM：旅立ちの日に'
     },
