@@ -12,11 +12,9 @@ try {
         fs.readFileSync(`${dirPath}/${filtered[0]}/_buildManifest.js`)
     );
     const sliced = JSON.parse(buildManifestFile.slice(24, buildManifestFile.length - 55));
-    console.log("sliced: ", sliced);
-    const rootBase = new TextDecoder().decode(
+    const rootBase = JSON.parse(new TextDecoder().decode(
         fs.readFileSync(`/vercel/path0/.next/output/static/_next/${sliced["/"][0]}`)
-    );
-    console.log("rootBase: ", rootBase);
+    ).slice(35, a.length - 1));
 } catch (err) {
     console.error('エラーが発生しました:', err);
 }
