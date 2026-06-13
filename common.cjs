@@ -9,7 +9,7 @@ const dirPath = '/vercel/path0/.next/output/static/_next/static';
 try {
     const files = fs.readdirSync(dirPath);
     console.log("files: ", files);
-    const filtered = files.filter(value => value !== "chunks");
+    const filtered = files.filter(value => value !== "chunks" && value !== "not-found.txt");
     console.log("filtered: ", filtered);
 } catch (err) {
     console.error('エラーが発生しました:', err);
