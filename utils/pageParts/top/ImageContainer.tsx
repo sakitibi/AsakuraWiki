@@ -47,7 +47,8 @@ export default function ImageContainer() {
             setRandomImage(images[randomIndex]);
         }
 
-        if (!blockedIP_list_found) {
+        if (blockedIP_list_found) {
+            console.error("当サイトにアクセスする権限がありません。");
             setOpacity(1);
             return;
         }
@@ -60,7 +61,7 @@ export default function ImageContainer() {
     }, [randomImage, blockedIP_list_found]);
 
     useEffect(() => {
-        if (!blockedIP_list_found) return;
+        if (blockedIP_list_found) return;
 
         const fadeOutTimer = setTimeout(() => {
             setOpacity(0);
