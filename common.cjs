@@ -14,9 +14,10 @@ try {
     const sliced = JSON.parse(buildManifestFile.slice(24, buildManifestFile.length - 55));
     const rootBase = new TextDecoder().decode(
         fs.readFileSync(`/vercel/path0/.next/output/static/_next/${sliced["/"][0]}`)
-    );
+    ).trim();
+    console.log("rootBase: ", rootBase)
     const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
-    console.log("rootBase: ", rootBase);
+    console.log("rootBaseParsed: ", rootBaseParsed);
 } catch (err) {
     console.error('エラーが発生しました:', err);
 }
