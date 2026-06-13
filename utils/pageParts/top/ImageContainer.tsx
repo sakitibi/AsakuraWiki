@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 
-interface ImageContainerProps{
+interface ImageContainerProps {
     freeze?: boolean;
 }
 
 export default function ImageContainer({ freeze }: ImageContainerProps) {
+    const exists = typeof window !== "undefined" && !!document.getElementById("images-container");
+    if (exists) {
+        return null;
+    }
+
     const images: string[] = [];
     for (let i = 1; i <= 5; i++) {
         images.push(`https://sakitibi.github.io/AsakuraWiki-Images/title/${i}.png`);
@@ -14,20 +19,14 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
     const [opacity, setOpacity] = useState(0);
 
     useEffect(() => {
-        // freeze が true のときは、既に画像があっても強制的に不透明度を 1 に固定する
-        if (freeze) {
-            if (!randomImage) {
-                const randomIndex = Math.floor(Math.random() * images.length);
-                setRandomImage(images[randomIndex]);
-            }
-            setOpacity(1);
-            return;
-        }
-
-        // freeze が false の場合の通常フェードイン処理
         if (!randomImage) {
             const randomIndex = Math.floor(Math.random() * images.length);
             setRandomImage(images[randomIndex]);
+        }
+
+        if (freeze) {
+            setOpacity(1);
+            return;
         }
 
         const fadeInTimer = setTimeout(() => {
@@ -38,14 +37,14 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
     }, [freeze, randomImage]);
 
     useEffect(() => {
-        if (freeze) return; // freeze のときはフェードアウトさせない
+        if (freeze) return;
 
         const fadeOutTimer = setTimeout(() => {
             setOpacity(0);
         }, 4500);
 
         return () => clearTimeout(fadeOutTimer);
-    }, [freeze, randomImage]); // randomImage が変わったときもタイマーをリセット
+    }, [freeze, randomImage]);
 
     if (!randomImage) return null;
 
@@ -62,7 +61,7 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
                 overflow: 'hidden',
                 opacity: opacity,
                 transition: 'opacity 1500ms ease-in-out',
-                pointerEvents: freeze ? 'auto' : 'none' 
+                pointerEvents: freeze ? 'auto' : 'none'
             }}
         >
             <img 
@@ -71,7 +70,7 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
                 style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'fill',
+                    objectFit: 'fill'
                 }}
                 onSelect={() => {return false}}
                 onMouseDown={() => {return false}}
