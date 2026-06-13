@@ -7,6 +7,26 @@ export default function ImageContainer() {
     const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
+    /* ===============================
+        Bot 判定（state）
+    =============================== */
+    const [isBot, setIsBot] = useState(true);
+
+    /* ===============================
+        mount & UA 判定
+    =============================== */
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            setIsBot(true);
+            return;
+        }
+
+        const ua = navigator.userAgent;
+        const bot =
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
+
+        setIsBot(bot);
+    }, []);
 
     const shouldBlock = typeof window !== "undefined" && !randomImage && (() => {
         const existingEl = document.getElementById("images-container");
@@ -73,37 +93,41 @@ export default function ImageContainer() {
     if (!randomImage) return null;
 
     return (
-        <div 
-            id="images-container" 
-            style={{ 
-                position: 'fixed', 
-                top: 0,
-                left: 0,
-                width: '100vw',
-                height: '100vh',
-                zIndex: 99999,
-                overflow: 'hidden',
-                opacity: opacity,
-                transition: 'opacity 1500ms ease-in-out',
-                pointerEvents: opacity ? 'auto' : 'none',
-                userSelect: 'none',
-                WebkitUserSelect: 'none'
-            }}
-        >
-            <img 
-                src={randomImage} 
-                alt="background" 
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'fill',
-                    pointerEvents: 'none', 
-                    userSelect: 'none',
-                    WebkitUserSelect: 'none'
-                }}
-                onDragStart={(e) => e.preventDefault()}
-                onContextMenu={(e) => e.preventDefault()}
-            />
-        </div>
+        <>
+            {isBot ? null : (
+                <div 
+                    id="images-container" 
+                    style={{ 
+                        position: 'fixed', 
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        zIndex: 99999,
+                        overflow: 'hidden',
+                        opacity: opacity,
+                        transition: 'opacity 1500ms ease-in-out',
+                        pointerEvents: opacity ? 'auto' : 'none',
+                        userSelect: 'none',
+                        WebkitUserSelect: 'none'
+                    }}
+                >
+                    <img 
+                        src={randomImage} 
+                        alt="background" 
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'fill',
+                            pointerEvents: 'none', 
+                            userSelect: 'none',
+                            WebkitUserSelect: 'none'
+                        }}
+                        onDragStart={(e) => e.preventDefault()}
+                        onContextMenu={(e) => e.preventDefault()}
+                    />
+                </div>
+            )}
+        </>
     );
 }
