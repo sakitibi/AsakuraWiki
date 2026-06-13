@@ -61,7 +61,7 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
                 overflow: 'hidden',
                 opacity: opacity,
                 transition: 'opacity 1500ms ease-in-out',
-                pointerEvents: freeze ? 'auto' : 'none'
+                pointerEvents: 'none'
             }}
         >
             <img 
