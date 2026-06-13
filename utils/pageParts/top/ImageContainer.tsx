@@ -96,8 +96,8 @@ export default function ImageContainer() {
                     height: '100%',
                     objectFit: 'fill'
                 }}
-                onSelect={() => false}
-                onMouseDown={() => false}
+                onSelect={() => {return false}}
+                onMouseDown={() => {return false}}
             />
         </div>
     );
