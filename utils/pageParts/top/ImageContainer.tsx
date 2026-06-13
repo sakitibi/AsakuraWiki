@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-export default function ImageContainer() {
+interface ImageContainerProps{
+    freeze?: boolean;
+}
+
+export default function ImageContainer({ freeze }: ImageContainerProps) {
     const images: string[] = [];
     for (let i = 1; i <= 5; i++) {
         images.push(`https://sakitibi.github.io/AsakuraWiki-Images/title/${i}.png`);
@@ -16,9 +20,11 @@ export default function ImageContainer() {
         const fadeInTimer = setTimeout(() => {
             setOpacity(1);
         }, 100); // レンダリング直後に実行するための僅かなディレイ
-
+        
         const fadeOutTimer = setTimeout(() => {
-            setOpacity(0);
+            if (!freeze) {
+                setOpacity(0);
+            }
         }, 4500);
 
         return () => {
