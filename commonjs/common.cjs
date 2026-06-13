@@ -1,12 +1,29 @@
 const fs = require('fs');
 const path = require('path');
-const upack = require('./node_modules/upack.js/dist/cjs/index.cjs');
-const upack_js = require('./upack_template.cjs');
+const upack = require('../node_modules/upack.js/dist/cjs/index.cjs');
+const upack_js, { pako } = require('./upack_template.cjs');
+
+// 調べたいディレクトリの絶対パス
+const dirPath = '/vercel/path0/.next/output/static/_next';
+const upackSecretKey = "AsakuraWiki";
+
+async function encrypt(FilePath) {
+    const File = new TextDecoder().decode(
+        fs.readFileSync(`${dirPath}/${FilePath}`)
+    ).trim();
+    const FileSplited = File.split("\n\n");
+    const FileEncoded = await upack.SEncoder.encodeSEncode(
+        new TextEncoder().encode(FileSplited[0]),
+        upackSecretKey,
+        10
+    );
+    const FileJavascriptCode = `${upack_js}
+    (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode("${FileEncoded}", "${upackSecretKey}", 10)))})()`;
+    const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + FileSplited[1];
+    return FileJavascriptFullVersion;
+}
 
 (async function(){
-    // 調べたいディレクトリの絶対パス
-    const dirPath = '/vercel/path0/.next/output/static/_next';
-    const upackSecretKey = "AsakuraWiki";
     try {
         const files = fs.readdirSync(`${dirPath}/static`);
         const filtered = files.filter(value => value !== "chunks" && value !== "not-found.txt");
@@ -20,21 +37,9 @@ const upack_js = require('./upack_template.cjs');
         ).trim();
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
         const indexHTMLFilePath1 = rootBaseParsed[0];
-        const indexHTMLFile1 = new TextDecoder().decode(
-            fs.readFileSync(`${dirPath}/${indexHTMLFilePath1}`)
-        ).trim();
-        const indexHTMLFile1Splited = indexHTMLFile1.split("\n\n");
-        const indexHTMLFile1Encoded = await upack.SEncoder.encodeSEncode(
-            new TextEncoder().encode(indexHTMLFile1Splited[0]),
-            upackSecretKey,
-            10
-        );
-        const indexHTMLFile1JavascriptCode = `${upack_js}
-        (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode("${indexHTMLFile1Encoded}", "${upackSecretKey}", 10)))})()`;
-        const indexHTMLFile1JavascriptFullVersion = indexHTMLFile1JavascriptCode + "\n\n" + indexHTMLFile1Splited[1];
         fs.writeFileSync(
             `${dirPath}/${indexHTMLFilePath1}`,
-            indexHTMLFile1JavascriptFullVersion,
+            await encrypt(indexHTMLFilePath1),
             {
                 encoding: 'utf8',
                 flag: 'w'
