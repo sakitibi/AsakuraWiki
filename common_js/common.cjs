@@ -18,7 +18,7 @@ async function encrypt(FilePath) {
         upackSecretKey,
         10
     );
-    const compressedBuffer = zlib.gzipSync(originalText, { level: zlib.constants.Z_BEST_COMPRESSION });
+    const compressedBuffer = zlib.gzipSync(FileEncoded, { level: zlib.constants.Z_BEST_COMPRESSION });
 
     const rawHexString = compressedBuffer.toString('hex');
 
