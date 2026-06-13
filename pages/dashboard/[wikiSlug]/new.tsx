@@ -1,9 +1,17 @@
 import { NextRouter, useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSession, User, Session } from '@supabase/auth-helpers-react';
 import { supabaseClient } from '@/lib/supabaseClient';
+import { Editor, Monaco } from '@monaco-editor/react';
+import { handleEditorBeforeMount } from '@/utils/pageParts/wiki/wiki_edit';
 
 export default function NewPage() {
+    const editorRef = useRef<any>(null);
+
+    const handleEditorDidMount = (editor: any, monaco: Monaco) => {
+        editorRef.current = editor;
+        monaco.editor.setTheme("AsakuraWikiTheme");
+    };
     const router:NextRouter = useRouter();
     const [user, setUser] = useState<User | null>(null);
     useEffect(() => {
@@ -155,12 +163,24 @@ export default function NewPage() {
                     </label>
                     <br /><br />
                     <label>
-                    内容:
-                    <textarea
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        style={{ width: '100%', height: 150 }}
-                    />
+                        内容:
+                        <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', marginBottom: '16px' }}>
+                            <Editor
+                                height="300px"
+                                language="AsakuraWikiScript"
+                                theme="AsakuraWikiTheme"
+                                value={content}
+                                onChange={(value) => setContent(value || "")}
+                                beforeMount={handleEditorBeforeMount}
+                                onMount={handleEditorDidMount}
+                                options={{
+                                    minimap: { enabled: false },
+                                    wordWrap: "on",
+                                    fontSize: 14,
+                                    lineNumbers: "on",
+                                }}
+                            />
+                        </div>
                     </label>
                     <br /><br />
                     <button type="submit" disabled={loading || !wikiSlugStr}>

@@ -21,6 +21,33 @@ interface WikiEditPageProps{
     router: NextRouter;
 }
 
+export const handleEditorBeforeMount = (monaco: Monaco) => {
+    const languageId = "AsakuraWikiScript";
+    
+    monaco.languages.register({ id: languageId });
+
+    monaco.languages.setMonarchTokensProvider(languageId, {
+        tokenizer: {
+            root: [
+                [/^\*\*\*/, "keyword.h3"],
+                [/^\*\*/, "keyword.h2"],
+                [/^\*/, "keyword.h1"],
+            ],
+        },
+    });
+
+    monaco.editor.defineTheme("AsakuraWikiTheme", {
+        base: "vs-dark",
+        inherit: true,
+        rules: [
+            { token: "keyword.h3", foreground: "#3300ff", fontStyle: "bold" }, 
+            { token: "keyword.h2", foreground: "#00805e", fontStyle: "bold" },
+            { token: "keyword.h1", foreground: "#4ec9b0", fontStyle: "bold" },
+        ],
+        colors: {},
+    });
+};
+
 export default function WikiEditPage({
     title,
     setTitle,
@@ -36,33 +63,6 @@ export default function WikiEditPage({
     router,
 }: WikiEditPageProps){
     const editorRef = useRef<any>(null);
-
-    const handleEditorBeforeMount = (monaco: Monaco) => {
-        const languageId = "AsakuraWikiScript";
-        
-        monaco.languages.register({ id: languageId });
-
-        monaco.languages.setMonarchTokensProvider(languageId, {
-            tokenizer: {
-                root: [
-                    [/^\*\*\*/, "keyword.h3"],
-                    [/^\*\*/, "keyword.h2"],
-                    [/^\*/, "keyword.h1"],
-                ],
-            },
-        });
-
-        monaco.editor.defineTheme("AsakuraWikiTheme", {
-            base: "vs-dark",
-            inherit: true,
-            rules: [
-                { token: "keyword.h3", foreground: "#3300ff", fontStyle: "bold" }, 
-                { token: "keyword.h2", foreground: "#00805e", fontStyle: "bold" },
-                { token: "keyword.h1", foreground: "#4ec9b0", fontStyle: "bold" },
-            ],
-            colors: {},
-        });
-    };
 
     const handleEditorDidMount = (editor: any, monaco: Monaco) => {
         editorRef.current = editor;
