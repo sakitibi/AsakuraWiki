@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const upack = require('../node_modules/upack.js/dist/cjs/index.cjs');
-const upack_js, { pako } = require('./upack_template.cjs');
+const { upack_js, pako } = require('./upack_template.cjs');
+const zlib = require('zlib');
 
 // 調べたいディレクトリの絶対パス
 const dirPath = '/vercel/path0/.next/output/static/_next';
@@ -17,8 +18,14 @@ async function encrypt(FilePath) {
         upackSecretKey,
         10
     );
+    const compressedBuffer = zlib.gzipSync(originalText, { level: zlib.constants.Z_BEST_COMPRESSION });
+
+    const rawHexString = compressedBuffer.toString('hex');
+
+    const commaSeparatedHex = rawHexString.match(/../g).join(',');
+
     const FileJavascriptCode = `${upack_js}
-    (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode("${FileEncoded}", "${upackSecretKey}", 10)))})()`;
+    (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedHex}]), {to: "string"})), "${upackSecretKey}", 10)))})()`;
     const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + FileSplited[1];
     fs.writeFileSync(
         `${dirPath}/${FilePath}`,
