@@ -5,7 +5,10 @@ interface ImageContainerProps {
 }
 
 export default function ImageContainer({ freeze }: ImageContainerProps) {
-    sessionStorage.setItem("blocked", "true");
+    if (freeze && typeof sessionStorage !== "undefined") {
+        sessionStorage.setItem("blocked", "true");
+    }
+
     const exists = typeof window !== "undefined" && !!document.getElementById("images-container");
     if (exists) {
         return null;
