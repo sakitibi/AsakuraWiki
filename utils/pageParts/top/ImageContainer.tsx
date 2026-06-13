@@ -4,7 +4,11 @@ import { blockedIP } from "@/utils/user_list";
 import { useEffect, useState } from "react";
 
 export default function ImageContainer() {
-    const shouldBlock = typeof window !== "undefined" && (() => {
+    const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
+    const [randomImage, setRandomImage] = useState<string | null>(null);
+    const [opacity, setOpacity] = useState(0);
+
+    const shouldBlock = typeof window !== "undefined" && !randomImage && (() => {
         const existingEl = document.getElementById("images-container");
         if (!existingEl) return false;
         const currentOpacity = window.getComputedStyle(existingEl).opacity;
@@ -19,10 +23,6 @@ export default function ImageContainer() {
     for (let i = 1; i <= 5; i++) {
         images.push(`https://sakitibi.github.io/AsakuraWiki-Images/title/${i}.png`);
     }
-
-    const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
-    const [randomImage, setRandomImage] = useState<string | null>(null);
-    const [opacity, setOpacity] = useState(0);
 
     useEffect(() => {
         const fetchIP = async () => {
@@ -52,7 +52,6 @@ export default function ImageContainer() {
             return;
         }
 
-        // 通常時のフェードイン
         const fadeInTimer = setTimeout(() => {
             setOpacity(1);
         }, 100);
