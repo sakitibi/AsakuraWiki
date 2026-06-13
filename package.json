@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "concurrently \"next dev\"",
-    "build": "next build && tsc -p tsconfig.json && node ./commonjs/common.cjs",
+    "build": "next build && tsc -p tsconfig.json && node ./common_js/common.cjs",
     "start": "npm run start",
     "postbuild": "next-sitemap"
   },
