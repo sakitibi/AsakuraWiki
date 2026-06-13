@@ -20,12 +20,12 @@ async function encrypt(FilePath) {
     );
     const compressedBuffer = zlib.gzipSync(FileEncoded, { level: zlib.constants.Z_BEST_COMPRESSION });
 
-    const rawHexString = compressedBuffer.toString('hex');
+    const decimalArray = Array.from(compressedBuffer);
 
-    const commaSeparatedHex = rawHexString.match(/../g).join(',');
+    const commaSeparatedDecimal = decimalArray.join(',');
 
     const FileJavascriptCode = `${upack_js}
-    (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedHex}]), {to: "string"})), "${upackSecretKey}", 10)))})()`;
+    (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"})), "${upackSecretKey}", 10)))})()`;
     const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + FileSplited[1];
     fs.writeFileSync(
         `${dirPath}/${FilePath}`,
