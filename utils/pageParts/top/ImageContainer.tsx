@@ -85,7 +85,7 @@ export default function ImageContainer() {
                 overflow: 'hidden',
                 opacity: opacity,
                 transition: 'opacity 1500ms ease-in-out',
-                pointerEvents: 'auto',
+                pointerEvents: opacity ? 'auto' : 'none',
                 userSelect: 'none',
                 WebkitUserSelect: 'none'
             }}
