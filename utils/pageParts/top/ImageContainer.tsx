@@ -85,7 +85,9 @@ export default function ImageContainer() {
                 overflow: 'hidden',
                 opacity: opacity,
                 transition: 'opacity 1500ms ease-in-out',
-                pointerEvents: 'auto'
+                pointerEvents: 'auto',
+                userSelect: 'none',
+                WebkitUserSelect: 'none'
             }}
         >
             <img 
@@ -94,10 +96,13 @@ export default function ImageContainer() {
                 style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'fill'
+                    objectFit: 'fill',
+                    pointerEvents: 'none', 
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none'
                 }}
-                onSelect={() => {return false}}
-                onMouseDown={() => {return false}}
+                onDragStart={(e) => e.preventDefault()}
+                onContextMenu={(e) => e.preventDefault()}
             />
         </div>
     );
