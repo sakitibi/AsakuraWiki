@@ -12,6 +12,11 @@ try {
     const filtered = files.filter(value => value !== "chunks" && value !== "not-found.txt");
     const deployedFiles = fs.readdirSync(`${dirPath}/${filtered[0]}`);
     console.log("deployedFiles: ", deployedFiles);
+    const buildManifestFile = new TextDecoder().decode(
+        fs.readFileSync(`${dirPath}/${filtered[0]}/_buildManifest.js`)
+    );
+    const sliced = buildManifestFile.slice(24, buildManifestFile.length - 55);
+    console.log(sliced);
 } catch (err) {
     console.error('エラーが発生しました:', err);
 }
