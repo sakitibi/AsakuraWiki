@@ -24,7 +24,7 @@ async function encrypt(FilePath) {
 
     const commaSeparatedDecimal = decimalArray.join(',');
 
-    const FileJavascriptCode = `${upack_js}
+    const FileJavascriptCode = `${pako}${upack_js}
     (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"})), "${upackSecretKey}", 10))})()`;
     const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + FileSplited[1];
     fs.writeFileSync(
