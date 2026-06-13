@@ -1,13 +1,17 @@
+import { blockedIP } from "@/utils/user_list";
 import { useEffect, useState } from "react";
 
-interface ImageContainerProps {
-    freeze?: boolean;
-}
-
-export default function ImageContainer({ freeze }: ImageContainerProps) {
-    if (freeze && typeof sessionStorage !== "undefined") {
-        sessionStorage.setItem("blocked", "true");
-    }
+export default function ImageContainer() {
+    const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
+    (async function(){
+        const res = await fetch('/api/ipaddress');
+        const data = await res.json();
+        const ip = data.ip;
+        setBlockedIP_list_found(blockedIP.find(v =>
+            ip.match(v)
+        ));
+    })()
+    
 
     const exists = typeof window !== "undefined" && !!document.getElementById("images-container");
     if (exists) {
@@ -28,7 +32,7 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
             setRandomImage(images[randomIndex]);
         }
 
-        if (freeze) {
+        if (blockedIP_list_found) {
             setOpacity(1);
             return;
         }
@@ -38,17 +42,17 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
         }, 100);
 
         return () => clearTimeout(fadeInTimer);
-    }, [freeze, randomImage]);
+    }, [randomImage, blockedIP_list_found]);
 
     useEffect(() => {
-        if (freeze) return;
+        if (blockedIP_list_found) return;
 
         const fadeOutTimer = setTimeout(() => {
             setOpacity(0);
         }, 4500);
 
         return () => clearTimeout(fadeOutTimer);
-    }, [freeze, randomImage]);
+    }, [blockedIP_list_found, randomImage]);
 
     if (!randomImage) return null;
 

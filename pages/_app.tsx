@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
 import type { IPAddress } from '@/utils/pageParts/top/indexInterfaces';
-import { adminerUserId, blockedIP } from '@/utils/user_list';
+import { adminerUserId } from '@/utils/user_list';
 import Pako from 'pako';
 import { secureRandomString } from '@/lib/secureObfuscator';
 import { asakuraMenberUserId } from '@/utils/user_list';
@@ -26,7 +26,6 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     const [user, setUser] = useState<User | null>(null);
     //const [res, setRes] = useState<Object | null>(null);
     const [ipaddress, setIpaddress] = useState<IPAddress | null>(null);
-    const [ipaddress2, setIpaddress2] = useState<string>("");
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
 
     /* ===============================
@@ -53,9 +52,6 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         console.log('[isBot]', bot);
     }, []);
 
-    const blockedIP_list_found = blockedIP.find(v =>
-        ipaddress2.match(v)
-    );
     const adminer_user_id_list = adminerUserId.find(
         v => v === user?.id
     );
@@ -179,12 +175,9 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
 
         (async () => {
             try {
-                const res = await Promise.all([fetch('/api/ipaddress'), fetch('https://ipwho.is/?lang=ja')]);
-                const data = (await res[1].json()) as IPAddress;
-                const data2 = await res[0].json();
+                const res = await fetch('https://ipwho.is/?lang=ja');
+                const data = (await res.json()) as IPAddress;
                 setIpaddress(data);
-                setIpaddress2(data2.ip);
-                localStorage.setItem('ipaddress', data2.ip);
             } catch (e) {
                 console.error('ip fetch error', e);
             }
@@ -310,7 +303,8 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             {/*<p hidden>{JSON.stringify(res)}</p>*/}
             {
                 !adminer_user_id_list &&
-                !blockedIP_list_found ? <ImageContainer freeze={true}/> : null
+                location.pathname !== "/" &&
+                location.pathname !== "/ru" ? <ImageContainer/> : null
             }
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />

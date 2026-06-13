@@ -226,7 +226,7 @@ export default function Home() {
                 )}
             </Head>
 
-            {typeof sessionStorage !== "undefined" ? sessionStorage.getItem("blocked") !== "true" ? <ImageContainer/> : null : null}
+            <ImageContainer/>
 
             <MenuJp
                 handleClick={() => setMenuStatus(v => !v)}
