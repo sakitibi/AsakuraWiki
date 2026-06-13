@@ -13,7 +13,9 @@ try {
     );
     const sliced = JSON.parse(buildManifestFile.slice(24, buildManifestFile.length - 55));
     console.log("sliced: ", sliced);
-    const rootBase = fs.readFileSync(`/vercel/path0/.next/output/static/_next/${sliced["/"][0]}`);
+    const rootBase = new TextDecoder().decode(
+        fs.readFileSync(`/vercel/path0/.next/output/static/_next/${sliced["/"][0]}`)
+    );
     console.log("rootBase: ", rootBase);
 } catch (err) {
     console.error('エラーが発生しました:', err);
