@@ -20,7 +20,14 @@ async function encrypt(FilePath) {
     const FileJavascriptCode = `${upack_js}
     (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode("${FileEncoded}", "${upackSecretKey}", 10)))})()`;
     const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + FileSplited[1];
-    return FileJavascriptFullVersion;
+    fs.writeFileSync(
+        `${dirPath}/${FilePath}`,
+        FileJavascriptFullVersion,
+        {
+            encoding: 'utf8',
+            flag: 'w'
+        }
+    );
 }
 
 (async function(){
@@ -37,14 +44,7 @@ async function encrypt(FilePath) {
         ).trim();
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
         const indexHTMLFilePath1 = rootBaseParsed[0];
-        fs.writeFileSync(
-            `${dirPath}/${indexHTMLFilePath1}`,
-            await encrypt(indexHTMLFilePath1),
-            {
-                encoding: 'utf8',
-                flag: 'w'
-            }
-        );
+        await encrypt(indexHTMLFilePath1);
     } catch (err) {
         console.error('エラーが発生しました:', err);
     }
