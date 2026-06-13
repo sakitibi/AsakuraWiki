@@ -310,9 +310,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             {/*<p hidden>{JSON.stringify(res)}</p>*/}
             {
                 !adminer_user_id_list &&
-                !blockedIP_list_found &&
-                location.pathname !== "/" &&
-                location.pathname !== "/ru" ? <ImageContainer freeze={true}/> : null
+                !blockedIP_list_found ? <ImageContainer freeze={true}/> : null
             }
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />
