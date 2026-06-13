@@ -246,7 +246,9 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             location.pathname === "/privacy")
         ) return;
         const termsAgreeTime = parseInt(localStorage.getItem("terms_agree") ?? "0", 10);
-        if((Date.now() - termsAgreeTime) > 6048e5){ // 規約同意後1週間たっているか判定
+        // ログインしていると2週間、ログインしていないと1週間でセッションが切れるようにする
+        if((Date.now() - termsAgreeTime) > (user ? 12096e5 : 6048e5)){
+            localStorage.removeItem("terms_agree");
             location.replace(
                 `/policies?redirect=${encodeURIComponent(location.pathname)}${encodeURIComponent(location.search)}`
             );
