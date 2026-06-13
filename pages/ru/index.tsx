@@ -185,7 +185,7 @@ export default function Home() {
             ) : null}
         </Head>
 
-        {typeof sessionStorage ? sessionStorage.getItem("blocked") === "true" ? <ImageContainer/> : null : null}
+        {typeof sessionStorage ? sessionStorage.getItem("blocked") !== "true" ? <ImageContainer/> : null : null}
 
         <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
 
