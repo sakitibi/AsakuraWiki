@@ -15,7 +15,7 @@ try {
     const buildManifestFile = new TextDecoder().decode(
         fs.readFileSync(`${dirPath}/${filtered[0]}/_buildManifest.js`)
     );
-    const sliced = buildManifestFile.slice(24, buildManifestFile.length - 55);
+    const sliced = JSON.parse(buildManifestFile.slice(24, buildManifestFile.length - 55));
     console.log(sliced);
 } catch (err) {
     console.error('エラーが発生しました:', err);
