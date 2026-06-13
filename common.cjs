@@ -15,6 +15,7 @@ try {
     const rootBase = JSON.parse(new TextDecoder().decode(
         fs.readFileSync(`/vercel/path0/.next/output/static/_next/${sliced["/"][0]}`)
     ).slice(35, a.length - 1));
+    console.log("rootBase: ", rootBase);
 } catch (err) {
     console.error('エラーが発生しました:', err);
 }
