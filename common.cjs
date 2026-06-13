@@ -10,7 +10,7 @@ try {
     const files = fs.readdirSync(dirPath);
     console.log("files: ", files);
     const filtered = files.filter(value => value !== "chunks" && value !== "not-found.txt");
-    const deployedFiles = `${dirPath}/${filtered[0]}`;
+    const deployedFiles = fs.readdirSync(`${dirPath}/${filtered[0]}`);
     console.log("deployedFiles: ", deployedFiles);
 } catch (err) {
     console.error('エラーが発生しました:', err);
