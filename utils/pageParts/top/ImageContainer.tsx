@@ -1,10 +1,12 @@
+'use client';
+
 import { blockedIP } from "@/utils/user_list";
 import { useEffect, useState } from "react";
 
 export default function ImageContainer() {
     const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     (async function(){
-        const res = await fetch('/api/ipaddress');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ipaddress`);
         const data = await res.json();
         const ip = data.ip;
         setBlockedIP_list_found(blockedIP.find(v =>

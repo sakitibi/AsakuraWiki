@@ -302,9 +302,10 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             )}
             {/*<p hidden>{JSON.stringify(res)}</p>*/}
             {
+                typeof location !== "undefined" ? 
                 !adminer_user_id_list &&
                 location.pathname !== "/" &&
-                location.pathname !== "/ru" ? <ImageContainer/> : null
+                location.pathname !== "/ru" ? <ImageContainer/> : null : null
             }
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />
