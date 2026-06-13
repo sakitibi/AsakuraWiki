@@ -14,24 +14,38 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
     const [opacity, setOpacity] = useState(0);
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * images.length);
-        setRandomImage(images[randomIndex]);
+        // freeze が true のときは、既に画像があっても強制的に不透明度を 1 に固定する
+        if (freeze) {
+            if (!randomImage) {
+                const randomIndex = Math.floor(Math.random() * images.length);
+                setRandomImage(images[randomIndex]);
+            }
+            setOpacity(1);
+            return;
+        }
+
+        // freeze が false の場合の通常フェードイン処理
+        if (!randomImage) {
+            const randomIndex = Math.floor(Math.random() * images.length);
+            setRandomImage(images[randomIndex]);
+        }
 
         const fadeInTimer = setTimeout(() => {
             setOpacity(1);
-        }, 100); // レンダリング直後に実行するための僅かなディレイ
-        
+        }, 100);
+
+        return () => clearTimeout(fadeInTimer);
+    }, [freeze, randomImage]);
+
+    useEffect(() => {
+        if (freeze) return; // freeze のときはフェードアウトさせない
+
         const fadeOutTimer = setTimeout(() => {
-            if (!freeze) {
-                setOpacity(0);
-            }
+            setOpacity(0);
         }, 4500);
 
-        return () => {
-            clearTimeout(fadeInTimer);
-            clearTimeout(fadeOutTimer);
-        };
-    }, []);
+        return () => clearTimeout(fadeOutTimer);
+    }, [freeze, randomImage]); // randomImage が変わったときもタイマーをリセット
 
     if (!randomImage) return null;
 
@@ -46,11 +60,9 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
                 height: '100vh',
                 zIndex: 99999,
                 overflow: 'hidden',
-                
-                // アニメーションの要：ステートの変更に応じてopacityを変化させる
                 opacity: opacity,
-                // 1.5秒（1500ms）かけて滑らかに変化させる設定
-                transition: 'opacity 1500ms ease-in-out'
+                transition: 'opacity 1500ms ease-in-out',
+                pointerEvents: freeze ? 'auto' : 'none' 
             }}
         >
             <img 
@@ -59,8 +71,10 @@ export default function ImageContainer({ freeze }: ImageContainerProps) {
                 style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'fill'
+                    objectFit: 'fill',
                 }}
+                onSelect={() => {return false}}
+                onMouseDown={() => {return false}}
             />
         </div>
     );
