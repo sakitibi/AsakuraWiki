@@ -4,19 +4,14 @@ import { blockedIP } from "@/utils/user_list";
 import { useEffect, useState } from "react";
 
 export default function ImageContainer() {
-    const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
-    (async function(){
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ipaddress`);
-        const data = await res.json();
-        const ip = data.ip;
-        setBlockedIP_list_found(blockedIP.find(v =>
-            ip.match(v)
-        ));
-    })()
-    
+    const shouldBlock = typeof window !== "undefined" && (() => {
+        const existingEl = document.getElementById("images-container");
+        if (!existingEl) return false;
+        const currentOpacity = window.getComputedStyle(existingEl).opacity;
+        return parseFloat(currentOpacity) > 0;
+    })();
 
-    const exists = typeof window !== "undefined" && !!document.getElementById("images-container");
-    if (exists) {
+    if (shouldBlock) {
         return null;
     }
 
@@ -25,8 +20,26 @@ export default function ImageContainer() {
         images.push(`https://sakitibi.github.io/AsakuraWiki-Images/title/${i}.png`);
     }
 
+    const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
+
+    useEffect(() => {
+        const fetchIP = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ipaddress`);
+                const data = await res.json();
+                const ip = data.ip;
+                
+                const found = blockedIP.find(v => ip.match(v));
+                setBlockedIP_list_found(found);
+            } catch (error) {
+                console.error("Failed to fetch IP address:", error);
+            }
+        };
+
+        fetchIP();
+    }, []);
 
     useEffect(() => {
         if (!randomImage) {
@@ -39,6 +52,7 @@ export default function ImageContainer() {
             return;
         }
 
+        // 通常時のフェードイン
         const fadeInTimer = setTimeout(() => {
             setOpacity(1);
         }, 100);
@@ -71,7 +85,7 @@ export default function ImageContainer() {
                 overflow: 'hidden',
                 opacity: opacity,
                 transition: 'opacity 1500ms ease-in-out',
-                pointerEvents: 'none'
+                pointerEvents: 'auto'
             }}
         >
             <img 
@@ -82,8 +96,8 @@ export default function ImageContainer() {
                     height: '100%',
                     objectFit: 'fill'
                 }}
-                onSelect={() => {return false}}
-                onMouseDown={() => {return false}}
+                onSelect={() => false}
+                onMouseDown={() => false}
             />
         </div>
     );
