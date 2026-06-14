@@ -6,6 +6,7 @@ const zlib = require('zlib');
 
 // 調べたいディレクトリの絶対パス
 const dirPath = '/vercel/path0/.next/output/static/_next';
+const dirPath2 = '/vercel/path0/.next/output/static/_next';
 const upackSecretKey = "AsakuraWiki";
 
 async function encrypt(FilePath) {
@@ -40,6 +41,8 @@ async function encrypt(FilePath) {
 (async function(){
     try {
         const files = fs.readdirSync(`${dirPath}/static`);
+        const files2 = fs.readdirSync(`${dirPath2}`);
+        console.log("files2: ", files2);
         const filtered = files.filter(value => value !== "chunks" && value !== "not-found.txt");
         const deployedFiles = fs.readdirSync(`${dirPath}/static/${filtered[0]}`);
         const buildManifestFile = new TextDecoder().decode(
