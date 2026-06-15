@@ -6,7 +6,7 @@ const zlib = require('zlib');
 
 // 調べたいディレクトリの絶対パス
 const dirPath = '/vercel/path0/.next/output/static/_next';
-const dirPath2 = '/vercel/path0/.next/output/static/_next';
+const dirPath2 = '/vercel/path0/.next/output';
 const upackSecretKey = "AsakuraWiki";
 
 async function encrypt(FilePath) {
@@ -53,8 +53,9 @@ async function encrypt(FilePath) {
             fs.readFileSync(`${dirPath}/${sliced["/"][0]}`)
         ).trim();
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
-        const indexHTMLFilePath1 = rootBaseParsed[0];
-        await encrypt(indexHTMLFilePath1);
+        for (let i = 0;i < 2;i++) {
+            await encrypt(rootBaseParsed[i]);
+        }
     } catch (err) {
         console.error('エラーが発生しました:', err);
     }
