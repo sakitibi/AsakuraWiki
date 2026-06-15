@@ -6,7 +6,7 @@ const zlib = require('zlib');
 
 // 調べたいディレクトリの絶対パス
 const dirPath = '/vercel/path0/.next/output/static/_next';
-const dirPath2 = '/vercel/path0/.next/output/functions/api/wiki_v2/[[...slug]].func/___next_launcher.cjs';
+const dirPath2 = '/vercel/path0/.next/output';
 const upackSecretKey = "AsakuraWiki";
 
 async function encrypt(FilePath) {
