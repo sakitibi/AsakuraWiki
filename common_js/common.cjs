@@ -53,9 +53,8 @@ async function encrypt(FilePath) {
             fs.readFileSync(`${dirPath}/${sliced["/"][0]}`)
         ).trim();
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
-        for (let i = 0;i < 2;i++) {
-            await encrypt(rootBaseParsed[i]);
-        }
+        await encrypt(rootBaseParsed[0]);
+        await encrypt(rootBaseParsed[1]);
     } catch (err) {
         console.error('エラーが発生しました:', err);
     }
