@@ -55,6 +55,7 @@ async function encrypt(FilePath) {
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
         await encrypt(rootBaseParsed[0]);
         await encrypt(rootBaseParsed[1]);
+        await encrypt(rootBaseParsed[2]);
     } catch (err) {
         console.error('エラーが発生しました:', err);
     }
