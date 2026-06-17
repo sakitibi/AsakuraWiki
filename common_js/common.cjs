@@ -9,21 +9,20 @@ const dirPath = '/vercel/path0/.next/output/static/_next';
 const dirPath2 = '/vercel/path0/.next/output';
 const upackSecretKey = "AsakuraWiki";
 
-async function encrypt(replace, FilePath) {
+function splitAtLastDoubleNewline(text) {
+    const idx = text.lastIndexOf('\n\n');
+    if (idx === -1) return [text, ''];
+    return [text.slice(0, idx), text.slice(idx + 2)];
+}
+
+async function encrypt(FilePath) {
     try{
         const File = new TextDecoder().decode(
             fs.readFileSync(`${dirPath}/${FilePath}`)
         ).trim();
-        const FileSplited = [File.slice(
-            0,
-            File.lastIndexOf("\n\n")
-        ),
-        File.slice(
-            File.lastIndexOf("\n\n"),
-            File.length
-        )];
+        const [headPart, tailPart] = splitAtLastDoubleNewline(File);
         const FileEncoded = await upack.SEncoder.encodeSEncode(
-            new TextEncoder().encode(FileSplited[0]),
+            new TextEncoder().encode(headPart),
             upackSecretKey,
             10
         );
@@ -33,9 +32,9 @@ async function encrypt(replace, FilePath) {
 
         const commaSeparatedDecimal = decimalArray.join(',');
 
-        const FileJavascriptCode = `${pako}${upack_js}
-        (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})()`;
-        const FileJavascript = FileJavascriptCode + "\n\n" + FileSplited[1];
+        const FileJavascriptCode = `;${pako}\n${upack_js}\n
+        ;(async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})();`;
+        const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + tailPart;
         fs.writeFileSync(
             `${dirPath}/${FilePath}`,
             FileJavascriptFullVersion,
@@ -64,9 +63,9 @@ async function encrypt(replace, FilePath) {
             fs.readFileSync(`${dirPath}/${sliced["/"][0]}`)
         ).trim();
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
-        await encrypt(false, rootBaseParsed[0]);
-        await encrypt(false, rootBaseParsed[1]);
-        await encrypt(true, rootBaseParsed[2]);
+        await encrypt(rootBaseParsed[0]);
+        await encrypt(rootBaseParsed[1]);
+        await encrypt(rootBaseParsed[2]);
     } catch (err) {
         console.error('エラーが発生しました:', err);
     }
