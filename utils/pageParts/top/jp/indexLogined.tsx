@@ -16,6 +16,19 @@ export interface LoginedUIProps {
     readonly goCreateWiki: () => void;
 }
 
+// 日付の表示をスッキリさせるヘルパー
+export const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleString('ja-JP', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }).replace(/\//g, '-');
+};
+
 export default function LoginedUI({
     wiki13ninstudioCounter,
     wiki13ninstudioCounterTotal,
@@ -30,18 +43,6 @@ export default function LoginedUI({
 }: LoginedUIProps) {
 
     const likedList = likedWikis.filter((wp) => wp.like_count > 0);
-
-    // 日付の表示をスッキリさせるヘルパー
-    const formatDate = (dateStr: string) => {
-        const d = new Date(dateStr);
-        return d.toLocaleString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).replace(/\//g, '-');
-    };
 
     return (
         <div className={styles.dashboardContainer}>

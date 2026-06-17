@@ -1,7 +1,7 @@
 import versions from "@/utils/version";
 import styles from '@/css/index.module.css';
 import Link from "next/link";
-import { LoginedUIProps } from "@/utils/pageParts/top/jp/indexLogined";
+import { formatDate, LoginedUIProps } from "@/utils/pageParts/top/jp/indexLogined";
 
 export default function LoginedUI({
     wiki13ninstudioCounter,
@@ -17,18 +17,6 @@ export default function LoginedUI({
 }: LoginedUIProps) {
 
     const likedList = likedWikis.filter((wp) => wp.like_count > 0);
-
-    // 日付表示をスッキリさせるヘルパー
-    const formatDate = (dateStr: string) => {
-        const d = new Date(dateStr);
-        return d.toLocaleString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).replace(/\//g, '-');
-    };
 
     return (
         <div className={styles.dashboardContainer}>
