@@ -1,7 +1,5 @@
-// メインループ用：プラグインの開始位置を高速で見つけるための軽量正規表現
 export const PLUGIN_TRIGGER_REGEX = /(?:#|&|\[\[)/gu;
 
-// 各プラグイン個別の厳密な正規表現（これらは短いためバックトラックや競合を起こしません）
 export const INDIVIDUAL_REGEX = {
     marquee: /^#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)/i,
     calendar2: /^#calendar2\((\d{4})(\d{2})(?:,(off))?\)/i,
@@ -16,9 +14,11 @@ export const INDIVIDUAL_REGEX = {
     ls: /^#ls(?:\(([^)]+)\))?/i,
     include: /^#include\(([^)]+)\)/i,
     contents: /^#contents/i,
+    
     center: /^CENTER:\s*(.+)/i,
     left: /^LEFT:\s*(.+)/i,
     right: /^RIGHT:\s*(.+)/i,
+    
     size: /^&size\((\d+)\)\{([^}]+)\};/i,
     color: /^&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};/i,
     link: /^\[\[([^\]>]+)>([^\]]+)\]\]/i,
