@@ -1,3 +1,37 @@
-// 各プラグインを順次キャプチャする正規表現
-export const PLUGIN_REGEX: RegExp = 
-    /#calendar2\((\d{4})(\d{2})(?:,(off))?\)|#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)|#DATEVALUE\(\s*([^)]+)\s*\)|#rtcomment(?:\(\))?|#comment(?:\(\s*(?:above|below)\s*\))?|#hr|#br|&br;|#ls(?:\(([^)]+)\))?|#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)|#include\(([^)]+)\)|#contents|^CENTER:\s*(.+)|^LEFT:\s*(.+)|^RIGHT:\s*(.+)|&size\((\d+)\)\{([^}]+)\};|\[\[([^\]>]+)>([^\]]+)\]\]|&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};|&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);|&escape\(\)\{([\s\S]*?)\}|#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)|#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};|&const-use\(([^)]+?)\);|&let-use\(([^)]+?)\);|&relet\(([^)]+?)\);|&calc\(([^)]+?)\);|&version\(([0123])\);|&new(?:\(([^)]*)\))?\{([^\}]+)\};|&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/giu;
+// メインループ用：プラグインの開始位置を高速で見つけるための軽量正規表現
+export const PLUGIN_TRIGGER_REGEX = /(?:#|&|\[\[)/gu;
+
+// 各プラグイン個別の厳密な正規表現（これらは短いためバックトラックや競合を起こしません）
+export const INDIVIDUAL_REGEX = {
+    marquee: /^#marquee\(([^,]*),([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)(?:,([^)]*))?\)/i,
+    calendar2: /^#calendar2\((\d{4})(\d{2})(?:,(off))?\)/i,
+    datedif: /^#DATEDIF\(\s*([0-9-]+)\s*,\s*([0-9-]+)\s*,\s*([YMD])\s*\)/i,
+    datevalue: /^#DATEVALUE\(\s*([^)]+)\s*\)/i,
+    rtcomment: /^#rtcomment(?:\(\))?/i,
+    comment: /^#comment(?:\(\s*(?:above|below)\s*\))?/i,
+    hr: /^#hr/i,
+    br: /^#(?:br|&br;)/i, 
+    brAmp: /^&br;/i,
+    ls2: /^#ls2\(\s*([^[\],]+)(?:\[\s*([^\]]+)\s*\])?(?:,\s*\{\s*([^}]+)\s*\})?(?:,\s*([^)]+))?\)/i,
+    ls: /^#ls(?:\(([^)]+)\))?/i,
+    include: /^#include\(([^)]+)\)/i,
+    contents: /^#contents/i,
+    center: /^CENTER:\s*(.+)/i,
+    left: /^LEFT:\s*(.+)/i,
+    right: /^RIGHT:\s*(.+)/i,
+    size: /^&size\((\d+)\)\{([^}]+)\};/i,
+    color: /^&color\(\s*([^)]+?)\s*(?:,\s*([^)]+?))?\)\{([\s\S]*?)\};/i,
+    link: /^\[\[([^\]>]+)>([^\]]+)\]\]/i,
+    plainLink: /^\[\[([^\]]+)\]\]/i,
+    attachref: /^&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);/i,
+    escape: /^&escape\(\)\{([\s\S]*?)\}/i,
+    const: /^#const\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};/i,
+    let: /^#let\(\s*([^:]+?)\s*:\s*([^)]+?)\s*\)\{([^\}]+?)\};/i,
+    constUse: /^&const-use\(([^)]+?)\);/i,
+    letUse: /^&let-use\(([^)]+?)\);/i,
+    relet: /^&relet\(([^)]+?)\);/i,
+    calc: /^&calc\(([^)]+?)\);/i,
+    version: /^&version\(([0123])\);/i,
+    new: /^&new(?:\(([^*]*)\))?\{([^\}]+)\};/i,
+    functionCall: /^&function-call\(\s*([a-zA-Z0-9_]+)\s*(?:,\s*([^)]+))?\s*\);/i,
+};
