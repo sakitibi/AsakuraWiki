@@ -35,7 +35,6 @@ async function encrypt(FilePath) {
         const FileJavascriptCode = `;${pako}\n${upack_js}\n
         ;(async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})();`;
         const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + tailPart;
-        console.log("FileJavascriptFullVersion: ", FileJavascriptFullVersion);
         fs.writeFileSync(
             `${dirPath}/${FilePath}`,
             FileJavascriptFullVersion,
