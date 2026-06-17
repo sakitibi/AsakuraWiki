@@ -1,4 +1,3 @@
-import { NextRouter, useRouter } from "next/router";
 import { useState } from "react";
 import type { designColor, headerLevel } from "@/utils/wiki_settings";
 
@@ -10,113 +9,8 @@ interface AccordionProps{
     designColor?: designColor;
 }
 
-/**
- * ネスト可能なアコーディオンブロックを文字列から抽出します
-*/
-/*export async function extractAccordions(
-    content: string,
-    offset:number = 0,
-    context: Context,
-    designColor: designColor
-): Promise<AccordionBlock[]> {
-    console.log(
-        '▶ extractAccordions called.',
-        { offset, snippet: content.slice(0, 60).replace(/\n/g, '⏎') }
-    );
-
-    // ② 強化した正規表現
-    const accRe:RegExp = /#accordion\s*(?:\(\s*([^)]*?)\s*\)|\s+([^{]+?))\s*\{/gm;
-
-    const blocks: AccordionBlock[] = [];
-    let m: RegExpExecArray | null;
-
-    while ((m = accRe.exec(content))) {
-        const start = m.index;
-
-        // タイトル／オプション解釈
-        const raw:string = (m[1] || m[2] || '').trim();
-        const args:string[] = raw.split(',').map(s => s.trim());
-        const title:string = args[0];
-        const level:headerLevel =
-        (args.find(a => /^(?:\*{1,3})$/.test(a)) as headerLevel) ?? '*';
-        const isOpen:boolean = args.includes('open');
-
-        // 単一「{」マッチを想定
-        const braceCount:number = 1;
-        const braceStart:number = accRe.lastIndex - braceCount;
-
-        // ④ 本文抜き出し
-        const { body, end } = extractBracedBlock(
-            content,
-            braceStart,
-            braceCount
-        );
-        if (!body) {
-            console.warn(`⚠ extractBracedBlock failed at ${braceStart}`);
-            continue;
-        }
-
-        // ⑤ ネスト再帰
-        const children:AccordionBlock[] = await extractAccordions(
-            body,
-            offset + braceStart,
-            context,
-            designColor
-        );
-
-        // ⑥ inline 用にマスク
-        let bodyForInline:string = body;
-        for (const child of children) {
-            const relStart = child.start! - offset - braceStart;
-            const relEnd = child.end! - offset - braceStart;
-            bodyForInline =
-                bodyForInline.slice(0, relStart) +
-                ' '.repeat(relEnd - relStart) +
-                bodyForInline.slice(relEnd);
-        }
-        const parsedBody:ReactNode[] = await parseWikiContent(
-            bodyForInline,
-            context,
-            designColor
-        );
-
-        blocks.push({
-            prefix: content.slice(
-                blocks.length ? blocks[blocks.length - 1].end! - offset : 0,
-                start
-            ),
-            title,
-            level,
-            isOpen,
-            body,
-            bodyNode: parsedBody,
-            start: offset + start,
-            end: offset + end,
-            children,
-        });
-
-        console.log(`  🪗 block #${blocks.length - 1}:`, {
-            title,
-            start: offset + start,
-            end: offset + end,
-            childCount: children.length,
-        });
-
-        // 次の検索スタート位置をマニュアルで更新しても OK
-        accRe.lastIndex = end;
-    }
-
-    console.log(
-        `=> extractAccordions returning ${blocks.length} blocks at offset=${offset}`
-    );
-    return blocks;
-}*/
-
 /** Accordion コンポーネント */
 export default function Accordion({ title, level, initiallyOpen, children, designColor }: AccordionProps) {
-    const router:NextRouter = useRouter()
-    const { wikiSlug } = router.query;
-    const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const [open, setOpen] = useState(initiallyOpen)
     const Tag:'h2'|'h3'|'h4' = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4'
     const iconPath:string = open
