@@ -15,11 +15,10 @@ import { PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 
 const safeTrim = (v: unknown) => typeof v === 'string' ? v.trim() : '';
 
-// 再帰呼び出し用のパーサー型定義
 type ParserFn = (line: string, wikiSlug: string, pageSlug: string, context: any, baseKey: number, designColor: any) => ReactNode[];
 
 export const renderMarquee = ({ token, key, match }: PluginArgs): ReactNode => {
-    const [, , , , , , , , , , , , , , , , , , , , , , , , , , , , text, loop, slide, bgColor, color, size] = match;
+    const [, text, loop, slide, bgColor, color, size] = match;
     const fontSize = size ? `${size}px` : 'inherit';
     const iterationCount = loop && /^\d+$/.test(loop) ? Number(loop) : 'infinite';
 
@@ -62,12 +61,14 @@ export const renderCalendar2 = ({ key, match }: PluginArgs): ReactNode => {
 };
 
 export const renderDateDif = ({ key, match }: PluginArgs): ReactNode => {
-    const val = DATEDIF(match[4], match[5], match[6]);
+    const [, d1, d2, unit] = match;
+    const val = DATEDIF(d1, d2, unit);
     return <span key={key}>{isNaN(val) ? 'ERR' : val}</span>;
 };
 
 export const renderDateValue = ({ key, match }: PluginArgs): ReactNode => {
-    const val = DATEVALUE(match[7]);
+    const [, dateStr] = match;
+    const val = DATEVALUE(dateStr);
     return <span key={key}>{isNaN(val) ? 'ERR' : val}</span>;
 };
 
@@ -82,20 +83,20 @@ export const renderRtComment = ({ key, wikiSlug, pageSlug }: PluginArgs): ReactN
 );
 
 export const renderLs = ({ key, match }: PluginArgs): ReactNode => {
-    const prefix = safeTrim(match[8]) || undefined;
+    const prefix = safeTrim(match[1]) || undefined;
     return <PageList key={key} prefix={prefix} />;
 };
 
 export const renderLs2 = ({ key, match, wikiSlug }: PluginArgs): ReactNode => {
-    const pattern = safeTrim(match[9]);
-    const opts = match[10]?.split(',').map(s => safeTrim(s)) ?? [];
-    const blockOpts = match[11]?.split(',').map(s => safeTrim(s)) ?? [];
-    const label = safeTrim(match[12]);
+    const pattern = safeTrim(match[1]);
+    const opts = match[2]?.split(',').map(s => safeTrim(s)) ?? [];
+    const blockOpts = match[3]?.split(',').map(s => safeTrim(s)) ?? [];
+    const label = safeTrim(match[4]);
     return <PageList2 key={key} wikiSlug={wikiSlug} pattern={pattern} options={[...opts, ...blockOpts]} label={label} />;
 };
 
 export const renderInclude = ({ key, match, wikiSlug, designColor }: PluginArgs): ReactNode => {
-    const arg = safeTrim(match[13]!);
+    const arg = safeTrim(match[1]!);
     const [first, lineRange, flag] = arg.split(',').map(s => safeTrim(s));
     let showTitle = flag === 'notitle' || flag === 'none' ? false : flag === 'title' ? true : undefined;
 
@@ -114,8 +115,7 @@ export const renderInclude = ({ key, match, wikiSlug, designColor }: PluginArgs)
 };
 
 export const renderAlign = (type: 'center' | 'left' | 'right', { key, match, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs, parseOtherInline: ParserFn): ReactNode => {
-    const rawText = type === 'center' ? match[14] : type === 'left' ? match[15] : match[16];
-    const centered = safeTrim(rawText);
+    const centered = safeTrim(match[1]);
     const inner = parseOtherInline(centered, wikiSlug, pageSlug, context, baseKey + 1, designColor);
     return <div key={key} style={{ textAlign: type }}>{Array.isArray(inner) ? inner : [inner]}</div>;
 };
@@ -152,8 +152,8 @@ export const renderColor = ({ token, key, wikiSlug, pageSlug, context, baseKey, 
 };
 
 export const renderLink = ({ token, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs, parseOtherInline: ParserFn): ReactNode => {
+    const labeledLink = token.match(/\[\[([^\]>]+)>([^\]]+)\]\]/);
     const plainLink = token.match(/\[\[([^\]]+)\]\]/);
-    const labeledLink = token.match(/\[\[([^\]]+)>([^\]]+)\]\]/);
     if (labeledLink) {
         const label = labeledLink[1].trim();
         const url = labeledLink[2].trim();
@@ -166,19 +166,15 @@ export const renderLink = ({ token, key, wikiSlug, pageSlug, context, baseKey, d
     return token;
 };
 
-export const renderAttachRef = ({ token, key }: PluginArgs): ReactNode => {
-    const match = token.match(/&attachref\(\s*([^)]+?),\s*(\d+)x(\d+)\s*\);?/);
-    if (match) {
-        const [, url, width, height] = match;
-        return <img key={key} src={url} width={parseInt(width, 10)} height={parseInt(height, 10)} alt={url} />;
-    }
-    return token;
+export const renderAttachRef = ({ match, key }: PluginArgs): ReactNode => {
+    const [, url, width, height] = match;
+    return <img key={key} src={url} width={parseInt(width, 10)} height={parseInt(height, 10)} alt={url} />;
 };
 
 export const renderConst = ({ key, match, context }: PluginArgs): ReactNode => {
-    const varName = match[35].trim();
-    const varType = match[36].trim();
-    const varValue = match[37].trim();
+    const varName = match[1].trim();
+    const varType = match[2].trim();
+    const varValue = match[3].trim();
     context.constContext = context.constContext ?? {};
 
     if (varName in context.constContext) {
@@ -189,26 +185,26 @@ export const renderConst = ({ key, match, context }: PluginArgs): ReactNode => {
 };
 
 export const renderLet = ({ key, match, context }: PluginArgs): ReactNode => {
-    const varName = match[38].trim();
-    const varType = match[39].trim();
-    const varValue = match[40].trim();
+    const varName = match[1].trim();
+    const varType = match[2].trim();
+    const varValue = match[3].trim();
     context.letContext = context.letContext ?? {};
     context.letContext[varName] = varValue;
     return <span key={key} style={{ display: 'none', fontStyle: 'italic' }}>変数 {varName}（{varType}） ← {varValue}</span>;
 };
 
 export const renderConstUse = ({ key, match, context }: PluginArgs): ReactNode => {
-    const varName = match[41].trim();
+    const varName = match[1].trim();
     return <span key={key}>{context.constContext?.[varName] ?? `[定数未定義:${varName}]`}</span>;
 };
 
 export const renderLetUse = ({ key, match, context }: PluginArgs): ReactNode => {
-    const varName = match[42].trim();
+    const varName = match[1].trim();
     return <span key={key}>{context.letContext?.[varName] ?? `[変数未定義:${varName}]`}</span>;
 };
 
 export const renderRelet = ({ key, match, context }: PluginArgs): ReactNode => {
-    const varName = match[43].trim();
+    const varName = match[1].trim();
     if (context.letContext?.[varName]) {
         return <span key={key} style={{ display: 'none' }}>再代入OK: {varName}</span>;
     }
@@ -216,7 +212,7 @@ export const renderRelet = ({ key, match, context }: PluginArgs): ReactNode => {
 };
 
 export const renderCalc = ({ key, match, context }: PluginArgs): ReactNode => {
-    const args = match[44].split(',').map(s => s.trim());
+    const args = match[1].split(',').map(s => s.trim());
     const [expression, decStr, style, intStr] = args;
     const decimals = decStr !== undefined ? Number(decStr) : 0;
     const integers = intStr !== undefined ? Number(intStr) : undefined;
@@ -230,15 +226,15 @@ export const renderCalc = ({ key, match, context }: PluginArgs): ReactNode => {
 };
 
 export const renderVersion = ({ key, match }: PluginArgs): ReactNode => {
-    const type = match[45];
+    const type = match[1];
     const value = versions[parseInt(type, 10)];
     return <span key={key}>{value ?? `[未定義のversion:${type}]`}</span>;
 };
 
 export const renderNew = ({ key, match, baseKey }: PluginArgs): ReactNode => {
     if (isSafari()) return null;
-    const args = match[46]?.split(',').map(s => s.trim()) ?? [];
-    const dateStr = match[47]?.trim();
+    const args = match[1]?.split(',').map(s => s.trim()) ?? [];
+    const dateStr = match[2]?.trim();
     const keyStr = `inl-${baseKey}-${match.index}`;
 
     const parsedDate = new Date(dateStr.replace(/\(.*?\)/, '').trim());
@@ -261,7 +257,7 @@ export const renderNew = ({ key, match, baseKey }: PluginArgs): ReactNode => {
 };
 
 export const renderFunctionCall = ({ key, match, context, designColor }: PluginArgs): ReactNode => {
-    const name = match[48].trim();
-    const args = match[49] ? match[49].split(',').map(s => s.trim()) : [];
+    const name = match[1].trim();
+    const args = match[2] ? match[2].split(',').map(s => s.trim()) : [];
     return <FunctionCallRenderer key={key} name={name} args={args} context={context} designColor={designColor} />;
 };
