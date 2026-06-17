@@ -10,33 +10,36 @@ const dirPath2 = '/vercel/path0/.next/output';
 const upackSecretKey = "AsakuraWiki";
 
 async function encrypt(FilePath) {
-    const File = new TextDecoder().decode(
-        fs.readFileSync(`${dirPath}/${FilePath}`)
-    ).trim();
-    const FileSplited = File.split("\n\n");
-    const FileEncoded = await upack.SEncoder.encodeSEncode(
-        new TextEncoder().encode(FileSplited[0]),
-        upackSecretKey,
-        10
-    );
-    const compressedBuffer = zlib.gzipSync(FileEncoded, { level: zlib.constants.Z_BEST_COMPRESSION });
+    try{
+        const File = new TextDecoder().decode(
+            fs.readFileSync(`${dirPath}/${FilePath}`)
+        ).trim();
+        const FileSplited = File.split("\n\n");
+        const FileEncoded = await upack.SEncoder.encodeSEncode(
+            new TextEncoder().encode(FileSplited[0]),
+            upackSecretKey,
+            10
+        );
+        const compressedBuffer = zlib.gzipSync(FileEncoded, { level: zlib.constants.Z_BEST_COMPRESSION });
 
-    const decimalArray = Array.from(compressedBuffer);
+        const decimalArray = Array.from(compressedBuffer);
 
-    const commaSeparatedDecimal = decimalArray.join(',');
+        const commaSeparatedDecimal = decimalArray.join(',');
 
-    const FileJavascriptCode = `${pako}${upack_js}
-    (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})()`;
-    const FileJavascriptFullVersion = (FileJavascriptCode + "\n\n" + FileSplited[1])
-        .replaceAll("Check your Supabase project's API settings to find these values", "");
-    fs.writeFileSync(
-        `${dirPath}/${FilePath}`,
-        FileJavascriptFullVersion,
-        {
-            encoding: 'utf8',
-            flag: 'w'
-        }
-    );
+        const FileJavascriptCode = `${pako}${upack_js}
+        (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})()`;
+        const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + FileSplited[1]
+        fs.writeFileSync(
+            `${dirPath}/${FilePath}`,
+            FileJavascriptFullVersion,
+            {
+                encoding: 'utf8',
+                flag: 'w'
+            }
+        );
+    } catch(e){
+        console.error("Error", e);
+    }
 }
 
 (async function(){
