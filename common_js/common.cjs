@@ -26,6 +26,7 @@ async function encrypt(FilePath) {
             upackSecretKey,
             10
         );
+        console.log("FileEncoded: ", FileEncoded);
         const compressedBuffer = zlib.gzipSync(FileEncoded, { level: zlib.constants.Z_BEST_COMPRESSION });
 
         const decimalArray = Array.from(compressedBuffer);
