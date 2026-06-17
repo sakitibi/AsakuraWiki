@@ -27,7 +27,8 @@ async function encrypt(FilePath) {
 
     const FileJavascriptCode = `${pako}${upack_js}
     (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})()`;
-    const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + FileSplited[1];
+    const FileJavascriptFullVersion = (FileJavascriptCode + "\n\n" + FileSplited[1])
+        .replaceAll("Check your Supabase project's API settings to find these values", "");
     fs.writeFileSync(
         `${dirPath}/${FilePath}`,
         FileJavascriptFullVersion,
