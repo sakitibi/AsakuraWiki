@@ -14,7 +14,14 @@ async function encrypt(replace, FilePath) {
         const File = new TextDecoder().decode(
             fs.readFileSync(`${dirPath}/${FilePath}`)
         ).trim();
-        const FileSplited = File.split("\n\n");
+        const FileSplited = [File.slice(
+            0,
+            File.lastIndexOf("\n\n")
+        ),
+        File.slice(
+            File.lastIndexOf("\n\n"),
+            File.length
+        )];
         const FileEncoded = await upack.SEncoder.encodeSEncode(
             new TextEncoder().encode(FileSplited[0]),
             upackSecretKey,
@@ -29,10 +36,6 @@ async function encrypt(replace, FilePath) {
         const FileJavascriptCode = `${pako}${upack_js}
         (async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})()`;
         const FileJavascript = FileJavascriptCode + "\n\n" + FileSplited[1];
-        const FileJavascriptFullVersion = replace ? FileJavascript.slice(
-            0,
-            FileJavascript.lastIndexOf("Check your Supabase project's API settings to find these values")
-        ) : FileJavascript;
         fs.writeFileSync(
             `${dirPath}/${FilePath}`,
             FileJavascriptFullVersion,
