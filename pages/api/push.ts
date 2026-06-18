@@ -31,12 +31,15 @@ export default async function handler(
             reqbody.new_path,
             Buffer.from(reqbody.bytes, 'base64')
         );
+        console.log("headers: ", headers);
+        console.log("body: ", body);
         const response = await fetch(`${process.env.REPO_BASE_URL}/${repo}/edit/${branch}/${path}`, {
             method: "POST",
             headers,
             body
         });
         const data = await response.json();
-        return res.status(200).json(data);
+        const res_headers = response.headers;
+        return res.status(200).json({data, res_headers});
     }
 }
