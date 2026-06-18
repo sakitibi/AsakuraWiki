@@ -22,6 +22,7 @@ export default async function handler(
             const reqbody = req.body;
             const response0 = await fetch(`${process.env.REPO_BASE_URL}/${repo}/edit/${branch}/${path}`);
             const data0 = await response0.text();
+            console.log("data0: ", data0);
             const data0_release_indexof = data0.indexOf('<meta name="release" content="');
             const data0_nonce_indexof = data0.indexOf('<meta name="fetch-nonce" content="');
             const data0_commit_indexof = data0.indexOf('"currentOid":"');
