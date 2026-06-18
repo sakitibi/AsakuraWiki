@@ -47,7 +47,7 @@ export default async function handler(
                 headers,
                 body
             });
-            const data = await response.json();
+            const data = await response.text();
             const res_headers = Object(response.headers);
             return res.status(200).json({data, res_headers});
         } catch(e) {
