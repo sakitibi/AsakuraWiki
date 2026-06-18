@@ -24,8 +24,10 @@ export default async function handler(
             const data0 = await response0.text();
             const data0_release_indexof = data0.indexOf('<meta name="release" content="');
             const data0_nonce_indexof = data0.indexOf('<meta name="fetch-nonce" content="');
+            const data0_commit_indexof = data0.indexOf('"currentOid":"');
             const req_fetch_release = data0.slice(data0_release_indexof + 30, data0_release_indexof + 70);
             const req_fetch_nonce = data0.slice(data0_nonce_indexof + 34, data0_nonce_indexof + 73);
+            const data0_fetch_commit = data0.slice(data0_commit_indexof + 14, data0_commit_indexof + 54);
             console.log("nonce: ", req_fetch_nonce);
             const headers = PushFetchComponents1(
                 repo,
@@ -38,6 +40,7 @@ export default async function handler(
                 reqbody.message,
                 reqbody.path,
                 reqbody.new_path,
+                data0_fetch_commit,
                 Buffer.from(reqbody.bytes, 'base64')
             );
             console.log("headers: ", headers);

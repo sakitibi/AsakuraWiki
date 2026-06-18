@@ -2,6 +2,7 @@ export default function PushFetchComponents2(
     message: string,
     path: string,
     new_path: string,
+    commit: string,
     bytes: Uint8Array<ArrayBuffer>
 ) {
     const formData = new FormData();
@@ -14,7 +15,7 @@ export default function PushFetchComponents2(
     formData.append("target_branch", "main");
     formData.append("quick_pull", "");
     formData.append("guidance_task", "");
-    formData.append("commit", "cb5d8846ab459f4cfa6dcd2a4d4a6d88d913b0f5");
+    formData.append("commit", commit);
     formData.append("same_repo", "1");
     formData.append("pr", "");
     formData.append("content_changed", "true");
