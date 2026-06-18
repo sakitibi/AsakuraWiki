@@ -13,6 +13,7 @@ export default function PushFetchComponents1(
     headers.set("sec-fetch-site", "same-origin");
     headers.set("x-fetch-nonce", req_fetch_nonce);
     headers.set("sec-fetch-mode", "cors");
+    headers.set("cookie", `user_session=${process.env.REPO_AUTH_CODE}`)
     headers.set("github-verified-fetch", "true");
     headers.set("x-github-client-version", req_fetch_version);
     headers.set("sec-ch-ua-platform", '"macOS"');
