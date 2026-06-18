@@ -20,7 +20,12 @@ export default async function handler(
                 return res.status(400).send("Error 400 Bad Request");
             }
             const reqbody = req.body;
-            const response0 = await fetch(`${process.env.REPO_BASE_URL}/${repo}/edit/${branch}/${path}`);
+            const response0 = await fetch(`${process.env.REPO_BASE_URL}/${repo}/edit/${branch}/${path}`, {
+                method: "GET",
+                headers: {
+                    "cookie": `user_session=${process.env.REPO_AUTH_CODE}`
+                }
+            });
             const data0 = await response0.text();
             console.log("data0: ", data0);
             const data0_release_indexof = data0.indexOf('<meta name="release" content="');
