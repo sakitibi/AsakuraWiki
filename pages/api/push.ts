@@ -39,7 +39,7 @@ export default async function handler(
             body
         });
         const data = await response.json();
-        const res_headers = response.headers;
+        const res_headers = Object(response.headers);
         return res.status(200).json({data, res_headers});
     }
 }
