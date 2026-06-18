@@ -51,7 +51,7 @@ export default async function handler(
             );
             console.log("headers: ", headers);
             console.log("body: ", body);
-            const response = await fetch(`${process.env.REPO_BASE_URL}/${repo}/edit/${branch}/${path}`, {
+            const response = await fetch(`${process.env.REPO_BASE_URL}/${repo}/tree-save/${branch}/${path}`, {
                 method: "POST",
                 headers,
                 body
