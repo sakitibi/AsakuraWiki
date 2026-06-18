@@ -29,7 +29,7 @@ export default async function handler(
             reqbody.message,
             reqbody.path,
             reqbody.new_path,
-            Uint8Array.fromBase64(reqbody.bytes)
+            Buffer.from(reqbody.bytes, 'base64')
         );
         const response = await fetch(`${process.env.REPO_BASE_URL}/${repo}/edit/${branch}/${path}`, {
             method: "POST",
