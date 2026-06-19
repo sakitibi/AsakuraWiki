@@ -19,20 +19,21 @@ export default async function handler(
     res: NextApiResponse
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
 
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     }
 
-    if (req.method === "GET") {
-        const index = Array.isArray(req.query.index) ? req.query.index[0] : req.query.index;
-        const url = Array.isArray(req.query.url) ? req.query.url[0] : req.query.url;
+    if (req.method === "POST") {
+        const body = req.body;
+        const index = Array.isArray(body.index) ? body.index[0] : body.index;
+        const url = Array.isArray(body.url) ? body.url[0] : body.url;
         // パスワードが未指定（undefined）でも許容する
-        const password = Array.isArray(req.query.password) ? req.query.password[0] : req.query.password;
+        const password = Array.isArray(body.password) ? body.password[0] : body.password;
         
-        const sliceStart = parseInt(Array.isArray(req.query.slice_start) ? req.query.slice_start[0] : (req.query.slice_start || '0'));
-        const sliceEndParam = Array.isArray(req.query.slice_end) ? req.query.slice_end[0] : req.query.slice_end;
+        const sliceStart = parseInt(Array.isArray(body.slice_start) ? body.slice_start[0] : (body.slice_start || '0'));
+        const sliceEndParam = Array.isArray(body.slice_end) ? body.slice_end[0] : body.slice_end;
         const sliceEnd = sliceEndParam ? parseInt(sliceEndParam) : undefined;
 
         if (!url) {
