@@ -79,7 +79,7 @@ export default async function handler(
 
             await reader.close();
             
-            res.setHeader('Content-Type', 'applications/octet-stream; charset=utf-8');
+            res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8');
             res.setHeader('X-Total-Count', validEntries.length.toString());
             res.setHeader('X-Slice-Start', sliceStart.toString());
             res.setHeader('X-Slice-End', (sliceEnd ?? validEntries.length).toString());
