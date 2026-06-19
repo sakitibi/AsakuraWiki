@@ -42,10 +42,10 @@ export default async function handler(
     const results = [];
 
     // 配列内のすべてのチャンネルIDに対してループ処理
-    for (const channelId of WATCH_CHANNELS) {
+    for (let i = 0;i < WATCH_CHANNELS.length;i++) {
         const params = new URLSearchParams();
         params.append('hub.callback', callbackUrl);
-        params.append('hub.topic', `https://www.youtube.com/xml/feeds/videos.xml?channel_id=${channelId}`);
+        params.append('hub.topic', `https://www.youtube.com/xml/feeds/videos.xml?channel_id=${WATCH_CHANNELS[i]}`);
         params.append('hub.mode', 'subscribe');
         params.append('hub.lease_seconds', '432000'); // 5日間
 
@@ -60,11 +60,11 @@ export default async function handler(
                 throw new Error(`HTTP ${response.status}`);
             }
 
-            console.log(`[成功] チャンネル: ${channelId}`);
-            results.push({ channelId, status: 'success' });
+            console.log(`[成功] チャンネル: ${WATCH_CHANNELS[i]}`);
+            results.push({ channelId: WATCH_CHANNELS[i], status: 'success' });
         } catch (error: any) {
-            console.error(`[失敗] チャンネル: ${channelId} - 原因: ${error.message}`);
-            results.push({ channelId, status: 'failed', error: error.message });
+            console.error(`[失敗] チャンネル: ${WATCH_CHANNELS[i]} - 原因: ${error.message}`);
+            results.push({ channelId: WATCH_CHANNELS[i], status: 'failed', error: error.message });
         }
     }
 

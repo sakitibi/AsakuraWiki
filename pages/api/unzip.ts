@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as zip from '@zip.js/zip.js';
 
-interface ExtractedFile {
+interface ExtractedFileMeta {
     filename: string;
     size: number;
-    content: string;
+    index: number;
 }
 
 export default async function handler(
@@ -47,9 +47,10 @@ export default async function handler(
             );
 
             const targetedEntries = validEntries.slice(sliceStart, sliceEnd);
-            const results: ExtractedFile[] = [];
+            const results: ExtractedFileMeta[] = [];
+            const buffers: ArrayBuffer[] = []
 
-            for (const entry of targetedEntries) {
+            for (let i = 0;i < targetedEntries.length;i++) {
                 // パスワードがある場合のみオプションオブジェクトを構築
                 const options: zip.EntryGetDataOptions = {
                     checkSignature: true
@@ -58,22 +59,24 @@ export default async function handler(
                     options.password = password;
                 }
 
-                const data = await entry.getData!(new zip.Uint8ArrayWriter(), options);
+                const data = await targetedEntries[i].getData!(new zip.Uint8ArrayWriter(), options);
 
                 results.push({
-                    filename: entry.filename,
+                    filename: targetedEntries[i].filename,
                     size: data.length,
-                    content: Buffer.from(data).toString('base64')
+                    index: i
                 });
+                buffers.push(data);
             }
 
             await reader.close();
-
+            
+            res.setHeader('Content-Type', 'applications/octet-stream; charset=utf-8');
             res.setHeader('X-Total-Count', validEntries.length.toString());
             res.setHeader('X-Slice-Start', sliceStart.toString());
             res.setHeader('X-Slice-End', (sliceEnd ?? validEntries.length).toString());
-
-            return res.status(200).json(results);
+            res.setHeader('X-Results', JSON.stringify(results))
+            return res.status(200).send(buffers);
 
         } catch (error: any) {
             console.error('Unzip Error:', error);
