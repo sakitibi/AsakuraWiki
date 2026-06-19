@@ -1,16 +1,57 @@
-name: Refresh YouTube Webhook Subscription
+name: Handle New Video and Push to Other Repo
 
 on:
-  schedule:
-    - cron: '0 0 */4 * *' # 4日ごと
-  workflow_dispatch: # 手動実行用
+  # Next.jsからAPI経由でデータを受け取って起動する設定
+  workflow_dispatch:
+    inputs:
+      video_id:
+        description: 'YouTube Video ID'
+        required: true
+        type: string
+      video_title:
+        description: 'YouTube Video Title'
+        required: false
+        type: string
 
 jobs:
-  refresh-subscription:
+  push-id:
     runs-on: ubuntu-latest
     steps:
-      - name: Call Subscribe API
+      # 1. このワークフローが配置されているリポジトリをチェックアウト
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      # 2. 別のリポジトリを一時フォルダ（target-folder）にクローン
+      - name: Clone target repo
+        env:
+          # クローン先のGitHubユーザー名または組織名
+          TARGET_OWNER: "sakitibi"
+          # クローン先の移動先リポジトリ名
+          TARGET_REPO: "13ninadmanager.com"
         run: |
-          curl -X POST "https://asakura-wiki.vercel.app/api/auto/subscribe" \
-          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-          -H "Content-Type: application/json"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # トークンを使用して別リポジトリをクローン
+          git clone "https://${{ secrets.EXTERNAL_REPO_TOKEN }}@github.com/${TARGET_OWNER}/${TARGET_REPO}.git" target-folder
+
+      # 3. クローンした別リポジトリ内のファイル（video_list.txt）にVideo IDを追記
+      - name: Append Video ID to file
+        run: |
+          cd target-folder
+          
+          echo "${{ github.event.inputs.video_title }} (${{ github.event.inputs.video_id }})" >> video_list.txt
+
+      # 4. 別リポジトリへ変更内容をコミットしてプッシュ
+      - name: Commit and Push to target repo
+        run: |
+          cd target-folder
+          
+          # 変更がある場合のみコミットしてプッシュ（空コミットによるエラーを防止）
+          git add video_list.txt
+          if ! git diff --staged --quiet; then
+            git commit -m "Add new video: ${{ github.event.inputs.video_id }}"
+            git push origin main
+          else
+            echo "変更がありません。プッシュをスキップします。"
+          fi

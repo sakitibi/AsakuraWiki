@@ -11,6 +11,7 @@ export default async function handler(
         return res.status(405).end();
     }
 
+    // GitHub Actionsからのトークンチェック
     const authHeader = req.headers.authorization;
     const expectedToken = `Bearer ${process.env.CRON_SECRET}`;
 
@@ -24,7 +25,10 @@ export default async function handler(
     }
 
     const HUB_URL = 'https://pubsubhubbub.appspot.com/subscribe';
-    const callbackUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/youtube`;
+    
+    // ベースURLの末尾のプロトコルやスラッシュの重複を防ぐため、安全にURLを組み立て
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL!;
+    const callbackUrl = `${apiBaseUrl.replace(/\/$/, '')}/api/youtube`;
     
     const results = [];
 
