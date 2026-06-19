@@ -55,7 +55,6 @@ export default async function handler(
 
             const targetedEntries = validEntries.slice(sliceStart, sliceEnd);
             const results: ExtractedFileMeta[] = [];
-            const buffers: ArrayBuffer[] = []
 
             for (let i = 0;i < targetedEntries.length;i++) {
                 // パスワードがある場合のみオプションオブジェクトを構築
@@ -73,7 +72,6 @@ export default async function handler(
                     size: data.length,
                     index: i
                 });
-                buffers.push(data);
             }
 
             await reader.close();
@@ -82,8 +80,7 @@ export default async function handler(
             res.setHeader('X-Total-Count', validEntries.length.toString());
             res.setHeader('X-Slice-Start', sliceStart.toString());
             res.setHeader('X-Slice-End', (sliceEnd ?? validEntries.length).toString());
-            res.setHeader('X-Results', Buffer.from(JSON.stringify(results), "utf8").toString("base64"));
-            return res.status(200).send(buffers);
+            return res.status(200).send(results);
 
         } catch (error: any) {
             console.error('Unzip Error:', error);
