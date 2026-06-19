@@ -75,7 +75,7 @@ export default async function handler(
             res.setHeader('X-Total-Count', validEntries.length.toString());
             res.setHeader('X-Slice-Start', sliceStart.toString());
             res.setHeader('X-Slice-End', (sliceEnd ?? validEntries.length).toString());
-            res.setHeader('X-Results', JSON.stringify(results))
+            res.setHeader('X-Results', Buffer.from(JSON.stringify(results), "utf8").toString("base64"));
             return res.status(200).send(buffers);
 
         } catch (error: any) {
