@@ -84,8 +84,12 @@ export default async function handler(
             res.setHeader('X-Slice-Start', sliceStart.toString());
             res.setHeader('X-Slice-End', (sliceEnd ?? validEntries.length).toString());
             res.setHeader('X-Results', Buffer.from(JSON.stringify(results), "utf8").toString("base64"));
-            return res.status(200).send(buffers[parseInt(index || "0")]);
+            const targetBuffer = buffers[parseInt(index || "0", 10)];
+            if (!targetBuffer) {
+                return res.status(400).json({ message: '指定された index のデータが存在しません' });
+            }
 
+            return res.status(200).send(Buffer.from(targetBuffer));
         } catch (error: any) {
             console.error('Unzip Error:', error);
             
