@@ -5,7 +5,10 @@ const WATCH_CHANNELS: string[] = [
     "UChDD-mCbqd4182eI-T5wGbA",
     "UCONw_JcpiuvPpClHQi3CHXw",
     "UCy0DH4rgPPjDWVZO7wibcSQ",
-    "UCE4m8LkxKQc40Pr0YB4d-5w"
+    "UCE4m8LkxKQc40Pr0YB4d-5w",
+    "UC_AoeaCVUk5afzONHvqFRjQ",
+    "UCbECstWnFqR9Y8MN_uN4HfA",
+    "UCJy7zfLsKBXoo2soFMum7JQ"
 ];
 
 export default async function handler(
