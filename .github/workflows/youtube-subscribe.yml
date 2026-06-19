@@ -38,6 +38,7 @@ jobs:
       # 3. クローンした別リポジトリ内のファイル（video_list.txt）にVideo IDを追記
       - name: Append Video ID to file
         run: |
+          mkdir -p target-folder
           cd target-folder
           
           echo "${{ github.event.inputs.video_title }} (${{ github.event.inputs.video_id }})" >> video_list.txt
@@ -45,6 +46,7 @@ jobs:
       # 4. 別リポジトリへ変更内容をコミットしてプッシュ
       - name: Commit and Push to target repo
         run: |
+          mkdir -p target-folder
           cd target-folder
           
           # 変更がある場合のみコミットしてプッシュ（空コミットによるエラーを防止）
