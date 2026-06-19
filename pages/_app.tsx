@@ -303,6 +303,9 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                     />
                 </>
             )}
+            <div style={{textAlign: 'center'}}>
+                <h1>6月27日19時51分にあさクラWikiはなんと1周年!</h1>
+            </div>
             {/*<p hidden>{JSON.stringify(res)}</p>*/}
             {
                 typeof location !== "undefined" ? 
