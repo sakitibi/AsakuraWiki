@@ -22,9 +22,7 @@ export default async function handler(
 
     if (req.method === "OPTIONS") {
         return res.status(200).end();
-    }
-
-    if (req.method === "POST") {
+    } else if (req.method === "POST") {
         const body = req.body;
         const index = Array.isArray(body.index) ? body.index[0] : body.index;
         const url = Array.isArray(body.url) ? body.url[0] : body.url;
@@ -102,5 +100,8 @@ export default async function handler(
                 error: error.message 
             });
         }
+    } else {
+        res.setHeader('Allow', ['POST','OPTIONS']);
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
