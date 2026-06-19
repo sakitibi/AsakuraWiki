@@ -1,0 +1,16 @@
+name: Refresh YouTube Webhook Subscription
+
+on:
+  schedule:
+    - cron: '0 0 */4 * *' # 4日ごと
+  workflow_dispatch: # 手動実行用
+
+jobs:
+  refresh-subscription:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Subscribe API
+        run: |
+          curl -X POST "https://asakura-wiki.vercel.app/api/auto/subscribe" \
+          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+          -H "Content-Type: application/json"
