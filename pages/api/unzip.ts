@@ -7,6 +7,13 @@ interface ExtractedFileMeta {
     index: number;
 }
 
+export const config = {
+    api: {
+        bodyParser: false,
+        responseLimit: false,
+    },
+}
+
 export default async function handler(
     req: NextApiRequest, 
     res: NextApiResponse
