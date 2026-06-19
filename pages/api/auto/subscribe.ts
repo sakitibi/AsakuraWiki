@@ -1,6 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-const WATCH_CHANNELS: string[] = [];
+const WATCH_CHANNELS: string[] = [
+    "UC4YwPX5-38lsN_rlzSgd5kw",
+    "UChDD-mCbqd4182eI-T5wGbA",
+    "UCONw_JcpiuvPpClHQi3CHXw",
+    "UCy0DH4rgPPjDWVZO7wibcSQ",
+    "UCE4m8LkxKQc40Pr0YB4d-5w"
+];
 
 export default async function handler(
     req: NextApiRequest,
