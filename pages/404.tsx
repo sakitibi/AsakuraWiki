@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface Custom404Props{
-    isEmbed?: "false" | "true"
+    isEmbed?: "false" | "true";
 }
 
 export default function Custom404({
     isEmbed
 }: Custom404Props) {
     if(isEmbed !== "true"){
-        isEmbed = "false"
+        isEmbed = "false";
     }
     const [pathname, setPathname] = useState<string | null>(null);
     useEffect(() => {
@@ -45,7 +45,7 @@ export default function Custom404({
                     </Link>
                 </div>
             </main>
-            {isEmbed !== "true" ? <FooterJp/> : null}
+            {isEmbed === "true" ? null : <FooterJp/>}
         </>
     );
 }

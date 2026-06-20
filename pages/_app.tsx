@@ -21,6 +21,19 @@ interface CustomAppProps {
     pageProps: any;
 }
 
+const TermsAgreeIgnorePaths: string[] = [
+    "/policies",
+    "/privacy",
+    "/rules",
+    "/special_wiki/13ninstudio/amongus/rules"
+]
+
+const ImageContainerIgnorePaths: string[] = [
+    "/",
+    "/ru",
+    "/dashboard"
+]
+
 export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     const router = useRouter();
 
@@ -242,10 +255,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         (async function(){
             if(
                 !adminer_user_id_list && 
-                (location.pathname === "/policies" ||
-                location.pathname === "/rules" ||
-                location.pathname === "/special_wiki/13ninstudio/amongus/rules" ||
-                location.pathname === "/privacy")
+                TermsAgreeIgnorePaths.some(value => value === location.pathname)
             ) return;
             const termsAgreeTime = parseInt(
                 upack.decoder.decode((
@@ -317,9 +327,9 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             {
                 typeof location !== "undefined" ? 
                 !adminer_user_id_list &&
-                location.pathname !== "/" &&
-                location.pathname !== "/ru" &&
-                location.pathname !== "dashboard" ? <ImageContainer/> : null : null
+                !ImageContainerIgnorePaths.some(
+                    value => value === location.pathname
+                ) ? <ImageContainer/> : null : null
             }
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />
