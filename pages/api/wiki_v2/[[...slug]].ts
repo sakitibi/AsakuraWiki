@@ -80,7 +80,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             // 個別ページの取得
             const result = await turso.execute({
-                sql: "SELECT title, content, updated_at, author_id, freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
+                sql: "SELECT id, title, content, updated_at, author_id, freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
                 args: [wikiSlug, pageSlug]
             });
 
@@ -90,6 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const base64Content = Buffer.from(row.content as any).toString('base64');
 
             return res.status(200).json({
+                page_id: row.id,
                 title: row.title,
                 content: base64Content,
                 updated_at: row.updated_at,
