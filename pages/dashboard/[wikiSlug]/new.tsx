@@ -162,26 +162,24 @@ export default function NewPage() {
                     />
                     </label>
                     <br /><br />
-                    <label>
-                        内容:
-                        <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', marginBottom: '16px' }}>
-                            <Editor
-                                height="300px"
-                                language="AsakuraWikiScript"
-                                theme="AsakuraWikiTheme"
-                                value={content}
-                                onChange={(value) => setContent(value || "")}
-                                beforeMount={handleEditorBeforeMount}
-                                onMount={handleEditorDidMount}
-                                options={{
-                                    minimap: { enabled: false },
-                                    wordWrap: "on",
-                                    fontSize: 14,
-                                    lineNumbers: "on",
-                                }}
-                            />
-                        </div>
-                    </label>
+                    <label style={{ display: 'block', marginBottom: '8px' }}>内容:</label>
+                    <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', marginBottom: '16px' }}>
+                        <Editor
+                            height="300px"
+                            language="AsakuraWikiScript"
+                            theme="AsakuraWikiTheme"
+                            value={content}
+                            onChange={(value) => setContent(value || "")}
+                            beforeMount={handleEditorBeforeMount}
+                            onMount={handleEditorDidMount}
+                            options={{
+                                minimap: { enabled: false },
+                                wordWrap: "on",
+                                fontSize: 14,
+                                lineNumbers: "on",
+                            }}
+                        />
+                    </div>
                     <br /><br />
                     <button type="submit" disabled={loading || !wikiSlugStr}>
                         <i
