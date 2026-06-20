@@ -104,7 +104,13 @@ export default function WikiEditPage({
                         </label>
                         
                         <label style={{ display: 'block', marginBottom: '8px' }}>内容:</label>
-                        <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', marginBottom: '16px' }}>
+                        <div style={{
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            overflow: 'hidden',
+                            marginBottom: '16px',
+                            width: '50%'
+                        }}>
                             <Editor
                                 height="300px"
                                 language="AsakuraWikiScript"
