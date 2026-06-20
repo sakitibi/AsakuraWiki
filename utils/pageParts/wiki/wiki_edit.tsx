@@ -108,8 +108,7 @@ export default function WikiEditPage({
                             border: '1px solid #ccc',
                             borderRadius: '4px',
                             overflow: 'hidden',
-                            marginBottom: '16px',
-                            width: '50%'
+                            marginBottom: '16px'
                         }}>
                             <Editor
                                 height="300px"
