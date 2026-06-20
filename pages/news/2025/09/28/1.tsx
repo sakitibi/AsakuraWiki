@@ -7,6 +7,18 @@ import { useState, useEffect } from 'react';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { company } from '@/utils/version';
+import { CacheControlProps } from '@/pages/news';
+
+export async function getServerSideProps({ res }: CacheControlProps) {
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=604800, stale-while-revalidate=59'
+    );
+
+    return {
+        props: {},
+    };
+}
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState(false);

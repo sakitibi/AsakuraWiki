@@ -9,7 +9,7 @@ import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { kokuseiChousaStr } from '@/pages/news/2025/10/08/1';
 import { NextApiResponse } from 'next';
 
-interface CacheControlProps{
+export interface CacheControlProps{
     res: NextApiResponse;
 }
 
