@@ -255,7 +255,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         (async function(){
             if(
                 !adminer_user_id_list && 
-                !TermsAgreeIgnorePaths.some(value => value === location.pathname)
+                TermsAgreeIgnorePaths.some(value => value === location.pathname)
             ) return;
             const termsAgreeTime = parseInt(
                 upack.decoder.decode((
