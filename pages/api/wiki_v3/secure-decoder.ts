@@ -17,8 +17,9 @@ export default async function handler(
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
-
-    const response = await fetch(`https://github.com/sakitibi/${req.headers["X-Repo"]}/raw/refs/heads/main/${req.headers["X-Path"]}`, {
+    const url = `https://github.com/sakitibi/${req.headers["X-Repo"]}/raw/refs/heads/main/${req.headers["X-Path"]}`;
+    console.log("url: ", url)
+    const response = await fetch(url, {
         method: "GET",
         headers: {
             "cookie": `user_session=${process.env.GH_SESSION}`
