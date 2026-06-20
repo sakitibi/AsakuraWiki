@@ -8,7 +8,7 @@ export default async function handler(
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     // Amongusのトークンを取得
-    const res1 = await fetch("https://asakura-wiki.vercel.app/api/amongus/token");
+    const res1 = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/amongus/token`);
     if (!res1.ok) {
         const errdata = await res1.text();
         return res.status(500).json({error: "token error", data: errdata});
@@ -30,10 +30,8 @@ export default async function handler(
     headers.set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.4.7,sentry-trace_id=ab4fcbbca8194bcea5ac9be5a6aff102")
     headers.set("Authorization", `Bearer ${auth_token}`)
     headers.set("Accept-Encoding", "gzip, deflate, br")
-    headers.set("Accept-Language", "ja")
     headers.set("sentry-trace", "ab4fcbbca8194bcea5ac9be5a6aff102-8783ca69fcb04104-0")
     headers.set("Content-Type", "application/json")
-    headers.set("Content-Length", "114")
     headers.set("User-Agent", "AmongUs/1 CFNetwork/3860.500.112 Darwin/25.4.0")
     headers.set("Connection", "keep-alive")
     const response = await fetch(
