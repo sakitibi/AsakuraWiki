@@ -1,12 +1,12 @@
 import crypto from 'crypto';
 
 const ALGORITHM = 'aes-256-gcm';
-const KEY = Buffer.from(process.env.ENCRYPTION_KEY || '', 'utf8');
+const KEY = Buffer.from(process.env.GITHUB_ENCRYPT_KEY || '', 'utf8');
 const IV_LENGTH = 12; // GCM推奨のIV長
 
 export function encrypt(text: string): string {
     if (KEY.length !== 32) {
-        throw new Error('ENCRYPTION_KEY must be exactly 32 bytes (32 characters).');
+        throw new Error('GITHUB_ENCRYPT_KEY must be exactly 32 bytes (32 characters).');
     }
 
     const iv = crypto.randomBytes(IV_LENGTH);
@@ -23,7 +23,7 @@ export function encrypt(text: string): string {
 
 export function decrypt(encryptedText: string): string {
     if (KEY.length !== 32) {
-        throw new Error('ENCRYPTION_KEY must be exactly 32 bytes (32 characters).');
+        throw new Error('GITHUB_ENCRYPT_KEY must be exactly 32 bytes (32 characters).');
     }
 
     const [ivHex, authTagHex, encrypted] = encryptedText.split(':');
