@@ -55,7 +55,7 @@ export default function NewPage() {
             }
             setownerId(data?.owner_id);
             setEditMode(data?.edit_mode);
-            setName(data?.name);
+            setName(data?.name + " Wiki*");
         }
 
         fetchWiki();
@@ -124,7 +124,7 @@ export default function NewPage() {
     return (
         <>
             <Head>
-                <title>ページ新規作成 - {name} Wiki*</title>
+                <title>ページ新規作成 - {name}</title>
             </Head>
             {errorMsg ? (
                 <p style={{ color: 'red' }}>{errorMsg}</p>
@@ -132,7 +132,7 @@ export default function NewPage() {
                 <main style={{ padding: '2rem' }}>
                 <h1>
                     <i className="fa-solid fa-file-plus"></i>
-                    新しいページを作成
+                    {name} に新しいページを作成
                 </h1>
                 <form onSubmit={handleSubmit}>
                     <label>
