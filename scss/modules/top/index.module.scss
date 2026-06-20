@@ -73,11 +73,9 @@
     max-width: 1100px;
     margin: 0 auto;
     padding: 20px;
-    font-family: sans-serif;
 }
 
 .dashboardHeader {
-    display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
@@ -88,7 +86,6 @@
 }
 
 .mainTitle {
-    font-size: 24px;
     margin: 0;
     display: flex;
     align-items: center;
@@ -104,9 +101,7 @@
 }
 
 .counterWidget {
-    display: flex;
-    gap: 15px;
-    background: #f7f9fa;
+    background: inherit;
     padding: 10px 16px;
     border-radius: 6px;
     font-size: 13px;
@@ -130,7 +125,7 @@
 }
 
 .contentSection {
-    background: #ffffff;
+    background: inherit;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 20px;
