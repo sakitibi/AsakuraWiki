@@ -163,8 +163,14 @@ export default function NewPage() {
                     </label>
                     <br /><br />
                     <label style={{ display: 'block', marginBottom: '8px' }}>内容:</label>
-                    <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', marginBottom: '16px' }}>
+                    <div style={{
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        overflow: 'hidden',
+                        marginBottom: '16px'
+                    }}>
                         <Editor
+                            width="550px"
                             height="300px"
                             language="AsakuraWikiScript"
                             theme="AsakuraWikiTheme"
