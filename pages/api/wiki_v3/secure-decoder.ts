@@ -17,7 +17,7 @@ export default async function handler(
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
-    const url = `https://github.com/sakitibi/${req.headers["X-Repo"]}/raw/refs/heads/main/${req.headers["X-Path"]}`;
+    const url = `https://github.com/sakitibi/${req.headers["x-repo"]}/raw/refs/heads/main/${req.headers["x-path"]}`;
     console.log("url: ", url)
     const response = await fetch(url, {
         method: "GET",
