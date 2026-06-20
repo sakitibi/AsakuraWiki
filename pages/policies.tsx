@@ -36,7 +36,7 @@ export default function Policies(){
     };
     const Agreed = async () => {
         localStorage.setItem("terms_agree", await upack.SEncoder.encodeSEncode(
-            upack.encoder.encode(String(Date.now())), process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+            upack.encoder.encode(Date.now().toString(36)), process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
         ));
         location.replace(`${url?.searchParams.get("redirect") ?? "/policies"}`);
     }

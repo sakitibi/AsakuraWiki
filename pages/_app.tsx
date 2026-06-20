@@ -250,7 +250,8 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             const termsAgreeTime = parseInt(
                 upack.decoder.decode((
                     await upack.SEncoder.decodeSEncode((localStorage.getItem("terms_agree") ?? "0"), process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!)
-                )), 10);
+                )), 36
+            );
             // ログインしていると2週間、ログインしていないと1週間でセッションが切れるようにする
             if((Date.now() - termsAgreeTime) > (user ? 12096e5 : 6048e5)){
                 localStorage.removeItem("terms_agree");
