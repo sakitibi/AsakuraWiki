@@ -77,13 +77,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             })
         }
 
-        for (let i = 0;i < operations.length;i++) {
+        for (let i = 0; i < operations.length; i++) {
             let currentFileSha: string | undefined = undefined
 
             try {
-                const { data: fileData } = await octokit.request(`GET /repos/${owner}/${repo}/contents/${operations[i].path}`, {
+                const { data: fileData } = await octokit.rest.repos.getContent({
+                    owner,
+                    repo,
+                    path: operations[i].path,
                     ref: prBranch,
                 });
+                
                 if (!Array.isArray(fileData) && fileData.type === 'file') {
                     currentFileSha = fileData.sha
                 }
@@ -91,26 +95,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (err.status !== 404) throw err;
             }
 
-            // ファイル作成・更新
             if (operations[i].action === 'create' || operations[i].action === 'update') {
                 const encryptedContent = encrypt(operations[i].content || '');
 
-                await octokit.request(`PUT /repos/${owner}/${repo}/contents/${operations[i].path}`, {
+                await octokit.rest.repos.createOrUpdateFileContents({
+                    owner,
+                    repo,
+                    path: operations[i].path,
                     message: operations[i].commitMessage,
                     content: Buffer.from(encryptedContent).toString('base64'),
                     branch: prBranch,
-                    sha: currentFileSha, // 新規作成時は undefined、上書き時は既存のSHAが入る
-                })
+                    sha: currentFileSha, // 新規はundefined、上書きは既存のSHA
+                });
             } 
-            // ファイル削除
             else if (operations[i].action === 'delete') {
                 if (!currentFileSha) continue;
 
-                await octokit.request(`DELETE /repos/${owner}/${repo}/contents/${operations[i].path}`, {
+                await octokit.rest.repos.deleteFile({
+                    owner,
+                    repo,
+                    path: operations[i].path,
                     message: operations[i].commitMessage,
                     sha: currentFileSha,
                     branch: prBranch,
-                })
+                });
             }
         }
 
