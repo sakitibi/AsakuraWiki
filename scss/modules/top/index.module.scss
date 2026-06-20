@@ -180,3 +180,14 @@
     font-size: 13px;
     color: #a0aec0;
 }
+
+.initHidden {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.fadeIn {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}

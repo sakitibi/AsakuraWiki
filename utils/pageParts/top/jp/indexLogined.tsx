@@ -2,6 +2,7 @@ import versions from '@/utils/version';
 import Link from 'next/link';
 import styles from '@/css/index.module.css';
 import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/indexInterfaces';
+import { useState, useEffect } from 'react';
 
 export interface LoginedUIProps {
     wiki13ninstudioCounter: WikiCounter | null;
@@ -16,7 +17,6 @@ export interface LoginedUIProps {
     readonly goCreateWiki: () => void;
 }
 
-// 日付の表示をスッキリさせるヘルパー
 export const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleString('ja-JP', {
@@ -42,10 +42,18 @@ export default function LoginedUI({
     goCreateWiki
 }: LoginedUIProps) {
 
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        setIsLoaded(true);
+    }, []);
+
     const likedList = likedWikis.filter((wp) => wp.like_count > 0);
 
+    const containerClassName = `${styles.dashboardContainer} ${isLoaded ? styles.fadeIn : styles.initHidden}`;
+
     return (
-        <div className={styles.dashboardContainer}>
+        <div className={containerClassName}>
             <header className={styles.dashboardHeader}>
                 <h1 className={styles.mainTitle}>
                     あさクラWiki<span className={styles.versionBadge}>{versions[2]}</span>
