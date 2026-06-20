@@ -142,7 +142,6 @@ export default function Home() {
     =============================== */
     useEffect(() => {
         if (isBot) return;
-
         fetchRecentPages(
             setLoadingRecent,
             setRecentPages,
