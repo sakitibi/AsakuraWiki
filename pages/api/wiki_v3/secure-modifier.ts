@@ -87,21 +87,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         for (const op of operations) {
             let currentFileSha: string | undefined = undefined
 
-            // 更新・削除の場合は、操作先ブランチ（main または pull_waiting_X）から既存ファイルの sha を取得
-            if (op.action === 'update' || op.action === 'delete') {
-                try {
-                    const { data: fileData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-                        owner,
-                        repo,
-                        path: op.path,
-                        ref: prBranch,
-                    });
-                    if (!Array.isArray(fileData) && fileData.type === 'file') {
-                        currentFileSha = fileData.sha
-                    }
-                } catch (err: any) {
-                    if (err.status !== 404) throw err;
+            // 🟢 改善：actionが何であれ、まずは現在のターゲットブランチにおけるファイルの存在(SHA)をチェックする
+            try {
+                const { data: fileData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+                    owner,
+                    repo,
+                    path: op.path,
+                    ref: prBranch,
+                });
+                if (!Array.isArray(fileData) && fileData.type === 'file') {
+                    currentFileSha = fileData.sha
                 }
+            } catch (err: any) {
+                if (err.status !== 404) throw err;
             }
 
             // ファイル作成・更新
@@ -120,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             } 
             // ファイル削除
             else if (op.action === 'delete') {
-                if (!currentFileSha) continue; // 削除対象ファイルがなければスキップ
+                if (!currentFileSha) continue; // そもそもファイルがなければ削除スキップ
                 await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
                     owner,
                     repo,
@@ -132,7 +130,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
 
-        // 🚀 4. PRモードの場合は、最後にプルリクエストを作成
         if (isPrRequired && autoId) {
         const { data: prData } = await octokit.request('POST /repos/{owner}/{repo}/pulls', {
             owner,
