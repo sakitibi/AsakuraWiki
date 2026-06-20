@@ -5,7 +5,7 @@ import { encrypt } from '@/utils/wiki_crypto'
 interface FileOperation {
     action: 'create' | 'update' | 'delete';
     path: string;
-    content?: string; // create, update の場合は必須
+    content?: string;
     commitMessage: string;
 }
 
@@ -15,11 +15,9 @@ interface RequestBodyProps {
     prBody: string;
 }
 
-// 📌 直接コミット（Write）を許可する特定のディレクトリ
 const DIRECT_WRITE_DIR = 'wiki/';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // POSTメソッドのみを許可
     if (req.method !== 'POST') {
         res.setHeader('Allow', ['POST'])
         return res.status(405).end(`Method ${req.method} Not Allowed`)
@@ -27,7 +25,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const repo = "AsakuraWikiMetadatas";
     const { operations, prTitle, prBody } = req.body as RequestBodyProps;
 
-    // バリデーション
     if (!operations || !Array.isArray(operations) || operations.length === 0) {
         return res.status(400).json({ error: 'Missing required parameters' })
     }
@@ -38,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const isPrRequired = operations.some(op => !op.path.startsWith(DIRECT_WRITE_DIR));
 
     try {
-        // GitHub Appの初期化
         const app = new App({
             appId: process.env.GITHUB_APP_ID!,
             privateKey: process.env.ASKRPULL_SECRET_KEY!.replace(/\\n/g, '\n'),
@@ -49,7 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let autoId: number | null = null;
 
         if (isPrRequired) {
-            // 採番用の使い捨てチケット（Issue）を発行
             const { data: issueData } = await octokit.request('POST /repos/{owner}/{repo}/issues', {
                 owner,
                 repo,
@@ -60,7 +55,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             autoId = issueData.number;
             prBranch = `pull_waiting_${autoId}`;
 
-            // 発行完了後、不要なIssueは即座にクローズ
             await octokit.request('PATCH /repos/{owner}/{repo}/issues/{issue_number}', {
                 owner,
                 repo,
@@ -69,7 +63,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 state_reason: 'completed'
             })
 
-            // mainブランチの最新SHAをベースに、新しい連番ブランチを作成する
             const { data: mainRef } = await octokit.request('GET /repos/{owner}/{repo}/git/ref/heads/{ref}', {
                 owner,
                 repo,
@@ -84,15 +77,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             })
         }
 
-        for (const op of operations) {
+        for (let i = 0;i < operations.length;i++) {
             let currentFileSha: string | undefined = undefined
 
-            // 🟢 改善：actionが何であれ、まずは現在のターゲットブランチにおけるファイルの存在(SHA)をチェックする
             try {
-                const { data: fileData } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-                    owner,
-                    repo,
-                    path: op.path,
+                const { data: fileData } = await octokit.request(`GET /repos/${owner}/${repo}/contents/${operations[i].path}`, {
                     ref: prBranch,
                 });
                 if (!Array.isArray(fileData) && fileData.type === 'file') {
@@ -103,27 +92,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             // ファイル作成・更新
-            if (op.action === 'create' || op.action === 'update') {
-                const encryptedContent = encrypt(op.content || '');
+            if (operations[i].action === 'create' || operations[i].action === 'update') {
+                const encryptedContent = encrypt(operations[i].content || '');
 
-                await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-                    owner,
-                    repo,
-                    path: op.path,
-                    message: op.commitMessage,
+                await octokit.request(`PUT /repos/${owner}/${repo}/contents/${operations[i].path}`, {
+                    message: operations[i].commitMessage,
                     content: Buffer.from(encryptedContent).toString('base64'),
                     branch: prBranch,
-                    sha: currentFileSha,
+                    sha: currentFileSha, // 新規作成時は undefined、上書き時は既存のSHAが入る
                 })
             } 
             // ファイル削除
-            else if (op.action === 'delete') {
-                if (!currentFileSha) continue; // そもそもファイルがなければ削除スキップ
-                await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
-                    owner,
-                    repo,
-                    path: op.path,
-                    message: op.commitMessage,
+            else if (operations[i].action === 'delete') {
+                if (!currentFileSha) continue;
+
+                await octokit.request(`DELETE /repos/${owner}/${repo}/contents/${operations[i].path}`, {
+                    message: operations[i].commitMessage,
                     sha: currentFileSha,
                     branch: prBranch,
                 })
@@ -131,34 +115,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         if (isPrRequired && autoId) {
-        const { data: prData } = await octokit.request('POST /repos/{owner}/{repo}/pulls', {
-            owner,
-            repo,
-            title: prTitle || `🤖【要レビュー】自動ファイル変更 (連番ID: ${autoId})`,
-            body: prBody || `Issue #${autoId} に基づく自動生成PRです。全ファイルは暗号化されてコミットされています。`,
-            head: prBranch,
-            base: baseBranch,
-        })
+            const { data: prData } = await octokit.request('POST /repos/{owner}/{repo}/pulls', {
+                owner,
+                repo,
+                title: prTitle || `🤖【要レビュー】自動ファイル変更 (連番ID: ${autoId})`,
+                body: prBody || `Issue #${autoId} に基づく自動生成PRです。全ファイルは暗号化されてコミットされています。`,
+                head: prBranch,
+                base: baseBranch,
+            })
+
+            return res.status(200).json({ 
+                success: true, 
+                mode: 'PR', 
+                id: autoId,
+                branch: prBranch,
+                url: prData.html_url,
+                message: '指定ディレクトリ外の変更を検知したため、連番ブランチを作成してPRを出しました。'
+            })
+        }
 
         return res.status(200).json({ 
             success: true, 
-            mode: 'PR', 
-            id: autoId,
-            branch: prBranch,
-            url: prData.html_url,
-            message: '指定ディレクトリ外の変更を検知したため、連番ブランチを作成してPRを出しました。'
-        })
-        }
-
-        // 直接コミット完了のレスポンス
-        return res.status(200).json({ 
-        success: true, 
-        mode: 'DIRECT', 
-        message: `すべての変更が ${DIRECT_WRITE_DIR} 内だったため、mainブランチに直接暗号化コミットしました。` 
+            mode: 'DIRECT', 
+            message: `すべての変更が ${DIRECT_WRITE_DIR} 内だったため、mainブランチに直接暗号化コミットしました。` 
         })
 
     } catch (error: any) {
         console.error('API Process Error:', error)
-        return res.status(500).json({ error: 'Internal Server Error', message: error.message })
+        return res.status(500).json({ 
+            error: 'Internal Server Error', 
+            message: error.message,
+            githubError: error.response?.data
+        })
     }
 }
