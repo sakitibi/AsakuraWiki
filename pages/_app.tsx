@@ -11,6 +11,7 @@ import { secureRandomString } from '@/lib/secureObfuscator';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import '@/styles/globals.css';
 import ImageContainer from '@/utils/pageParts/top/ImageContainer';
+import upack from '@/node_modules/upack.js/src/index';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 export const blockedDomains = ['https://vercel.com', 'https://vercel.live'];
@@ -238,21 +239,26 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
 
     useEffect(() => {
         if(!location || !localStorage || isBot) return;
-        if(
-            !adminer_user_id_list && 
-            (location.pathname === "/policies" ||
-            location.pathname === "/rules" ||
-            location.pathname === "/special_wiki/13ninstudio/amongus/rules" ||
-            location.pathname === "/privacy")
-        ) return;
-        const termsAgreeTime = parseInt(localStorage.getItem("terms_agree") ?? "0", 10);
-        // ログインしていると2週間、ログインしていないと1週間でセッションが切れるようにする
-        if((Date.now() - termsAgreeTime) > (user ? 12096e5 : 6048e5)){
-            localStorage.removeItem("terms_agree");
-            location.replace(
-                `/policies?redirect=${encodeURIComponent(location.pathname)}${encodeURIComponent(location.search)}`
-            );
-        }
+        (async function(){
+            if(
+                !adminer_user_id_list && 
+                (location.pathname === "/policies" ||
+                location.pathname === "/rules" ||
+                location.pathname === "/special_wiki/13ninstudio/amongus/rules" ||
+                location.pathname === "/privacy")
+            ) return;
+            const termsAgreeTime = parseInt(
+                upack.decoder.decode((
+                    await upack.SEncoder.decodeSEncode((localStorage.getItem("terms_agree") ?? "0"), process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!)
+                )), 10);
+            // ログインしていると2週間、ログインしていないと1週間でセッションが切れるようにする
+            if((Date.now() - termsAgreeTime) > (user ? 12096e5 : 6048e5)){
+                localStorage.removeItem("terms_agree");
+                location.replace(
+                    `/policies?redirect=${encodeURIComponent(location.pathname)}${encodeURIComponent(location.search)}`
+                );
+            }
+        })();
     }, [isBot]);
     useEffect(() => {
         if (isBot === false && !asakura_member_list_found) {

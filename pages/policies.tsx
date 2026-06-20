@@ -12,6 +12,7 @@ import PoliciesRegister, {
     PoliciesPasswordAdminer,
     PoliciesRegisterUser
 } from "@/utils/pageParts/top/jp/policies/Register";
+import upack from '@/node_modules/upack.js/src/index';
 
 export default function Policies(){
     const [menuStatus, setMenuStatus] = useState(false);
@@ -33,8 +34,10 @@ export default function Policies(){
     const handleClick = () => {
         setMenuStatus(prev => !prev);
     };
-    const Agreed = () => {
-        localStorage.setItem("terms_agree", String(Date.now()));
+    const Agreed = async () => {
+        localStorage.setItem("terms_agree", await upack.SEncoder.encodeSEncode(
+            upack.encoder.encode(String(Date.now())), process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+        ));
         location.replace(`${url?.searchParams.get("redirect") ?? "/policies"}`);
     }
     return(
