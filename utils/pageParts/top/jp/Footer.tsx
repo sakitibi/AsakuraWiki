@@ -18,7 +18,7 @@ export default function FooterJp(){
                 </ul>
             </div>
             <div style={{textAlign: "center"}} className={styles.cCopyright}>
-                <p>Copyright 2026 {company} All rights Reserved</p>
+                <p>Copyleft 2026 {company} Some lefts Reserved</p>
                 <p>当Wikiサービスはオープンソースプロジェクトです</p>
             </div>
         </footer>
