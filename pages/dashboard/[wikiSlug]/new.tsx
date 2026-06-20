@@ -4,6 +4,7 @@ import { useSession, User, Session } from '@supabase/auth-helpers-react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { Editor, Monaco } from '@monaco-editor/react';
 import { handleEditorBeforeMount } from '@/utils/pageParts/wiki/wiki_edit';
+import Head from 'next/head';
 
 export default function NewPage() {
     const editorRef = useRef<any>(null);
@@ -28,6 +29,7 @@ export default function NewPage() {
     const wikiSlugStr:string = typeof wikiSlug === 'string' ? wikiSlug : '';
 
     const [title, setTitle] = useState<string>('');
+    const [name, setName] = useState<string>('');
     const [slug, setSlug] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const [editMode, setEditMode] = useState<'private' | 'public'>('public');
@@ -42,7 +44,7 @@ export default function NewPage() {
         const fetchWiki = async() => {
             const { data, error } = await supabaseClient
             .from('wikis')
-            .select('name, description, owner_id, edit_mode, design_color')
+            .select('name, edit_mode, description, owner_id, edit_mode, design_color')
             .eq('slug', wikiSlugStr)
             .maybeSingle();
             if (error) {
@@ -52,25 +54,11 @@ export default function NewPage() {
                 return;
             }
             setownerId(data?.owner_id);
+            setEditMode(data?.edit_mode);
+            setName(data?.name);
         }
 
-        const fetchEditMode = async () => {
-            const { data, error } = await supabaseClient
-                .from('wikis')
-                .select('edit_mode')
-                .eq('slug', wikiSlugStr)
-                .maybeSingle();
-
-            if (error || !data) {
-                alert('Wikiの設定取得に失敗しました');
-                return;
-            }
-
-            setEditMode(data.edit_mode);
-        };
-
         fetchWiki();
-        fetchEditMode();
     }, [wikiSlugStr, user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -134,12 +122,18 @@ export default function NewPage() {
     if (!router.isReady) return <div>読み込み中…</div>;
 
     return (
-        <>       
+        <>
+            <Head>
+                <title>ページ新規作成 - {name} Wiki*</title>
+            </Head>
             {errorMsg ? (
                 <p style={{ color: 'red' }}>{errorMsg}</p>
             ) : (
                 <main style={{ padding: '2rem' }}>
-                <h1>📝 新しいページを作成</h1>
+                <h1>
+                    <i className="fa-solid fa-file-plus"></i>
+                    新しいページを作成
+                </h1>
                 <form onSubmit={handleSubmit}>
                     <label>
                     ページID（URL用）:
