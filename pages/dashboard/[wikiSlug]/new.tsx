@@ -138,7 +138,7 @@ export default function NewPage() {
             {errorMsg ? (
                 <p style={{ color: 'red' }}>{errorMsg}</p>
             ) : (
-                <main style={{ padding: '2rem', maxWidth: 600 }}>
+                <main style={{ padding: '2rem' }}>
                 <h1>📝 新しいページを作成</h1>
                 <form onSubmit={handleSubmit}>
                     <label>
