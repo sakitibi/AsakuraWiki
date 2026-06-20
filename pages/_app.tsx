@@ -317,7 +317,8 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                 typeof location !== "undefined" ? 
                 !adminer_user_id_list &&
                 location.pathname !== "/" &&
-                location.pathname !== "/ru" ? <ImageContainer/> : null : null
+                location.pathname !== "/ru" &&
+                location.pathname !== "dashboard" ? <ImageContainer/> : null : null
             }
             <SessionContextProvider supabaseClient={supabaseClient}>
                 <Component {...pageProps} />
