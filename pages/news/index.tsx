@@ -7,6 +7,22 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { kokuseiChousaStr } from '@/pages/news/2025/10/08/1';
+import { NextApiResponse } from 'next';
+
+interface CacheControlProps{
+    res: NextApiResponse;
+}
+
+export async function getServerSideProps({ res }: CacheControlProps) {
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=300, stale-while-revalidate=59'
+    );
+
+    return {
+        props: {},
+    };
+}
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState(false);
