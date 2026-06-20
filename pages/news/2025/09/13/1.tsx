@@ -7,9 +7,9 @@ import { useState, useEffect } from 'react';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { company } from '@/utils/version';
-import { CacheControlProps } from '@/pages/news';
+import { GetServerSideProps } from 'next';
 
-export async function getServerSideProps({ res }: CacheControlProps) {
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     res.setHeader(
         'Cache-Control',
         'public, s-maxage=604800, stale-while-revalidate=59'
