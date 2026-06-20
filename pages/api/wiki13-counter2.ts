@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 //import chromium from '@sparticuz/chromium-min';
-import vanillaPuppeteer from 'puppeteer-core';
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+//import vanillaPuppeteer from 'puppeteer-core';
+//import puppeteer from 'puppeteer-extra';
+//import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
 /*import 'kind-of';
 import 'is-plain-object'*/
