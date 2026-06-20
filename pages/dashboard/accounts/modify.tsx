@@ -29,6 +29,14 @@ export default function ModifyPage() {
             }
         });
     }, []);
+    useEffect(() => {
+        if (!user) return;
+        setEmail(user.email || "");
+        setBirthday(user.user_metadata.birthday);
+        setCountries(user.user_metadata.countries);
+        setGender(user.user_metadata.gender);
+        setShimei(user.user_metadata.shimei);
+    }, [user]);
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const handleModify = async (e: React.FormEvent) => {
@@ -149,7 +157,7 @@ export default function ModifyPage() {
                 <title>13ninアカウントを情報変更</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 500 }}>
-                <h1>📝 情報変更</h1>
+                <h1>📝 13ninアカウントを情報変更</h1>
                 <form onSubmit={handleModify}>
                     <input
                         type="email"
