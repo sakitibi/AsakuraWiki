@@ -10,7 +10,7 @@ export default async function handler(
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'x-filter');
     // Amongusのトークンを取得
-    const res1 = await fetch("https://asakura-wiki.vercel.app/api/amongus/user");
+    const res1 = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/amongus/user`);
     if (!res1.ok) {
         const errdata = await res1.text();
         return res.status(500).json({error: "token error", data: errdata});
@@ -27,7 +27,6 @@ export default async function handler(
 
     // ヘッダーをセット
     const headers = new Headers();
-    headers.set("accept-language", "ja")
     headers.set("accept", "application/json")
     headers.set("accept-encoding", "gzip, deflate, br")
     headers.set("priority", "u=3, i")
@@ -37,7 +36,7 @@ export default async function handler(
     headers.set("user-agent", "AmongUs/1 CFNetwork/3860.500.112 Darwin/25.4.0")
     headers.set("x-unity-version", "2022.3.44f1")
     const response = await fetch(
-        `https://matchmaker-as.among.us:443/api/games/filtered?filter=${filter}`,
+        `https://matchmaker-as.among.us/api/games/filtered?filter=${filter}`,
         {
             method: "GET",
             headers
