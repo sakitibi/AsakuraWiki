@@ -80,11 +80,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         for (let i = 0; i < operations.length; i++) {
             let currentFileSha: string | undefined = undefined
 
+            const plainPath = decodeURIComponent(operations[i].path).replace(/^\//, '');
+
             try {
-                const { data: fileData } = await octokit.rest.repos.getContent({
-                    owner,
-                    repo,
-                    path: operations[i].path,
+                const { data: fileData } = await octokit.request(`GET /repos/${owner}/${repo}/contents/${plainPath}`, {
                     ref: prBranch,
                 });
                 
@@ -98,23 +97,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (operations[i].action === 'create' || operations[i].action === 'update') {
                 const encryptedContent = encrypt(operations[i].content || '');
 
-                await octokit.rest.repos.createOrUpdateFileContents({
-                    owner,
-                    repo,
-                    path: operations[i].path,
+                await octokit.request(`PUT /repos/${owner}/${repo}/contents/${plainPath}`, {
                     message: operations[i].commitMessage,
                     content: Buffer.from(encryptedContent).toString('base64'),
                     branch: prBranch,
-                    sha: currentFileSha, // 新規はundefined、上書きは既存のSHA
+                    sha: currentFileSha, // 新規時はundefined、上書き時は既存のSHA
                 });
             } 
             else if (operations[i].action === 'delete') {
                 if (!currentFileSha) continue;
 
-                await octokit.rest.repos.deleteFile({
-                    owner,
-                    repo,
-                    path: operations[i].path,
+                await octokit.request(`DELETE /repos/${owner}/${repo}/contents/${plainPath}`, {
                     message: operations[i].commitMessage,
                     sha: currentFileSha,
                     branch: prBranch,
