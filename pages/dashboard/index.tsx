@@ -7,6 +7,7 @@ import { asakuraMenberUserId } from '@/utils/user_list';
 import { createServerClient } from '@supabase/ssr';
 import { DeveloperProps } from './developer/register';
 import { useEffect, useState } from 'react';
+import ImageContainer from '@/utils/pageParts/top/ImageContainer';
 
 interface MyWikiProps {
     name: string;
@@ -139,15 +140,7 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
                     </div>
                 ) : (
                     <>
-                        <p>401 ログインが必要です</p>
-                        <p>
-                            <a href="/login">ここからログインして下さい</a>
-                        </p>
-                        <p>
-                            <a href="/login/13nin/signup">
-                                13ninアカウントが無い場合は新規作成して下さい
-                            </a>
-                        </p>
+                        <ImageContainer/>
                     </>
                 )}
             </main>
