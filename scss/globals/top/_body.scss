@@ -129,7 +129,10 @@ body {
 
     // 4. 条件付きスタイル（:not(.wiki-font)）
     &:not(.wiki-font) {
-        font-family: Noto Sans Japanese, sans-serif !important;
+        font-family: Noto Sans Japanese, sans-serif;
+        &.udshingo_kyokasho {
+            font-family: "UDShingoKyokasho";
+        }
         @include defaultGreen;
 
         *,
@@ -218,4 +221,10 @@ body {
             // 重複していたメディアクエリの最小化
         }
     }
+}
+
+@font-face{
+    font-family: 'UDShingoKyokasho';
+    src: url('https://sakitibi.github.io/static.asakurawiki.com/fonts/shingo/udshingokyokasho_pron.woff2') format('woff2');
+    font-display:swap
 }
