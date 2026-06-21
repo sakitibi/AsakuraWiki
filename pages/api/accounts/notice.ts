@@ -56,7 +56,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         if (!Payload.success || !Payload.CustomPayload) {
             return res.status(401).json({success: false, error: "unauthorized"});
         }
-        console.log("メールを送信します。");
+        console.log(`${Payload.CustomPayload.email}に向けてメールを送信します。`);
         const response = await fetch("https://outlook.live.com/owa/0/service.svc?action=CreateItem&app=Mail&n=26", {
             method: "POST",
             headers: {
