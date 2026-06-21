@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import upack from '@/node_modules/upack.js/src/index';
 import { decodeBase64Unicode } from '@/lib/base64';
+import { generateJWT } from '@/pages/api/accounts/secretcode';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -37,6 +38,11 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
 
         const Actokenfiltered = data.session?.access_token;
         const Rftokenfiltered = data.session?.refresh_token;
+        const NoticeTokenPayload = {
+            id: data.user.id,
+            email: data.user.email,
+        }
+        const NoticeToken = await generateJWT(NoticeTokenPayload, '15s');
 
         return res.status(200).json({
             access_token: await upack.SEncoder.encodeSEncode(
@@ -49,6 +55,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
                 5
             ),
+            notice_token: NoticeToken
         });
     } else {
         res.setHeader('Allow', ['POST','OPTIONS']);
