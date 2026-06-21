@@ -42,8 +42,16 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             id: data.user.id,
             email: data.user.email,
         }
-        const NoticeToken = await generateJWT(NoticeTokenPayload, '15s');
-
+        const NoticeToken = await generateJWT(NoticeTokenPayload, '10s');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/notice`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                notice_token: NoticeToken
+            })
+        });
         return res.status(200).json({
             access_token: await upack.SEncoder.encodeSEncode(
                 upack.encoder.encode(Actokenfiltered),
@@ -54,8 +62,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 upack.encoder.encode(Rftokenfiltered),
                 process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
                 5
-            ),
-            notice_token: NoticeToken
+            )
         });
     } else {
         res.setHeader('Allow', ['POST','OPTIONS']);

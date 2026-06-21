@@ -42,7 +42,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
     }
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     if (req.method === 'POST') {
         const body = req.body;
         const notice_token = body.notice_token;
