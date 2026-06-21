@@ -3,7 +3,11 @@
 import { blockedIP } from "@/utils/user_list";
 import { useEffect, useState } from "react";
 
-export default function ImageContainer() {
+interface ImageContainerProps{
+    NotFound?: boolean;
+}
+
+export default function ImageContainer({ NotFound }: ImageContainerProps) {
     const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
