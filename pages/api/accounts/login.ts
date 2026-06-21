@@ -52,6 +52,12 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 notice_token: NoticeToken
             })
         });
+        const NoticeData = await response.json();
+        if (!response.ok) {
+            return res.status(500).json({
+                error: NoticeData.error
+            });
+        }
         return res.status(200).json({
             access_token: await upack.SEncoder.encodeSEncode(
                 upack.encoder.encode(Actokenfiltered),
