@@ -7,6 +7,18 @@ import { useState, useEffect } from 'react';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { company } from '@/utils/version';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=604800, stale-while-revalidate=59'
+    );
+
+    return {
+        props: {},
+    };
+}
 
 export const kokuseiChousaStr:string = "国勢調査";
 

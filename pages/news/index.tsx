@@ -7,13 +7,9 @@ import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
 import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { kokuseiChousaStr } from '@/pages/news/2025/10/08/1';
-import { NextApiResponse } from 'next';
+import { GetServerSideProps } from 'next';
 
-interface CacheControlProps{
-    res: NextApiResponse;
-}
-
-export async function getServerSideProps({ res }: CacheControlProps) {
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     res.setHeader(
         'Cache-Control',
         'public, s-maxage=300, stale-while-revalidate=59'
