@@ -282,6 +282,15 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         }
     }, [isBot, asakura_member_list_found]);
 
+    useEffect(() => {
+        if (!document || isBot) return;
+        if (document.querySelector(".wiki-font")) return;
+        const font_setting = localStorage.getItem("font_setting") || "";
+        if (font_setting === "udshingo_kyokasho") {
+            document.body.classList.add("udshingo_kyokasho");
+        }
+    }, []);
+
     return (
         <>
             <Head>
