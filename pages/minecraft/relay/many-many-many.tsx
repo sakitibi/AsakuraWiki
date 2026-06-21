@@ -8,6 +8,18 @@ import MenuJp from '@/utils/pageParts/top/jp/Menu';
 import { useState, useEffect } from "react";
 import { TableStyles, TdStyles } from "@/pages/minecraft/vs/happy-ghast-sky-battle";
 import { company } from "@/utils/version";
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=604800, stale-while-revalidate=59'
+    );
+
+    return {
+        props: {},
+    };
+}
 
 export default function MinecraftRelayManyManyMany(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
