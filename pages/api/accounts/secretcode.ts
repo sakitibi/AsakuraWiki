@@ -5,7 +5,7 @@ import upack from '@/node_modules/upack.js/src/index';
 import { decodeBase64Unicode } from '@/lib/base64';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
-const Key = new TextEncoder().encode(process.env.NEXT_PUBLIC_UPACK_SECRET_KEY);
+const Key = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
 
 export async function generateJWT(payload:JWTPayload, exp: string) {
     const jwt = await new SignJWT(payload)
