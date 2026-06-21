@@ -288,10 +288,12 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             typeof localStorage === 'undefined' ||
             isBot
         ) return;
-        if (document.querySelector(".wiki-font")) return;
+        if (document.body.classList.contains('wiki-font')) return;
         const font_setting = localStorage.getItem("font_setting") || "";
         if (font_setting === "udshingo_kyokasho") {
             document.body.classList.add("udshingo_kyokasho");
+        } else {
+            document.body.classList.remove("udshingo_kyokasho");
         }
     }, [isBot]);
 
