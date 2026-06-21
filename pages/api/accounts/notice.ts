@@ -210,6 +210,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                 }
             }),
         });
+        console.log("メールを送信しました。");
         if (!response.ok) {
             return res.status(500).json({success: false, error: "Mail Send Failed."});
         }

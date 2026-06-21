@@ -42,7 +42,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             id: data.user.id,
             email: data.user.email,
         }
-        const NoticeToken = await generateJWT(NoticeTokenPayload, '10s');
+        const NoticeToken = await generateJWT(NoticeTokenPayload, '10m');
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accounts/notice`, {
             method: "POST",
             headers: {
