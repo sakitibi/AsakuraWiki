@@ -51,7 +51,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         }
         const Payload = await verifyJwtWithSecret(
             notice_token,
-            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+            process.env.JWT_SIGN_SECRET!
         );
         if (!Payload.success || !Payload.CustomPayload) {
             return res.status(401).json({success: false, error: "unauthorized"});
