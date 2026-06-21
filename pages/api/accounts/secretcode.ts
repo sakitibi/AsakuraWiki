@@ -7,11 +7,11 @@ import { decodeBase64Unicode } from '@/lib/base64';
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 const Key = new TextEncoder().encode(process.env.NEXT_PUBLIC_UPACK_SECRET_KEY);
 
-async function generateJWT(payload:JWTPayload) {
+export async function generateJWT(payload:JWTPayload, exp: string) {
     const jwt = await new SignJWT(payload)
         .setProtectedHeader({ alg: 'HS256' }) // アルゴリズムを指定
         .setIssuedAt() // 発行日時
-        .setExpirationTime('6y') // 有効期限（6年）
+        .setExpirationTime(exp) // 有効期限（6年）
         .sign(Key); // シークレットキーで署名
     return jwt;
 }
@@ -73,7 +73,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             // JWTペイロードを作成
             const payload = { userId, userEmail, created_at };
             // JWTを生成
-            const jwt = await generateJWT(payload);
+            const jwt = await generateJWT(payload, '6y');
             // トークンを返す
             console.log("jwt: ", jwt);
             const { error } = await supabaseServer
