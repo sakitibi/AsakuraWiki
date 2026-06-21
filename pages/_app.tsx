@@ -283,7 +283,11 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     }, [isBot, asakura_member_list_found]);
 
     useEffect(() => {
-        if (!document || !localStorage || isBot) return;
+        if (
+            typeof document === 'undefined' ||
+            typeof localStorage === 'undefined' ||
+            isBot
+        ) return;
         if (document.querySelector(".wiki-font")) return;
         const font_setting = localStorage.getItem("font_setting") || "";
         if (font_setting === "udshingo_kyokasho") {
