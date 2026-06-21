@@ -36,6 +36,7 @@ export default function ModifyPage() {
         setCountries(user.user_metadata.countries);
         setGender(user.user_metadata.gender);
         setShimei(user.user_metadata.shimei);
+        setUsername(user.user_metadata.username);
     }, [user]);
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
@@ -157,7 +158,10 @@ export default function ModifyPage() {
                 <title>13ninアカウントを情報変更</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 500 }}>
-                <h1>📝 13ninアカウントを情報変更</h1>
+                <h1>
+                    <i className="fa-duotone fa-solid fa-user-pen"></i>
+                    13ninアカウントを情報変更
+                </h1>
                 <form onSubmit={handleModify}>
                     <input
                         type="email"
