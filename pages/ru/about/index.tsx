@@ -5,6 +5,18 @@ import { useEffect, useState } from 'react';
 import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
 import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
 import FooterRu from '@/utils/pageParts/top/ru/Footer';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=604800, stale-while-revalidate=59'
+    );
+
+    return {
+        props: {},
+    };
+}
 
 export default function About() {
     const [menuStatus, setMenuStatus] = useState(false);

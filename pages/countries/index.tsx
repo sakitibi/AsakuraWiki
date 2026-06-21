@@ -6,6 +6,18 @@ import HeaderJp from "@/utils/pageParts/top/jp/Header";
 import RightMenuJp from "@/utils/pageParts/top/jp/RightMenu";
 import FooterJp from "@/utils/pageParts/top/jp/Footer";
 import styles from '@/css/index.module.css';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=604800, stale-while-revalidate=59'
+    );
+
+    return {
+        props: {},
+    };
+}
 
 export default function CountRies() {
     const [menuStatus, setMenuStatus] = useState(false);
