@@ -54,15 +54,16 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
             <Head>
                 <title>ダッシュボード</title>
             </Head>
-            <main style={{ padding: '2rem' }}>
-                <h1>
-                    ダッシュボード
-                    <i
-                        className="fa-utility-fill fa-semibold fa-user"
-                        style={{ fontSize: "inherit" }}
-                    ></i>
-                </h1>
-                {user ? (
+            {user ? (
+                <main style={{ padding: '2rem' }}>
+                    <h1>
+                        ダッシュボード
+                        <i
+                            className="fa-utility-fill fa-semibold fa-user"
+                            style={{ fontSize: "inherit" }}
+                        ></i>
+                    </h1>
+                
                     <div id="content">
                         <p>{
                         hours >= 6 && hours <= 10 ? "おはよう" : 
@@ -138,12 +139,12 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
                             )}
                         </div>
                     </div>
-                ) : (
-                    <>
-                        <ImageContainer/>
-                    </>
-                )}
-            </main>
+                </main>
+            ) : (
+                <>
+                    <ImageContainer/>
+                </>
+            )}
             <FooterJp />
         </>
     );
