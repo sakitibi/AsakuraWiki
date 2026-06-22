@@ -6,3 +6,5 @@ secrets
 node_modules
 static
 .next
+pnpm-lock.yaml
+v10

@@ -1,0 +1,17 @@
+name: Refresh YouTube Webhook Subscription
+
+on:
+  schedule:
+    # 4日ごとに自動でNext.jsのAPIを叩く設定
+    - cron: '0 0 */4 * *'
+  workflow_dispatch:
+
+jobs:
+  refresh-subscription:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Next.js Subscribe API
+        run: |
+          curl -X POST "https://asakura-wiki.vercel.app/api/auto/subscribe" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json"
