@@ -17,16 +17,12 @@ jobs:
   push-id:
     runs-on: ubuntu-latest
     steps:
-      # 1. このワークフローが配置されているリポジトリをチェックアウト
       - name: Checkout current repo
         uses: actions/checkout@v4
 
-      # 2. 別のリポジトリを一時フォルダ（target-folder）にクローン
       - name: Clone target repo
         env:
-          # クローン先のGitHubユーザー名または組織名
           TARGET_OWNER: "sakitibi"
-          # クローン先の移動先リポジトリ名
           TARGET_REPO: "13ninadmanager.com"
         run: |
           git config --global user.name "github-actions[bot]"
@@ -35,14 +31,12 @@ jobs:
           # トークンを使用して別リポジトリをクローン
           git clone "https://${{ secrets.EXTERNAL_REPO_TOKEN }}@github.com/${TARGET_OWNER}/${TARGET_REPO}.git" target-folder
 
-      # 3. クローンした別リポジトリ内のファイル（video_list.txt）にVideo IDを追記
       - name: Append Video ID to file
         run: |
           cd target-folder
           
           echo "${{ github.event.inputs.video_title }} (${{ github.event.inputs.video_id }})" >> video_list.txt
 
-      # 4. 別リポジトリへ変更内容をコミットしてプッシュ
       - name: Commit and Push to target repo
         run: |
           cd target-folder
