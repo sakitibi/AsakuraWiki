@@ -18,7 +18,6 @@ import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
-import { ScaptchaSessionProps } from '@/pages/login';
 
 // Chromium系判定
 export function isSafari() {
@@ -42,9 +41,6 @@ export default function WikiPage() {
     const router:NextRouter = useRouter()
     const [isBot, setIsBot] = useState(true);
     const [user, setUser] = useState<User | null>(null);
-    const [scaptcha_params, setScaptcha_params] = useState<string | null>(null);
-    const [scaptcha_session, setScaptcha_session] = useState<ScaptchaSessionProps | null>(null);
-    const [isenabled, setIsenabled] = useState<boolean | null>(null);
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
