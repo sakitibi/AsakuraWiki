@@ -85,7 +85,8 @@ export default function WikiPage() {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError]     = useState<string | null>(null)
     const [title, setTitle]     = useState<string>('')
-    const [content, setContent] = useState<string>('')  // ← textarea の中身
+    const [content, setContent] = useState<string>('')
+    const [beforeContent, setBeforeContent] = useState<string>('')
     const [editMode, setEditMode] = useState<editMode>('public');
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
@@ -126,7 +127,8 @@ export default function WikiPage() {
             setEditMode,
             setPage,
             setTitle,
-            setContent
+            setContent,
+            setBeforeContent
         );
     }, [wikiSlugStr, pageSlugStr]);
 
@@ -297,6 +299,7 @@ export default function WikiPage() {
                             title={title}
                             setTitle={setTitle}
                             content={content}
+                            beforeContent={beforeContent}
                             setContent={setContent}
                             parsedPreview={parsedPreview}
                             loading={loading}
