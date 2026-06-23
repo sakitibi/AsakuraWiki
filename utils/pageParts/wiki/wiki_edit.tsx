@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { special_wiki_list } from "@/utils/wiki_list";
 import { handleUpdate } from "@/utils/pageParts/wiki/wiki_handler";
 import { editMode } from "@/utils/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { NextRouter } from "next/router";
 import Editor, { Monaco } from "@monaco-editor/react";
+import { ScaptchaSessionProps } from "@/pages/login";
 
 interface WikiEditPageProps{
     title: string;
@@ -62,6 +63,60 @@ export default function WikiEditPage({
     user,
     router,
 }: WikiEditPageProps){
+    const [scaptcha_params, setScaptcha_params] = useState<string | null>(null);
+    const [scaptcha_session, setScaptcha_session] = useState<ScaptchaSessionProps | null>(null);
+    const [isenabled, setIsenabled] = useState<boolean | null>(null);
+    
+    useEffect(() => {
+        const params = localStorage.getItem("scaptcha_params");
+        setScaptcha_params(params);
+    }, []);
+    
+    useEffect(() => {
+        if (!scaptcha_params) return;
+        (async function(){
+            const res = await fetch("/api/scaptcha/token", {
+                method: "GET",
+                headers: {
+                    "x-scaptcha-session": scaptcha_params!
+                }
+            });
+            if (!res.ok) {
+                console.error("Error scaptcha tokenget failed.");
+                return;
+            }
+            setScaptcha_session(await res.json());
+        })();
+    }, [scaptcha_params]);
+
+    useEffect(() => {
+        if (!scaptcha_session || !scaptcha_params) {
+            setIsenabled(false);
+            return;
+        }
+        const date = new Date(scaptcha_session?.created_at).getTime();
+        const now = new Date().getTime();
+        (async function(){
+            if (now > date + 18e5) {
+                setIsenabled(false);
+                const res = await fetch("/api/scaptcha/token", {
+                    method: "DELETE",
+                    headers: {
+                        "x-scaptcha-session": scaptcha_params
+                    }
+                });
+                localStorage.removeItem("scaptcha_params");
+                if (!res.ok) {
+                    console.error("Error delete failed.");
+                }
+                return;
+            } else {
+                localStorage.setItem("scaptcha_params", scaptcha_params);
+                setIsenabled(true);
+            }
+        })();
+    }, [scaptcha_session]);
+
     const editorRef = useRef<any>(null);
 
     const handleEditorDidMount = (editor: any, monaco: Monaco) => {
@@ -144,7 +199,8 @@ export default function WikiEditPage({
                         type="submit"
                         disabled={
                             loading ||
-                            (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei')
+                            (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei') ||
+                            !isenabled
                         }
                         style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
                         >
