@@ -25,7 +25,8 @@ export default async function wikiFetch(
     setEditMode: React.Dispatch<React.SetStateAction<editMode>>,
     setPage: React.Dispatch<React.SetStateAction<Page | null>>,
     setTitle: React.Dispatch<React.SetStateAction<string>>,
-    setContent: React.Dispatch<React.SetStateAction<string>>
+    setContent: React.Dispatch<React.SetStateAction<string>>,
+    setBeforeContent: React.Dispatch<React.SetStateAction<string>>
 ){
     try {
         setLoading(true);
@@ -77,6 +78,7 @@ export default async function wikiFetch(
         setPage(pageDataResult);
         setTitle(pageDataResult.title);
         setContent(pageDataResult.content);
+        setBeforeContent(pageDataResult.content);
         setError(null);
 
     } catch (err) {

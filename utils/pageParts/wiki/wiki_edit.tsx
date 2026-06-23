@@ -11,6 +11,7 @@ interface WikiEditPageProps{
     title: string;
     setTitle: React.Dispatch<React.SetStateAction<string>>;
     content: string;
+    beforeContent: string;
     setContent: React.Dispatch<React.SetStateAction<string>>;
     parsedPreview: React.ReactNode[] | null;
     loading: boolean;
@@ -53,6 +54,7 @@ export default function WikiEditPage({
     title,
     setTitle,
     content,
+    beforeContent,
     setContent,
     parsedPreview,
     loading,
@@ -200,7 +202,8 @@ export default function WikiEditPage({
                         disabled={
                             loading ||
                             (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei') ||
-                            !isenabled
+                            !isenabled ||
+                            (content === beforeContent)
                         }
                         style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
                         >
