@@ -1,5 +1,14 @@
 @use 'mixin';
 
+$theme-colors: (
+    "pink": (rgb(244, 164, 229), rgb(199, 17, 157)),
+    "blue": (rgb(164, 212, 244), rgb(17, 102, 199)),
+    "yellow": (rgb(236, 195, 46), rgb(165, 126, 10)),
+    "purple": (rgb(123, 37, 252), rgb(65, 8, 130)),
+    "emerald": (#11998e, #38ef7d),
+    "default": (#1ce3b8, #007a59)
+);
+
 body {
     // 💚 デフォルトテーマ（wiki-fontが無い場合）
     &:not(
@@ -78,25 +87,11 @@ body {
                 cursor: not-allowed;
             }
         }
-        &.pink button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(rgb(244, 164, 229), rgb(199, 17, 157));
-        }
-        // 🔵 ブルーテーマのグラデーション
-        &.blue button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(rgb(164, 212, 244), rgb(17, 102, 199));
-        }
-        // 💛 イエローテーマのグラデーション
-        &.yellow button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(rgb(236, 195, 46), rgb(165, 126, 10));
-        }
-        &.purple button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(rgb(123, 37, 252), rgb(65, 8, 130));
-        }
-        &.emerald button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(#11998e, #38ef7d);
-        }
-        &.default button:not(#menu-button,.navfold-summary,.fold-button)::before {
-            @include mixin.position(#1ce3b8, #007a59);
+
+        @each $theme, $colors in $theme-colors {
+            &.#{$theme} button:not(#menu-button, .navfold-summary, .fold-button)::before {
+                @include mixin.position(nth($colors, 1), nth($colors, 2));
+            }
         }
     }
 
