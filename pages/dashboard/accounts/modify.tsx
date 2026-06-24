@@ -15,6 +15,7 @@ export default function ModifyPage() {
     const [gender, setGender] = useState<GenderTypes>('man');
     const [username, setUsername] = useState('');
     const [shimei, setShimei] = useState<string>('');
+    const [view_font, setView_Font] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [user, setUser] = useState<User | null>(null);
@@ -30,13 +31,14 @@ export default function ModifyPage() {
         });
     }, []);
     useEffect(() => {
-        if (!user) return;
+        if (!user || typeof localStorage === "undefined") return;
         setEmail(user.email || "");
         setBirthday(user.user_metadata.birthday);
         setCountries(user.user_metadata.countries);
         setGender(user.user_metadata.gender);
         setShimei(user.user_metadata.shimei);
         setUsername(user.user_metadata.username);
+        setView_Font(localStorage.getItem("font_setting") || "");
     }, [user]);
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
@@ -83,7 +85,8 @@ export default function ModifyPage() {
                         setLoading(false);
                         return;
                     }
-
+                    
+                    localStorage.setItem("font_setting", view_font);
                     const compressed = gzipAndBase64(JSON.stringify(updatedInputs));
                     if (updatedInputs) {
                         const { error } = await supabaseClient
@@ -227,6 +230,20 @@ export default function ModifyPage() {
                             <option selected value="japan">日本 Japan</option>
                             <option value="russia">ロシア Русский</option>
                             <option value="others">その他 Others</option>
+                        </select>
+                    </label>
+                    <br /><br />
+                    <label>
+                        サイト表示フォント
+                        <select
+                            value={view_font}
+                            onChange={(e) =>
+                                setView_Font(e.target.value)
+                            }
+                            required
+                        >
+                            <option selected value="">Noto Sans Japanese, sans-serif</option>
+                            <option value="udshingo_kyokasho">UDデジタル教科書体 ProN</option>
                         </select>
                     </label>
                     <input
