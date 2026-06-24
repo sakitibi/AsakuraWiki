@@ -4,6 +4,7 @@ import { User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { supabaseClient } from '@/lib/supabaseClient';
+import upack from '@/node_modules/upack.js/src/index';
 
 export default function WikiSettingsPage() {
     const router:NextRouter = useRouter();
@@ -80,6 +81,7 @@ export default function WikiSettingsPage() {
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        const cli_token = isCLI ? await upack.SEncoder.randomGenerate(10) : null;
 
         const { error } = await supabaseClient
         .from('wikis')
@@ -90,6 +92,7 @@ export default function WikiSettingsPage() {
             updated_at: new Date(),
             design_color: designColor,
             cli_used: isCLI,
+            cli_token: cli_token,
             osusume_hyouji_mode
         })
         .eq('slug', slugStr);
@@ -99,6 +102,15 @@ export default function WikiSettingsPage() {
         if (error) {
             alert('更新に失敗しました: ' + error.message);
         } else {
+            if (cli_token) {
+                const blob = new Blob([upack.encoder.encode(cli_token)], {type: "text/plain"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "cli_token.txt";
+                a.click();
+                URL.revokeObjectURL(url);
+            }
             alert('設定を保存しました');
         }
     };
@@ -247,7 +259,7 @@ export default function WikiSettingsPage() {
                             </label>
                             <br /><br />
                             <label>
-                                CLI EDITOR利用不可
+                                CLI EDITOR利用不可(CLIトークンを無効化します。)
                                 <input
                                     type="radio"
                                     name="iscli"
@@ -257,7 +269,7 @@ export default function WikiSettingsPage() {
                                 />
                             </label>
                             <label>
-                                CLI EDITOR利用可能
+                                CLI EDITOR利用可能(保存時にトークンをダウンロードします、<br/>絶対に秘密にして下さい。)
                                 <input
                                     type="radio"
                                     name="iscli"
