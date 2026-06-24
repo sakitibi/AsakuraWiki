@@ -268,6 +268,7 @@ export default function WikiSettingsPage() {
                                     checked={!isCLI}
                                 />
                             </label>
+                            <br/>
                             <label>
                                 CLI EDITOR利用可能(保存時にトークンをダウンロードします、<br/>絶対に秘密にして下さい。)
                                 <input
@@ -289,6 +290,7 @@ export default function WikiSettingsPage() {
                                     checked={osusume_hyouji_mode}
                                 />
                             </label>
+                            <br/>
                             <label>
                                 トップページのおすすめWiki一覧に非表示
                                 <input
