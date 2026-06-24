@@ -242,7 +242,7 @@ export default function ModifyPage() {
                             }
                             required
                         >
-                            <option selected value="">Noto Sans Japanese, sans-serif</option>
+                            <option selected value="noto_sans_japanese">Noto Sans Japanese, sans-serif</option>
                             <option value="udshingo_kyokasho">UDデジタル教科書体 ProN</option>
                         </select>
                     </label>
