@@ -58,13 +58,26 @@ export const handleUpdate = async (
 /**
  * 編集画面へのリダイレクト
  */
-export const handleEdit = (
+export const handleEdit = async (
+    router: NextRouter,
     wikiSlugStr: string,
     pageSlugStr: string
 ) => {
     // 既存の独自エディタへのリダイレクトロジックを維持
-    location.href =
-    `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`)}`;
+    const scaptcha_token = localStorage.getItem("scaptcha_params") || "";
+    const scaptcha_res = await fetch("/api/scaptcha/token", {
+        method: "GET",
+        headers: {
+            "x-scaptcha-session": scaptcha_token
+        }
+    });
+    // scaptchaトークンが有効かどうかで仕分ける。
+    if (scaptcha_res.ok) {
+        router.push(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`);
+    } else {
+        location.href =
+            `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`)}`;
+    }
 };
 
 /**
