@@ -61,45 +61,6 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         const Actokenfiltered = data.session?.access_token;
         const Rftokenfiltered = data.session?.refresh_token;
 
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
-
-        const GITHUB_OWNER = "sakitibi"; 
-        const GITHUB_REPO = "AsakuraWiki";
-        try{
-            // GitHubのAPIエンドポイントへPOSTリクエストを送信
-            const githubResponse = await fetch(
-                `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/dispatches`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${process.env.EXTERNAL_REPO_TOKEN}`,
-                        'Accept': 'application/vnd.github+json',
-                        'X-GitHub-Api-Version': '2022-11-28',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        event_type: "send-outlook-mail",
-                        client_payload: {
-                            email: data.user?.email,
-                            user_agent,
-                            ipaddress: ip,
-                            username
-                        }
-                    }),
-                    signal: controller.signal
-                }
-            );
-            if (githubResponse.status === 204) {
-                console.log("GitHub Actions の起動に成功しました。");
-            } else {
-                console.error("起動失敗:", githubResponse.status, await githubResponse.text());
-            }
-        } catch (error) {
-            console.error("GitHub Actions の起動中に例外が発生しました:", error);
-        } finally {
-            clearTimeout(timeout);
-        }
         return res.status(200).json({
             access_token: await upack.SEncoder.encodeSEncode(
                 upack.encoder.encode(Actokenfiltered),
