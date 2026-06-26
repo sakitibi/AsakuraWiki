@@ -290,7 +290,7 @@ export default function WikiPage() {
                     <Head>
                         <title>
                             {page.title}
-                            {isEdit ? ' を編集' : null}
+                            {isEdit ? ' の編集' : null}
                         </title>
                         <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/wikis.module.css" />
                     </Head>

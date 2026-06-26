@@ -90,6 +90,18 @@ export const handleDelete = async (
     router: NextRouter
 ) => {
     if (!special_wiki_list_found) {
+        const scaptcha_token = localStorage.getItem("scaptcha_params") || "";
+        const scaptcha_res = await fetch("/api/scaptcha/token", {
+            method: "GET",
+            headers: {
+                "x-scaptcha-session": scaptcha_token
+            }
+        });
+        if (!scaptcha_res.ok) {
+            location.href =
+                `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`)}`;
+            return;
+        }
         const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
         if (!ok) return;
 
