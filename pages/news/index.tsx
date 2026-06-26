@@ -46,6 +46,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
+                            <li>2026/06/26 <a href="/news/2026/06/26/1">明日でついに当Wiki1周年!</a></li>
                             <li>2026/05/24 <a href="/news/2026/05/24/1">今年の特急サンゴの運行経路について</a></li>
                             <li>2026/05/02 <a href="/news/2026/05/02/1">絶海の孤島沖で震度4を観測</a></li>
                             <li>2026/04/25 <a href="/news/2026/04/25/1">名前は長い方が有利の被害者が410人を超えました。</a></li>
