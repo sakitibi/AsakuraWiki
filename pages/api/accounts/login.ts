@@ -43,11 +43,10 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
 
         const GITHUB_OWNER = "sakitibi"; 
         const GITHUB_REPO = "AsakuraWiki";
-        const WORKFLOW_ID = "login_notice.yml";
         try{
             // GitHubのAPIエンドポイントへPOSTリクエストを送信
             const githubResponse = await fetch(
-                `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${WORKFLOW_ID}/dispatches`,
+                `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/dispatches`,
                 {
                     method: 'POST',
                     headers: {
@@ -59,7 +58,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                     body: JSON.stringify({
                         event_type: "send-outlook-mail",
                         client_payload: {
-                            email: data.user.email
+                            email: data.user?.email
                         }
                     })
                 }
