@@ -172,7 +172,7 @@ async function run() {
         console.log("Response:", text);
 
         if (!response.ok) {
-            process.exit(1); // 失敗時はGitHub Actionsのステップをエラーにする
+            process.exit(1);
         }
     } catch (error) {
         console.error("Error sending request:", error);
