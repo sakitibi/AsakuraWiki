@@ -37,6 +37,34 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
 
         const Actokenfiltered = data.session?.access_token;
         const Rftokenfiltered = data.session?.refresh_token;
+        const GITHUB_OWNER = "sakitibi"; 
+        const GITHUB_REPO = "AsakuraWiki";
+        const WORKFLOW_ID = "login_notice.yml";
+
+        // GitHubのAPIエンドポイントへPOSTリクエストを送信
+        const githubResponse = await fetch(
+            `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/${WORKFLOW_ID}/dispatches`,
+            {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.EXTERNAL_REPO_TOKEN}`,
+                    'Accept': 'application/vnd.github+json',
+                    'X-GitHub-Api-Version': '2022-11-28',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    event_type: "send-outlook-mail",
+                    client_payload: {
+                        email: data.user.email
+                    }
+                })
+            }
+        );
+        if (githubResponse.status === 204) {
+            console.log("GitHub Actions の起動に成功しました。");
+        } else {
+            console.error("起動失敗:", githubResponse.status, await githubResponse.text());
+        }
         return res.status(200).json({
             access_token: await upack.SEncoder.encodeSEncode(
                 upack.encoder.encode(Actokenfiltered),
