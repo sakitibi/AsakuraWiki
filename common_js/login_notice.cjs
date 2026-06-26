@@ -173,7 +173,7 @@ const bodyData = {
     </div>
 
     <div class="content">
-        <div class="user-name">${escapeHtml(username)} 様</div>
+        <div class="user-name">${escapeHtml(username)} さん。</div>
         <p>13ninアカウントへの新しいログインが検出されました。これがご自身による操作である場合は、特別な対応は必要ありません。</p>
 
         <table class="info-table">
@@ -193,7 +193,7 @@ const bodyData = {
 
         <div class="warning-box">
             <strong>お心当たりがない場合</strong><br>
-            もしこのログインに覚えがない場合は、第三者によってパスワードが破られた可能性があります。速やかにお問い合わせし、アカウントの安全を確保してください。
+            もしこのログインに覚えがない場合は、第三者によって不正ログインされた可能性があります。速やかにお問い合わせし、アカウントの安全を確保してください。
         </div>
     </div>
 
@@ -248,14 +248,14 @@ const bodyData = {
                     "MailboxType": "Mailbox",
                     "RoutingType": "SMTP",
                     "EmailAddress": "no-replys13ninstudio@outlook.jp",
-                    "Name": "13nin studio"
+                    "Name": "13ninstudio, Inc."
                 },
                 "From": {
                     "Mailbox": {
                         "MailboxType": "Mailbox",
                         "RoutingType": "SMTP",
                         "EmailAddress": "no-replys13ninstudio@outlook.jp",
-                        "Name": "13nin studio"
+                        "Name": "13ninstudio, Inc."
                     }
                 },
                 "MessageDisposition": "SendAndSaveCopy",
