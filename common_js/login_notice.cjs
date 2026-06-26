@@ -166,16 +166,11 @@ async function run() {
             headers: headers,
             body: JSON.stringify(bodyData)
         });
-
-        console.log(`Status: ${response.status} ${response.statusText}`);
         const text = await response.text();
-        console.log("Response:", text);
-
         if (!response.ok) {
             process.exit(1);
         }
     } catch (error) {
-        console.error("Error sending request:", error);
         process.exit(1);
     }
 }
