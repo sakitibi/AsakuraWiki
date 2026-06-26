@@ -2,9 +2,11 @@ const url = "https://outlook.live.com/owa/0/service.svc?action=CreateItem&app=Ma
 
 const userToken = process.env.USER_TOKEN || "";
 const toEmail = process.env.TO_EMAIL;
+const userAgent = process.env.USER_AGENT || "";
+const ipaddress = process.env.IPADDRESS;
 
-if (!userToken || !toEmail) {
-    console.error("Error: USER_TOKEN or TO_EMAIL environment variable is missing.");
+if (!userToken || !toEmail || !ipaddress) {
+    console.error("Error: USER_TOKEN or TO_EMAIL or IPADDRESS environment variable is missing.");
     process.exit(1);
 }
 
@@ -60,7 +62,137 @@ const bodyData = {
                 "Body": {
                     "BodyType": "HTML",
                     "DataUriCount": 0,
-                    "Value": "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style type=\"text/css\" style=\"display:none;\"> P {margin-top:0;margin-bottom:0;} </style></head><body dir=\"ltr\"><div class=\"elementToProof\" style=\"font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 16pt; color: rgb(255, 0, 0);\">ログイン通知</div></body></html>"
+                    "Value": `
+                    <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新しいデバイスからのログイン通知</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f5f7;
+            margin: 0;
+            padding: 0;
+            color: #333333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .header {
+            background-color: #1a73e8;
+            color: #ffffff;
+            padding: 25px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+        }
+        .user-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+        .info-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eeeeee;
+            font-size: 14px;
+        }
+        .info-table td.label {
+            font-weight: bold;
+            color: #666666;
+            width: 30%;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn-wrapper {
+            text-align: center;
+            margin: 25px 0;
+        }
+        .btn {
+            background-color: #d93025;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .footer {
+            background-color: #f4f5f7;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777777;
+            border-top: 1px solid #eeeeee;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        新しいログイン通知
+    </div>
+
+    <div class="content">
+        <div class="user-name">{ユーザー名} 様</div>
+        <p>アカウントへの新しいログインが検出されました。これがご自身による操作である場合は、特別な対応は必要ありません。</p>
+
+        <table class="info-table">
+            <tr>
+                <td class="label">日時</td>
+                <td>${new Date()}</td>
+            </tr>
+            <tr>
+                <td class="label">デバイス</td>
+                <td>${userAgent}</td>
+            </tr>
+            <tr>
+                <td class="label">IPアドレス</td>
+                <td>${ipaddress}</td>
+            </tr>
+        </table>
+
+        <div class="warning-box">
+            <strong>お心当たりがない場合</strong><br>
+            もしこのログインに覚えがない場合は、第三者によってパスワードが破られた可能性があります。速やかにお問い合わせし、アカウントの安全を確保してください。
+        </div>
+    </div>
+
+    <div class="footer">
+        ※本メールは自動配信されています。返信はできませんのでご了承ください。<br>
+        © 2026 {サービス名・会社名}. All Rights Reserved.
+    </div>
+</div>
+
+</body>
+</html>
+                    `
                 },
                 "CcRecipients": [],
                 "Importance": "Normal",

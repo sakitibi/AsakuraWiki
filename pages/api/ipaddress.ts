@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dns from 'node:dns/promises';
 import { hash } from 'crypto';
 
-function normalizeIp(ip: string | null): string | null {
+export function normalizeIp(ip: string | null): string | null {
     if (!ip) return null;
 
     if (ip === '::1') {
