@@ -160,6 +160,7 @@ const bodyData = {
 };
 
 async function run() {
+    console.log("メール送信を開始します。");
     try {
         const response = await fetch(url, {
             method: "POST",
