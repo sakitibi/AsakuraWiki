@@ -60,7 +60,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                         client_payload: {
                             email: data.user?.email
                         }
-                    })
+                    }),
+                    signal: controller.signal
                 }
             );
             if (githubResponse.status === 204) {
