@@ -30,7 +30,13 @@ export default function LoginPage() {
 
         const res = await fetch("/api/accounts/login", {
             method: "POST",
-            body: encoded
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                ua: navigator.userAgent,
+                data: encoded
+            })
         })
 
         setLoading(false);
