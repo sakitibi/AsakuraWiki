@@ -1,0 +1,29 @@
+name: Run Login Notice Script
+
+on:
+  repository_dispatch:
+    types: [send-outlook-mail] # 任意のイベント名
+
+jobs:
+  execute-node-script:
+    permissions: 
+      contents: read
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Request Script
+        # env ブロックを使って、GitHub上のシークレットをスクリプト内の環境変数に渡す
+        env:
+          USER_TOKEN: ${{ secrets.OUTLOOK_USER_TOKEN }}
+          TO_EMAIL: ${{ github.event.client_payload.email }}
+        run: node ./common_js/login_notice.cjs
