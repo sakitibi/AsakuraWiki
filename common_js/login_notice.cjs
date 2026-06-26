@@ -11,6 +11,12 @@ if (!userToken || !toEmail || !ipaddress) {
     process.exit(1);
 }
 
+function escapeHtml (s) {
+    String(s).replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&`#39`;' }[c])
+    )
+};
+
 const headers = {
     action: "CreateItem",
     "content-type": "application/json; charset=utf-8",
@@ -161,7 +167,7 @@ const bodyData = {
     </div>
 
     <div class="content">
-        <div class="user-name">{ユーザー名} 様</div>
+        <div class="user-name">${escapeHtml(username)} 様</div>
         <p>13ninアカウントへの新しいログインが検出されました。これがご自身による操作である場合は、特別な対応は必要ありません。</p>
 
         <table class="info-table">
@@ -171,11 +177,11 @@ const bodyData = {
             </tr>
             <tr>
                 <td class="label">デバイス</td>
-                <td>${userAgent}</td>
+                <td>${escapeHtml(userAgent)}</td>
             </tr>
             <tr>
                 <td class="label">IPアドレス</td>
-                <td>${ipaddress}</td>
+                <td>${escapeHtml(ipaddress)}</td>
             </tr>
         </table>
 
