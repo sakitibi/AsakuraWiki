@@ -12,7 +12,7 @@ if (!userToken || !toEmail || !ipaddress) {
 }
 
 function escapeHtml (s) {
-    String(s).replace(/[&<>"']/g, (c) =>
+    return String(s).replace(/[&<>"']/g, (c) =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&`#39`;' }[c])
     )
 };
