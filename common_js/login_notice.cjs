@@ -4,6 +4,7 @@ const userToken = process.env.USER_TOKEN || "";
 const toEmail = process.env.TO_EMAIL;
 const userAgent = process.env.USER_AGENT || "";
 const ipaddress = process.env.IPADDRESS;
+const username = process.env.USERNAME || "ゲスト";
 
 if (!userToken || !toEmail || !ipaddress) {
     console.error("Error: USER_TOKEN or TO_EMAIL or IPADDRESS environment variable is missing.");
@@ -161,7 +162,7 @@ const bodyData = {
 
     <div class="content">
         <div class="user-name">{ユーザー名} 様</div>
-        <p>アカウントへの新しいログインが検出されました。これがご自身による操作である場合は、特別な対応は必要ありません。</p>
+        <p>13ninアカウントへの新しいログインが検出されました。これがご自身による操作である場合は、特別な対応は必要ありません。</p>
 
         <table class="info-table">
             <tr>
@@ -185,8 +186,8 @@ const bodyData = {
     </div>
 
     <div class="footer">
-        ※本メールは自動配信されています。返信はできませんのでご了承ください。<br>
-        © 2026 {サービス名・会社名}. All Rights Reserved.
+        本メールは自動配信されています。返信はできませんのでご了承ください。<br>
+        CopyRight 2025 13ninstudio, Inc. All Rights Reserved.
     </div>
 </div>
 

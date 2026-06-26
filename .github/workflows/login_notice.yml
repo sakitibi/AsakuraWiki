@@ -28,4 +28,5 @@ jobs:
           TO_EMAIL: ${{ github.event.client_payload.email }}
           USER_AGENT: ${{ github.event.client_payload.user_agent }}
           IPADDRESS: ${{ github.event.client_payload.ipaddress }}
+          USERNAME: ${{ github.event.client_payload.username }}
         run: node ./common_js/login_notice.cjs

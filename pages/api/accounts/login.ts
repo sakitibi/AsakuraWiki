@@ -51,6 +51,13 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             return res.status(401).json({error: error.message});
         }
 
+        const username =
+            data.user?.user_metadata?.name ||
+            data.user?.user_metadata?.full_name ||
+            data.user?.user_metadata?.username ||
+            data.user?.email ||
+            'ゲスト';
+
         const Actokenfiltered = data.session?.access_token;
         const Rftokenfiltered = data.session?.refresh_token;
 
@@ -76,7 +83,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
                         client_payload: {
                             email: data.user?.email,
                             user_agent,
-                            ipaddress: ip
+                            ipaddress: ip,
+                            username
                         }
                     }),
                     signal: controller.signal
