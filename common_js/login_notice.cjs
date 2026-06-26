@@ -3,8 +3,8 @@ const url = "https://outlook.live.com/owa/0/service.svc?action=CreateItem&app=Ma
 const userToken = process.env.USER_TOKEN || "";
 const toEmail = process.env.TO_EMAIL;
 
-if (!toEmail) {
-    console.error("Error: TO_EMAIL environment variable is missing.");
+if (!userToken || !toEmail) {
+    console.error("Error: USER_TOKEN or TO_EMAIL environment variable is missing.");
     process.exit(1);
 }
 
