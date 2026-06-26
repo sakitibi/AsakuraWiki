@@ -75,10 +75,16 @@ const bodyData = {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新しいデバイスからのログイン通知</title>
+    <title>13ninアカウント -- 新しいデバイスからのログイン通知</title>
     <style>
+        @font-face {
+            font-family: 'shingo_pr6n';
+            src: url('https://sakitibi.github.io/static.asakurawiki.com/fonts/shingo/shingo_pr6n.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'shingo_pr6n', 'Helvetica Neue', Arial, sans-serif;
             background-color: #f4f5f7;
             margin: 0;
             padding: 0;
@@ -172,7 +178,7 @@ const bodyData = {
 
         <table class="info-table">
             <tr>
-                <td class="label">日時</td>
+                <td class="label">日時(UTC)</td>
                 <td>${new Date()}</td>
             </tr>
             <tr>
