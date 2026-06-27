@@ -11,7 +11,7 @@ export default function BrowserLoginSuccess() {
     const generateAlphanumericCode = (): string => {
         const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         let result = '';
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
         return result;
