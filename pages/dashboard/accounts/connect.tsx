@@ -106,7 +106,14 @@ export default function BrowserLoginSuccess() {
                 )}
 
                 {!pinCode ? (
-                    <form onSubmit={handleGenerateCode}>
+                    <form
+                        onSubmit={
+                            async(e: React.SubmitEvent) => {
+                                e.preventDefault();
+                                await handleGenerateCode();
+                            }
+                        }
+                    >
                         <label>
                             認証するアプリケーション
                             <select
