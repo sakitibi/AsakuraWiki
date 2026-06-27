@@ -217,6 +217,7 @@ export default function Home() {
         <>
             <Head>
                 <title>{AsakuraWikiTitle}</title>
+                <meta name="description" content="なんと1周年!これまでを大切に、これからも進化し続けます。"/>
                 {mounted && !user && (
                     <link
                         rel="stylesheet"
