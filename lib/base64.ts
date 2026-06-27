@@ -32,7 +32,9 @@ export function utf8ToHex(utf8String:string):string | null {
 export function encodeBase64Unicode(str:string):string {
     const bytes = new TextEncoder().encode(str); // UTF-8に変換
     let binary = '';
-    bytes.forEach(b => binary += String.fromCharCode(b));
+    for (let i = 0;i < bytes.length;i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
     return btoa(binary); // Base64エンコード
 }
 

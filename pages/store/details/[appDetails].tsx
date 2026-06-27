@@ -63,10 +63,11 @@ export default function Store() {
     }, [appDetailsStr]);
 
     useEffect(() => {
-        if(!document || document.querySelectorAll(".installButton").length === 0) return;
-        document.querySelectorAll(".installButton").forEach(btn => {
-            btn.addEventListener("pointerdown", (e:any) => {
-                const rect = btn.getBoundingClientRect();
+        const InstallButton = document.querySelectorAll(".installButton");
+        if(!document || InstallButton.length === 0) return;
+        for (let i = 0;i < InstallButton.length;i++) {
+            InstallButton[i].addEventListener("pointerdown", (e:any) => {
+                const rect = InstallButton[i].getBoundingClientRect();
 
                 const ripple = document.createElement("span");
                 ripple.className = "ripple";
@@ -74,11 +75,11 @@ export default function Store() {
                 ripple.style.left = `${e.clientX - rect.left}px`;
                 ripple.style.top  = `${e.clientY - rect.top}px`;
 
-                btn.appendChild(ripple);
+                InstallButton[i].appendChild(ripple);
 
                 ripple.addEventListener("animationend", () => ripple.remove());
             });
-        });
+        };
     }, [apps]);
 
     const InstallHandler = async(url:string, download_counter: number) => {

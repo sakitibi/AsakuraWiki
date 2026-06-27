@@ -30,7 +30,7 @@ module.exports = {
                 "SELECT wiki_slug, slug FROM wiki_pages"
             )
 
-            result.rows.forEach(row => {
+            for (let i = 0;i < result.rows.length;i++) {
                 const wikiSlug = row.wiki_slug;
                 const pageSlug = row.slug;
 
@@ -47,7 +47,7 @@ module.exports = {
                         priority: 0.8,
                     })
                 }
-            })
+            }
         } catch (e) {
             console.error('Sitemap Wiki (Turso) Error:', e)
         }

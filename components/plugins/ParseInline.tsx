@@ -16,10 +16,11 @@ export default function parseInline({text, context, designColor}: parseInlinePro
     const nodes: React.ReactNode[] = [];
     let nodeKey:number = 0;
     console.log("text: ", text);
-    text.split(/\r?\n/).forEach((line) => {
+    const lines = text.split(/\r?\n/);
+    for (let i = 0;i < lines.length;i++){
         // 1) 見出しか?（*テキスト [anchor] に対応）
-        console.log('[line]', JSON.stringify(line));
-        const headingMatch = line.match(/^(\*{1,3})\s*(.+?)(?:\s*\[(.+?)\])?$/);
+        console.log('[line]', JSON.stringify(lines[i]));
+        const headingMatch = lines[i].match(/^(\*{1,3})\s*(.+?)(?:\s*\[(.+?)\])?$/);
         if (headingMatch) {
             const stars:"*" | "**" | "***" = headingMatch[1] as "*" | "**" | "***";
             const title:string = headingMatch[2].trim();
@@ -34,12 +35,12 @@ export default function parseInline({text, context, designColor}: parseInlinePro
                     designColor={designColor}
                 />
             );
-            return;
+            continue;
         }
 
         // 2) その他の行のインライン解析
         const parsedLine:ReactNode[] = parseOtherInline(
-            line,
+            lines[i],
             wikiSlug!,
             pageSlug!,
             context,
@@ -48,7 +49,7 @@ export default function parseInline({text, context, designColor}: parseInlinePro
         );
         nodes.push(...parsedLine);
         nodeKey += parsedLine.length || 1;
-    });
+    };
 
     return nodes;
 }

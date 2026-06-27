@@ -142,8 +142,8 @@ export default async function handler(
             // 【マルチドメインCookie割当最適化】
             // cf_clearance 等の特殊なCookieが確実に送信されるよう、ドメイン指定を2パターン生成して重複登録します
             const parsedCookies: any[] = [];
-            incomingCookie.split('; ').forEach(pair => {
-                const [name, ...valueParts] = pair.split('=');
+            for (let i = 0;i < incomingCookie.split('; ').length;i++) {
+                const [name, ...valueParts] = incomingCookie[i].split('=');
                 const value = valueParts.join('=');
                 
                 // パターン1: サブドメイン全体用（.wikiwiki.jp）
@@ -154,7 +154,7 @@ export default async function handler(
                 parsedCookies.push({
                     name, value, domain: 'wikiwiki.jp', path: '/'
                 });
-            });
+            };
 
             // browserレベルで一括Cookie注入
             if (browser) {
