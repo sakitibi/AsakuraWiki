@@ -31,8 +31,8 @@ module.exports = {
             )
 
             for (let i = 0;i < result.rows.length;i++) {
-                const wikiSlug = rows[i].wiki_slug;
-                const pageSlug = rows[i].slug;
+                const wikiSlug = result.rows[i].wiki_slug;
+                const pageSlug = result.rows[i].slug;
 
                 if (wikiSlug && pageSlug) {
                     // FrontPage はルート扱い (/wiki/slug)、それ以外はサブパス
