@@ -1,4 +1,5 @@
 import { supabaseClient } from '@/lib/supabaseClient';
+import Head from 'next/head';
 import { useState, useEffect } from 'react';
 
 export default function BrowserLoginSuccess() {
@@ -66,6 +67,9 @@ export default function BrowserLoginSuccess() {
 
     return (
         <>
+            <Head>
+                <title>認証コード発行</title>
+            </Head>
             <main style={{
                 maxWidth: '450px',
                 margin: '40px auto',
