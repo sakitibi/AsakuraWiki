@@ -2,14 +2,17 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
 
+type AppNameProps = "notices";
+
 export default function BrowserLoginSuccess() {
     const [loading, setLoading] = useState(false);
     const [pinCode, setPinCode] = useState<string | null>(null);
+    const [appName, setAppName] = useState<AppNameProps>("notices");
     const [timeLeft, setTimeLeft] = useState<number>(30);
     const [error, setError] = useState<string | null>(null);
 
     const generateAlphanumericCode = (): string => {
-        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const chars = `0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.trim().replace(/\n|\x20/g, "");
         let result = '';
         for (let i = 0; i < 8; i++) {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -38,6 +41,8 @@ export default function BrowserLoginSuccess() {
                 code: code,
                 access_token: session.access_token,
                 refresh_token: session.refresh_token,
+                user_id: session.user.id,
+                app_name: appName
             });
 
         if (insertError) {
@@ -54,7 +59,7 @@ export default function BrowserLoginSuccess() {
 
     useEffect(() => {
         if (pinCode === null || timeLeft <= 0) {
-            if (timeLeft === 0) setPinCode(null);
+            if (timeLeft === 0) handleGenerateCode();
             return;
         }
 
@@ -85,7 +90,7 @@ export default function BrowserLoginSuccess() {
                     fontSize: '0.9rem',
                     marginBottom: '2rem'
                 }}>
-                    デスクトップアプリへログイン情報を同期するための認証コードを発行します。
+                    アプリケーションにログインするための認証コードを発行します。
                 </p>
 
                 {error && (
@@ -101,22 +106,35 @@ export default function BrowserLoginSuccess() {
                 )}
 
                 {!pinCode ? (
-                    <button
-                        onClick={handleGenerateCode}
-                        disabled={loading}
-                        style={{
-                            padding: '0.75rem 2rem',
-                            fontSize: '1rem',
-                            backgroundColor: '#2563eb',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        <span>{loading ? 'コードを生成中...' : 'アプリ同期コードを発行'}</span>
-                    </button>
+                    <form onSubmit={handleGenerateCode}>
+                        <label>
+                            認証するアプリケーション
+                            <select
+                                name="appname"
+                                onChange={(e) => setAppName(e.target.value as AppNameProps)}
+                                required
+                            >
+                                <option value="notices" selected>AsakuraWiki Notices</option>
+                            </select>
+                        </label>
+                        <br/>
+                        <button
+                            type='submit'
+                            disabled={loading}
+                            style={{
+                                padding: '0.75rem 2rem',
+                                fontSize: '1rem',
+                                backgroundColor: '#2563eb',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: loading ? 'not-allowed' : 'pointer',
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            <span>{loading ? 'コードを生成中...' : 'アプリ同期コードを発行'}</span>
+                        </button>
+                    </form>
                 ) : (
                     <div>
                         <div style={{
@@ -124,7 +142,7 @@ export default function BrowserLoginSuccess() {
                             padding: '1.5rem',
                             borderRadius: '8px',
                             marginBottom: '1rem'
-                            }}>
+                        }}>
                             <span style={{
                                 fontSize: '2.5rem',
                                 fontWeight: 'bold',
