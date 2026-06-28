@@ -17,7 +17,7 @@ const safeTrim = (v: unknown) => typeof v === 'string' ? v.trim() : '';
 
 type ParserFn = (line: string, wikiSlug: string, pageSlug: string, context: any, baseKey: number, designColor: any) => ReactNode[];
 
-export const renderMarquee = ({ token, key, match }: PluginArgs): ReactNode => {
+export const renderMarquee = ({ key, match }: PluginArgs): ReactNode => {
     const [, text, loop, slide, bgColor, color, size] = match;
     const fontSize = size ? `${size}px` : 'inherit';
     const iterationCount = loop && /^\d+$/.test(loop) ? Number(loop) : 'infinite';
