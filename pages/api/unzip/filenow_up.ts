@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 
 interface FilePayload{
     fileName: string;
-    fileContent: ArrayBuffer;
+    fileContent: string;
 }
 
 export default async function handler(
@@ -12,13 +12,15 @@ export default async function handler(
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     } else if (req.method === "POST") {
         const body = req.body as FilePayload;
+        const decodedb64 = Uint8Array.fromBase64(body.fileContent);
         
-        const csvBlob = new Blob([body.fileContent], { type: 'application/octet-stream' });
+        const csvBlob = new Blob([decodedb64], { type: 'application/octet-stream' });
 
         // フォームデータの構築
         const formData = new FormData();
