@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 
 interface FilePayload{
     fileName: string;
-    fileContent: Uint8Array<ArrayBuffer>;
+    fileContent: ArrayBuffer;
 }
 
 export default async function handler(
