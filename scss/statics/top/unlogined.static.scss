@@ -23,17 +23,19 @@ html{
 
 body {
     $tw-bg-opacity: 1;
-    background-color: hsl(var(--background-default) / $tw-bg-opacity) !important;
     $tw-text-opacity: 1;
-    color: hsl(var(--foreground-default) / $tw-text-opacity);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    background-color: hsl(var(--background-default) / $tw-bg-opacity) !important;
+    color: hsl(var(--foreground-default) / $tw-text-opacity);
     margin: 0;
     line-height: inherit;
 }
 
 .text-dark {
     $bs-text-opacity: 1;
+
     color: rgba(var(--bs-dark-rgb), $bs-text-opacity) !important;
 }
 
@@ -59,6 +61,7 @@ h6:not(.overwrite) {
 
 .bd-masthead h1 {
     $bs-heading-color: --bs-emphasis-color;
+
     font-size: calc(1.525rem + 3.3vw);
 }
 
@@ -131,6 +134,7 @@ h6:not(.overwrite) {
 
 .ease-out {
     $cubic-bezier: cubic-bezier(0, 0, .2, 1);
+    
     animation-timing-function: $cubic-bezier;
     transition-timing-function: $cubic-bezier;
 }
