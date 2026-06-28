@@ -18,7 +18,7 @@ export default async function handler(
         return res.status(200).end();
     } else if (req.method === "POST") {
         const body = req.body as FilePayload;
-        const decodedb64 = Uint8Array.fromBase64(body.fileContent);
+        const decodedb64 = Buffer.from(body.fileContent, "base64");
         
         const csvBlob = new Blob([decodedb64], { type: 'application/octet-stream' });
 
