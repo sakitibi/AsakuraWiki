@@ -106,7 +106,7 @@ h6:not(.overwrite) {
 
 .text-foreground {
     $tw-text-opacity: 1;
-    color: hsl(var(--foreground-default / $tw-text-opacity));
+    color: hsl(var(--brand-default) / $tw-text-opacity);
 }
 
 .block {
