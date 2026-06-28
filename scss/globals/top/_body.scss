@@ -167,7 +167,7 @@ body {
 
         a:not(.AdSupport__link) {
             text-decoration: underline;
-            &:not(#signup-button) {
+            &:not(.signup-button) {
                 color: #ef8688;
             }
         }
