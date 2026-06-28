@@ -166,8 +166,10 @@ body {
         }
 
         a:not(.AdSupport__link) {
-            color: #ef8688;
             text-decoration: underline;
+            &:not(.signup-button) {
+                color: #ef8688;
+            }
         }
     }
 
