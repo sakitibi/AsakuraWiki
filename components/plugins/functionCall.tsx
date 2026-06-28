@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { parseWikiContent } from '@/utils/parsePlugins';
 import type { Context } from '@/components/plugins/parsePluginTypes';
-import { designColor } from '@/utils/wiki_settings';
+import type { designColor } from '@/utils/wiki_settings';
 
 interface FunctionCallRendererProps{
     name: string;
