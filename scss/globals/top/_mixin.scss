@@ -42,6 +42,11 @@ $breakpoints: (
     @extend %gradient-body-base;
 }
 
+@mixin darkGreen {
+    background-image: linear-gradient(to right, #03211f, #0b3119, #042320);
+    @extend %gradient-body-base;
+}
+
 @mixin purple {
     background-image: linear-gradient(to right, #0f0c20, #33243e, #3a0077, #33243e, #0f0c20);
     @extend %gradient-body-base;

@@ -149,6 +149,16 @@ export default function Home() {
         else html.removeAttribute('data-theme');
     }, [user, isBot]);
 
+    useEffect(() => {
+        if (!document) return;
+
+        document.body.classList.add('dark_green');
+
+        return () => {
+            document.body.classList.remove('dark_green');
+        };
+    }, []);
+
     const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
 
     /* ===============================
