@@ -46,21 +46,21 @@ export default function LoginPage() {
             return;
         } else {
             const data = await res.json();
-            const access_token = new TextDecoder().decode(
+            const access_token = 
                 await upack.SEncoder.decodeSEncode(
                     data.access_token,
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                    true,
                     5
-                )!
-            );
+                ) as string;
 
-            const refresh_token = new TextDecoder().decode(
+            const refresh_token = 
                 await upack.SEncoder.decodeSEncode(
                     data.refresh_token,
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                    true,
                     5
-                )!
-            );
+                ) as string;
 
             const { error } = await supabaseClient.auth.setSession({
                 access_token: access_token,

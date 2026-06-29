@@ -34,13 +34,14 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
     
         ip = normalizeIp(ip);
 
-        const decoded = JSON.parse(new TextDecoder().decode(
+        const decoded = JSON.parse(
             await upack.SEncoder.decodeSEncode(
                 decodeBase64Unicode(body.data),
                 process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                true,
                 5
-            )!
-        ));
+            ) as string
+        );
         
         const { data, error } = await supabaseServer.auth.signInWithPassword({
             email: decoded.email,

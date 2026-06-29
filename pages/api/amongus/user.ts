@@ -14,13 +14,13 @@ export default async function handler(
         return res.status(500).json({error: "token error", data: errdata});
     }
     const data1 = await res1.json();
-    const auth_token_raw = 
+    const auth_token = 
         await upack.SEncoder.decodeSEncode(
             data1.token,
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+            true,
             10
         );
-    const auth_token = new TextDecoder().decode(auth_token_raw || new Uint8Array());
 
     // ヘッダーをセット
     const headers = new Headers();

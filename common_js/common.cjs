@@ -33,7 +33,7 @@ async function encrypt(FilePath) {
         const commaSeparatedDecimal = decimalArray.join(',');
 
         const FileJavascriptCode = `;${pako}\n${upack_js}\n
-        ;(async function(){eval(new TextDecoder().decode(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", 10)))})();`;
+        ;(async function(){eval(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), "${upackSecretKey}", true, 10))})();`;
         const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + tailPart;
         fs.writeFileSync(
             `${dirPath}/${FilePath}`,
