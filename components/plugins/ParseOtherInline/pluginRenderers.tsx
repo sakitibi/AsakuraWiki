@@ -261,6 +261,12 @@ export const renderFunc = ({ token, key, context }: PluginArgs): ReactNode => {
     );
 };
 
+export const renderArg = ({ match, key, context }: PluginArgs): ReactNode => {
+    const argName = match[1]?.trim();
+    const val = context.currentArgs?.[argName] ?? '';
+    return <React.Fragment key={key}>{val}</React.Fragment>;
+};
+
 export const renderReturnCustom = (
     { match, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs,
     bodyText: string | null,
@@ -291,18 +297,16 @@ export const renderReturnCustom = (
         // マクロ本体(body)を入れ子を維持したまま再帰的にパース
         let content: ReactNode[] = [];
         try {
-            // 純粋な改行コード「\n」のみで分割
             const bodyLines = funcDef.body.split('\n');
             
             bodyLines.forEach((line: string, i: number) => {
-                // 最終行かつ空行の場合は余分な空行を作らないようスキップ
+                // 最終行かつ空行の場合はスキップ
                 if (line.trim() === '' && i === bodyLines.length - 1) return; 
 
-                // 各行を個別にパース。keyが衝突しないよう行インデックスをベースキーに加算
                 const lineNodes = parseOtherInline(line, wikiSlug, pageSlug, context, baseKey + 1000 + (i * 10), designColor);
                 content.push(...lineNodes);
 
-                // 最終行以外には、行末に改行タグ（<br />）を付与して改行を再現
+                // 最終行以外には、行末に改行タグ（<br />）を付与
                 if (i < bodyLines.length - 1) {
                     content.push(<br key={`br-${baseKey}-${i}`} />);
                 }
@@ -325,13 +329,6 @@ export const renderReturnCustom = (
     }
 
     return null;
-};
-
-export const renderArg = ({ match, key, context }: PluginArgs): ReactNode => {
-    const argName = match[1]?.trim();
-    const val = context.currentArgs?.[argName] ?? '';
-    
-    return <React.Fragment key={key}>{val}</React.Fragment>;
 };
 
 // 従来のフック定義を維持するための互換用フォールバック
