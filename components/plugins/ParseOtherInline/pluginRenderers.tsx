@@ -5,7 +5,6 @@ import RealTimeComments from '@/components/plugins/RealTimeComments';
 import PageList from '@/components/plugins/PageList';
 import PageList2 from '@/components/plugins/PageList2';
 import IncludePage from '@/components/plugins/IncludePage';
-import FunctionCallRenderer from "@/components/plugins/functionCall";
 import calcPlugin from '@/components/plugins/calcPlugin';
 import { DATEDIF, DATEVALUE } from '@/utils/dateFunctions';
 import { extractBracedBlock, isValidLineRange } from "@/utils/parsePlugins";
@@ -256,8 +255,58 @@ export const renderNew = ({ key, match, baseKey }: PluginArgs): ReactNode => {
     );
 };
 
-export const renderFunctionCall = ({ key, match, context, designColor }: PluginArgs): ReactNode => {
-    const name = match[1].trim();
-    const args = match[2] ? match[2].split(',').map(s => s.trim()) : [];
-    return <FunctionCallRenderer key={key} name={name} args={args} context={context} designColor={designColor} />;
+export const renderFunc = ({ token, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs): ReactNode => {
+    const parenStart = token.indexOf('(');
+    const parenEnd = token.indexOf(')', parenStart);
+    const braceStart = token.indexOf('{');
+    
+    if (parenEnd === -1 || braceStart === -1) {
+        return <span key={key} style={{ color: 'red' }}>構文エラー: #func 構文不正</span>;
+    }
+
+    const funcArgs = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s));
+    const funcName = funcArgs[0];
+    const argNames = funcArgs.slice(1);
+    const braceBlock = extractBracedBlock(token, braceStart, 1);
+
+    context.funcContext = context.funcContext ?? {};
+    context.funcContext[funcName] = {
+        argNames,
+        body: braceBlock.body
+    };
+
+    return (
+        <span key={key} style={{ display: 'none' }}>
+            関数 {funcName}({argNames.join(', ')}) を定義しました
+        </span>
+    );
+};
+
+export const renderArg = ({ key, match, context }: PluginArgs): ReactNode => {
+    const argName = match[1].trim();
+    const value = context.currentArgs?.[argName];
+
+    if (value === undefined) {
+        return <span key={key} style={{ color: 'orange' }}>[引数未定義:{argName}]</span>;
+    }
+    return <React.Fragment key={key}>{value}</React.Fragment>;
+};
+
+export const renderReturn = ({ token, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs, parseOtherInline: ParserFn): ReactNode => {
+    const parenStart = token.indexOf('(');
+    const braceStart = token.indexOf('{');
+    let innerContent = '';
+
+    if (parenStart !== -1 && (braceStart === -1 || parenStart < braceStart)) {
+        const parenEnd = token.indexOf(')', parenStart);
+        if (parenEnd !== -1) {
+            innerContent = token.slice(parenStart + 1, parenEnd).trim();
+        }
+    } else if (braceStart !== -1) {
+        const braceBlock = extractBracedBlock(token, braceStart, 1);
+        innerContent = braceBlock.body;
+    }
+
+    const content = parseOtherInline(innerContent, wikiSlug, pageSlug, context, baseKey + 1, designColor);
+    return <React.Fragment key={key}>{Array.isArray(content) ? content : [content]}</React.Fragment>;
 };

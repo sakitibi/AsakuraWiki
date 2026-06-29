@@ -96,6 +96,10 @@ export default function parseOtherInline(
             } else if ((subM = INDIVIDUAL_REGEX.let.exec(remainingStr))) {
                 matchedToken = subM[0];
                 matchedNode = renderers.renderLet(createArgs(subM, subM[0], triggerIndex));
+            } else if ((subM = INDIVIDUAL_REGEX.func.exec(remainingStr))) {
+                matchedToken = subM[0];
+                matchedNode = renderers.renderFunc(createArgs(subM, subM[0], triggerIndex));
+                isContinueSkip = true;
             }
         }
         else if (remainingStr.startsWith('&')) {
@@ -137,9 +141,15 @@ export default function parseOtherInline(
                 matchedToken = subM[0];
                 const newNode = renderers.renderNew(createArgs(subM, subM[0], triggerIndex));
                 if (newNode) matchedNode = newNode;
-            } else if ((subM = INDIVIDUAL_REGEX.functionCall.exec(remainingStr))) {
+            } else if ((subM = INDIVIDUAL_REGEX.arg.exec(remainingStr))) {
+                // 引数指定・参照プラグイン (&arg)
                 matchedToken = subM[0];
-                matchedNode = renderers.renderFunctionCall(createArgs(subM, subM[0], triggerIndex));
+                matchedNode = renderers.renderArg(createArgs(subM, subM[0], triggerIndex));
+            } else if ((subM = INDIVIDUAL_REGEX.return.exec(remainingStr))) {
+                // リターンプラグイン (&return)
+                matchedToken = subM[0];
+                matchedNode = renderers.renderReturn(createArgs(subM, subM[0], triggerIndex), parseOtherInline);
+                isContinueSkip = true;
             }
         }
         else if (remainingStr.startsWith('[[')) {
