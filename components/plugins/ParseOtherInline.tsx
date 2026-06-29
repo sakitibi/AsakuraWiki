@@ -8,27 +8,72 @@ import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderer
 export function preProcessFuncDefinitions(text: string, context: any) {
     context.funcContext = context.funcContext ?? {};
     
-    const funcRegex = /#func\s*\(([^)]+)\)\s*\{([\s\S]*?)\};/g;
-    
     let updatedText = text;
-    let match;
     
-    // マッチした#func定義をすべてループで処理
-    while ((match = funcRegex.exec(text)) !== null) {
-        const fullMatch = match[0];
-        const funcArgs = match[1].split(',').map(s => s.trim());
+    // #func の開始位置をループで探す
+    while (true) {
+        const startIdx = updatedText.indexOf('#func');
+        if (startIdx === -1) break;
+
+        // 引数カッコ ( ) の終わりを探す
+        const parenStart = updatedText.indexOf('(', startIdx);
+        if (parenStart === -1) break;
+
+        let parenDepth = 0;
+        let parenEnd = -1;
+        for (let i = parenStart; i < updatedText.length; i++) {
+            if (updatedText[i] === '(') parenDepth++;
+            else if (updatedText[i] === ')') {
+                parenDepth--;
+                if (parenDepth === 0) {
+                    parenEnd = i;
+                    break;
+                }
+            }
+        }
+        if (parenEnd === -1) break;
+
+        // 引数の中身をパース
+        const rawArgsStr = updatedText.slice(parenStart + 1, parenEnd);
+        const funcArgs = rawArgsStr.split(',').map(s => s.trim());
         const funcName = funcArgs[0];
         const argNames = funcArgs.slice(1);
-        const body = match[2]; // 改行を含んだ中身
-        
+
+        // 関数本体の波括弧 { } の範囲を探す
+        const braceStart = updatedText.indexOf('{', parenEnd);
+        if (braceStart === -1) break;
+
+        let braceDepth = 0;
+        let braceEnd = -1;
+        for (let i = braceStart; i < updatedText.length; i++) {
+            if (updatedText[i] === '{') braceDepth++;
+            else if (updatedText[i] === '}') {
+                braceDepth--;
+                if (braceDepth === 0) {
+                    braceEnd = i;
+                    break;
+                }
+            }
+        }
+        if (braceEnd === -1) break;
+
+        // 中身（body）を抽出
+        const body = updatedText.slice(braceStart + 1, braceEnd);
+
         // 関数スコープに登録
         context.funcContext[funcName] = {
             argNames,
             body: body
         };
-        
-        // 定義された部分は画面に表示させないため、空文字に置換して消去
-        updatedText = updatedText.replace(fullMatch, '');
+
+        // 末尾に「;」があればそれも含めて全体を消去する
+        let fullEnd = braceEnd + 1;
+        if (updatedText[fullEnd] === ';') {
+            fullEnd++;
+        }
+
+        // 処理が終わった#func定義ブロック全体を文字列から切り取る
+        updatedText = updatedText.slice(0, startIdx) + updatedText.slice(fullEnd);
     }
     
     return updatedText;
