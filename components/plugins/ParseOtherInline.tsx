@@ -4,7 +4,6 @@ import TableOfContents from '@/components/plugins/TableOfContents';
 import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/ParseOtherInline/regex';
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
-import { extractBracedBlock } from "@/utils/parsePlugins";
 
 export default function parseOtherInline(
     line: string,
@@ -36,7 +35,6 @@ export default function parseOtherInline(
     } else if ((lineAlignM = INDIVIDUAL_REGEX.right.exec(line))) {
         return [renderers.renderAlign('right', createArgs(lineAlignM, lineAlignM[0], 0), parseOtherInline)];
     }
-    
     // 再帰（入れ子）呼び出しに耐えられるよう、ループごとに独立した正規表現インスタンスを使用
     const localTriggerRegex = new RegExp(PLUGIN_TRIGGER_REGEX.source, PLUGIN_TRIGGER_REGEX.flags);
     let m: RegExpExecArray | null;
@@ -99,22 +97,48 @@ export default function parseOtherInline(
                 matchedToken = subM[0];
                 matchedNode = renderers.renderLet(createArgs(subM, subM[0], triggerIndex));
             } else if ((subM = INDIVIDUAL_REGEX.func.exec(remainingStr))) {
-                const headLength = subM[0].length;
-                if (remainingStr[headLength] === '{') {
-                    const braceBlock = extractBracedBlock(remainingStr, headLength, 1);
-                    
-                    const totalBlockLength = braceBlock.body.length + 2;
-                    const hasSemicolon = remainingStr.startsWith(';', headLength + totalBlockLength);
-                    const fullToken = remainingStr.slice(0, headLength + totalBlockLength + (hasSemicolon ? 1 : 0));
-                    
-                    matchedToken = fullToken;
-                    matchedNode = renderers.renderFuncCustom(createArgs(subM, fullToken, triggerIndex), braceBlock.body);
-                    isContinueSkip = true;
-                } else {
-                    matchedToken = subM[0];
-                    matchedNode = renderers.renderFunc(createArgs(subM, subM[0], triggerIndex));
-                    isContinueSkip = true;
+                let idx = 0;
+                let parenDepth = 0;
+                let braceDepth = 0;
+                const parenStart = remainingStr.indexOf('(');
+                
+                if (parenStart !== -1 && parenStart < subM[0].length) {
+                    idx = parenStart;
+                    // 関数の引数部分 () を正しくスキャン
+                    while (idx < remainingStr.length) {
+                        if (remainingStr[idx] === '(') parenDepth++;
+                        else if (remainingStr[idx] === ')') {
+                            parenDepth--;
+                            if (parenDepth === 0) {
+                                idx++;
+                                break;
+                            }
+                        }
+                        idx++;
+                    }
+                    // 関数の中身部分 {} を正しくスキャン
+                    const braceStart = remainingStr.indexOf('{', idx);
+                    if (braceStart !== -1) {
+                        idx = braceStart;
+                        while (idx < remainingStr.length) {
+                            if (remainingStr[idx] === '{') braceDepth++;
+                            else if (remainingStr[idx] === '}') {
+                                braceDepth--;
+                                if (braceDepth === 0) {
+                                    idx++;
+                                    if (remainingStr[idx] === ';') idx++; // 末尾のセミコロンも含める
+                                    break;
+                                }
+                            }
+                            idx++;
+                        }
+                    }
                 }
+
+                const fullToken = idx > 0 ? remainingStr.slice(0, idx) : subM[0];
+                matchedToken = fullToken;
+                matchedNode = renderers.renderFunc(createArgs(subM, fullToken, triggerIndex));
+                isContinueSkip = true;
             }
         }
         else if (remainingStr.startsWith('&')) {
@@ -160,25 +184,47 @@ export default function parseOtherInline(
                 matchedToken = subM[0];
                 matchedNode = renderers.renderArg(createArgs(subM, subM[0], triggerIndex));
             } else if ((subM = INDIVIDUAL_REGEX.return.exec(remainingStr))) {
-                const headLength = subM[0].length;
-                if (remainingStr[headLength] === '{') {
-                    const braceBlock = extractBracedBlock(remainingStr, headLength, 1);
-                    
-                    const totalBlockLength = braceBlock.body.length + 2;
-                    const hasSemicolon = remainingStr.startsWith(';', headLength + totalBlockLength);
-                    const fullToken = remainingStr.slice(0, headLength + totalBlockLength + (hasSemicolon ? 1 : 0));
-                    
-                    matchedToken = fullToken;
-                    matchedNode = renderers.renderReturnCustom(createArgs(subM, fullToken, triggerIndex), braceBlock.body, parseOtherInline);
-                    isContinueSkip = true;
-                } else {
-                    const hasSemicolon = remainingStr.startsWith(';', headLength);
-                    const fullToken = remainingStr.slice(0, headLength + (hasSemicolon ? 1 : 0));
-                    
-                    matchedToken = fullToken;
-                    matchedNode = renderers.renderReturnCustom(createArgs(subM, fullToken, triggerIndex), null, parseOtherInline);
-                    isContinueSkip = true;
+                let idx = 0;
+                const parenStart = remainingStr.indexOf('(');
+                const braceStart = remainingStr.indexOf('{');
+
+                if (parenStart !== -1 && (braceStart === -1 || parenStart < braceStart) && parenStart < subM[0].length) {
+                    idx = parenStart;
+                    let parenDepth = 0;
+                    while (idx < remainingStr.length) {
+                        if (remainingStr[idx] === '(') parenDepth++;
+                        else if (remainingStr[idx] === ')') {
+                            parenDepth--;
+                            if (parenDepth === 0) {
+                                idx++;
+                                if (remainingStr[idx] === ';') idx++;
+                                break;
+                            }
+                        }
+                        idx++;
+                    }
+                } 
+                else if (braceStart !== -1 && braceStart < subM[0].length) {
+                    idx = braceStart;
+                    let braceDepth = 0;
+                    while (idx < remainingStr.length) {
+                        if (remainingStr[idx] === '{') braceDepth++;
+                        else if (remainingStr[idx] === '}') {
+                            braceDepth--;
+                            if (braceDepth === 0) {
+                                idx++;
+                                if (remainingStr[idx] === ';') idx++;
+                                break;
+                            }
+                        }
+                        idx++;
+                    }
                 }
+
+                const fullToken = idx > 0 ? remainingStr.slice(0, idx) : subM[0];
+                matchedToken = fullToken;
+                matchedNode = renderers.renderReturn(createArgs(subM, fullToken, triggerIndex), parseOtherInline);
+                isContinueSkip = true;
             }
         }
         else if (remainingStr.startsWith('[[')) {
