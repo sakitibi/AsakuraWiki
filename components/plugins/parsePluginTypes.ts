@@ -9,8 +9,8 @@ export type Context = {
     wikiSlug?: string;
     pageSlug?: string;
     variables?: Record<string, string>;
-    constContext?: Record<string, string>; // ← 追加
-    letContext?: Record<string, string>;   // ← 追加
+    constContext?: Record<string, string>;
+    letContext?: Record<string, string>;
     functions?: Record<string, {args: any[]; returnValue: any, body: string}>;
 };
 
