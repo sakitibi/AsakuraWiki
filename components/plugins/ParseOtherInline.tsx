@@ -5,6 +5,35 @@ import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/Par
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
 
+function preProcessFuncDefinitions(text: string, context: any) {
+    context.funcContext = context.funcContext ?? {};
+    
+    const funcRegex = /#func\s*\(([^)]+)\)\s*\{([\s\S]*?)\};/g;
+    
+    let updatedText = text;
+    let match;
+    
+    // マッチした#func定義をすべてループで処理
+    while ((match = funcRegex.exec(text)) !== null) {
+        const fullMatch = match[0];
+        const funcArgs = match[1].split(',').map(s => s.trim());
+        const funcName = funcArgs[0];
+        const argNames = funcArgs.slice(1);
+        const body = match[2]; // 改行を含んだ中身
+        
+        // 関数スコープに登録
+        context.funcContext[funcName] = {
+            argNames,
+            body: body
+        };
+        
+        // 定義された部分は画面に表示させないため、空文字に置換して消去
+        updatedText = updatedText.replace(fullMatch, '');
+    }
+    
+    return updatedText;
+}
+
 export default function parseOtherInline(
     line: string,
     wikiSlug: string,
