@@ -123,9 +123,10 @@ export async function decryptV3(
     for (let i = 0;i < encrypted.length;i++) {
         const decrypted = await upack.SEncoder.decodeSEncode(
             encrypted[i],
-            passphrase.replaceAll("_入江由莉子_", "_")
-        );
-        decryptedArray.push(new TextDecoder().decode(decrypted));
+            passphrase.replaceAll("_入江由莉子_", "_"),
+            true
+        ) as string;
+        decryptedArray.push(decrypted);
     }
     return decryptedArray;
 }

@@ -47,19 +47,16 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         const authHeader = req.headers.authorization
         if (authHeader?.startsWith('Bearer ')) {
             const base64JwtStr = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf-8');
-            const decryptedBuffer = await upack.SEncoder.decodeSEncode(
+            const token = await upack.SEncoder.decodeSEncode(
                 base64JwtStr,
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
-            );
+                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                true,
+            ) as string;
 
-            if (decryptedBuffer) {
-                const token = new TextDecoder().decode(decryptedBuffer);
-
-                // 3. 復元した通常のJWTトークンをSupabaseに渡す
-                const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
-                if (authError) console.error('Supabase auth error:', authError)
-                if (user) userId = user.id
-            }
+            // 3. 復元した通常のJWTトークンをSupabaseに渡す
+            const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token)
+            if (authError) console.error('Supabase auth error:', authError)
+            if (user) userId = user.id;
         }
         const { data, error } = await supabaseServer
         .from('user_metadatas')

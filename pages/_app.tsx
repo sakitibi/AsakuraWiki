@@ -257,10 +257,9 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                 !adminer_user_id_list && 
                 TermsAgreeIgnorePaths.some(value => value === location.pathname)
             ) return;
+            const terms_agree:string = localStorage.getItem("terms_agree") || "0";
             const termsAgreeTime = parseInt(
-                upack.decoder.decode((
-                    await upack.SEncoder.decodeSEncode((localStorage.getItem("terms_agree") ?? "0"), process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!)
-                )), 36
+                await upack.SEncoder.decodeSEncode(terms_agree, process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!, true) as string
             );
             // ログインしていると2週間、ログインしていないと1週間でセッションが切れるようにする
             if((Date.now() - termsAgreeTime) > (user ? 12096e5 : 6048e5)){

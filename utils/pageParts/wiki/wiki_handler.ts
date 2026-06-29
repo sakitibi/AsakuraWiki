@@ -4,6 +4,7 @@ import { NextRouter } from "next/router";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { base64ToUint8Array } from "@/utils/wikiFetch";
 import Pako from "pako";
+import { ScaptchaSessionProps } from "@/pages/login";
 
 /**
  * ページ更新 (PUT)
@@ -71,8 +72,11 @@ export const handleEdit = async (
             "x-scaptcha-session": scaptcha_token
         }
     });
+    const scaptcha_session = await scaptcha_res.json() as ScaptchaSessionProps;
+    const date = new Date(scaptcha_session?.created_at).getTime();
+    const now = new Date().getTime();
     // scaptchaトークンが有効かどうかで仕分ける。
-    if (scaptcha_res.ok) {
+    if (now <= date + 18e5) {
         router.push(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`);
     } else {
         location.href =
@@ -97,7 +101,11 @@ export const handleDelete = async (
                 "x-scaptcha-session": scaptcha_token
             }
         });
-        if (!scaptcha_res.ok) {
+        const scaptcha_session = await scaptcha_res.json() as ScaptchaSessionProps;
+        const date = new Date(scaptcha_session?.created_at).getTime();
+        const now = new Date().getTime();
+        // scaptchaトークンが有効かどうかで仕分ける。
+        if (now <= date + 18e5) {
             location.href =
                 `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`)}`;
             return;
