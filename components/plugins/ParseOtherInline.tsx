@@ -146,7 +146,6 @@ export default function parseOtherInline(
                 matchedToken = subM[0];
                 matchedNode = renderers.renderArg(createArgs(subM, subM[0], triggerIndex));
             } else if ((subM = INDIVIDUAL_REGEX.return.exec(remainingStr))) {
-                // リターンプラグイン (&return)
                 matchedToken = subM[0];
                 matchedNode = renderers.renderReturn(createArgs(subM, subM[0], triggerIndex), parseOtherInline);
                 isContinueSkip = true;

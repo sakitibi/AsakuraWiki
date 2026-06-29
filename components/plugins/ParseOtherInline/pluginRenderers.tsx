@@ -295,18 +295,55 @@ export const renderArg = ({ key, match, context }: PluginArgs): ReactNode => {
 export const renderReturn = ({ token, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs, parseOtherInline: ParserFn): ReactNode => {
     const parenStart = token.indexOf('(');
     const braceStart = token.indexOf('{');
-    let innerContent = '';
-
+    
+    // かっこ指定 &return(関数名, 引数1, 引数2...) のパース
     if (parenStart !== -1 && (braceStart === -1 || parenStart < braceStart)) {
-        const parenEnd = token.indexOf(')', parenStart);
-        if (parenEnd !== -1) {
-            innerContent = token.slice(parenStart + 1, parenEnd).trim();
+        const parenEnd = token.lastIndexOf(')');
+        if (parenEnd === -1) {
+            return <span key={key} style={{ color: 'red' }}>構文エラー: &return 構文不正</span>;
         }
-    } else if (braceStart !== -1) {
+
+        const rawArgs = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s));
+        const funcName = rawArgs[0];
+        const callArgs = rawArgs.slice(1);
+
+        // 1. 関数の検索
+        const funcDef = context.funcContext?.[funcName];
+        if (!funcDef) {
+            return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` が定義されていません</span>;
+        }
+
+        // 現在の引数スコープを退避 (Save)
+        const savedArgs = context.currentArgs ? { ...context.currentArgs } : undefined;
+
+        // 新しい引数のマッピング・束縛 (Bind)
+        const nextArgs: Record<string, string> = {};
+        funcDef.argNames.forEach((argName, index) => {
+            nextArgs[argName] = callArgs[index] !== undefined ? callArgs[index] : '';
+        });
+        context.currentArgs = nextArgs;
+
+        // マクロ本体(body)を再帰的に実行・再パース
+        let content: ReactNode[] = [];
+        try {
+            content = parseOtherInline(funcDef.body, wikiSlug, pageSlug, context, baseKey + 1000, designColor);
+        } catch (e) {
+            context.currentArgs = savedArgs;
+            return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` の展開に失敗しました</span>;
+        }
+
+        // 引数スコープを元に戻す (Restore)
+        context.currentArgs = savedArgs;
+
+        return <React.Fragment key={key}>{content}</React.Fragment>;
+    } 
+    
+    // 通常の波括弧指定 &return{装飾テキスト}; のパース（引数環境を変更せず再パースのみ実行）
+    if (braceStart !== -1) {
         const braceBlock = extractBracedBlock(token, braceStart, 1);
-        innerContent = braceBlock.body;
+        const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1, designColor);
+        return <React.Fragment key={key}>{Array.isArray(content) ? content : [content]}</React.Fragment>;
     }
 
-    const content = parseOtherInline(innerContent, wikiSlug, pageSlug, context, baseKey + 1, designColor);
-    return <React.Fragment key={key}>{Array.isArray(content) ? content : [content]}</React.Fragment>;
+    return null;
 };
