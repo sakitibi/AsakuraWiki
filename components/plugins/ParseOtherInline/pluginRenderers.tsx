@@ -255,73 +255,10 @@ export const renderNew = ({ key, match, baseKey }: PluginArgs): ReactNode => {
     );
 };
 
-export const renderFuncCustom = (
-    { match, key }: PluginArgs, 
-    bodyText: string
-): ReactNode => {
-    if (!match[1]) {
-        return <span key={key} style={{ color: 'red' }}>構文エラー: #func 構文不正</span>;
-    }
-
-    const funcArgs = match[1].split(',').map(s => safeTrim(s));
-    const funcName = funcArgs[0];
-    const argNames = funcArgs.slice(1);
-
-    // グローバルコンテキスト内に関数スコープを確保
-    (match as any).context = (match as any).context ?? {}; 
-    // ※元のコードの context 引数を受け取れるように、型と呼び出し形式に準拠
-    const ctx = (match as any).context || {}; 
-
-    ctx.funcContext = ctx.funcContext ?? {};
-    ctx.funcContext[funcName] = {
-        argNames,
-        body: bodyText // 正しく入れ子制限が破られずに取得できた関数本体
-    };
-
+export const renderFunc = ({ token, key, context }: PluginArgs): ReactNode => {
     return (
-        <span key={key} style={{ display: 'none' }}>
-            関数 {funcName}({argNames.join(', ')}) を定義しました
-        </span>
+        <span key={key} style={{ display: 'none' }} />
     );
-};
-
-export const renderFunc = (args: PluginArgs & { context?: any }, bodyText?: string): ReactNode => {
-    const ctx = args.context;
-    if (bodyText !== undefined) {
-        const funcArgs = args.match[1].split(',').map(s => safeTrim(s));
-        const funcName = funcArgs[0];
-        const argNames = funcArgs.slice(1);
-        ctx.funcContext = ctx.funcContext ?? {};
-        ctx.funcContext[funcName] = { argNames, body: bodyText };
-        return <span key={args.key} style={{ display: 'none' }} />;
-    }
-    
-    // フォールバック（従来通りのトークン内パース）
-    const token = args.token;
-    const parenStart = token.indexOf('(');
-    const parenEnd = token.indexOf(')', parenStart);
-    const braceStart = token.indexOf('{');
-    if (parenEnd === -1 || braceStart === -1) {
-        return <span key={args.key} style={{ color: 'red' }}>構文エラー: #func 構文不正</span>;
-    }
-    const funcArgs = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s));
-    const funcName = funcArgs[0];
-    const argNames = funcArgs.slice(1);
-    const braceBlock = extractBracedBlock(token, braceStart, 1);
-
-    ctx.funcContext = ctx.funcContext ?? {};
-    ctx.funcContext[funcName] = { argNames, body: braceBlock.body };
-    return <span key={args.key} style={{ display: 'none' }} />;
-};
-
-export const renderArg = ({ key, match, context }: PluginArgs): ReactNode => {
-    const argName = match[1].trim();
-    const value = context.currentArgs?.[argName];
-
-    if (value === undefined) {
-        return <span key={key} style={{ color: 'orange' }}>[引数未定義:{argName}]</span>;
-    }
-    return <React.Fragment key={key}>{value}</React.Fragment>;
 };
 
 export const renderReturnCustom = (
@@ -354,7 +291,22 @@ export const renderReturnCustom = (
         // マクロ本体(body)を入れ子を維持したまま再帰的にパース
         let content: ReactNode[] = [];
         try {
-            content = parseOtherInline(funcDef.body, wikiSlug, pageSlug, context, baseKey + 1000, designColor);
+            // 純粋な改行コード「\n」のみで分割
+            const bodyLines = funcDef.body.split('\n');
+            
+            bodyLines.forEach((line: string, i: number) => {
+                // 最終行かつ空行の場合は余分な空行を作らないようスキップ
+                if (line.trim() === '' && i === bodyLines.length - 1) return; 
+
+                // 各行を個別にパース。keyが衝突しないよう行インデックスをベースキーに加算
+                const lineNodes = parseOtherInline(line, wikiSlug, pageSlug, context, baseKey + 1000 + (i * 10), designColor);
+                content.push(...lineNodes);
+
+                // 最終行以外には、行末に改行タグ（<br />）を付与して改行を再現
+                if (i < bodyLines.length - 1) {
+                    content.push(<br key={`br-${baseKey}-${i}`} />);
+                }
+            });
         } catch (e) {
             context.currentArgs = savedArgs;
             return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` の展開に失敗しました</span>;
@@ -373,6 +325,13 @@ export const renderReturnCustom = (
     }
 
     return null;
+};
+
+export const renderArg = ({ match, key, context }: PluginArgs): ReactNode => {
+    const argName = match[1]?.trim();
+    const val = context.currentArgs?.[argName] ?? '';
+    
+    return <React.Fragment key={key}>{val}</React.Fragment>;
 };
 
 // 従来のフック定義を維持するための互換用フォールバック
