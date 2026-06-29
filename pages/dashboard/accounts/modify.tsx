@@ -93,7 +93,6 @@ export default function ModifyPage() {
                             .from("user_metadatas")
                             .update({
                                 metadatas: compressed,
-                                email,
                                 version: 3
                             })
                             .eq("id", user.id);
