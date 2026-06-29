@@ -5,78 +5,95 @@ import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/Par
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
 
-export function preProcessFuncDefinitions(text: string, context: any) {
+export function preProcessFuncDefinitions(text: string, context: any): string {
     context.funcContext = context.funcContext ?? {};
     
-    let updatedText = text;
-    
-    // #func の開始位置をループで探す
-    while (true) {
-        const startIdx = updatedText.indexOf('#func');
-        if (startIdx === -1) break;
+    let result = '';
+    let i = 0;
+    const len = text.length;
 
-        // 引数カッコ ( ) の終わりを探す
-        const parenStart = updatedText.indexOf('(', startIdx);
-        if (parenStart === -1) break;
+    while (i < len) {
+        // 「#func」の文字列から始まるブロックを検知
+        if (text.slice(i, i + 5) === '#func') {
+            const startIdx = i;
+            i += 5;
 
-        let parenDepth = 0;
-        let parenEnd = -1;
-        for (let i = parenStart; i < updatedText.length; i++) {
-            if (updatedText[i] === '(') parenDepth++;
-            else if (updatedText[i] === ')') {
-                parenDepth--;
-                if (parenDepth === 0) {
-                    parenEnd = i;
-                    break;
-                }
+            // 引数の開始カッコ「(」を探す
+            while (i < len && text[i] !== '(') {
+                i++;
             }
-        }
-        if (parenEnd === -1) break;
+            if (i >= len) { result += text.slice(startIdx, i); continue; }
 
-        // 引数の中身をパース
-        const rawArgsStr = updatedText.slice(parenStart + 1, parenEnd);
-        const funcArgs = rawArgsStr.split(',').map(s => s.trim());
-        const funcName = funcArgs[0];
-        const argNames = funcArgs.slice(1);
-
-        // 関数本体の波括弧 { } の範囲を探す
-        const braceStart = updatedText.indexOf('{', parenEnd);
-        if (braceStart === -1) break;
-
-        let braceDepth = 0;
-        let braceEnd = -1;
-        for (let i = braceStart; i < updatedText.length; i++) {
-            if (updatedText[i] === '{') braceDepth++;
-            else if (updatedText[i] === '}') {
-                braceDepth--;
-                if (braceDepth === 0) {
-                    braceEnd = i;
-                    break;
+            // 引数のカッコ「( )」の終わりをネスト考慮してスキャン
+            const parenStart = i;
+            let parenDepth = 0;
+            while (i < len) {
+                if (text[i] === '(') parenDepth++;
+                else if (text[i] === ')') {
+                    parenDepth--;
+                    if (parenDepth === 0) {
+                        i++;
+                        break;
+                    }
                 }
+                i++;
             }
+            const parenEnd = i;
+
+            // 引数部分の文字列をパース
+            const rawArgsStr = text.slice(parenStart + 1, parenEnd - 1);
+            const funcArgs = rawArgsStr.split(',').map(s => s.trim());
+            const funcName = funcArgs[0];
+            const argNames = funcArgs.slice(1);
+
+            // 本体の開始波括弧「{」を探す
+            while (i < len && text[i] !== '{') {
+                i++;
+            }
+            if (i >= len) { result += text.slice(startIdx, i); continue; }
+
+            // 本体の波括弧「{ }」の終わりをネスト考慮してスキャン
+            const braceStart = i;
+            let braceDepth = 0;
+            while (i < len) {
+                if (text[i] === '{') braceDepth++;
+                else if (text[i] === '}') {
+                    braceDepth--;
+                    if (braceDepth === 0) {
+                        i++;
+                        break;
+                    }
+                }
+                i++;
+            }
+            const braceEnd = i;
+
+            // 関数の中身 (body) を抽出
+            const body = text.slice(braceStart + 1, braceEnd - 1);
+
+            // 有効な関数名であれば context にしっかりと登録
+            if (funcName) {
+                context.funcContext[funcName] = {
+                    argNames,
+                    body: body
+                };
+            }
+
+            // 直後にセミコロン「;」が続いていれば、それも含めてスキップして削り取る
+            if (i < len && text[i] === ';') {
+                i++;
+            }
+            
+            // #func マクロ定義全体を result から除外（画面に表示させない）
+            continue;
         }
-        if (braceEnd === -1) break;
 
-        // 中身（body）を抽出
-        const body = updatedText.slice(braceStart + 1, braceEnd);
-
-        // 関数スコープに登録
-        context.funcContext[funcName] = {
-            argNames,
-            body: body
-        };
-
-        // 末尾に「;」があればそれも含めて全体を消去する
-        let fullEnd = braceEnd + 1;
-        if (updatedText[fullEnd] === ';') {
-            fullEnd++;
-        }
-
-        // 処理が終わった#func定義ブロック全体を文字列から切り取る
-        updatedText = updatedText.slice(0, startIdx) + updatedText.slice(fullEnd);
+        // 通常のテキストはそのまま維持
+        result += text[i];
+        i++;
     }
     
-    return updatedText;
+    return result;
 }
 
 export default function parseOtherInline(
@@ -109,14 +126,13 @@ export default function parseOtherInline(
     } else if ((lineAlignM = INDIVIDUAL_REGEX.right.exec(line))) {
         return [renderers.renderAlign('right', createArgs(lineAlignM, lineAlignM[0], 0), parseOtherInline)];
     }
-    // 再帰（入れ子）呼び出しに耐えられるよう、ループごとに独立した正規表現インスタンスを使用
+    
     const localTriggerRegex = new RegExp(PLUGIN_TRIGGER_REGEX.source, PLUGIN_TRIGGER_REGEX.flags);
     let m: RegExpExecArray | null;
 
     while ((m = localTriggerRegex.exec(line))) {
         const triggerIndex = m.index;
 
-        // トリガーの手前に未処理のテキストがあれば格納
         if (triggerIndex > last) {
             nodes.push(line.slice(last, triggerIndex));
         }
@@ -171,45 +187,11 @@ export default function parseOtherInline(
                 matchedToken = subM[0];
                 matchedNode = renderers.renderLet(createArgs(subM, subM[0], triggerIndex));
             } else if ((subM = INDIVIDUAL_REGEX.func.exec(remainingStr))) {
-                let idx = 0;
-                let parenDepth = 0;
-                let braceDepth = 0;
-                const parenStart = remainingStr.indexOf('(');
-                
-                if (parenStart !== -1 && parenStart < subM[0].length) {
-                    idx = parenStart;
-                    while (idx < remainingStr.length) {
-                        if (remainingStr[idx] === '(') parenDepth++;
-                        else if (remainingStr[idx] === ')') {
-                            parenDepth--;
-                            if (parenDepth === 0) {
-                                idx++;
-                                break;
-                            }
-                        }
-                        idx++;
-                    }
-                    const braceStart = remainingStr.indexOf('{', idx);
-                    if (braceStart !== -1) {
-                        idx = braceStart;
-                        while (idx < remainingStr.length) {
-                            if (remainingStr[idx] === '{') braceDepth++;
-                            else if (remainingStr[idx] === '}') {
-                                braceDepth--;
-                                if (braceDepth === 0) {
-                                    idx++;
-                                    if (remainingStr[idx] === ';') idx++;
-                                    break;
-                                }
-                            }
-                            idx++;
-                        }
-                    }
-                }
-
-                const fullToken = idx > 0 ? remainingStr.slice(0, idx) : subM[0];
-                matchedToken = fullToken;
-                matchedNode = renderers.renderFunc(createArgs(subM, fullToken, triggerIndex));
+                // 【超重要修正】行単位のパース中に不完全な残骸や #func のトリガーを踏んでしまった場合、
+                // 既に事前処理（preProcessFuncDefinitions）で登録は完了しているため、
+                // ここではエラーを出さず、安全にスキップ（非表示）させるだけで処理を終わらせます。
+                matchedToken = subM[0];
+                matchedNode = renderers.renderFunc(createArgs(subM, subM[0], triggerIndex));
                 isContinueSkip = true;
             }
         }
@@ -315,8 +297,6 @@ export default function parseOtherInline(
         if (matchedToken) {
             if (matchedNode) nodes.push(matchedNode);
             last = triggerIndex + matchedToken.length;
-            
-            // 探索ポインタを解析完了したプラグインの末尾までスキップ
             localTriggerRegex.lastIndex = last;
 
             if (isContinueSkip) {
@@ -327,7 +307,6 @@ export default function parseOtherInline(
         }
     }
 
-    // 残りのテキスト処理
     if (last < line.length) {
         const rest = line.slice(last).trim();
         if (rest && rest !== '};' && rest !== ';') {
