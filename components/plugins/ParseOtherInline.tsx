@@ -5,7 +5,7 @@ import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/Par
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
 
-function preProcessFuncDefinitions(text: string, context: any) {
+export function preProcessFuncDefinitions(text: string, context: any) {
     context.funcContext = context.funcContext ?? {};
     
     const funcRegex = /#func\s*\(([^)]+)\)\s*\{([\s\S]*?)\};/g;
@@ -133,7 +133,6 @@ export default function parseOtherInline(
                 
                 if (parenStart !== -1 && parenStart < subM[0].length) {
                     idx = parenStart;
-                    // 関数の引数部分 () を正しくスキャン
                     while (idx < remainingStr.length) {
                         if (remainingStr[idx] === '(') parenDepth++;
                         else if (remainingStr[idx] === ')') {
@@ -145,7 +144,6 @@ export default function parseOtherInline(
                         }
                         idx++;
                     }
-                    // 関数の中身部分 {} を正しくスキャン
                     const braceStart = remainingStr.indexOf('{', idx);
                     if (braceStart !== -1) {
                         idx = braceStart;
@@ -155,7 +153,7 @@ export default function parseOtherInline(
                                 braceDepth--;
                                 if (braceDepth === 0) {
                                     idx++;
-                                    if (remainingStr[idx] === ';') idx++; // 末尾のセミコロンも含める
+                                    if (remainingStr[idx] === ';') idx++;
                                     break;
                                 }
                             }
@@ -287,14 +285,16 @@ export default function parseOtherInline(
     // 残りのテキスト処理
     if (last < line.length) {
         const rest = line.slice(last).trim();
-        if (rest && rest !== '};') {
-            const cleaned = rest.replace(/^};+$/, '');
-            const splitByEscapedNewline = cleaned.split(/\\n/);
-            
-            for (let i = 0; i < splitByEscapedNewline.length; i++) {
-                if (splitByEscapedNewline[i]) nodes.push(splitByEscapedNewline[i]);
-                if (i < splitByEscapedNewline.length - 1) {
-                    nodes.push(<br key={`${baseKey}-br-${last}-${i}`} />);
+        if (rest && rest !== '};' && rest !== ';') {
+            const cleaned = rest.replace(/^};+|^;+|};+$|;+$/g, '').trim();
+            if (cleaned) {
+                const splitByEscapedNewline = cleaned.split(/\\n/);
+                
+                for (let i = 0; i < splitByEscapedNewline.length; i++) {
+                    if (splitByEscapedNewline[i]) nodes.push(splitByEscapedNewline[i]);
+                    if (i < splitByEscapedNewline.length - 1) {
+                        nodes.push(<br key={`${baseKey}-br-${last}-${i}`} />);
+                    }
                 }
             }
         }
