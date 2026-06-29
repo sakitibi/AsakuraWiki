@@ -255,24 +255,27 @@ export const renderNew = ({ key, match, baseKey }: PluginArgs): ReactNode => {
     );
 };
 
-export const renderFunc = ({ token, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs): ReactNode => {
-    const parenStart = token.indexOf('(');
-    const parenEnd = token.indexOf(')', parenStart);
-    const braceStart = token.indexOf('{');
-    
-    if (parenEnd === -1 || braceStart === -1) {
+export const renderFuncCustom = (
+    { match, key }: PluginArgs, 
+    bodyText: string
+): ReactNode => {
+    if (!match[1]) {
         return <span key={key} style={{ color: 'red' }}>構文エラー: #func 構文不正</span>;
     }
 
-    const funcArgs = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s));
+    const funcArgs = match[1].split(',').map(s => safeTrim(s));
     const funcName = funcArgs[0];
     const argNames = funcArgs.slice(1);
-    const braceBlock = extractBracedBlock(token, braceStart, 1);
 
-    context.funcContext = context.funcContext ?? {};
-    context.funcContext[funcName] = {
+    // グローバルコンテキスト内に関数スコープを確保
+    (match as any).context = (match as any).context ?? {}; 
+    // ※元のコードの context 引数を受け取れるように、型と呼び出し形式に準拠
+    const ctx = (match as any).context || {}; 
+
+    ctx.funcContext = ctx.funcContext ?? {};
+    ctx.funcContext[funcName] = {
         argNames,
-        body: braceBlock.body
+        body: bodyText // 正しく入れ子制限が破られずに取得できた関数本体
     };
 
     return (
@@ -280,6 +283,35 @@ export const renderFunc = ({ token, key, wikiSlug, pageSlug, context, baseKey, d
             関数 {funcName}({argNames.join(', ')}) を定義しました
         </span>
     );
+};
+
+export const renderFunc = (args: PluginArgs & { context?: any }, bodyText?: string): ReactNode => {
+    const ctx = args.context;
+    if (bodyText !== undefined) {
+        const funcArgs = args.match[1].split(',').map(s => safeTrim(s));
+        const funcName = funcArgs[0];
+        const argNames = funcArgs.slice(1);
+        ctx.funcContext = ctx.funcContext ?? {};
+        ctx.funcContext[funcName] = { argNames, body: bodyText };
+        return <span key={args.key} style={{ display: 'none' }} />;
+    }
+    
+    // フォールバック（従来通りのトークン内パース）
+    const token = args.token;
+    const parenStart = token.indexOf('(');
+    const parenEnd = token.indexOf(')', parenStart);
+    const braceStart = token.indexOf('{');
+    if (parenEnd === -1 || braceStart === -1) {
+        return <span key={args.key} style={{ color: 'red' }}>構文エラー: #func 構文不正</span>;
+    }
+    const funcArgs = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s));
+    const funcName = funcArgs[0];
+    const argNames = funcArgs.slice(1);
+    const braceBlock = extractBracedBlock(token, braceStart, 1);
+
+    ctx.funcContext = ctx.funcContext ?? {};
+    ctx.funcContext[funcName] = { argNames, body: braceBlock.body };
+    return <span key={args.key} style={{ display: 'none' }} />;
 };
 
 export const renderArg = ({ key, match, context }: PluginArgs): ReactNode => {
@@ -292,38 +324,34 @@ export const renderArg = ({ key, match, context }: PluginArgs): ReactNode => {
     return <React.Fragment key={key}>{value}</React.Fragment>;
 };
 
-export const renderReturn = ({ token, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs, parseOtherInline: ParserFn): ReactNode => {
-    const parenStart = token.indexOf('(');
-    const braceStart = token.indexOf('{');
+export const renderReturnCustom = (
+    { match, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs,
+    bodyText: string | null,
+    parseOtherInline: ParserFn
+): ReactNode => {
     
-    // かっこ指定 &return(関数名, 引数1, 引数2...) のパース
-    if (parenStart !== -1 && (braceStart === -1 || parenStart < braceStart)) {
-        const parenEnd = token.lastIndexOf(')');
-        if (parenEnd === -1) {
-            return <span key={key} style={{ color: 'red' }}>構文エラー: &return 構文不正</span>;
-        }
-
-        const rawArgs = token.slice(parenStart + 1, parenEnd).split(',').map(s => safeTrim(s));
+    // カッコ指定があるパターン: &return(関数名, 引数1, 引数2...) のマクロ呼び出し・展開
+    if (match[1]) {
+        const rawArgs = match[1].split(',').map(s => safeTrim(s));
         const funcName = rawArgs[0];
         const callArgs = rawArgs.slice(1);
 
-        // 1. 関数の検索
         const funcDef = context.funcContext?.[funcName];
         if (!funcDef) {
             return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` が定義されていません</span>;
         }
 
-        // 現在の引数スコープを退避 (Save)
+        // 現在の引数スコープをスタック退避 (Save)
         const savedArgs = context.currentArgs ? { ...context.currentArgs } : undefined;
 
-        // 新しい引数のマッピング・束縛 (Bind)
+        // 引数のマッピングと環境への束縛 (Bind)
         const nextArgs: Record<string, string> = {};
         funcDef.argNames.forEach((argName, index) => {
             nextArgs[argName] = callArgs[index] !== undefined ? callArgs[index] : '';
         });
         context.currentArgs = nextArgs;
 
-        // マクロ本体(body)を再帰的に実行・再パース
+        // マクロ本体(body)を入れ子を維持したまま再帰的にパース
         let content: ReactNode[] = [];
         try {
             content = parseOtherInline(funcDef.body, wikiSlug, pageSlug, context, baseKey + 1000, designColor);
@@ -332,18 +360,22 @@ export const renderReturn = ({ token, key, wikiSlug, pageSlug, context, baseKey,
             return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` の展開に失敗しました</span>;
         }
 
-        // 引数スコープを元に戻す (Restore)
+        // 引数スコープを完全に復元 (Restore)
         context.currentArgs = savedArgs;
 
         return <React.Fragment key={key}>{content}</React.Fragment>;
     } 
     
-    // 通常の波括弧指定 &return{装飾テキスト}; のパース（引数環境を変更せず再パースのみ実行）
-    if (braceStart !== -1) {
-        const braceBlock = extractBracedBlock(token, braceStart, 1);
-        const content = parseOtherInline(braceBlock.body, wikiSlug, pageSlug, context, baseKey + 1, designColor);
+    // 通常の波括弧指定があるパターン: &return{ 装飾テキスト }; の直接展開
+    if (bodyText !== null) {
+        const content = parseOtherInline(bodyText, wikiSlug, pageSlug, context, baseKey + 1, designColor);
         return <React.Fragment key={key}>{Array.isArray(content) ? content : [content]}</React.Fragment>;
     }
 
     return null;
+};
+
+// 従来のフック定義を維持するための互換用フォールバック
+export const renderReturn = (args: PluginArgs, parseOtherInline: ParserFn): ReactNode => {
+    return renderReturnCustom(args, null, parseOtherInline);
 };

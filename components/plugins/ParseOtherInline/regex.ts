@@ -33,7 +33,8 @@ export const INDIVIDUAL_REGEX = {
     calc: /^&calc\(([^)]+?)\);/i,
     version: /^&version\(([0123])\);/i,
     new: /^&new(?:\(([^*]*)\))?\{([^\}]+)\};/i,
-    func: /^#func\(([^)]+)\)\{([\s\S]*?)\};/i,
+
+    func: /^#func\(([^)]+)\)/i,
     arg: /^&arg\(([^)]+?)\);/i,
-    return: /^&return(?:\(([^)]+?)\)|\{([\s\S]*?)\});/i,
+    return: /^&return(?:\(([^)]+?)\))?/i,
 };
