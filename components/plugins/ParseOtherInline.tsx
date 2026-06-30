@@ -4,8 +4,9 @@ import TableOfContents from '@/components/plugins/TableOfContents';
 import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/ParseOtherInline/regex';
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
+import { Context } from '@/components/plugins/parsePluginTypes';
 
-export function preProcessFuncDefinitions(text: string, context: any): string {
+export function preProcessFuncDefinitions(text: string, context: Context): string {
     if (!text) return '';
     context.funcContext = context.funcContext ?? {};
     
@@ -94,11 +95,14 @@ export function preProcessFuncDefinitions(text: string, context: any): string {
             const body = text.slice(braceStart + 1, braceEnd - 1);
 
             // 有効な関数名であれば context にしっかりと登録
-            if (funcName) {
-                context.funcContext[funcName] = {
-                    argNames,
-                    body: body
-                };
+            if (!funcName) {
+                result += text.slice(startIdx, braceEnd);
+                continue;
+            }
+
+            context.funcContext[funcName] = {
+                argNames,
+                body
             }
 
             // 直後にセミコロン「;」が続いていれば、それも含めてスキップして削り取る

@@ -67,24 +67,6 @@ export function buildAST(src: string, context: Context): ASTNode[] {
             };
             curr.push(node);
         }
-        else if (tk.type === 'function') {
-            const node: ASTNode = {
-                type: 'function',
-                name: tk.name,
-                args: tk.args,
-                body: tk.body,
-                returnValue: tk.returnValue
-            };
-            curr.push(node);
-
-            // 関数定義を context に保存
-            if (!context.functions) context.functions = {};
-            context.functions[tk.name] = {
-                args: tk.args,
-                returnValue: tk.returnValue,
-                body: tk.body
-            };
-        }
     }
     return root;
 }
