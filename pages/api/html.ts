@@ -59,10 +59,10 @@ export default async function handler(
     const processCss = async (cssText: string, baseUrl: string) => {
         const urlRegex = /url\((?!['"]?data:)(['"]?)([^'")]*)\1\)/g;
         const matches = Array.from(cssText.matchAll(urlRegex));
-
-        for (const match of matches) {
-            const originalMatch = match[0];
-            const rawUrl = match[2];
+        const matchesLen = matches.length;
+        for (let i = matchesLen - 1;i >= 0;i--) {
+            const originalMatch = matches[i][0];
+            const rawUrl = matches[i][2];
 
             try {
                 // 相対パスを絶対URLに変換
