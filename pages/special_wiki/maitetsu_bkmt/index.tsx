@@ -22,6 +22,7 @@ export default function MaitetsuBKMTMain() {
     const designColor = "default";
 
     useEffect(() => {
+        if (!document) return;
         document.body.classList.add('wiki-font');
         document.body.classList.add('default');
         return () => {
