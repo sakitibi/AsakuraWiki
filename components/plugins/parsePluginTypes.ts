@@ -5,13 +5,18 @@ export interface extractBracedBlockProps{
     unmatchedDepth?: number;
 }
 
+export interface FuncDefinition {
+    argNames: string[];
+    body: string;
+}
+
 export type Context = {
     wikiSlug?: string;
     pageSlug?: string;
     variables?: Record<string, string>;
     constContext?: Record<string, string>;
     letContext?: Record<string, string>;
-    functions?: Record<string, {args: any[]; returnValue: any, body: string}>;
+    funcContext?: Record<string, FuncDefinition>;
 };
 
 export interface AccordionBlock {
