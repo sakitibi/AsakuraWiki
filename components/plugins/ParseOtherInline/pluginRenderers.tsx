@@ -343,7 +343,7 @@ export const renderReturnCustom = (
         try {
             const bodyLines = funcDef.body.split('\n');
             const bodyLinesLen = bodyLines.length;
-            for (let i = bodyLinesLen - 1;i >= 0;i--) {
+            for (let i = 0;i < bodyLinesLen;i++) {
                 if (bodyLines[i].trim() === '' && i === bodyLines.length - 1) continue; 
 
                 const lineNodes = parseOtherInline(
