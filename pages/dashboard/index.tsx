@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { User } from '@supabase/auth-helpers-react';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { createServerClient } from '@supabase/ssr';
-import { DeveloperProps } from './developer/register';
+import { DeveloperProps } from '@/pages/dashboard/developer/register';
 import { useEffect, useState } from 'react';
 import ImageContainer from '@/utils/pageParts/top/ImageContainer';
 

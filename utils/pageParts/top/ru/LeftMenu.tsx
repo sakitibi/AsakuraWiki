@@ -21,7 +21,7 @@ export default function LeftMenuRu({ URL }: Props){
                         </Link>
                     </li>
                     <li>
-                        <Link href="https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e383ade382b0e382a4e383b3">
+                        <Link href="/login/redir">
                             <button><span>Войти/Зарегистрироваться (японский)</span></button>
                         </Link>
                     </li>
