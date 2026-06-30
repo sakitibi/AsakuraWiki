@@ -8,12 +8,13 @@ import Fold from '@/components/plugins/Fold';
 import { tokenize } from '@/utils/parsePlugins';
 import { designColor } from './wiki_settings';
 
-export function buildAST(src: string, context: Context): ASTNode[] {
+export function buildAST(src: string): ASTNode[] {
     const tokens = tokenize(src);
     const root: ASTNode[] = [];
     const stack: ASTNode[][] = [root];
-
-    for (const tk of tokens) {
+    const tokensLen = tokens.length;
+    for (let i = tokensLen - 1;i >= 0;i--) {
+        const tk = tokens[i];
         const curr = stack[stack.length - 1];
         if (tk.type === 'text') {
             const last = curr[curr.length - 1];
