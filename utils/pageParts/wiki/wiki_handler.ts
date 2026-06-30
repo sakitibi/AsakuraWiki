@@ -80,10 +80,14 @@ export const handleEdit = async (
         const now = new Date().getTime();
         if (now <= date + 18e5) {
             router.push(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`);
+            return;
+        } else {
+            location.href = scaptcha_redirurl;
+            return;
         }
     } else {
-        location.href =
-            `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`)}`;
+        location.href = scaptcha_redirurl;
+        return;
     }
 };
 
