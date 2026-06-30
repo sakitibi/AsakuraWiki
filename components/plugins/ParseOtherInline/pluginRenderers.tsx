@@ -331,7 +331,8 @@ export const renderReturnCustom = (
 
         // 引数のマッピングと環境への束縛 (Bind)
         const nextArgs: Record<string, string> = {};
-        for (let i = 0;i < funcDef.argNames.length;i++) {
+        const argNamesLen = funcDef.argNames.length;
+        for (let i = argNamesLen - 1;i >= 0;i--) {
             // 分割された正しい引数を割り当てる
             nextArgs[funcDef.argNames[i]] = actualCallArgs[i] !== undefined ? actualCallArgs[i] : '';
         };
@@ -341,9 +342,9 @@ export const renderReturnCustom = (
         let content: ReactNode[] = [];
         try {
             const bodyLines = funcDef.body.split('\n');
-            
-            for (let i = 0;i < bodyLines.length;i++) {
-                if (bodyLines[i].trim() === '' && i === bodyLines.length - 1) return; 
+            const bodyLinesLen = bodyLines.length;
+            for (let i = bodyLinesLen - 1;i >= 0;i--) {
+                if (bodyLines[i].trim() === '' && i === bodyLines.length - 1) continue; 
 
                 const lineNodes = parseOtherInline(
                     bodyLines[i],
