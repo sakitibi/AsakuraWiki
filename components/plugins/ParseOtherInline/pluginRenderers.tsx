@@ -286,9 +286,9 @@ export const renderReturnCustom = (
             const char = rawArgsStr[i];
 
             if (char === '(') parenDepth++;
-            else if (char === ')') parenDepth--;
+            else if (char === ')') parenDepth = Math.max(0, parenDepth - 1);
             else if (char === '{') braceDepth++;
-            else if (char === '}') braceDepth--;
+            else if (char === '}') braceDepth = Math.max(0, braceDepth - 1);
 
             // ネストの外側にあるカンマにぶつかったら、そこまでの文字列を一つの引数として確定
             if (char === ',' && parenDepth === 0 && braceDepth === 0) {
@@ -331,10 +331,10 @@ export const renderReturnCustom = (
 
         // 引数のマッピングと環境への束縛 (Bind)
         const nextArgs: Record<string, string> = {};
-        funcDef.argNames.forEach((argName, index) => {
+        for (let i = 0;i < funcDef.argNames.length;i++) {
             // 分割された正しい引数を割り当てる
-            nextArgs[argName] = actualCallArgs[index] !== undefined ? actualCallArgs[index] : '';
-        });
+            nextArgs[funcDef.argNames[i]] = actualCallArgs[i] !== undefined ? actualCallArgs[i] : '';
+        };
         context.currentArgs = nextArgs;
 
         // マクロ本体(body)を入れ子を維持したまま再帰的にパース
@@ -342,16 +342,23 @@ export const renderReturnCustom = (
         try {
             const bodyLines = funcDef.body.split('\n');
             
-            bodyLines.forEach((line: string, i: number) => {
-                if (line.trim() === '' && i === bodyLines.length - 1) return; 
+            for (let i = 0;i < bodyLines.length;i++) {
+                if (bodyLines[i].trim() === '' && i === bodyLines.length - 1) return; 
 
-                const lineNodes = parseOtherInline(line, wikiSlug, pageSlug, context, baseKey + 1000 + (i * 10), designColor);
+                const lineNodes = parseOtherInline(
+                    bodyLines[i],
+                    wikiSlug,
+                    pageSlug,
+                    context,
+                    baseKey + 1000 + (i * 10),
+                    designColor
+                );
                 content.push(...lineNodes);
 
                 if (i < bodyLines.length - 1) {
                     content.push(<br key={`br-${baseKey}-${i}`} />);
                 }
-            });
+            };
         } catch (e) {
             context.currentArgs = savedArgs;
             return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` の展開に失敗しました</span>;
