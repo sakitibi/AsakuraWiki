@@ -72,12 +72,15 @@ export const handleEdit = async (
             "x-scaptcha-session": scaptcha_token
         }
     });
-    const scaptcha_session = await scaptcha_res.json() as ScaptchaSessionProps;
-    const date = new Date(scaptcha_session?.created_at).getTime();
-    const now = new Date().getTime();
+    const scaptcha_redirurl = `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`)}`;
     // scaptchaトークンが有効かどうかで仕分ける。
-    if (now <= date + 18e5) {
-        router.push(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`);
+    if (scaptcha_res.ok) {
+        const scaptcha_session = await scaptcha_res.json() as ScaptchaSessionProps;
+        const date = new Date(scaptcha_session?.created_at).getTime();
+        const now = new Date().getTime();
+        if (now <= date + 18e5) {
+            router.push(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`);
+        }
     } else {
         location.href =
             `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`)}`;
@@ -101,13 +104,18 @@ export const handleDelete = async (
                 "x-scaptcha-session": scaptcha_token
             }
         });
-        const scaptcha_session = await scaptcha_res.json() as ScaptchaSessionProps;
-        const date = new Date(scaptcha_session?.created_at).getTime();
-        const now = new Date().getTime();
+        const scaptcha_redirurl = `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`)}`;
         // scaptchaトークンが有効かどうかで仕分ける。
-        if (now <= date + 18e5) {
-            location.href =
-                `https://sakitibi.github.io/selects/e38182e38195e382afe383a957696b69e7b7a8e99b86?redirect=${encodeURIComponent(`/wiki/${wikiSlugStr}?cmd=delete&page=${pageSlugStr}`)}`;
+        if (scaptcha_res.ok) {
+            const scaptcha_session = await scaptcha_res.json() as ScaptchaSessionProps;
+            const date = new Date(scaptcha_session?.created_at).getTime();
+            const now = new Date().getTime();
+            if (now > date + 18e5) {
+                location.href = scaptcha_redirurl;
+                return;
+            }
+        } else {
+            location.href = scaptcha_redirurl;
             return;
         }
         const ok = confirm(`「${pageSlugStr}」ページを本当に削除しますか？`);
