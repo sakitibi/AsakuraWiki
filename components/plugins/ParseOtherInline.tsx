@@ -82,9 +82,8 @@ export function preProcessFuncDefinitions(text: string, context: Context): strin
                     `%c[#func 登録スキップ] 閉じ波括弧 '}' が見つかりません (関数名: ${funcName || '不明'})`, 
                     'color: #ff5722; font-weight: bold; padding: 2px 4px; background: #fbe9e7; border-radius: 3px;'
                 );
-                result += text.slice(startIdx, braceStart + 1);
-                i = braceStart + 1;
-                continue;
+                result += text.slice(startIdx);
+                break;
             }
 
             const body = text.slice(braceStart + 1, braceEnd - 1);
