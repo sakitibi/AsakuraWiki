@@ -34,7 +34,6 @@ export async function resolveImports(content: string, context: Context): Promise
             const [, wikiSlug, pageSlug, rawVars] = match;
             const requestedVars = rawVars.split(',').map((v: string) => v.trim());
 
-            // --- 修正ポイント: 自作API v2 からページデータを取得 ---
             const response = await fetch(`/api/wiki_v2/${wikiSlug}/${pageSlug}`, {
                 cache: 'no-store'
             });
@@ -76,8 +75,11 @@ export async function resolveImports(content: string, context: Context): Promise
             context.variables = context.variables ?? {};
             context.constContext = context.constContext ?? {};
             context.letContext = context.letContext ?? {};
+            const varDataLen = varData.length;
+            for (let i = varDataLen - 1;i >= 0;i--) {
+                // 配列の要素を順番に取得し、分割代入する
+                const { name, value, kind } = varData[i];
 
-            for (const { name, value, kind } of varData) {
                 context.variables[name] = value;
                 if (kind === 'const') {
                     if (!(name in context.constContext)) {

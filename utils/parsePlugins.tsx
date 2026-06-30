@@ -153,7 +153,7 @@ export async function parseWikiContent(
 ): Promise<React.ReactNode[]> {
     await resolveImports(content, context); // ← import変数を注入
     // トークン→AST化
-    const ast = buildAST(content, context);
+    const ast = buildAST(content);
     // AST→React ノード
     return renderAST(ast, context, designColor);
 }
