@@ -6,6 +6,7 @@ import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInli
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
 
 export function preProcessFuncDefinitions(text: string, context: any): string {
+    if (!text) return '';
     context.funcContext = context.funcContext ?? {};
     
     let result = '';
@@ -19,10 +20,14 @@ export function preProcessFuncDefinitions(text: string, context: any): string {
             i += 5;
 
             // 引数の開始カッコ「(」を探す
-            while (i < len && text[i] !== '(') {
+            while (i < len && text[i] !== '(' && text[i] !== '\n') {
                 i++;
             }
-            if (i >= len) { result += text.slice(startIdx, i); continue; }
+            // 改行にぶつかるか、テキストが切れたら #func 構文ではないので通常の文字として処理
+            if (i >= len || text[i] === '\n') { 
+                result += text.slice(startIdx, i); 
+                continue; 
+            }
 
             // 引数のカッコ「( )」の終わりをネスト考慮してスキャン
             const parenStart = i;
@@ -47,26 +52,43 @@ export function preProcessFuncDefinitions(text: string, context: any): string {
             const argNames = funcArgs.slice(1);
 
             // 本体の開始波括弧「{」を探す
-            while (i < len && text[i] !== '{') {
+            while (i < len && text[i] !== '{' && text[i] !== '\n') {
                 i++;
             }
-            if (i >= len) { result += text.slice(startIdx, i); continue; }
+            
+            // 【重要】もし1行ずつバラバラにパースされていて、この行に「{」が存在しない場合は
+            // 複数行にまたがっているため、ここでは登録処理を保留し、通常の文字として流す
+            if (i >= len || text[i] === '\n') {
+                // 親コンポーネントが未修正（1行ずつ渡している）状態でもクラッシュを防ぐ
+                result += text.slice(startIdx, i);
+                continue;
+            }
 
-            // 本体の波括弧「{ }」の終わりをネスト考慮してスキャン
+            // 本体の波括弧「{ }」の終わりをネスト考慮してスキャン（改行を跨ぐことを許可）
             const braceStart = i;
             let braceDepth = 0;
+            let foundClosingBrace = false;
             while (i < len) {
                 if (text[i] === '{') braceDepth++;
                 else if (text[i] === '}') {
                     braceDepth--;
                     if (braceDepth === 0) {
                         i++;
+                        foundClosingBrace = true;
                         break;
                     }
                 }
                 i++;
             }
             const braceEnd = i;
+
+            // 閉じ括弧が見つからない（1行ずつバラバラにされた結果、中身が途切れている）場合は
+            // 登録をスキップしてそのまま文字として残す
+            if (!foundClosingBrace) {
+                result += text.slice(startIdx, braceStart + 1);
+                i = braceStart + 1;
+                continue;
+            }
 
             // 関数の中身 (body) を抽出
             const body = text.slice(braceStart + 1, braceEnd - 1);
@@ -187,9 +209,6 @@ export default function parseOtherInline(
                 matchedToken = subM[0];
                 matchedNode = renderers.renderLet(createArgs(subM, subM[0], triggerIndex));
             } else if ((subM = INDIVIDUAL_REGEX.func.exec(remainingStr))) {
-                // 【超重要修正】行単位のパース中に不完全な残骸や #func のトリガーを踏んでしまった場合、
-                // 既に事前処理（preProcessFuncDefinitions）で登録は完了しているため、
-                // ここではエラーを出さず、安全にスキップ（非表示）させるだけで処理を終わらせます。
                 matchedToken = subM[0];
                 matchedNode = renderers.renderFunc(createArgs(subM, subM[0], triggerIndex));
                 isContinueSkip = true;
