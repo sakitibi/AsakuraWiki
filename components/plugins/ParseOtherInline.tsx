@@ -15,22 +15,18 @@ export function preProcessFuncDefinitions(text: string, context: Context): strin
     const len = text.length;
 
     while (i < len) {
-        // 「#func」の文字列から始まるブロックを検知
         if (text.slice(i, i + 5) === '#func') {
             const startIdx = i;
             i += 5;
 
-            // 引数の開始カッコ「(」を探す
             while (i < len && text[i] !== '(' && text[i] !== '\n') {
                 i++;
             }
-            // 改行にぶつかるか、テキストが切れたら #func 構文ではないので通常の文字として処理
             if (i >= len || text[i] === '\n') { 
                 result += text.slice(startIdx, i); 
                 continue; 
             }
 
-            // 引数のカッコ「( )」の終わりをネスト考慮してスキャン
             const parenStart = i;
             let parenDepth = 0;
             while (i < len) {
@@ -46,26 +42,24 @@ export function preProcessFuncDefinitions(text: string, context: Context): strin
             }
             const parenEnd = i;
 
-            // 引数部分の文字列をパース
             const rawArgsStr = text.slice(parenStart + 1, parenEnd - 1);
             const funcArgs = rawArgsStr.split(',').map(s => s.trim());
             const funcName = funcArgs[0];
             const argNames = funcArgs.slice(1);
 
-            // 本体の開始波括弧「{」を探す
             while (i < len && text[i] !== '{' && text[i] !== '\n') {
                 i++;
             }
             
-            // 【重要】もし1行ずつバラバラにパースされていて、この行に「{」が存在しない場合は
-            // 複数行にまたがっているため、ここでは登録処理を保留し、通常の文字として流す
             if (i >= len || text[i] === '\n') {
-                // 親コンポーネントが未修正（1行ずつ渡している）状態でもクラッシュを防ぐ
+                console.warn(
+                    `%c[#func 登録スキップ] 改行または文字の切れ目で本体 '{' が見つかりません (関数名: ${funcName || '不明'})`, 
+                    'color: #ff9800; font-weight: bold; padding: 2px 4px; background: #fff3e0; border-radius: 3px;'
+                );
                 result += text.slice(startIdx, i);
                 continue;
             }
 
-            // 本体の波括弧「{ }」の終わりをネスト考慮してスキャン（改行を跨ぐことを許可）
             const braceStart = i;
             let braceDepth = 0;
             let foundClosingBrace = false;
@@ -83,38 +77,41 @@ export function preProcessFuncDefinitions(text: string, context: Context): strin
             }
             const braceEnd = i;
 
-            // 閉じ括弧が見つからない（1行ずつバラバラにされた結果、中身が途切れている）場合は
-            // 登録をスキップしてそのまま文字として残す
             if (!foundClosingBrace) {
+                console.warn(
+                    `%c[#func 登録スキップ] 閉じ波括弧 '}' が見つかりません (関数名: ${funcName || '不明'})`, 
+                    'color: #ff5722; font-weight: bold; padding: 2px 4px; background: #fbe9e7; border-radius: 3px;'
+                );
                 result += text.slice(startIdx, braceStart + 1);
                 i = braceStart + 1;
                 continue;
             }
 
-            // 関数の中身 (body) を抽出
             const body = text.slice(braceStart + 1, braceEnd - 1);
 
-            // 有効な関数名であれば context にしっかりと登録
             if (!funcName) {
                 result += text.slice(startIdx, braceEnd);
                 continue;
             }
 
+            // 関数の登録
             context.funcContext[funcName] = {
                 argNames,
                 body
-            }
+            };
 
-            // 直後にセミコロン「;」が続いていれば、それも含めてスキップして削り取る
+            console.log(
+                `%c[#func 登録成功] 関数名: ${funcName} | 引数: [${argNames.join(', ')}]`, 
+                'color: #ffffff; background: #2196f3; font-weight: bold; padding: 3px 6px; border-radius: 4px;',
+                { body: body, currentContext: { ...context } }
+            );
+
             if (i < len && text[i] === ';') {
                 i++;
             }
-            
-            // #func マクロ定義全体を result から除外（画面に表示させない）
             continue;
         }
 
-        // 通常のテキストはそのまま維持
         result += text[i];
         i++;
     }

@@ -272,7 +272,6 @@ export const renderReturnCustom = (
     bodyText: string | null,
     parseOtherInline: ParserFn
 ): ReactNode => {
-    
     // カッコ指定があるパターン: &return(関数名, 引数1, 引数2...) のマクロ呼び出し・展開
     if (match[1]) {
         const rawArgs = match[1].split(',').map(s => safeTrim(s));
@@ -280,9 +279,25 @@ export const renderReturnCustom = (
         const callArgs = rawArgs.slice(1);
 
         const funcDef = context.funcContext?.[funcName];
+        
         if (!funcDef) {
+            console.error(
+                `%c[&return エラー] 関数 "${funcName}" の呼び出しに失敗しました。定義が見つかりません。`,
+                'color: #ffffff; background: #e91e63; font-weight: bold; padding: 4px 8px; border-radius: 4px;',
+                {
+                    requestedFuncName: funcName,
+                    availableFunctions: context.funcContext ? Object.keys(context.funcContext) : 'funcContext自体が未定義',
+                    fullContextSnapshot: { ...context }
+                }
+            );
             return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` が定義されていません</span>;
         }
+
+        console.log(
+            `%c[&return 展開開始] 関数名: ${funcName}`, 
+            'color: #ffffff; background: #4caf50; font-weight: bold; padding: 3px 6px; border-radius: 4px;',
+            { callArgs, resolvedBody: funcDef.body }
+        );
 
         // 現在の引数スコープをスタック退避 (Save)
         const savedArgs = context.currentArgs ? { ...context.currentArgs } : undefined;
@@ -300,13 +315,11 @@ export const renderReturnCustom = (
             const bodyLines = funcDef.body.split('\n');
             
             bodyLines.forEach((line: string, i: number) => {
-                // 最終行かつ空行の場合はスキップ
                 if (line.trim() === '' && i === bodyLines.length - 1) return; 
 
                 const lineNodes = parseOtherInline(line, wikiSlug, pageSlug, context, baseKey + 1000 + (i * 10), designColor);
                 content.push(...lineNodes);
 
-                // 最終行以外には、行末に改行タグ（<br />）を付与
                 if (i < bodyLines.length - 1) {
                     content.push(<br key={`br-${baseKey}-${i}`} />);
                 }
@@ -316,13 +329,11 @@ export const renderReturnCustom = (
             return <span key={key} style={{ color: 'red' }}>エラー: 関数 `{funcName}` の展開に失敗しました</span>;
         }
 
-        // 引数スコープを完全に復元 (Restore)
         context.currentArgs = savedArgs;
 
         return <React.Fragment key={key}>{content}</React.Fragment>;
     } 
     
-    // 通常の波括弧指定があるパターン: &return{ 装飾テキスト }; の直接展開
     if (bodyText !== null) {
         const content = parseOtherInline(bodyText, wikiSlug, pageSlug, context, baseKey + 1, designColor);
         return <React.Fragment key={key}>{Array.isArray(content) ? content : [content]}</React.Fragment>;
