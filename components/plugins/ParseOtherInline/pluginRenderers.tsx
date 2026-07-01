@@ -257,14 +257,20 @@ export const renderNew = ({ key, match, baseKey }: PluginArgs): ReactNode => {
 
 export const renderFunc = ({ token, key, context }: PluginArgs): ReactNode => {
     return (
-        <span key={key} style={{ display: 'none' }} />
+        <span key={key} style={{ display: 'none' }}>{key}</span>
     );
 };
 
-export const renderArg = ({ match, key, context }: PluginArgs): ReactNode => {
+export const renderArg = (
+    { match, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs, 
+    parseOtherInline: ParserFn
+): ReactNode => {
     const argName = match[1]?.trim();
     const val = context.currentArgs?.[argName] ?? '';
-    return <React.Fragment key={key}>{val}</React.Fragment>;
+    
+    const parsedContent = parseOtherInline(val, wikiSlug, pageSlug, context, baseKey + 500, designColor);
+    
+    return <React.Fragment key={key}>{parsedContent}</React.Fragment>;
 };
 
 export const renderReturnCustom = (
