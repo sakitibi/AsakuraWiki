@@ -32,58 +32,56 @@ export default function IncludePage({
             document.head.appendChild(link)
         }
 
-        fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`)
-            .then(res => {
-                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-                return res.json()
-            })
-            .then(async data => {
-                try {
-                    const content: string = data.content ?? ''
-                    let text = content
+        (async function(){
+            const res = await fetch(`/api/wiki/${wikiSlug}/${encodeURIComponent(page)}`)
+                if (!res.ok) {
+                    console.error(`${res.status} ${res.statusText}`);
+                    setError(`${res.status} ${res.statusText}`);
+                } else {
+                    const data = await res.json();
+                    try {
+                        const content: string = data.content ?? ''
+                        let text = content
 
-                    const lines = text.split('\n')
+                        const lines = text.split('\n')
 
-                    if (lineRange) {
-                        const [startRaw = '', endRaw = ''] = lineRange.split('-')
-                        const start = startRaw ? parseInt(startRaw) : 1
-                        const end = endRaw ? parseInt(endRaw) : lines.length
+                        if (lineRange) {
+                            const [startRaw = '', endRaw = ''] = lineRange.split('-')
+                            const start = startRaw ? parseInt(startRaw) : 1
+                            const end = endRaw ? parseInt(endRaw) : lines.length
 
-                        if (
-                            isNaN(start) ||
-                            isNaN(end) ||
-                            start < 1 ||
-                            end > lines.length ||
-                            start > end
-                        ) {
-                            setError('無効な行範囲です')
-                            return
+                            if (
+                                isNaN(start) ||
+                                isNaN(end) ||
+                                start < 1 ||
+                                end > lines.length ||
+                                start > end
+                            ) {
+                                setError('無効な行範囲です')
+                                return
+                            }
+
+                            text = lines.slice(start - 1, end).join('\n')
                         }
 
-                        text = lines.slice(start - 1, end).join('\n')
+                        const nodes = await parseWikiContent(
+                            text,
+                            {
+                                wikiSlug,
+                                pageSlug: page,
+                                variables: {}
+                            },
+                            designColor
+                        )
+
+                        setParsedNodes(nodes)
+                        setError(null)
+                    } catch (e) {
+                        console.error(e)
+                        setError('ページ解析に失敗しました')
                     }
-
-                    const nodes = await parseWikiContent(
-                        text,
-                        {
-                            wikiSlug,
-                            pageSlug: page,
-                            variables: {}
-                        },
-                        designColor
-                    )
-
-                    setParsedNodes(nodes)
-                    setError(null)
-                } catch (e) {
-                    console.error(e)
-                    setError('ページ解析に失敗しました')
                 }
-            })
-            .catch(err => {
-                console.error(err)
-                setError(err.message)
-            })
+        })();
     }, [wikiSlug, page, stylesheetURL, lineRange])
 
     return (

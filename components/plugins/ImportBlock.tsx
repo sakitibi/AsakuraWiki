@@ -76,7 +76,7 @@ export async function resolveImports(content: string, context: Context): Promise
             context.constContext = context.constContext ?? {};
             context.letContext = context.letContext ?? {};
             const varDataLen = varData.length;
-            for (let i = varDataLen - 1;i >= 0;i--) {
+            for (let i = 0;i < varDataLen;i++) {
                 // 配列の要素を順番に取得し、分割代入する
                 const { name, value, kind } = varData[i];
 
