@@ -13,7 +13,7 @@ export function buildAST(src: string): ASTNode[] {
     const root: ASTNode[] = [];
     const stack: ASTNode[][] = [root];
     const tokensLen = tokens.length;
-    for (let i = tokensLen - 1;i >= 0;i--) {
+    for (let i = 0;i < tokensLen;i++) {
         const tk = tokens[i];
         const curr = stack[stack.length - 1];
         if (tk.type === 'text') {
