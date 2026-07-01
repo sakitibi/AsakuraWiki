@@ -71,6 +71,11 @@ export async function resolveImports(content: string, context: Context): Promise
                 .in('name', validVars);
 
             if (!varData) continue;
+            console.log(
+                `%c[ImportBlock] 事前処理通過後のインポート変数一覧:`, 
+                'color: #ffffff; background: #9c27b0; font-weight: bold; padding: 2px 6px; border-radius: 3px;',
+                varData
+            )
 
             context.variables = context.variables ?? {};
             context.constContext = context.constContext ?? {};
