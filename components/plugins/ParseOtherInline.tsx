@@ -255,7 +255,7 @@ export default function parseOtherInline(
                 if (newNode) matchedNode = newNode;
             } else if ((subM = INDIVIDUAL_REGEX.arg.exec(remainingStr))) {
                 matchedToken = subM[0];
-                matchedNode = renderers.renderArg(createArgs(subM, subM[0], triggerIndex));
+                matchedNode = renderers.renderArg(createArgs(subM, subM[0], triggerIndex), parseOtherInline);
             } else if ((subM = INDIVIDUAL_REGEX.return.exec(remainingStr))) {
                 let idx = 0;
                 const parenStart = remainingStr.indexOf('(');
