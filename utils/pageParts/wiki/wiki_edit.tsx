@@ -31,9 +31,22 @@ export const handleEditorBeforeMount = (monaco: Monaco) => {
     monaco.languages.setMonarchTokensProvider(languageId, {
         tokenizer: {
             root: [
+                // 見出し (行頭の * )
                 [/^\*\*\*/, "keyword.h3"],
                 [/^\*\*/, "keyword.h2"],
                 [/^\*/, "keyword.h1"],
+
+                [/^#(const|let)\b/, "keyword.variable-def"],
+
+                [/&(const-use|let-use|relet)\b/, "variable.variable-use"],
+
+                [/^#(marquee|calendar2|datedif|datevalue|rtcomment|comment|hr|br|ls2|ls|include|contents|func)\b/, "keyword.plugin"],
+                
+                [/^(CENTER|LEFT|RIGHT):/, "keyword.align"],
+
+                [/&(size|color|attachref|escape|calc|version|new|br|arg|return)\b/, "variable.inline-plugin"],
+
+                [/\[\[[^\]]+\]\]/, "string.link"],
             ],
         },
     });
@@ -42,9 +55,19 @@ export const handleEditorBeforeMount = (monaco: Monaco) => {
         base: "vs-dark",
         inherit: true,
         rules: [
+            // 見出し設定
             { token: "keyword.h3", foreground: "#3300ff", fontStyle: "bold" }, 
             { token: "keyword.h2", foreground: "#00805e", fontStyle: "bold" },
             { token: "keyword.h1", foreground: "#4ec9b0", fontStyle: "bold" },
+
+            { token: "keyword.variable-def", foreground: "#4FC1FF", fontStyle: "bold" }, // 定義は太字
+            { token: "variable.variable-use", foreground: "#9CDCFE" },                   // 使用は通常のライトブルー
+
+            // 通常のプラグイン設定
+            { token: "keyword.plugin", foreground: "#C586C0", fontStyle: "bold" },      
+            { token: "keyword.align", foreground: "#E5C07B" },                            
+            { token: "variable.inline-plugin", foreground: "#DCDCAA" },                   
+            { token: "string.link", foreground: "#CE9178", fontStyle: "underline" },      
         ],
         colors: {},
     });
