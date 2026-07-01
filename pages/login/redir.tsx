@@ -1,9 +1,7 @@
 import { GetServerSideProps } from 'next';
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, serializeCookieHeader } from '@supabase/ssr';
 
 export default function Redirecting() {
-    // サーバー側でリダイレクトされるため、基本的にはこのコンポーネントはレンダリングされません。
-    // 万が一のフォールバックとしてのみ機能します。
     return null;
 }
 
@@ -20,20 +18,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
                     }));
                 },
                 setAll(cookies) {
-                    res.setHeader(
-                        'Set-Cookie',
-                        cookies.map(({ name, value, options }) =>
-                            `${name}=${value}; Path=/; ${
-                                options?.maxAge ? `Max-Age=${options.maxAge};` : ''
-                            } ${
-                                options?.httpOnly ? 'HttpOnly;' : ''
-                            } ${
-                                options?.secure ? 'Secure;' : ''
-                            } ${
-                                options?.sameSite ? `SameSite=${options.sameSite};` : ''
-                            }`
-                        )
-                    );
+                    cookies.forEach(({ name, value, options }) => {
+                        const cookieStr = serializeCookieHeader(name, value, options);
+                        
+                        // 既存の Set-Cookie ヘッダーを取得
+                        const currentCookies = res.getHeader('Set-Cookie');
+                        
+                        if (!currentCookies) {
+                            res.setHeader('Set-Cookie', [cookieStr]);
+                        } else if (Array.isArray(currentCookies)) {
+                            res.setHeader('Set-Cookie', [...currentCookies, cookieStr]);
+                        } else {
+                            res.setHeader('Set-Cookie', [currentCookies as string, cookieStr]);
+                        }
+                    });
                 },
             },
         }
@@ -53,9 +51,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         };
     }
 
+    const dashboardUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard`;
+
     return {
         redirect: {
-            destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/dashboard`,
+            destination: dashboardUrl,
             statusCode: 307,
             permanent: false
         }
