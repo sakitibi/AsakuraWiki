@@ -116,16 +116,6 @@ export default function Home() {
         };
     }, [isBot]);
 
-    useEffect(() => {
-        if (!document) return;
-
-        document.body.classList.add('dark_green');
-
-        return () => {
-            document.body.classList.remove('dark_green');
-        };
-    }, []);
-
     /* ===============================
         auth（人間のみ）
     =============================== */

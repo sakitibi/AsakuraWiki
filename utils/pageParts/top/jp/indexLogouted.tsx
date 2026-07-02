@@ -1,4 +1,16 @@
+import { useEffect } from "react";
+
 export default function LogoutedUI(){
+    useEffect(() => {
+        if (!document) return;
+
+        document.body.classList.add('dark_green');
+
+        return () => {
+            document.body.classList.remove('dark_green');
+        };
+    }, []);
+
     return(
         <>
             <h1>あさクラWikiへようこそ!</h1>
