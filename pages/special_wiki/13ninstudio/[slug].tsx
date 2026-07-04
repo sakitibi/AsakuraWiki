@@ -16,7 +16,6 @@ export default function Redirecting() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { slug } = context.params || {};
-
     const decodedSlug = slug ? decodeURIComponent(slug as string) : "";
     
     if (decodedSlug !== "不審者が出た時の対処法") {
