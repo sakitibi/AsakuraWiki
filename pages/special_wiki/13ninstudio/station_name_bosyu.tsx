@@ -44,6 +44,7 @@ export default function StationNameBosyu() {
                             <details>
                                 <summary>
                                     <h2>駅名候補欄</h2>
+                                    <p>基本的に上から順に採用されます。</p>
                                 </summary>
                                 <ul>
                                     <li>本原</li>
@@ -52,6 +53,8 @@ export default function StationNameBosyu() {
                                     <li>入江</li>
                                     <li>優乃</li>
                                     <li>葵</li>
+                                    <li>竹内</li>
+                                    <li>百花</li>
                                 </ul>
                             </details>
                         </div>
