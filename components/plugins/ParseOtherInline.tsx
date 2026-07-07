@@ -5,7 +5,7 @@ import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/Par
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
 import { Context } from '@/components/plugins/parsePluginTypes';
-import { renderFunc, renderArg, renderReturnCustom } from '@/components/plugins/Function';
+import { renderFunc, renderArg, renderReturn } from '@/components/plugins/Function';
 
 export function preProcessFuncDefinitions(text: string, context: Context): string {
     if (!text) return '';
@@ -297,7 +297,7 @@ export default function parseOtherInline(
 
                 const fullToken = idx > 0 ? remainingStr.slice(0, idx) : subM[0];
                 matchedToken = fullToken;
-                matchedNode = renderReturnCustom(createArgs(subM, subM[0], triggerIndex), fullToken, parseOtherInline);
+                matchedNode = renderReturn(createArgs(subM, fullToken, triggerIndex), parseOtherInline);
                 isContinueSkip = true;
             }
         }

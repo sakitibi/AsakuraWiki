@@ -29,7 +29,7 @@ export const renderArg = (
     return <React.Fragment key={key}>{parsedContent}</React.Fragment>;
 };
 
-export const renderReturnCustom = (
+const renderReturnCustom = (
     { match, key, wikiSlug, pageSlug, context, baseKey, designColor }: PluginArgs,
     bodyText: string | null,
     parseOtherInline: ParserFn
@@ -138,4 +138,9 @@ export const renderReturnCustom = (
     }
 
     return null;
+};
+
+// 従来のフック定義を維持するための互換用フォールバック
+export const renderReturn = (args: PluginArgs, parseOtherInline: ParserFn): ReactNode => {
+    return renderReturnCustom(args, null, parseOtherInline);
 };
