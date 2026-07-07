@@ -47,10 +47,8 @@ export default function StationNameBosyu() {
                                     <p>基本的に上から順に採用されます。</p>
                                 </summary>
                                 <ul>
-                                    <li>本原</li>
                                     <li>{'{地名}'}井原</li>
                                     <li>今谷</li>
-                                    <li>入江</li>
                                     <li>優乃</li>
                                     <li>葵</li>
                                     <li>竹内</li>
