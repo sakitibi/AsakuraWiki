@@ -5,6 +5,7 @@ import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/Par
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import * as renderers from '@/components/plugins/ParseOtherInline/pluginRenderers';
 import { Context } from '@/components/plugins/parsePluginTypes';
+import { renderFunc, renderArg, renderReturnCustom } from '@/components/plugins/Function';
 
 export function preProcessFuncDefinitions(text: string, context: Context): string {
     if (!text) return '';
@@ -210,7 +211,7 @@ export default function parseOtherInline(
                 matchedNode = renderers.renderLet(createArgs(subM, subM[0], triggerIndex));
             } else if ((subM = INDIVIDUAL_REGEX.func.exec(remainingStr))) {
                 matchedToken = subM[0];
-                matchedNode = renderers.renderFunc(createArgs(subM, subM[0], triggerIndex));
+                matchedNode = renderFunc(createArgs(subM, subM[0], triggerIndex));
                 isContinueSkip = true;
             }
         }
@@ -255,7 +256,7 @@ export default function parseOtherInline(
                 if (newNode) matchedNode = newNode;
             } else if ((subM = INDIVIDUAL_REGEX.arg.exec(remainingStr))) {
                 matchedToken = subM[0];
-                matchedNode = renderers.renderArg(createArgs(subM, subM[0], triggerIndex), parseOtherInline);
+                matchedNode = renderArg(createArgs(subM, subM[0], triggerIndex), parseOtherInline);
             } else if ((subM = INDIVIDUAL_REGEX.return.exec(remainingStr))) {
                 let idx = 0;
                 const parenStart = remainingStr.indexOf('(');
@@ -296,7 +297,7 @@ export default function parseOtherInline(
 
                 const fullToken = idx > 0 ? remainingStr.slice(0, idx) : subM[0];
                 matchedToken = fullToken;
-                matchedNode = renderers.renderReturn(createArgs(subM, fullToken, triggerIndex), parseOtherInline);
+                matchedNode = renderReturnCustom(createArgs(subM, subM[0], triggerIndex), fullToken, parseOtherInline);
                 isContinueSkip = true;
             }
         }
