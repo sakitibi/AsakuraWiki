@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // CORS設定 (x-cliを許可ヘッダーに追加)
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-cli');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-cli x-type');
 
     if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -43,6 +43,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // ヘッダー・認証情報の取得
         const isCli = req.headers['x-cli'] === 'true';
+        const rawtype = req.headers['type'];
+        const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
         let userId: string | null = null;
         const authHeader = req.headers.authorization;
         if (authHeader?.startsWith('Bearer ')) {
@@ -104,67 +106,82 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // PUT / POST: 保存
         // ======================
         if (req.method === 'PUT' || req.method === 'POST') {
-            const { content, title, freeze, slug: bodySlug } = req.body;
-            if (content === undefined) return res.status(400).json({ error: "Content is required" });
-            let Nextfreeze: boolean | undefined = freeze;
-            if (freeze === undefined) {
-                Nextfreeze = false;
+            if (type === "rtcomment") {
+                const { name, body } = req.body;
+                const response = await supabaseServer.from('comments').insert({
+                    name,
+                    body,
+                    wiki_slug: wikiSlug,
+                    page_slug: pageSlug,
+                    user_id: userId
+                });
+                if (response.error) {
+                    return res.status(500).json({error: response.error});
+                }
+                return res.status(200).json({success: true});
+            } else {
+                const { content, title, freeze, slug: bodySlug } = req.body;
+                if (content === undefined) return res.status(400).json({ error: "Content is required" });
+                let Nextfreeze: boolean | undefined = freeze;
+                if (freeze === undefined) {
+                    Nextfreeze = false;
+                }
+                const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
+
+                // 1. 現在の凍結状態をDBから直接確認
+                const currentRecord = await turso.execute({
+                    sql: "SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
+                    args: [wikiSlug, targetSlug]
+                });
+                const wasFrozen = currentRecord.rows.length > 0 && Boolean(currentRecord.rows[0].freeze);
+
+                // 2. 権限バリデーション
+                if (!isAdmin) {
+                    if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
+                    if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
+                    if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
+                    if (wiki.cli_used === false && isCli && !userId === wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
+                }
+
+                const finalContent = content.replace(/&now;/g, formatNow());
+                const compressed = Pako.gzip(finalContent, { level: 9 });
+                const uint8Array = new Uint8Array(compressed);
+
+                // 4. 保存パラメータの決定
+                const updatedAt = new Date().toISOString();
+
+                // 5. 保存実行 (INSERT OR REPLACE)
+                await turso.execute({
+                    sql: `INSERT OR REPLACE INTO wiki_pages (id, slug, wiki_slug, title, content, updated_at, author_id, freeze) 
+                        VALUES (
+                            COALESCE((SELECT id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), ?), 
+                            ?, ?, ?, ?, ?, ?, ?
+                        )`,
+                    args: [
+                        wikiSlug, targetSlug, randomUUID(),
+                        targetSlug,
+                        wikiSlug,
+                        title || "Untitled",
+                        uint8Array as any,
+                        updatedAt,
+                        userId,
+                        Nextfreeze
+                    ]
+                });
+                const { error } = await supabaseServer
+                    .from("wikis")
+                    .update([{
+                        updated_at: new Date(),
+                        updated_page: pageSlug
+                    }])
+                    .eq("slug", wikiSlug);
+                
+                if (error) {
+                    return res.status(500).json({ success: false, error: error, cli: isCli });
+                }
+
+                return res.status(200).json({ success: true, cli: isCli });
             }
-            const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
-
-            // 1. 現在の凍結状態をDBから直接確認
-            const currentRecord = await turso.execute({
-                sql: "SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
-                args: [wikiSlug, targetSlug]
-            });
-            const wasFrozen = currentRecord.rows.length > 0 && Boolean(currentRecord.rows[0].freeze);
-
-            // 2. 権限バリデーション
-            if (!isAdmin) {
-                if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
-                if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
-                if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
-                if (wiki.cli_used === false && isCli && !userId === wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
-            }
-
-            const finalContent = content.replace(/&now;/g, formatNow());
-            const compressed = Pako.gzip(finalContent, { level: 9 });
-            const uint8Array = new Uint8Array(compressed);
-
-            // 4. 保存パラメータの決定
-            const updatedAt = new Date().toISOString();
-
-            // 5. 保存実行 (INSERT OR REPLACE)
-            await turso.execute({
-                sql: `INSERT OR REPLACE INTO wiki_pages (id, slug, wiki_slug, title, content, updated_at, author_id, freeze) 
-                      VALUES (
-                        COALESCE((SELECT id FROM wiki_pages WHERE wiki_slug = ? AND slug = ?), ?), 
-                        ?, ?, ?, ?, ?, ?, ?
-                      )`,
-                args: [
-                    wikiSlug, targetSlug, randomUUID(),
-                    targetSlug,
-                    wikiSlug,
-                    title || "Untitled",
-                    uint8Array as any,
-                    updatedAt,
-                    userId,
-                    Nextfreeze
-                ]
-            });
-            const { error } = await supabaseServer
-                .from("wikis")
-                .update([{
-                    updated_at: new Date(),
-                    updated_page: pageSlug
-                }])
-                .eq("slug", wikiSlug);
-            
-            if (error) {
-                return res.status(500).json({ success: false, error: error, cli: isCli });
-            }
-
-            return res.status(200).json({ success: true, cli: isCli });
         }
 
         // ======================
