@@ -1,6 +1,6 @@
 {
   "name": "AsakuraWiki",
-  "version": "2.0.126",
+  "version": "2.0.127",
   "description": "",
   "author": {
     "name": "13ninstudio, Inc",
@@ -30,14 +30,14 @@
     "is-plain-object": "^5.0.0",
     "jose": "^6.2.3",
     "mathjs": "^15.2.0",
-    "next": "^16.2.9",
+    "next": "^16.2.10",
     "octokit": "^5.0.5",
     "pako": "^2.1.0",
     "react": "^19.2.7",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.2.7",
     "undici": "^8.4.1",
-    "upack.js": "^1.0.70",
+    "upack.js": "^1.0.71",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
