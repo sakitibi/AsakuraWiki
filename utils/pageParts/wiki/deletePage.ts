@@ -24,7 +24,7 @@ export default async function deletePage(
         const { data: { session } } = await supabaseServer.auth.getSession();
         const token = session?.access_token;
 
-        const res = await fetch(`/api/wiki/${wikiSlugStr}/${pageSlugStr}`, {
+        const res = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,
