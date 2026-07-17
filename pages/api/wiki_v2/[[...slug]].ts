@@ -46,14 +46,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const pageSlug = parts.length > 1 ? parts.slice(1).join('/') : 'FrontPage';
 
         // ======================
-        // 1. GET: 読み取り（最優先で最速処理）
+        // GET: 読み取り
         // ======================
         if (req.method === 'GET') {
-            // Vercel Edge Cache (10秒間キャッシュ、裏で最新化)
-            res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate=59');
-
+            // 1. ページ一覧取得
             if (parts.length === 1) {
-                // Wiki情報とページリストを取得
                 const [{ data: wiki }, result] = await Promise.all([
                     supabaseServer.from('wikis').select('*').eq('slug', wikiSlug).maybeSingle(),
                     turso.execute({
@@ -72,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
             }
 
-            // 個別ページの取得
+            // 2. 個別ページの取得
             const result = await turso.execute({
                 sql: "SELECT id, title, content, updated_at, author_id, freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
                 args: [wikiSlug, pageSlug]
@@ -94,14 +91,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // ======================
-        // 2. PUT / POST / DELETE 用の認証＆Wiki情報取得
+        // POST / PUT / DELETE 前の認証・設定取得（並列化）
         // ======================
         const isCli = req.headers['x-cli'] === 'true';
-        const rawtype = req.headers['type'];
+        const rawtype = req.headers['x-type'];
         const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
         const authHeader = req.headers.authorization;
         const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
+        // 認証とWiki設定取得を同時に並列実行
         const [userRes, wikiRes] = await Promise.all([
             token ? supabaseServer.auth.getUser(token) : Promise.resolve({ data: { user: null } }),
             supabaseServer.from('wikis').select('*').eq('slug', wikiSlug).maybeSingle()
@@ -158,7 +156,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const compressed = Pako.gzip(finalContent, { level: 9 });
                 const uint8Array = new Uint8Array(compressed);
 
-                // 4. 保存パラメータの決定
                 const updatedAt = new Date().toISOString();
 
                 // 5. 保存実行 (INSERT OR REPLACE)
@@ -179,17 +176,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         Nextfreeze
                     ]
                 });
-                const { error } = await supabaseServer
+
+                // Supabaseへの更新記録はバックグラウンドで非同期実行（レスポンス速度向上）
+                supabaseServer
                     .from("wikis")
-                    .update([{
+                    .update({
                         updated_at: new Date(),
                         updated_page: pageSlug
-                    }])
-                    .eq("slug", wikiSlug);
-                
-                if (error) {
-                    return res.status(500).json({ success: false, error: error, cli: isCli });
-                }
+                    })
+                    .eq("slug", wikiSlug)
+                    .then();
 
                 return res.status(200).json({ success: true, cli: isCli });
             }
@@ -217,17 +213,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 args: [wikiSlug, pageSlug]
             });
             
-            const { error } = await supabaseServer
+            // Supabaseへの更新記録はバックグラウンドで非同期実行
+            supabaseServer
                 .from("wikis")
-                .update([{
+                .update({
                     updated_at: new Date(),
                     updated_page: pageSlug
-                }])
-                .eq("slug", wikiSlug);
-            
-            if (error) {
-                return res.status(500).json({ success: false, error: error });
-            }
+                })
+                .eq("slug", wikiSlug)
+                .then();
 
             return res.status(200).json({ success: true });
         }
