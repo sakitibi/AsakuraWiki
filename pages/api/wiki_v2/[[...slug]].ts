@@ -5,10 +5,16 @@ import Pako from 'pako';
 import { adminerUserId } from '@/utils/user_list';
 import { randomUUID } from 'node:crypto';
 
+export const config = {
+    regions: ['kix1'],
+};
+
 // Turso クライアント初期化
 const turso = createClient({
     url: process.env.NEXT_PUBLIC_TURSO_DATABASE_URL!,
     authToken: process.env.NEXT_PUBLIC_TURSO_AUTH_TOKEN!,
+    //@ts-ignore
+    pipeline: true,
 });
 
 function formatNow() {
@@ -41,43 +47,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const wikiSlug = parts[0];
         const pageSlug = parts.length > 1 ? parts.slice(1).join('/') : 'FrontPage';
 
-        // ヘッダー・認証情報の取得
-        const isCli = req.headers['x-cli'] === 'true';
-        const rawtype = req.headers['type'];
-        const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
-        let userId: string | null = null;
-        const authHeader = req.headers.authorization;
-        if (authHeader?.startsWith('Bearer ')) {
-            const token = authHeader.split(' ')[1];
-            const { data: { user } } = await supabaseServer.auth.getUser(token);
-            if (user) userId = user.id;
-        }
-        const isAdmin = adminerUserId.includes(userId || '');
-
-        // Wiki設定取得
-        const { data: wiki } = await supabaseServer
-            .from('wikis')
-            .select('*')
-            .eq('slug', wikiSlug)
-            .maybeSingle();
-        
-        if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
-
         // ======================
         // GET: 読み取り
         // ======================
         if (req.method === 'GET') {
+            res.setHeader('Cache-Control', 's-maxage=10, stale-while-revalidate=59');
             if (parts.length === 1) {
-                // ページリストの取得
-                const result = await turso.execute({
-                    sql: "SELECT slug FROM wiki_pages WHERE wiki_slug = ?",
-                    args: [wikiSlug]
-                });
+                // ページリストとWiki情報の並列取得
+                const [wikiRes, result] = await Promise.all([
+                    supabaseServer.from('wikis').select('name, cli_used').eq('slug', wikiSlug).maybeSingle(),
+                    turso.execute({
+                        sql: "SELECT slug FROM wiki_pages WHERE wiki_slug = ?",
+                        args: [wikiSlug]
+                    })
+                ]);
+
+                if (!wikiRes.data) return res.status(404).json({ error: 'Wiki not found' });
+
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
-                    title: wiki.name,
+                    title: wikiRes.data.name,
                     page_slugs: result.rows.map(r => r.slug),
-                    cli_used: wiki.cli_used
+                    cli_used: wikiRes.data.cli_used
                 });
             }
 
@@ -103,6 +94,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // ======================
+        // 2. 認証・Wiki情報の取得 (書き込み・削除時のみ実行)
+        // ======================
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+
+        // Supabaseのユーザー認証とWiki設定取得を Promise.all で完全並列化
+        const [userRes, wikiRes] = await Promise.all([
+            token ? supabaseServer.auth.getUser(token) : Promise.resolve({ data: { user: null } }),
+            supabaseServer.from('wikis').select('*').eq('slug', wikiSlug).maybeSingle()
+        ]);
+
+        const userId = userRes.data.user?.id || null;
+        const wiki = wikiRes.data;
+        if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
+
+        const isCli = req.headers['x-cli'] === 'true';
+        const rawtype = req.headers['type'];
+        const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
+        const isAdmin = adminerUserId.includes(userId || '');
+
+        // ======================
         // PUT / POST: 保存
         // ======================
         if (req.method === 'PUT' || req.method === 'POST') {
@@ -115,27 +127,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     page_slug: pageSlug,
                     user_id: userId
                 });
-                if (response.error) {
-                    return res.status(500).json({error: response.error});
-                }
-                return res.status(200).json({success: true});
+                if (response.error) return res.status(500).json({ error: response.error });
+                return res.status(200).json({ success: true });
             } else {
                 const { content, title, freeze, slug: bodySlug } = req.body;
                 if (content === undefined) return res.status(400).json({ error: "Content is required" });
-                let Nextfreeze: boolean | undefined = freeze;
-                if (freeze === undefined) {
-                    Nextfreeze = false;
-                }
+                
+                const Nextfreeze = freeze ?? false;
                 const targetSlug = req.method === 'POST' ? (bodySlug || pageSlug) : pageSlug;
 
-                // 1. 現在の凍結状態をDBから直接確認
+                // 権限判定に必要な DB確認
                 const currentRecord = await turso.execute({
                     sql: "SELECT freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
                     args: [wikiSlug, targetSlug]
                 });
                 const wasFrozen = currentRecord.rows.length > 0 && Boolean(currentRecord.rows[0].freeze);
 
-                // 2. 権限バリデーション
                 if (!isAdmin) {
                     if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
                     if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
@@ -146,11 +153,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const finalContent = content.replace(/&now;/g, formatNow());
                 const compressed = Pako.gzip(finalContent, { level: 9 });
                 const uint8Array = new Uint8Array(compressed);
-
-                // 4. 保存パラメータの決定
                 const updatedAt = new Date().toISOString();
 
-                // 5. 保存実行 (INSERT OR REPLACE)
+                // 保存実行
                 await turso.execute({
                     sql: `INSERT OR REPLACE INTO wiki_pages (id, slug, wiki_slug, title, content, updated_at, author_id, freeze) 
                         VALUES (
@@ -168,17 +173,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         Nextfreeze
                     ]
                 });
-                const { error } = await supabaseServer
+
+                // ★レスポンスに影響を与えないよう、裏で更新処理を走らせる（Waitしない）
+                supabaseServer
                     .from("wikis")
-                    .update([{
-                        updated_at: new Date(),
-                        updated_page: pageSlug
-                    }])
-                    .eq("slug", wikiSlug);
-                
-                if (error) {
-                    return res.status(500).json({ success: false, error: error, cli: isCli });
-                }
+                    .update({ updated_at: new Date(), updated_page: pageSlug })
+                    .eq("slug", wikiSlug)
+                    .then();
 
                 return res.status(200).json({ success: true, cli: isCli });
             }
@@ -206,17 +207,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 args: [wikiSlug, pageSlug]
             });
             
-            const { error } = await supabaseServer
+            // 裏で実行
+            supabaseServer
                 .from("wikis")
-                .update([{
-                    updated_at: new Date(),
-                    updated_page: pageSlug
-                }])
-                .eq("slug", wikiSlug);
-            
-            if (error) {
-                return res.status(500).json({ success: false, error: error });
-            }
+                .update({ updated_at: new Date(), updated_page: pageSlug })
+                .eq("slug", wikiSlug)
+                .then();
 
             return res.status(200).json({ success: true });
         }
