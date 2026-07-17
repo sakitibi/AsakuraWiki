@@ -5,10 +5,6 @@ import Pako from 'pako';
 import { adminerUserId } from '@/utils/user_list';
 import { randomUUID } from 'node:crypto';
 
-export const config = {
-    regions: ['kix1'],
-};
-
 // Turso クライアント初期化
 const turso = createClient({
     url: process.env.NEXT_PUBLIC_TURSO_DATABASE_URL!,
@@ -30,7 +26,7 @@ function formatNow() {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // CORS設定
+    // CORS設定 (x-cliを許可ヘッダーに追加)
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-cli, x-type');
@@ -45,22 +41,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const wikiSlug = parts[0];
         const pageSlug = parts.length > 1 ? parts.slice(1).join('/') : 'FrontPage';
 
+        // ヘッダー・認証情報の取得
+        const isCli = req.headers['x-cli'] === 'true';
+        const rawtype = req.headers['x-type'];
+        const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
+        let userId: string | null = null;
+        const authHeader = req.headers.authorization;
+        if (authHeader?.startsWith('Bearer ')) {
+            const token = authHeader.split(' ')[1];
+            const { data: { user } } = await supabaseServer.auth.getUser(token);
+            if (user) userId = user.id;
+        }
+        const isAdmin = adminerUserId.includes(userId || '');
+
+        // Wiki設定取得
+        const { data: wiki } = await supabaseServer
+            .from('wikis')
+            .select('*')
+            .eq('slug', wikiSlug)
+            .maybeSingle();
+        
+        if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
+
         // ======================
         // GET: 読み取り
         // ======================
         if (req.method === 'GET') {
-            // 1. ページ一覧取得
             if (parts.length === 1) {
-                const [{ data: wiki }, result] = await Promise.all([
-                    supabaseServer.from('wikis').select('*').eq('slug', wikiSlug).maybeSingle(),
-                    turso.execute({
-                        sql: "SELECT slug FROM wiki_pages WHERE wiki_slug = ?",
-                        args: [wikiSlug]
-                    })
-                ]);
-
-                if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
-
+                // ページリストの取得
+                const result = await turso.execute({
+                    sql: "SELECT slug FROM wiki_pages WHERE wiki_slug = ?",
+                    args: [wikiSlug]
+                });
                 return res.status(200).json({
                     wiki_slug: wikiSlug,
                     title: wiki.name,
@@ -69,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
             }
 
-            // 2. 個別ページの取得
+            // 個別ページの取得
             const result = await turso.execute({
                 sql: "SELECT id, title, content, updated_at, author_id, freeze FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
                 args: [wikiSlug, pageSlug]
@@ -91,27 +103,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // ======================
-        // POST / PUT / DELETE 前の認証・設定取得（並列化）
-        // ======================
-        const isCli = req.headers['x-cli'] === 'true';
-        const rawtype = req.headers['x-type'];
-        const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
-        const authHeader = req.headers.authorization;
-        const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
-
-        // 認証とWiki設定取得を同時に並列実行
-        const [userRes, wikiRes] = await Promise.all([
-            token ? supabaseServer.auth.getUser(token) : Promise.resolve({ data: { user: null } }),
-            supabaseServer.from('wikis').select('*').eq('slug', wikiSlug).maybeSingle()
-        ]);
-
-        const userId = userRes.data.user?.id || null;
-        const isAdmin = adminerUserId.includes(userId || '');
-        const wiki = wikiRes.data;
-
-        if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
-
-        // ======================
         // PUT / POST: 保存
         // ======================
         if (req.method === 'PUT' || req.method === 'POST') {
@@ -125,9 +116,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     user_id: userId
                 });
                 if (response.error) {
-                    return res.status(500).json({ error: response.error });
+                    return res.status(500).json({error: response.error});
                 }
-                return res.status(200).json({ success: true });
+                return res.status(200).json({success: true});
             } else {
                 const { content, title, freeze, slug: bodySlug } = req.body;
                 if (content === undefined) return res.status(400).json({ error: "Content is required" });
@@ -156,6 +147,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const compressed = Pako.gzip(finalContent, { level: 9 });
                 const uint8Array = new Uint8Array(compressed);
 
+                // 4. 保存パラメータの決定
                 const updatedAt = new Date().toISOString();
 
                 // 5. 保存実行 (INSERT OR REPLACE)
@@ -176,16 +168,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         Nextfreeze
                     ]
                 });
-
-                // Supabaseへの更新記録はバックグラウンドで非同期実行（レスポンス速度向上）
-                supabaseServer
+                const { error } = await supabaseServer
                     .from("wikis")
-                    .update({
+                    .update([{
                         updated_at: new Date(),
                         updated_page: pageSlug
-                    })
-                    .eq("slug", wikiSlug)
-                    .then();
+                    }])
+                    .eq("slug", wikiSlug);
+                
+                if (error) {
+                    return res.status(500).json({ success: false, error: error, cli: isCli });
+                }
 
                 return res.status(200).json({ success: true, cli: isCli });
             }
@@ -213,15 +206,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 args: [wikiSlug, pageSlug]
             });
             
-            // Supabaseへの更新記録はバックグラウンドで非同期実行
-            supabaseServer
+            const { error } = await supabaseServer
                 .from("wikis")
-                .update({
+                .update([{
                     updated_at: new Date(),
                     updated_page: pageSlug
-                })
-                .eq("slug", wikiSlug)
-                .then();
+                }])
+                .eq("slug", wikiSlug);
+            
+            if (error) {
+                return res.status(500).json({ success: false, error: error });
+            }
 
             return res.status(200).json({ success: true });
         }
