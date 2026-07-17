@@ -1,5 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as zip from '@zip.js/zip.js';
+import { webcrypto } from 'node:crypto';
+
+if (!globalThis.crypto) {
+    globalThis.crypto = webcrypto as any;
+}
 
 zip.configure({
     useWebWorkers: false,
@@ -141,11 +146,22 @@ export default async function handler(
             if (error?.cause) console.error('Error Cause:', error.cause);
             console.error('===================================');
             
-            const errorMsg = error?.message?.toLowerCase() || "";
-            const isPasswordError = errorMsg.includes('password') || errorMsg.includes('signature') || errorMsg.includes('encrypted');
-            
+            const errorMsg = (error?.message || "").toLowerCase();
+
+            const isPasswordError = 
+                errorMsg.includes('password') || 
+                errorMsg.includes('signature') || 
+                errorMsg.includes('encrypted') ||
+                errorMsg.includes('decrypt') ||
+                errorMsg.includes('pbkdf2') ||
+                errorMsg.includes('aes') ||
+                errorMsg.includes('bad key') ||
+                errorMsg.includes('wrong password');
+
             return res.status(isPasswordError ? 401 : 500).json({ 
-                message: isPasswordError ? 'パスワードが正しくないか、暗号化されています' : '解凍に失敗しました', 
+                message: isPasswordError 
+                    ? 'パスワードが正しくないか、対応していない暗号化形式です' 
+                    : '解凍に失敗しました', 
                 error: error?.message || String(error),
                 stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined
             });
