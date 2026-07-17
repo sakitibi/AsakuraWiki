@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as zip from '@zip.js/zip.js';
 
+zip.configure({
+    useWebWorkers: false,
+});
+
 interface ExtractedFileMeta {
     filename: string;
     size: number;
