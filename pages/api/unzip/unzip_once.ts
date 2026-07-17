@@ -40,7 +40,6 @@ function getMimeType(filename: string): string {
             return 'image/x-icon';
         case 'avif':
             return 'image/avif';
-        // その他汎用テキスト・データ
         case 'json':
             return 'application/json';
         case 'txt':
@@ -56,15 +55,28 @@ export default async function handler(
     req: NextApiRequest, 
     res: NextApiResponse
 ) {
+    // CORS 設定（カスタムヘッダーの参照許可を明示）
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count, X-Slice-Start, X-Slice-End, X-Results');
 
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     } 
     
     if (req.method === "POST") {
-        const body = req.body || {};
+        let body = req.body;
+        if (typeof body === 'string') {
+            try {
+                body = JSON.parse(body);
+            } catch {
+                return res.status(400).json({ message: '無効なJSONフォーマットです' });
+            }
+        }
+        body = body || {};
+        console.log("body: ", body);
+
         const targetIndex = parseInt(Array.isArray(body.index) ? body.index[0] : (body.index || '0'), 10);
         const url = Array.isArray(body.url) ? body.url[0] : body.url;
         const password = Array.isArray(body.password) ? body.password[0] : body.password;
