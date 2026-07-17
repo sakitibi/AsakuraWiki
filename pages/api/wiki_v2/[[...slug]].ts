@@ -32,10 +32,10 @@ function formatNow() {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // CORS設定 (x-cliを許可ヘッダーに追加)
+    // CORS設定 (カンマ区切りに修正)
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-cli x-type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-cli, x-type');
 
     if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -174,7 +174,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ]
                 });
 
-                // ★レスポンスに影響を与えないよう、裏で更新処理を走らせる（Waitしない）
+                // 裏で更新処理を走らせる
                 supabaseServer
                     .from("wikis")
                     .update({ updated_at: new Date(), updated_page: pageSlug })
@@ -207,7 +207,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 args: [wikiSlug, pageSlug]
             });
             
-            // 裏で実行
+            // 裏で更新処理を走らせる
             supabaseServer
                 .from("wikis")
                 .update({ updated_at: new Date(), updated_page: pageSlug })
