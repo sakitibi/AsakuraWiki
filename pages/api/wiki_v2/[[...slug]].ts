@@ -110,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
 
         const isCli = req.headers['x-cli'] === 'true';
-        const rawtype = req.headers['type'];
+        const rawtype = req.headers['x-type'];
         const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
         const isAdmin = adminerUserId.includes(userId || '');
 
