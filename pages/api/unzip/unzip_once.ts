@@ -11,6 +11,41 @@ export const config = {
     api: {
         responseLimit: false,
     },
+};
+
+// 拡張子から MIME Type を判定するヘルパー関数
+function getMimeType(filename: string): string {
+    const ext = filename.split('.').pop()?.toLowerCase();
+    
+    switch (ext) {
+        // 画像フォーマット
+        case 'png':
+            return 'image/png';
+        case 'jpg':
+        case 'jpeg':
+            return 'image/jpeg';
+        case 'gif':
+            return 'image/gif';
+        case 'webp':
+            return 'image/webp';
+        case 'svg':
+            return 'image/svg+xml';
+        case 'bmp':
+            return 'image/bmp';
+        case 'ico':
+            return 'image/x-icon';
+        case 'avif':
+            return 'image/avif';
+        // その他汎用テキスト・データ
+        case 'json':
+            return 'application/json';
+        case 'txt':
+            return 'text/plain; charset=utf-8';
+        case 'pdf':
+            return 'application/pdf';
+        default:
+            return 'application/octet-stream';
+    }
 }
 
 export default async function handler(
@@ -22,76 +57,70 @@ export default async function handler(
 
     if (req.method === "OPTIONS") {
         return res.status(200).end();
-    } else if (req.method === "POST") {
-        const body = req.body;
-        const index = Array.isArray(body.index) ? body.index[0] : body.index;
+    } 
+    
+    if (req.method === "POST") {
+        const body = req.body || {};
+        const targetIndex = parseInt(Array.isArray(body.index) ? body.index[0] : (body.index || '0'), 10);
         const url = Array.isArray(body.url) ? body.url[0] : body.url;
-        // パスワードが未指定（undefined）でも許容する
         const password = Array.isArray(body.password) ? body.password[0] : body.password;
         
-        const sliceStart = parseInt(Array.isArray(body.slice_start) ? body.slice_start[0] : (body.slice_start || '0'));
+        const sliceStart = parseInt(Array.isArray(body.slice_start) ? body.slice_start[0] : (body.slice_start || '0'), 10);
         const sliceEndParam = Array.isArray(body.slice_end) ? body.slice_end[0] : body.slice_end;
-        const sliceEnd = sliceEndParam ? parseInt(sliceEndParam) : undefined;
+        const sliceEnd = sliceEndParam ? parseInt(sliceEndParam, 10) : undefined;
 
         if (!url) {
-            return res.status(400).json({ message: 'URLを指定してください (?url=...)' });
+            return res.status(400).json({ message: 'URLを指定してください' });
         }
 
         try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`ZIP取得失敗: ${response.status} ${response.statusText}`);
-            
-            const fileBuffer = await response.arrayBuffer();
-            const reader = new zip.ZipReader(new zip.Uint8ArrayReader(new Uint8Array(fileBuffer)));
-            
+            const reader = new zip.ZipReader(new zip.HttpReader(url));
             const allEntries = await reader.getEntries();
             
             const validEntries = allEntries.filter((entry): entry is zip.Entry & { getData: Function } => 
                 !entry.directory && 
                 !!entry.getData &&
-                !entry.filename.includes('__MACOSX') // システムゴミファイルは除外
+                !entry.filename.includes('__MACOSX')
             );
 
             const targetedEntries = validEntries.slice(sliceStart, sliceEnd);
-            const results: ExtractedFileMeta[] = [];
-            const buffers: ArrayBuffer[] = []
 
-            for (let i = 0;i < targetedEntries.length;i++) {
-                // パスワードがある場合のみオプションオブジェクトを構築
-                const options: zip.EntryGetDataOptions = {
-                    checkSignature: true
-                };
-                if (password) {
-                    options.password = password;
-                }
-
-                const data = await targetedEntries[i].getData!(new zip.Uint8ArrayWriter(), options);
-
-                results.push({
-                    filename: targetedEntries[i].filename,
-                    size: data.length,
-                    index: i
-                });
-                buffers.push(data);
+            if (targetIndex < 0 || targetIndex >= targetedEntries.length) {
+                await reader.close();
+                return res.status(400).json({ message: '指定された index のデータが存在しません' });
             }
 
+            // メタデータ一覧の作成
+            const results: ExtractedFileMeta[] = targetedEntries.map((entry, i) => ({
+                filename: entry.filename,
+                size: entry.uncompressedSize,
+                index: i
+            }));
+
+            // 指定された特定の1ファイルのみを解凍
+            const targetEntry = targetedEntries[targetIndex];
+            const options: zip.EntryGetDataOptions = { checkSignature: true };
+            if (password) {
+                options.password = password;
+            }
+
+            const data = await targetEntry.getData!(new zip.Uint8ArrayWriter(), options);
             await reader.close();
-            
-            res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8');
+
+            // 対象ファイルの拡張子から MIME Type を動的に決定
+            const contentType = getMimeType(targetEntry.filename);
+
+            res.setHeader('Content-Type', contentType);
             res.setHeader('X-Total-Count', validEntries.length.toString());
             res.setHeader('X-Slice-Start', sliceStart.toString());
             res.setHeader('X-Slice-End', (sliceEnd ?? validEntries.length).toString());
             res.setHeader('X-Results', Buffer.from(JSON.stringify(results), "utf8").toString("base64"));
-            const targetBuffer = buffers[parseInt(index || "0", 10)];
-            if (!targetBuffer) {
-                return res.status(400).json({ message: '指定された index のデータが存在しません' });
-            }
 
-            return res.status(200).send(Buffer.from(targetBuffer));
+            return res.status(200).send(Buffer.from(data));
+
         } catch (error: any) {
-            console.error('Unzip Error:', error);
+            console.error('Unzip Single Error:', error);
             
-            // パスワード関連エラーの判定
             const errorMsg = error.message?.toLowerCase() || "";
             const isPasswordError = errorMsg.includes('password') || errorMsg.includes('signature') || errorMsg.includes('encrypted');
             
