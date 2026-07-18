@@ -132,6 +132,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const eosData = await eosResponse.json();
 
+        const { error: insertAccountError } = await supabaseAdmin
+            .from('user_eos_accounts')
+            .insert({
+                user_id: userId,
+                account_index: nextIndex,
+                product_user_id: eosData.product_user_id, // Epicから返ってきたPUID
+                device_id: deviceId
+            });
+
+        // 万が一、データベースへの保存に失敗した場合はログを出力
+        if (insertAccountError) {
+            console.error('--- Failed to save EOS account to Supabase ---', insertAccountError);
+        }
+        // ==========================================
+
         return res.status(201).json({
             message: 'New EOS account registered successfully',
             accountIndex: nextIndex,
