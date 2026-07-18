@@ -16,6 +16,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    console.log("SERVICE_ROLE: ", process.env.SUPABASE_SERVICE_ROLE_KEY);
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' })
     }
