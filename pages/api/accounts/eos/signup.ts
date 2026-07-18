@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const { supabaseTokenRaw } = req.body;
+    const { supabaseToken: supabaseTokenRaw } = req.body;
 
     if (!supabaseTokenRaw) {
         return res.status(400).json({ error: 'Missing supabaseToken' });
