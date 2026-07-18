@@ -119,26 +119,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const eosResponse = await registerAndFetchEosToken(deviceId, password);
 
+        const rawResponseText = await eosResponse.text();
+
         if (!eosResponse.ok) {
-            let detail = 'Unknown error';
+            let detail = rawResponseText;
             try {
-                const errJson = await eosResponse.json();
+                const errJson = JSON.parse(rawResponseText);
                 detail = JSON.stringify(errJson);
             } catch (e) {
-                detail = await eosResponse.text() || `Status: ${eosResponse.status}`;
+                detail = rawResponseText || `Status: ${eosResponse.status}`;
             }
             
             console.error('--- EOS API Error Detail ---', detail);
             return res.status(500).json({ error: `EOS Signup Failed: ${detail}` });
         }
 
-        const eosData = await eosResponse.json();
+        const eosData = JSON.parse(rawResponseText);
         
         const puid = eosData.productUserId || eosData.product_user_id;
 
         if (!puid) {
             return res.status(500).json({ error: 'EOS Success but Product User ID was not found in response.' });
         }
+        // ==========================================
 
         if (isNewUser) {
             const { error: insertError } = await supabaseAdmin
