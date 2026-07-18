@@ -1,0 +1,121 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
+
+const credentials = Buffer.from(
+    `${process.env.EOS_CLIENT_ID}:${process.env.EOS_CLIENT_SECRET}`
+).toString('base64');
+
+// ユーザーIDとインデックスからデバイスIDとパスワードを計算
+function deriveEosCredentials(supabaseUserId: string, index: number) {
+    const secretSalt = process.env.SERVER_SECRET_SALT || '';
+    const sourceMaterial = `${supabaseUserId}_account_${index}_${secretSalt}`;
+    
+    const hashHex = crypto.createHash('sha256').update(sourceMaterial).digest('hex');
+
+    const deviceId = `dev_${hashHex.substring(0, 32)}`;
+    const password = hashHex.substring(32, 64);
+
+    return { deviceId, password };
+}
+
+// EOS側に仮想デバイスを作成（登録）してトークンを取得する
+async function registerAndFetchEosToken(deviceId: string, password: string) {
+    const url = 'https://api.epicgames.dev/auth/v1/oauth/token';
+    const bodyParams = new URLSearchParams({
+        grant_type: 'deviceid_credentials',
+        device_id: deviceId,
+        password: password,
+        model: 'SKNewRolesClient'
+    });
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Basic ${credentials}`,
+        },
+        body: bodyParams.toString(),
+    });
+
+    return response;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method Not Allowed' });
+    }
+
+    const { supabaseToken } = req.body;
+
+    if (!supabaseToken) {
+        return res.status(400).json({ error: 'Missing supabaseToken' });
+    }
+
+    // 1. SupabaseのJWTを検証
+    const supabaseAdmin = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(supabaseToken);
+
+    if (authError || !user) {
+        return res.status(401).json({ error: 'Unauthorized Supabase Token' });
+    }
+
+    const userId = user.id;
+
+    try {
+        let { data: counter, error: dbError } = await supabaseAdmin
+            .from('user_eos_counters')
+            .select('account_count')
+            .eq('user_id', userId)
+            .single();
+
+        let nextIndex = 0;
+
+        if (dbError && dbError.code === 'PGRST116') {
+            nextIndex = 0;
+            
+            const { error: insertError } = await supabaseAdmin
+                .from('user_eos_counters')
+                .insert({ user_id: userId, account_count: 1 });
+                
+            if (insertError) throw insertError;
+        } else if (counter) {
+            nextIndex = counter.account_count;
+            
+            const { error: updateError } = await supabaseAdmin
+                .from('user_eos_counters')
+                .update({ account_count: nextIndex + 1 })
+                .eq('user_id', userId);
+                
+            if (updateError) throw updateError;
+        } else {
+            throw new Error('Database error');
+        }
+
+        const { deviceId, password } = deriveEosCredentials(userId, nextIndex);
+
+        const eosResponse = await registerAndFetchEosToken(deviceId, password);
+
+        if (!eosResponse.ok) {
+            const errText = await eosResponse.ok;
+            return res.status(500).json({ error: `EOS Signup Failed: ${errText}` });
+        }
+
+        const eosData = await eosResponse.json();
+
+        return res.status(201).json({
+            message: 'New EOS account registered successfully',
+            accountIndex: nextIndex,
+            access_token: eosData.access_token,
+            product_user_id: eosData.product_user_id,
+            expires_in: eosData.expires_in
+        });
+
+    } catch (err: any) {
+        return res.status(500).json({ error: err.message });
+    }
+}
