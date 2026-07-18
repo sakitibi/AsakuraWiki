@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import upack from '@/node_modules/upack.js/src/index';
+
+const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
 const credentials = Buffer.from(
     `${process.env.EOS_CLIENT_ID}:${process.env.EOS_CLIENT_SECRET}`
@@ -42,15 +45,30 @@ async function registerAndFetchEosToken(deviceId: string, password: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const origin = req.headers.origin;
+    if (origin && ALLOWED_ORIGINS.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+        res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const { supabaseToken } = req.body;
+    const { supabaseTokenRaw } = req.body;
 
-    if (!supabaseToken) {
+    if (!supabaseTokenRaw) {
         return res.status(400).json({ error: 'Missing supabaseToken' });
     }
+
+    const supabaseToken = await upack.SEncoder.decodeSEncode(
+        supabaseTokenRaw,
+        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+        true,
+    ) as string;
 
     // 1. SupabaseのJWTを検証
     const supabaseAdmin = createClient(
