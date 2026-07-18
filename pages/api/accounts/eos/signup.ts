@@ -61,6 +61,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(supabaseToken);
 
     if (authError || !user) {
+        console.error('--- Supabase Auth Verification Failed ---');
+        console.error('Auth Error Detail:', authError);
+        console.error('Sent Token:', supabaseToken ? `${supabaseToken.substring(0, 15)}...` : 'null');
         return res.status(401).json({ error: 'Unauthorized Supabase Token' });
     }
 
@@ -101,7 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const eosResponse = await registerAndFetchEosToken(deviceId, password);
 
         if (!eosResponse.ok) {
-            const errText = await eosResponse.ok;
+            const errText = await eosResponse.text();
             return res.status(500).json({ error: `EOS Signup Failed: ${errText}` });
         }
 
