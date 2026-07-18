@@ -24,21 +24,33 @@ function deriveEosCredentials(supabaseUserId: string, index: number) {
 }
 
 async function registerAndFetchEosToken(deviceId: string, password: string) {
-    const url = 'https://api.epicgames.dev/auth/v1/oauth/token';
-    
-    const bodyParams = new URLSearchParams({
-        grant_type: 'client_credentials',
-        external_auth_method: 'deviceid_credentials',
-        external_auth_token: `${deviceId}:${password}`
-    });
-
-    const response = await fetch(url, {
+    const tokenUrl = 'https://api.epicgames.dev/auth/v1/oauth/token';
+    const tokenRes = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': `Basic ${credentials}`,
         },
-        body: bodyParams.toString(),
+        body: new URLSearchParams({ grant_type: 'client_credentials' }).toString(),
+    });
+    
+    if (!tokenRes.ok) return tokenRes; // エラーならそのまま返す
+    const tokenData = await tokenRes.json();
+    const serverAccessToken = tokenData.access_token;
+
+    const connectUrl = 'https://api.epicgames.dev/connect/v1/accounts/externalAuth';
+    const response = await fetch(connectUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${serverAccessToken}`,
+        },
+        body: new URLSearchParams({
+            identityProviderId: 'deviceid_credentials',
+            externalAccountId: deviceId,
+            externalAccountPassword: password,
+            autoCreateProductUserId: 'true' 
+        }).toString(),
     });
 
     return response;
