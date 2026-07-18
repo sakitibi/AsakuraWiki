@@ -117,27 +117,6 @@ export default function SignUpPage() {
                     });
                     const newItem = await res.json();
                     setUserMeta([...userMeta, newItem]);
-                    const createEOSAccountResponse = await fetch('/api/accounts/eos/signup', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            supabaseToken: token,
-                        }),
-                    });
-
-                    if (!createEOSAccountResponse.ok) {
-                        const errorData = await createEOSAccountResponse.json();
-                        throw new Error(errorData.error || 'EOSアカウントの作成に失敗しました');
-                    }
-
-                    // 4. 成功レスポンスの受け取り
-                    const data: EosSignupResponse = await createEOSAccountResponse.json();
-
-                    console.log('--- EOS アカウント新規作成成功 ---');
-                    console.log('インデックス番号:', data.accountIndex);
-                    console.log('EOS Product User ID (PUID):', data.product_user_id);
                 }
             } catch (e) {
                 console.error("メタデータ送信エラー: ", e);
