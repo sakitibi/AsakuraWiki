@@ -89,34 +89,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ error: 'Unauthorized Supabase Token' });
     }
 
+// --- (中略、handler関数の前半部分と userId の取得まではそのまま) ---
+
     const userId = user.id;
 
     try {
         let { data: counter, error: dbError } = await supabaseAdmin
             .from('user_eos_counters')
-            .select('account_count')
+            .select('account_count, product_user_id, device_id')
             .eq('user_id', userId)
             .single();
 
         let nextIndex = 0;
+        let isNewUser = false;
 
         if (dbError && dbError.code === 'PGRST116') {
+            // まだレコードがない新規ユーザーの場合
             nextIndex = 0;
-            
-            const { error: insertError } = await supabaseAdmin
-                .from('user_eos_counters')
-                .insert({ user_id: userId, account_count: 1, product_user_id: null, device_id: null});
-                
-            if (insertError) throw insertError;
+            isNewUser = true;
         } else if (counter) {
+            // 既にレコードが存在する既存ユーザーの場合
             nextIndex = counter.account_count;
-            
-            const { error: updateError } = await supabaseAdmin
-                .from('user_eos_counters')
-                .update({ account_count: nextIndex + 1 })
-                .eq('user_id', userId);
-                
-            if (updateError) throw updateError;
         } else {
             throw new Error('Database error');
         }
@@ -132,20 +125,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const eosData = await eosResponse.json();
 
-        const { error: insertAccountError } = await supabaseAdmin
-            .from('user_eos_counters')
-            .insert({
-                user_id: userId,
-                account_index: nextIndex,
-                product_user_id: eosData.product_user_id, // Epicから返ってきたPUID
-                device_id: deviceId
-            });
+        if (isNewUser) {
+            const { error: insertError } = await supabaseAdmin
+                .from('user_eos_counters')
+                .insert({
+                    user_id: userId,
+                    account_count: 1,
+                    product_user_id: [eosData.product_user_id],
+                    device_id: [deviceId]
+                });
+                
+            if (insertError) throw insertError;
+        } else if (counter) {
+            const currentEosIds = counter.product_user_id || [];
+            const currentDeviceIds = counter.device_id || [];
 
-        // 万が一、データベースへの保存に失敗した場合はログを出力
-        if (insertAccountError) {
-            console.error('--- Failed to save EOS account to Supabase ---', insertAccountError);
+            const updatedEosIds = [...currentEosIds, eosData.product_user_id];
+            const updatedDeviceIds = [...currentDeviceIds, deviceId];
+
+            const { error: updateError } = await supabaseAdmin
+                .from('user_eos_counters')
+                .update({
+                    account_count: nextIndex + 1,
+                    product_user_id: updatedEosIds,
+                    device_id: updatedDeviceIds
+                })
+                .eq('user_id', userId);
+                
+            if (updateError) throw updateError;
         }
-        // ==========================================
 
         return res.status(201).json({
             message: 'New EOS account registered successfully',
