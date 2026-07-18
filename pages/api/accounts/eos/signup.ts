@@ -23,14 +23,13 @@ function deriveEosCredentials(supabaseUserId: string, index: number) {
     return { deviceId, password };
 }
 
-// EOS側に仮想デバイスを作成（登録）してトークンを取得する
 async function registerAndFetchEosToken(deviceId: string, password: string) {
     const url = 'https://api.epicgames.dev/auth/v1/oauth/token';
+    
     const bodyParams = new URLSearchParams({
-        grant_type: 'deviceid_credentials',
-        device_id: deviceId,
-        password: password,
-        model: 'SKNewRolesClient'
+        grant_type: 'client_credentials',
+        external_auth_method: 'deviceid_credentials',
+        external_auth_token: `${deviceId}:${password}`
     });
 
     const response = await fetch(url, {
