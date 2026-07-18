@@ -121,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (!eosResponse.ok) {
             const errText = await eosResponse.text();
-            console.error('--- EOS API Error Detail ---', errText); // 詳細をターミナルに残す
+            console.error('--- EOS API Error Detail ---', errText);
             return res.status(500).json({ error: `EOS Signup Failed: ${errText}` });
         }
 
