@@ -133,7 +133,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const eosData = await eosResponse.json();
 
         const { error: insertAccountError } = await supabaseAdmin
-            .from('user_eos_accounts')
+            .from('user_eos_counters')
             .insert({
                 user_id: userId,
                 account_index: nextIndex,
