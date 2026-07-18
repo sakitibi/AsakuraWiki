@@ -120,14 +120,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const eosResponse = await registerAndFetchEosToken(deviceId, password);
 
         if (!eosResponse.ok) {
-            const errText = await eosResponse.text();
-            console.error('--- EOS API Error Detail ---', errText);
-            return res.status(500).json({ error: `EOS Signup Failed: ${errText}` });
+            let detail = 'Unknown error';
+            try {
+                const errJson = await eosResponse.json();
+                detail = JSON.stringify(errJson);
+            } catch (e) {
+                detail = await eosResponse.text() || `Status: ${eosResponse.status}`;
+            }
+            
+            console.error('--- EOS API Error Detail ---', detail);
+            return res.status(500).json({ error: `EOS Signup Failed: ${detail}` });
         }
 
         const eosData = await eosResponse.json();
         
-        // Connect APIから返ってきた本物の Product User ID を取得する
         const puid = eosData.productUserId || eosData.product_user_id;
 
         if (!puid) {
