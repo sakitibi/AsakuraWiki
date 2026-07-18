@@ -23,34 +23,22 @@ function deriveEosCredentials(supabaseUserId: string, index: number) {
 }
 
 async function registerAndFetchEosToken(deviceId: string, password: string) {
-    const tokenUrl = 'https://api.epicgames.dev/auth/v1/oauth/token';
-    const tokenRes = await fetch(tokenUrl, {
+    const url = 'https://api.epicgames.dev/auth/v1/oauth/token';
+    
+    const bodyParams = new URLSearchParams({
+        grant_type: 'client_credentials',
+        external_auth_method: 'deviceid_credentials',
+        external_auth_token: `${deviceId}:${password}`,
+        deployment_id: process.env.EOS_DEPLOYMENT_ID || ''
+    });
+
+    const response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': `Basic ${credentials}`,
         },
-        body: new URLSearchParams({ grant_type: 'client_credentials' }).toString(),
-    });
-    
-    if (!tokenRes.ok) return tokenRes; // トークン取得自体に失敗した場合はそのまま返す
-    const tokenData = await tokenRes.json();
-    const serverAccessToken = tokenData.access_token;
-
-    const connectUrl = 'https://api.epicgames.dev/connect/v1/accounts/externalAuth';
-    const response = await fetch(connectUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${serverAccessToken}`,
-        },
-        body: new URLSearchParams({
-            identityProviderId: 'deviceid_credentials',
-            externalAccountId: deviceId,
-            externalAccountPassword: password,
-            autoCreateProductUserId: 'true',
-            deploymentId: process.env.EOS_DEPLOYMENT_ID!
-        }).toString(),
+        body: bodyParams.toString(),
     });
 
     return response;
@@ -96,7 +84,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userId = user.id;
 
     try {
-        // カウント情報と、既存の配列型カラムを一緒にセレクトする
         let { data: counter, error: dbError } = await supabaseAdmin
             .from('user_eos_counters')
             .select('account_count, product_user_id, device_id')
@@ -129,20 +116,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             } catch (e) {
                 detail = rawResponseText || `Status: ${eosResponse.status}`;
             }
-            
             console.error('--- EOS API Error Detail ---', detail);
             return res.status(500).json({ error: `EOS Signup Failed: ${detail}` });
         }
 
         const eosData = JSON.parse(rawResponseText);
         
-        const puid = eosData.productUserId || eosData.product_user_id;
+        const puid = eosData.product_user_id || eosData.productUserId;
 
         if (!puid) {
-            return res.status(500).json({ error: 'EOS Success but Product User ID was not found in response.' });
+            return res.status(500).json({ 
+                error: 'EOS Success but Product User ID was not found in response.',
+                debugData: eosData 
+            });
         }
-        // ==========================================
 
+        // Supabaseの配列に保存
         if (isNewUser) {
             const { error: insertError } = await supabaseAdmin
                 .from('user_eos_counters')
@@ -176,9 +165,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(201).json({
             message: 'New EOS account registered successfully',
             accountIndex: nextIndex,
-            access_token: eosData.accessToken || eosData.access_token,
+            access_token: eosData.access_token,
             product_user_id: puid,
-            expires_in: eosData.expiresIn || eosData.expires_in
+            expires_in: eosData.expires_in
         });
 
     } catch (err: any) {
