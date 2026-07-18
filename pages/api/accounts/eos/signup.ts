@@ -70,6 +70,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         true,
     ) as string;
 
+    console.log('--- upack Decode Result ---');
+    console.log('Type of result:', typeof supabaseToken);
+    console.log('Content:', supabaseToken);
+
     // 1. SupabaseのJWTを検証
     const supabaseAdmin = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
