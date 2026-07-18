@@ -49,16 +49,13 @@ export default function AccountsSetup(){
                 month: parseInt(birthday.split("-")[1], 10),
                 date: parseInt(birthday.split("-")[2], 10)
             }
-    
-            if (getAge(checkerBirthday) < 18) {
-                setGender(gender === "woman" ? "girl" : "boy");
-            }
 
             setTimeout(async () => {
                 // メタデータ暗号化
                 const updatedInputs:string[] | undefined = await secureEncrypt(
                     user?.email!, "null", birthday, username, countries,
-                    gender === "woman" ? "girl" : "boy", shimei
+                    getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender,
+                    shimei
                 );
                 // 暗号化メタデータ送信
                 try {

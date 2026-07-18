@@ -55,16 +55,13 @@ export default function SignUpPage() {
             month: parseInt(birthday.split("-")[1], 10),
             date: parseInt(birthday.split("-")[2], 10)
         }
-
-        if (getAge(checkerBirthday) < 18) {
-            setGender(gender === "woman" ? "girl" : "boy");
-        }
-
+        
         // メタデータ暗号化
         setTimeout(async () => {
             const updatedInputs:string[] | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
-                gender === "woman" ? "girl" : "boy", shimei
+                getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender,
+                shimei
             );
 
             // Supabase にユーザー登録（email/passwordは平文でOK）
