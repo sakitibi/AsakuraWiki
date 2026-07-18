@@ -142,7 +142,7 @@ export default function WikiPage() {
                 wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`),
                 wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`)
             ]);
-            
+
             if (!menuPage) menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
             setMenubar(menuPage ?? null);
 
@@ -351,7 +351,7 @@ export default function WikiPage() {
                                             </button>
                                         </Link>
                                         <button onClick={() => handleFreeze(wikiSlugStr, pageSlugStr, user)}>
-                                            <span>このページを凍結 凍結解除</span>
+                                            <span>このページを凍結 / 凍結解除</span>
                                         </button>
                                         <button onClick={handlePageLike} style={{ marginTop: 12 }}>
                                             <span>このページを高く評価</span>
