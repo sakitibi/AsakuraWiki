@@ -18,13 +18,12 @@ interface DashboardProps {
     user: User | null;
     mywikis: MyWikiProps[];
     developerData: DeveloperProps | null;
+    serverHour: number; // サーバー側から時間を渡す
 }
 
-export default function DashboardPage({ user, mywikis, developerData }: DashboardProps) {
-    const [now, setNow] = useState<Date | null>(null);
-    const [hours, setHours] = useState<number>(0);
-    const asakura_menber_found =
-        user && asakuraMenberUserId.includes(user.id);
+export default function DashboardPage({ user, mywikis, developerData, serverHour }: DashboardProps) {
+    const [hours, setHours] = useState<number>(serverHour);
+    const asakura_menber_found = user && asakuraMenberUserId.includes(user.id);
 
     const name =
         user?.user_metadata?.name ||
@@ -40,14 +39,10 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
         location.reload();
     };
 
+    // クライアント側（ブラウザ）の時刻で上書きしたい場合のみ実行（日本時間とズレがある場合の保険）
     useEffect(() => {
-        setNow(new Date());
+        setHours(new Date().getHours());
     }, []);
-
-    useEffect(() => {
-        if (!now) return;
-        setHours(now.getHours());
-    }, [now]);
 
     return (
         <>
@@ -66,11 +61,11 @@ export default function DashboardPage({ user, mywikis, developerData }: Dashboar
                 
                     <div id="content">
                         <p>{
-                        hours >= 6 && hours <= 10 ? "おはよう" : 
-                        hours >= 17 && hours <= 21 ? "こんばんは" : 
-                        hours <= 5 || hours >= 22 ? "おやすみなさい" :
-                        "こんにちは"
-                    }、{name} さん！</p>
+                            hours >= 6 && hours <= 10 ? "おはよう" : 
+                            hours >= 17 && hours <= 21 ? "こんばんは" : 
+                            hours <= 5 || hours >= 22 ? "おやすみなさい" :
+                            "こんにちは"
+                        }、{name} さん！</p>
                         <div id="dashboard">
                             <div id="my_wiki_container">
                                 {mywikis.map((data) => (
@@ -183,51 +178,61 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     );
 
     const {
-        data: { user },
-    } = await supabase.auth.getUser();
+        data: { session },
+    } = await supabase.auth.getSession();
+    const user = session?.user ?? null;
 
     if (!user) {
         return {
             props: {
                 user: null,
                 mywikis: [],
+                developerData: null,
+                serverHour: new Date().getHours(),
             },
         };
     }
 
-    const { data } = await supabase
+    const token = session?.access_token;
+
+    const wikisPromise = supabase
         .from('wikis')
         .select('name, slug')
         .eq('owner_id', user.id);
 
-    const devFetch = async() => {
-        try{
-            const session = await supabase.auth.getSession();
-            const token = session?.data?.session?.access_token;
-            const res:Response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/store/developers`, {
+    const devFetchPromise = async () => {
+        if (!token) return null;
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/store/developers`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
             });
-            const data = await res.json()
-            if(!res.ok){
-                console.error("Error: ", data);
-                return;
-            }
-            console.log("developerData: ", data);
-            return data;
-        } catch(e){
-            console.error("Error: ", e);
+            if (!response.ok) return null;
+            return await response.json();
+        } catch (e) {
+            console.error("Error fetching developer data: ", e);
+            return null;
         }
-    }
+    };
+
+    const [wikisResult, developerData] = await Promise.all([
+        wikisPromise,
+        devFetchPromise()
+    ]);
+
+    // 日本標準時(JST)の時間を取得して初期値として渡す
+    const serverHour = new Date().getUTCHours() + 9; 
+    const adjustedHour = serverHour >= 24 ? serverHour - 24 : serverHour;
 
     return {
         props: {
             user,
-            mywikis: data ?? [],
-            developerData: await devFetch()
+            mywikis: wikisResult.data ?? [],
+            developerData,
+            serverHour: adjustedHour
         },
     };
 };
