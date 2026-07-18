@@ -10,7 +10,6 @@ const credentials = Buffer.from(
     `${process.env.EOS_CLIENT_ID}:${process.env.EOS_CLIENT_SECRET}`
 ).toString('base64');
 
-// ユーザーIDとインデックスからデバイスIDとパスワードを計算
 function deriveEosCredentials(supabaseUserId: string, index: number) {
     const secretSalt = process.env.SERVER_SECRET_SALT || '';
     const sourceMaterial = `${supabaseUserId}_account_${index}_${secretSalt}`;
@@ -34,7 +33,7 @@ async function registerAndFetchEosToken(deviceId: string, password: string) {
         body: new URLSearchParams({ grant_type: 'client_credentials' }).toString(),
     });
     
-    if (!tokenRes.ok) return tokenRes; // エラーならそのまま返す
+    if (!tokenRes.ok) return tokenRes; // トークン取得自体に失敗した場合はそのまま返す
     const tokenData = await tokenRes.json();
     const serverAccessToken = tokenData.access_token;
 
@@ -49,7 +48,8 @@ async function registerAndFetchEosToken(deviceId: string, password: string) {
             identityProviderId: 'deviceid_credentials',
             externalAccountId: deviceId,
             externalAccountPassword: password,
-            autoCreateProductUserId: 'true' 
+            autoCreateProductUserId: 'true',
+            deploymentId: process.env.EOS_DEPLOYMENT_ID!
         }).toString(),
     });
 
@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (origin && ALLOWED_ORIGINS.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     } else {
-        res.setHeader('Access-Control-Allow-Origin', 'null'); // 許可しない場合
+        res.setHeader('Access-Control-Allow-Origin', 'null');
     }
     res.setHeader('Access-Control-Allow-Methods', 'POST');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -82,11 +82,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         true,
     ) as string;
 
-    console.log('--- upack Decode Result ---');
-    console.log('Type of result:', typeof supabaseToken);
-    console.log('Content:', supabaseToken);
-
-    // 1. SupabaseのJWTを検証
     const supabaseAdmin = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -95,17 +90,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(supabaseToken);
 
     if (authError || !user) {
-        console.error('--- Supabase Auth Verification Failed ---');
-        console.error('Auth Error Detail:', authError);
-        console.error('Sent Token:', supabaseToken ? `${supabaseToken.substring(0, 15)}...` : 'null');
         return res.status(401).json({ error: 'Unauthorized Supabase Token' });
     }
-
-// --- (中略、handler関数の前半部分と userId の取得まではそのまま) ---
 
     const userId = user.id;
 
     try {
+        // カウント情報と、既存の配列型カラムを一緒にセレクトする
         let { data: counter, error: dbError } = await supabaseAdmin
             .from('user_eos_counters')
             .select('account_count, product_user_id, device_id')
@@ -116,11 +107,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let isNewUser = false;
 
         if (dbError && dbError.code === 'PGRST116') {
-            // まだレコードがない新規ユーザーの場合
             nextIndex = 0;
             isNewUser = true;
         } else if (counter) {
-            // 既にレコードが存在する既存ユーザーの場合
             nextIndex = counter.account_count;
         } else {
             throw new Error('Database error');
@@ -132,19 +121,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         if (!eosResponse.ok) {
             const errText = await eosResponse.text();
+            console.error('--- EOS API Error Detail ---', errText); // 詳細をターミナルに残す
             return res.status(500).json({ error: `EOS Signup Failed: ${errText}` });
         }
 
         const eosData = await eosResponse.json();
-        console.log('--- EOS Response Data ---', eosData);
+        
+        // Connect APIから返ってきた本物の Product User ID を取得する
+        const puid = eosData.productUserId || eosData.product_user_id;
 
-        const puid = eosData.product_user_id || eosData.organization_user_id || `puid_${deviceId.substring(4, 20)}`;
+        if (!puid) {
+            return res.status(500).json({ error: 'EOS Success but Product User ID was not found in response.' });
+        }
 
         if (isNewUser) {
             const { error: insertError } = await supabaseAdmin
                 .from('user_eos_counters')
-                .insert({
-                    user_id: userId,
+                .insert({ 
+                    user_id: userId, 
                     account_count: 1,
                     product_user_id: [puid],
                     device_id: [deviceId]
@@ -160,7 +154,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const { error: updateError } = await supabaseAdmin
                 .from('user_eos_counters')
-                .update({
+                .update({ 
                     account_count: nextIndex + 1,
                     product_user_id: updatedEosIds,
                     device_id: updatedDeviceIds
@@ -173,9 +167,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(201).json({
             message: 'New EOS account registered successfully',
             accountIndex: nextIndex,
-            access_token: eosData.access_token,
+            access_token: eosData.accessToken || eosData.access_token,
             product_user_id: puid,
-            expires_in: eosData.expires_in
+            expires_in: eosData.expiresIn || eosData.expires_in
         });
 
     } catch (err: any) {
