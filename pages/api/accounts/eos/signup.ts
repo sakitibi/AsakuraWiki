@@ -26,7 +26,7 @@ async function registerAndFetchEosToken(deviceId: string, password: string) {
     const url = 'https://api.epicgames.dev/auth/v1/oauth/token';
     
     const bodyParams = new URLSearchParams({
-        grant_type: 'client_credentials',
+        grant_type: 'external_auth',
         external_auth_method: 'deviceid_credentials',
         external_auth_token: `${deviceId}:${password}`,
         deployment_id: process.env.EOS_DEPLOYMENT_ID || ''
