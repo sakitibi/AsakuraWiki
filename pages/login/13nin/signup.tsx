@@ -137,7 +137,6 @@ export default function SignUpPage() {
 
                     console.log('--- EOS アカウント新規作成成功 ---');
                     console.log('インデックス番号:', data.accountIndex);
-                    console.log('EOS アクセストークン:', data.access_token);
                     console.log('EOS Product User ID (PUID):', data.product_user_id);
                 }
             } catch (e) {
