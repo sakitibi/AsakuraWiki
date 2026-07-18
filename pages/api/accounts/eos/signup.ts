@@ -25,11 +25,15 @@ function deriveEosCredentials(supabaseUserId: string, index: number) {
 async function registerAndFetchEosToken(deviceId: string, password: string) {
     const url = 'https://api.epicgames.dev/auth/v1/oauth/token';
     
+    const secureNonce = crypto.createHash('sha256').update(deviceId).digest('hex');
+
     const bodyParams = new URLSearchParams({
         grant_type: 'external_auth',
         external_auth_method: 'deviceid_credentials',
         external_auth_token: `${deviceId}:${password}`,
-        deployment_id: process.env.EOS_DEPLOYMENT_ID || ''
+        deployment_id: process.env.EOS_DEPLOYMENT_ID || '',
+        nonce: secureNonce,
+        auto_create_product_user_id: 'true'
     });
 
     const response = await fetch(url, {
