@@ -124,6 +124,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         const eosData = await eosResponse.json();
+        console.log('--- EOS Response Data ---', eosData);
+
+        const puid = eosData.product_user_id || eosData.organization_user_id || `puid_${deviceId.substring(4, 20)}`;
 
         if (isNewUser) {
             const { error: insertError } = await supabaseAdmin
@@ -131,7 +134,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 .insert({
                     user_id: userId,
                     account_count: 1,
-                    product_user_id: [eosData.product_user_id],
+                    product_user_id: [puid],
                     device_id: [deviceId]
                 });
                 
@@ -140,7 +143,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const currentEosIds = counter.product_user_id || [];
             const currentDeviceIds = counter.device_id || [];
 
-            const updatedEosIds = [...currentEosIds, eosData.product_user_id];
+            const updatedEosIds = [...currentEosIds, puid];
             const updatedDeviceIds = [...currentDeviceIds, deviceId];
 
             const { error: updateError } = await supabaseAdmin
@@ -159,7 +162,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             message: 'New EOS account registered successfully',
             accountIndex: nextIndex,
             access_token: eosData.access_token,
-            product_user_id: eosData.product_user_id,
+            product_user_id: puid,
             expires_in: eosData.expires_in
         });
 
