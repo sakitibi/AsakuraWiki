@@ -138,7 +138,11 @@ export default function WikiPage() {
 
         async function loadMenuAndSidebar() {
             // --- MenuBar ---
-            let menuPage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
+            let [menuPage, sidePage] = await Promise.all([
+                wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`),
+                wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`)
+            ]);
+            
             if (!menuPage) menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
             setMenubar(menuPage ?? null);
 
@@ -155,7 +159,6 @@ export default function WikiPage() {
             }
 
             // --- SideBar ---
-            let sidePage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
             if (!sidePage) sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar');
             setSidebar(sidePage ?? null);
 
