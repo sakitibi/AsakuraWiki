@@ -105,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             
             const { error: insertError } = await supabaseAdmin
                 .from('user_eos_counters')
-                .insert({ user_id: userId, account_count: 1 });
+                .insert({ user_id: userId, account_count: 1, product_user_id: null, device_id: null});
                 
             if (insertError) throw insertError;
         } else if (counter) {
