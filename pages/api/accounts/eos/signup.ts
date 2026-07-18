@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 import upack from 'upack';
+import { decodeBase64Unicode } from '@/lib/base64';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -63,9 +64,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!supabaseTokenRaw) {
         return res.status(400).json({ error: 'Missing supabaseToken' });
     }
-
+    
     const supabaseToken = await upack.SEncoder.decodeSEncode(
-        supabaseTokenRaw,
+        decodeBase64Unicode(supabaseTokenRaw),
         process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
         true,
     ) as string;
