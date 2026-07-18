@@ -48,7 +48,7 @@ export default function DeveloperConsoleModify() {
         }
     }
 
-    const DevConsoleRegister = async(e:React.FormEvent) => {
+    const DevConsoleRegister = async(e:React.SubmitEvent) => {
         e.preventDefault();
         if(!document) return;
         setLoading(true);

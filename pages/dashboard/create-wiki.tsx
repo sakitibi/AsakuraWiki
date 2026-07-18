@@ -21,7 +21,7 @@ export default function CreateWikiPage() {
         });
     }, []);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
         if (!agreeASKR || !agree13nin) {
             alert('利用規約に同意してください。');

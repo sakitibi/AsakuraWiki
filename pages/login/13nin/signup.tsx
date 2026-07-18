@@ -14,6 +14,14 @@ export interface BirthDayProps {
     date: number;
 }
 
+interface EosSignupResponse {
+    message: string;
+    accountIndex: number;
+    access_token: string;
+    product_user_id: string;
+    expires_in: number;
+}
+
 export function getAge(birthday: BirthDayProps) {
     // 今日の日付
     const today = new Date();
@@ -39,7 +47,7 @@ export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [userMeta, setUserMeta] = useState<any[]>([]);
-    const handleSignUp = async (e: React.FormEvent) => {
+    const handleSignUp = async (e: React.SubmitEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
@@ -64,7 +72,7 @@ export default function SignUpPage() {
                 shimei
             );
 
-            // Supabase にユーザー登録（email/passwordは平文でOK）
+            // Supabase にユーザー登録
             const { data, error } = await supabaseClient.auth.signUp({
                 email,
                 password,
@@ -109,6 +117,28 @@ export default function SignUpPage() {
                     });
                     const newItem = await res.json();
                     setUserMeta([...userMeta, newItem]);
+                    const createEOSAccountResponse = await fetch('/api/accounts/eos/signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            supabaseToken: token,
+                        }),
+                    });
+
+                    if (!createEOSAccountResponse.ok) {
+                        const errorData = await createEOSAccountResponse.json();
+                        throw new Error(errorData.error || 'EOSアカウントの作成に失敗しました');
+                    }
+
+                    // 4. 成功レスポンスの受け取り
+                    const data: EosSignupResponse = await createEOSAccountResponse.json();
+
+                    console.log('--- EOS アカウント新規作成成功 ---');
+                    console.log('インデックス番号:', data.accountIndex);
+                    console.log('EOS アクセストークン:', data.access_token);
+                    console.log('EOS Product User ID (PUID):', data.product_user_id);
                 }
             } catch (e) {
                 console.error("メタデータ送信エラー: ", e);

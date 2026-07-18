@@ -19,7 +19,6 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         return;
     } else if(req.method === "POST"){
         const body = req.body;
-        const user_agent = body.ua;
 
         const forwarded = req.headers['x-forwarded-for'];
         let ip: string | null = null;
@@ -51,13 +50,6 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         if (error) {
             return res.status(401).json({error: error.message});
         }
-
-        const username =
-            data.user?.user_metadata?.name ||
-            data.user?.user_metadata?.full_name ||
-            data.user?.user_metadata?.username ||
-            data.user?.email ||
-            'ゲスト';
 
         const Actokenfiltered = data.session?.access_token;
         const Rftokenfiltered = data.session?.refresh_token;
