@@ -138,7 +138,11 @@ export default function WikiPage() {
 
         async function loadMenuAndSidebar() {
             // --- MenuBar ---
-            let menuPage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
+            let [menuPage, sidePage] = await Promise.all([
+                wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`),
+                wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`)
+            ]);
+
             if (!menuPage) menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
             setMenubar(menuPage ?? null);
 
@@ -155,7 +159,6 @@ export default function WikiPage() {
             }
 
             // --- SideBar ---
-            let sidePage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
             if (!sidePage) sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar');
             setSidebar(sidePage ?? null);
 
@@ -348,7 +351,7 @@ export default function WikiPage() {
                                             </button>
                                         </Link>
                                         <button onClick={() => handleFreeze(wikiSlugStr, pageSlugStr, user)}>
-                                            <span>このページを凍結 凍結解除</span>
+                                            <span>このページを凍結 / 凍結解除</span>
                                         </button>
                                         <button onClick={handlePageLike} style={{ marginTop: 12 }}>
                                             <span>このページを高く評価</span>
