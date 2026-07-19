@@ -221,6 +221,7 @@ export default function WikiPage() {
     useEffect(() => {
         const fetchParsedPreview = async () => {
             if (!designColor) return;
+            console.time("AsakuraWikiParserEngineTimer");
             const result = await parseWikiContent(
                 previewText,
                 {
@@ -230,6 +231,7 @@ export default function WikiPage() {
                 },
                 designColor
             );
+            console.timeEnd("AsakuraWikiParserEngineTimer");
             setParsedPreview(result);
         };
 
