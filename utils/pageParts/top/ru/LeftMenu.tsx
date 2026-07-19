@@ -22,7 +22,7 @@ export default function LeftMenuRu({ URL }: Props){
                     </li>
                     <li>
                         <Link href="/login/redir">
-                            <button><span>Войти/Зарегистрироваться (японский)</span></button>
+                            <button><span>Войти/<br/>Зарегистри<br/>роваться<br/> (японский)</span></button>
                         </Link>
                     </li>
                     <li>
