@@ -44,7 +44,7 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
     }
 
     const images: string[] = [];
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 9; i++) {
         images.push(`https://sakitibi.github.io/AsakuraWiki-Images/title/${i}.png`);
     }
 

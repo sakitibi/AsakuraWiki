@@ -49,6 +49,18 @@ export default function About() {
                         <p>オープンソースで<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a>などより</p>
                         <p>使いやすいレンタルWikiサービスを目指しています。</p>
                         <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
+                        <p><img
+                            src="https://sakitibi.github.io/AsakuraWiki-Images/title/6.png"
+                            width="700px"
+                            alt='画像'
+                            style={{
+                                pointerEvents: 'none', 
+                                userSelect: 'none',
+                                WebkitUserSelect: 'none'
+                            }}
+                            onDragStart={(e) => e.preventDefault()}
+                            onContextMenu={(e) => e.preventDefault()}
+                        /></p>
                     </main>
                     <RightMenuJp/>
                 </div>
