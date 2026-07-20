@@ -51,11 +51,14 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
     useEffect(() => {
         const fetchIP = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ipaddress`);
-                const data = await res.json();
-                const ip = data.ip;
+                let ipBase = localStorage.getItem("ipaddress");
+                if (!ipBase) {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ipaddress`);
+                    const data = await res.json();
+                    ipBase = data.ip;
+                }
                 
-                const found = blockedIP.find(v => ip.match(v));
+                const found = blockedIP.find(v => ipBase?.match(v));
                 setBlockedIP_list_found(found);
             } catch (error) {
                 console.error("Failed to fetch IP address:", error);
