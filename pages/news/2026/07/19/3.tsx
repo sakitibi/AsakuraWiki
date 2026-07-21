@@ -105,6 +105,12 @@ export default function NewsPage() {
                         </details>
                         <hr/><br/>
                         <p><a href="https://github.com/sakitibi/AsakuraWiki-Images/tree/main/BloadcastCommittee/snap-2026-schedule/part1">前団ルート</a></p>
+                        <p>
+                            <a
+                                href="https://release-assets.githubusercontent.com/github-production-release-asset/1021277781/cc46f7f9-5e30-42a7-a97d-adcf075b280b?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-07-21T14%3A32%3A28Z&rscd=attachment%3B+filename%3Dsnap-2026.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-07-21T13%3A31%3A39Z&ske=2026-07-21T14%3A32%3A28Z&sks=b&skv=2018-11-09&sig=8NX%2FKagUmD8pv0w0oTdMjQfov4n%2B1WMS9dkMD6Bepio%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4NDY0MzI4MSwibmJmIjoxNzg0NjQxNDgxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.0V6572jFrD4S5OPiPlCcnbQkEiQ-RNx9FVXLV9ibyc0&response-content-disposition=attachment%3B%20filename%3Dsnap-2026.zip&response-content-type=application%2Foctet-stream"
+                                download="広報委員会写真撮影活動2026前団.zip"
+                            >前団撮影写真ダウンロード(zip形式)</a>
+                        </p>
                         <hr/><br/>
                         <p><a href="/news/2026/07/19/2">第2ページに戻る..</a></p>
                         <p>執筆: 岡本 玲奈 委員長・嵯峨根 汐莉 副委員長</p>
