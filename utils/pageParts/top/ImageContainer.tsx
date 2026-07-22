@@ -56,6 +56,7 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/ipaddress`);
                     const data = await res.json();
                     ipBase = data.ip;
+                    localStorage.setItem("ipaddress", data.ip);
                 }
                 
                 const found = blockedIP.find(v => ipBase?.match(v));
