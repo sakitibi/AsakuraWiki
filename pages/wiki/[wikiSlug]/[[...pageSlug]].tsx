@@ -59,6 +59,18 @@ export default function WikiPage() {
     const [sidebar, setSidebar] = useState<Page | null | undefined>(undefined);
     const [parsedSidebar, setParsedSidebar] = useState<React.ReactNode[] | null>(null);
 
+    const { wikiSlug, pageSlug, page: pageQuery } = router.query;
+    const cmdStr:string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
+
+    // クエリ→文字列化
+        const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+        const pageSlugStr:string =
+        typeof pageQuery === 'string'
+            ? pageQuery
+            : Array.isArray(pageSlug)
+            ? pageSlug.join('/')
+            : pageSlug ?? 'FrontPage';
+
     const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
@@ -90,18 +102,6 @@ export default function WikiPage() {
         console.log('[UA]', ua);
         console.log('[isBot]', bot);
     }, []);
-
-    const { wikiSlug, pageSlug, page: pageQuery } = router.query;
-    const cmdStr:string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
-
-    // クエリ→文字列化
-        const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-        const pageSlugStr:string =
-        typeof pageQuery === 'string'
-            ? pageQuery
-            : Array.isArray(pageSlug)
-            ? pageSlug.join('/')
-            : pageSlug ?? 'FrontPage';
 
     useEffect(() => {
         if (isBot || !window) return;
