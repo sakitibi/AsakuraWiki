@@ -170,12 +170,6 @@ export default function WikiPage() {
             if (menuPage?.content) {
                 if (!designColor) return;
                 setMenuContent(menuPage.content);
-                const parsed = await parseWikiContent(
-                    menuPage.content,
-                    { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} },
-                    designColor
-                );
-                setParsedMenubar(parsed);
             } else {
                 setParsedMenubar(null);
             }
@@ -187,12 +181,6 @@ export default function WikiPage() {
             if (sidePage?.content) {
                 if (!designColor) return;
                 setSideContent(sidePage.content);
-                const parsed = await parseWikiContent(
-                    sidePage.content,
-                    { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} },
-                    designColor
-                );
-                setParsedSidebar(parsed);
             } else {
                 setParsedSidebar(null);
             }
