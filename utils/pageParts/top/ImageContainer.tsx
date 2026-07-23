@@ -11,7 +11,7 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
     const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
-    const [screenMode, setScreenMode] = useState<'image' | 'message'>('image');
+    const [screenMode, setScreenMode] = useState<'image' | 'loading' | 'message'>('image');
     /* ===============================
         Bot 判定（state）
     =============================== */
@@ -79,18 +79,23 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
         if (blockedIP_list_found) {
             console.error("当サイトにアクセスする権限がありません。");
 
-            // 時間差（2秒後）でフェードイン表示
+            // 時間差（1秒後）でフェードイン表示
             const delayTimer = setTimeout(() => {
                 setOpacity(1);
-            }, 2000);
+            }, 1000);
 
-            const switchTimer = setTimeout(() => {
-                setScreenMode('message');
+            const switchTimer1 = setTimeout(() => {
+                setScreenMode('image');
             }, 32000);
+
+            const switchTimer2 = setTimeout(() => {
+                setScreenMode('message');
+            }, 62000);
 
             return () => {
                 clearTimeout(delayTimer);
-                clearTimeout(switchTimer);
+                clearTimeout(switchTimer1);
+                clearTimeout(switchTimer2);
             };
         }
 
@@ -163,7 +168,9 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                 >
                     {blockedIP_list_found ? (
                         /* ブロック時の表示制御 */
-                        screenMode === 'image' ? (
+                        screenMode === "loading" ? (
+                            <div className="anti_piracy_conatiner"></div>
+                        ) : screenMode === 'image' ? (
                             <div className="anti_piracy_conatiner">
                                 <h1 className="vibrate-text" style={{ fontSize: "300px", fontStyle: "italic" }}>
                                     {"\u0055\u0049\u0050"}
