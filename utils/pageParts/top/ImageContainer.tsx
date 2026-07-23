@@ -11,7 +11,8 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
     const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
-    
+    const [screenMode, setScreenMode] = useState<'image' | 'message'>('image');
+
     /* ===============================
         Bot 判定（state）
     =============================== */
@@ -71,18 +72,26 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
         fetchIP();
     }, []);
 
-    // 画像のセットおよびフェードイン処理
+    // 画像のセットおよびフェードイン・タイマー処理
     useEffect(() => {
-        // 1. ブロック対象IPが検出された場合の処理
+        // 1. ブロック対象IPが検出された場合
         if (blockedIP_list_found) {
             console.error("当サイトにアクセスする権限がありません。");
-            
-            // 時間差でアンチ・パイラシー画面を表示
+
+            // 時間差（2秒後）でフェードイン表示
             const delayTimer = setTimeout(() => {
                 setOpacity(1);
             }, 2000);
 
-            return () => clearTimeout(delayTimer);
+            // 表示されてから30秒後（合計32秒後）にメッセージ画面へ切り替え
+            const switchTimer = setTimeout(() => {
+                setScreenMode('message');
+            }, 32000);
+
+            return () => {
+                clearTimeout(delayTimer);
+                clearTimeout(switchTimer);
+            };
         }
 
         // 2. 通常アクセス時の処理
@@ -132,30 +141,29 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                         backgroundColor: blockedIP_list_found ? '#000000' : 'transparent'
                     }}
                 >
-                    {/* ブロック時は専用の画面（または専用画像）、通常時はランダム画像を表示 */}
                     {blockedIP_list_found ? (
-                        <div 
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                color: '#ff0000',
-                                backgroundColor: '#000000',
-                                textAlign: 'center',
-                                fontFamily: 'sans-serif'
-                            }}
-                        >
-                            <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-                                ACCESS DENIED / UNAUTHORIZED USE DETECTED
-                            </h1>
-                            <p style={{ fontSize: '1.2rem', color: '#ffffff' }}>
-                                当サイトへのアクセス権限がありません。<br />
-                                不正な利用または規約違反の疑いがあるためアクセスを制限しています。
-                            </p>
-                        </div>
+                        /* ブロック時の表示制御 */
+                        screenMode === 'image' ? (
+                            <div 
+                                className="anti_piracy_conatiner"
+                            >
+                                <h1 className="vibrate-text" style={{ fontSize: "300px", fontStyle: "italic" }}>
+                                    {"\u0055\u0049\u0050"}
+                                </h1>
+                            </div>
+                        ) : (
+                            <div 
+                                className="anti_piracy_conatiner"
+                            >
+                                <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
+                                    ACCESS DENIED / UNAUTHORIZED USE DETECTED
+                                </h1>
+                                <p style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
+                                    当サイトへのアクセス権限がありません。<br />
+                                    不正なアクセスまたは利用規約への違反が確認されたため、閲覧を完全にブロックしています。
+                                </p>
+                            </div>
+                        )
                     ) : (
                         <img 
                             src={randomImage || ''} 
