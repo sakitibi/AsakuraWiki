@@ -183,8 +183,10 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                                 </h1>
                                 <p style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
                                     当サイトへのアクセス権限がありません。<br />
-                                    不正なアクセスまたは利用規約への違反が確認されたため、閲覧をブロックしています。
+                                    不正なアクセスまたは重大な利用規約への違反が確認されたため、閲覧をブロックしています。<br/>
+                                    より悪質な場合は法的機関に通報します。
                                 </p>
+                                <p hidden>これは演出です</p>
                             </div>
                         )
                     ) : (
