@@ -11,7 +11,8 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
     const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
-    const [screenMode, setScreenMode] = useState<'image' | 'loading' | 'message'>('loading');
+    const [screenMode, setScreenMode] = useState<'image' | 'loading' | 'message' | 'final'>('loading');
+
     /* ===============================
         Bot 判定（state）
     =============================== */
@@ -73,33 +74,37 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
         fetchIP();
     }, []);
 
-    // 画像のセットおよびフェードイン・タイマー処理
+    // 画面切り替えのタイマー処理
     useEffect(() => {
-        // 1. ブロック対象IPが検出された場合
         if (blockedIP_list_found) {
             console.error("当サイトにアクセスする権限がありません。");
 
-            // 時間差（1秒後）でフェードイン表示
+            // 1. フェードイン表示 (2秒後)
             const delayTimer = setTimeout(() => {
                 setOpacity(1);
             }, 1000);
 
-            const switchTimer1 = setTimeout(() => {
+            const switchTimer = setTimeout(() => {
                 setScreenMode('image');
             }, 32000);
 
-            const switchTimer2 = setTimeout(() => {
+            const messageTimer = setTimeout(() => {
                 setScreenMode('message');
             }, 72000);
 
+            const finalTimer = setTimeout(() => {
+                setScreenMode('final');
+            }, 102000);
+
             return () => {
                 clearTimeout(delayTimer);
-                clearTimeout(switchTimer1);
-                clearTimeout(switchTimer2);
+                clearTimeout(switchTimer);
+                clearTimeout(messageTimer);
+                clearTimeout(finalTimer);
             };
         }
 
-        // 2. 通常アクセス時の処理
+        // 通常アクセス時
         if (!randomImage) {
             const randomIndex = Math.floor(Math.random() * images.length);
             setRandomImage(images[randomIndex]);
@@ -112,17 +117,14 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
         return () => clearTimeout(fadeInTimer);
     }, [randomImage, blockedIP_list_found]);
 
-    /* ===============================
-        ACCESS DENIED 時の音声再生
-    =============================== */
+    // 音声再生
     useEffect(() => {
-        if (blockedIP_list_found && screenMode === 'image') {
+        if (blockedIP_list_found && (screenMode === 'image' || 'message' || screenMode === 'final')) {
             const audio = new Audio(audioUrl);
             audio.loop = true;
-            audio.hidden = true;
 
             audio.play().catch((error) => {
-                console.warn("自動再生がブラウザによってブロックされました:", error);
+                console.warn("自動再生がブロックされました:", error);
             });
 
             return () => {
@@ -132,7 +134,7 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
         }
     }, [blockedIP_list_found, screenMode]);
 
-    // 通常時の自動フェードアウト（ブロック時は発動しない）
+    // 通常時の自動フェードアウト
     useEffect(() => {
         if (blockedIP_list_found) return;
 
@@ -167,28 +169,48 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                     }}
                 >
                     {blockedIP_list_found ? (
-                        /* ブロック時の表示制御 */
-                        screenMode === "loading" ? (
-                            <div className="anti_piracy_conatiner"></div>
-                        ) : screenMode === 'image' ? (
-                            <div className="anti_piracy_conatiner">
-                                <h1 className="vibrate-text" style={{ fontSize: "300px", fontStyle: "italic" }}>
-                                    {"\u0055\u0049\u0050"}
-                                </h1>
-                            </div>
-                        ) : (
-                            <div className="anti_piracy_conatiner">
-                                <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#565656' }}>
-                                    ACCESS DENIED / UNAUTHORIZED USE DETECTED
-                                </h1>
-                                <p style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
-                                    当サイトへのアクセス権限がありません。<br />
-                                    不正なアクセスまたは重大な利用規約への違反が確認されたため、閲覧をブロックしています。<br/>
-                                    より悪質な場合は法的機関に通報します。
-                                </p>
-                                <p hidden>これは演出です</p>
-                            </div>
-                        )
+                        <>
+                            {screenMode === 'image' && (
+                                <div className="anti_piracy_conatiner">
+                                    <h1 className="vibrate-text" style={{ fontSize: "300px", fontStyle: "italic" }}>
+                                        {"\u0055\u0049\u0050"}
+                                    </h1>
+                                </div>
+                            )}
+
+                            {screenMode === 'message' && (
+                                <div className="anti_piracy_conatiner">
+                                    <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#565656' }}>
+                                        ACCESS DENIED / UNAUTHORIZED USE DETECTED
+                                    </h1>
+                                    <p style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
+                                        当サイトへのアクセス権限がありません。<br />
+                                        不正なアクセスまたは重大な利用規約への違反が確認されたため、閲覧をブロックしています。<br/>
+                                        より悪質な場合は法的機関に通報します。
+                                    </p>
+                                    <p hidden>これは演出です</p>
+                                </div>
+                            )}
+
+                            {screenMode === 'final' && (
+                                <div className="anti_piracy_conatiner">
+                                    <img 
+                                        src=""
+                                        alt="." 
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'fill',
+                                            pointerEvents: 'none', 
+                                            userSelect: 'none',
+                                            WebkitUserSelect: 'none'
+                                        }}
+                                        onDragStart={(e) => e.preventDefault()}
+                                        onContextMenu={(e) => e.preventDefault()}
+                                    />
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <img 
                             src={randomImage || ''} 
