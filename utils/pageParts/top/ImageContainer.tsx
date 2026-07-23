@@ -86,7 +86,7 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
 
             const switchTimer1 = setTimeout(() => {
                 setScreenMode('image');
-            }, 32000);
+            }, 22000);
 
             const switchTimer2 = setTimeout(() => {
                 setScreenMode('message');
@@ -178,12 +178,12 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                             </div>
                         ) : (
                             <div className="anti_piracy_conatiner">
-                                <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#ff0000' }}>
+                                <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#565656' }}>
                                     ACCESS DENIED / UNAUTHORIZED USE DETECTED
                                 </h1>
                                 <p style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
                                     当サイトへのアクセス権限がありません。<br />
-                                    不正なアクセスまたは利用規約への違反が確認されたため、閲覧を完全にブロックしています。
+                                    不正なアクセスまたは利用規約への違反が確認されたため、閲覧をブロックしています。
                                 </p>
                             </div>
                         )
