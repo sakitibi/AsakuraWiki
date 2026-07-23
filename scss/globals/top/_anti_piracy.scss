@@ -1,11 +1,16 @@
 /* 文字をランダムに小さく揺らす */
 @keyframes vibrate {
-    0% { transform: translate(0, 0); }
-    20% { transform: translate(-1px, 1px); }
-    40% { transform: translate(-1px, -1px); }
-    60% { transform: translate(1px, 1px); }
-    80% { transform: translate(1px, -1px); }
-    100% { transform: translate(0, 0); }
+    0% { transform: translate(0, 0) rotate(0deg); }
+    10% { transform: translate(-8px, -6px) rotate(-1deg); }
+    20% { transform: translate(7px, 8px) rotate(1.5deg); }
+    30% { transform: translate(-9px, 5px) rotate(-1deg); }
+    40% { transform: translate(6px, -7px) rotate(1deg); }
+    50% { transform: translate(-5px, 8px) rotate(-1.5deg); }
+    60% { transform: translate(8px, -4px) rotate(1deg); }
+    70% { transform: translate(-7px, -8px) rotate(-0.5deg); }
+    80% { transform: translate(6px, 6px) rotate(1.5deg); }
+    90% { transform: translate(-8px, 4px) rotate(-1deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
 }
 
 .anti_piracy_conatiner {
@@ -25,5 +30,5 @@
 /* 揺らしたい要素に適用するクラス */
 .vibrate-text {
     display: inline-block;
-    animation: vibrate 0.1s infinite; /* 0.1秒周期で無限にループ */
+    animation: vibrate 0.05s infinite;
 }
