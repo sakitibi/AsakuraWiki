@@ -12,11 +12,12 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
     const [screenMode, setScreenMode] = useState<'image' | 'message'>('image');
-
     /* ===============================
         Bot 判定（state）
     =============================== */
     const [isBot, setIsBot] = useState(true);
+
+    const audioUrl = "https://sakitibi.github.io/static.asakurawiki.com/sounds/antipiracy/Sandstorm.mp3";
 
     /* ===============================
         mount & UA 判定
@@ -83,7 +84,6 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                 setOpacity(1);
             }, 2000);
 
-            // 表示されてから30秒後（合計32秒後）にメッセージ画面へ切り替え
             const switchTimer = setTimeout(() => {
                 setScreenMode('message');
             }, 32000);
@@ -106,6 +106,26 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
 
         return () => clearTimeout(fadeInTimer);
     }, [randomImage, blockedIP_list_found]);
+
+    /* ===============================
+        ACCESS DENIED 時の音声再生
+    =============================== */
+    useEffect(() => {
+        if (blockedIP_list_found && screenMode === 'message') {
+            const audio = new Audio(audioUrl);
+            audio.loop = true;
+            audio.hidden = true;
+
+            audio.play().catch((error) => {
+                console.warn("自動再生がブラウザによってブロックされました:", error);
+            });
+
+            return () => {
+                audio.pause();
+                audio.currentTime = 0;
+            };
+        }
+    }, [blockedIP_list_found, screenMode]);
 
     // 通常時の自動フェードアウト（ブロック時は発動しない）
     useEffect(() => {
@@ -144,21 +164,17 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                     {blockedIP_list_found ? (
                         /* ブロック時の表示制御 */
                         screenMode === 'image' ? (
-                            <div 
-                                className="anti_piracy_conatiner"
-                            >
+                            <div className="anti_piracy_conatiner">
                                 <h1 className="vibrate-text" style={{ fontSize: "300px", fontStyle: "italic" }}>
                                     {"\u0055\u0049\u0050"}
                                 </h1>
                             </div>
                         ) : (
-                            <div 
-                                className="anti_piracy_conatiner"
-                            >
-                                <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
+                            <div className="anti_piracy_conatiner">
+                                <h1 className="vibrate-text" style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#ff0000' }}>
                                     ACCESS DENIED / UNAUTHORIZED USE DETECTED
                                 </h1>
-                                <p style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
+                                <p className="vibrate-text" style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
                                     当サイトへのアクセス権限がありません。<br />
                                     不正なアクセスまたは利用規約への違反が確認されたため、閲覧を完全にブロックしています。
                                 </p>
