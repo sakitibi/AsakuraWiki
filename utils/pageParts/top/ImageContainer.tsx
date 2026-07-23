@@ -86,11 +86,11 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
 
             const switchTimer1 = setTimeout(() => {
                 setScreenMode('image');
-            }, 22000);
+            }, 27000);
 
             const switchTimer2 = setTimeout(() => {
                 setScreenMode('message');
-            }, 62000);
+            }, 67000);
 
             return () => {
                 clearTimeout(delayTimer);
