@@ -111,7 +111,7 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
         ACCESS DENIED 時の音声再生
     =============================== */
     useEffect(() => {
-        if (blockedIP_list_found && screenMode === 'message') {
+        if (blockedIP_list_found && screenMode === 'image') {
             const audio = new Audio(audioUrl);
             audio.loop = true;
             audio.hidden = true;
@@ -171,10 +171,10 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
                             </div>
                         ) : (
                             <div className="anti_piracy_conatiner">
-                                <h1 className="vibrate-text" style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#ff0000' }}>
+                                <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#ff0000' }}>
                                     ACCESS DENIED / UNAUTHORIZED USE DETECTED
                                 </h1>
-                                <p className="vibrate-text" style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
+                                <p style={{ fontSize: '1.2rem', color: '#ffffff', lineHeight: '1.8' }}>
                                     当サイトへのアクセス権限がありません。<br />
                                     不正なアクセスまたは利用規約への違反が確認されたため、閲覧を完全にブロックしています。
                                 </p>
