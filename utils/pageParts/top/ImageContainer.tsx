@@ -11,7 +11,7 @@ export default function ImageContainer({ NotFound }: ImageContainerProps) {
     const [blockedIP_list_found, setBlockedIP_list_found] = useState<RegExp | undefined>(undefined);
     const [randomImage, setRandomImage] = useState<string | null>(null);
     const [opacity, setOpacity] = useState(0);
-    const [screenMode, setScreenMode] = useState<'image' | 'loading' | 'message'>('image');
+    const [screenMode, setScreenMode] = useState<'image' | 'loading' | 'message'>('loading');
     /* ===============================
         Bot 判定（state）
     =============================== */
