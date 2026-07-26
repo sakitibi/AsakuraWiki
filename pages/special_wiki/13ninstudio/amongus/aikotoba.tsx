@@ -165,7 +165,7 @@ export default function AmongusRoomAuthCode() {
                         </div>
                         <br/>
                         <div id="ad-container" style={{ textAlign: 'center' }}>
-                            <iframe src="https://sakitibi.github.io/13ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
+                            <iframe src="https://sakitibi.github.io/14ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
                         </div>
                     </article>
                 </div>

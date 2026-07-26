@@ -23,7 +23,7 @@ jobs:
       - name: Clone target repo
         env:
           TARGET_OWNER: "sakitibi"
-          TARGET_REPO: "13ninadmanager.com"
+          TARGET_REPO: "14ninadmanager.com"
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
