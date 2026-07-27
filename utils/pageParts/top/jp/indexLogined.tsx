@@ -5,8 +5,8 @@ import type { WikiCounter, WikiPage, LikedWiki } from '@/utils/pageParts/top/ind
 import { useState, useEffect } from 'react';
 
 export interface LoginedUIProps {
-    wiki13ninstudioCounter: WikiCounter | null;
-    wiki13ninstudioCounterTotal: number;
+    wiki14ninstudioCounter: WikiCounter | null;
+    wiki14ninstudioCounterTotal: number;
     loadingLiked: boolean;
     likedWikis: LikedWiki[];
     readonly H2Styles: React.CSSProperties;
@@ -30,8 +30,8 @@ export const formatDate = (dateStr: string) => {
 };
 
 export default function LoginedUI({
-    wiki13ninstudioCounter,
-    wiki13ninstudioCounterTotal,
+    wiki14ninstudioCounter,
+    wiki14ninstudioCounterTotal,
     loadingLiked,
     likedWikis,
     H2Styles,
@@ -60,10 +60,10 @@ export default function LoginedUI({
                 </h1>
 
                 <section id="view-counter" className={styles.counterWidget}>
-                    <div className={styles.counterItem}>現在: <strong>{wiki13ninstudioCounter?.online ?? 0}</strong></div>
-                    <div className={styles.counterItem}>今日: <strong>{wiki13ninstudioCounter?.today ?? 0}</strong></div>
-                    <div className={styles.counterItem}>昨日: <strong>{wiki13ninstudioCounter?.yesterday ?? 0}</strong></div>
-                    <div className={styles.counterItem}>合計: <strong>{wiki13ninstudioCounterTotal}</strong></div>
+                    <div className={styles.counterItem}>現在: <strong>{wiki14ninstudioCounter?.online ?? 0}</strong></div>
+                    <div className={styles.counterItem}>今日: <strong>{wiki14ninstudioCounter?.today ?? 0}</strong></div>
+                    <div className={styles.counterItem}>昨日: <strong>{wiki14ninstudioCounter?.yesterday ?? 0}</strong></div>
+                    <div className={styles.counterItem}>合計: <strong>{wiki14ninstudioCounterTotal}</strong></div>
                 </section>
             </header>
 
@@ -109,7 +109,7 @@ export default function LoginedUI({
 
                     <ul className={styles.wikiCardList}>
                         <li className={styles.wikiCardItem}>
-                            <Link href="/special_wiki/13ninstudio">
+                            <Link href="/special_wiki/14ninstudio">
                                 <button>
                                     <strong>あさクラ{versions[0]} Wiki*</strong>
                                 </button>

@@ -6,7 +6,7 @@ export default async function handler(
 ) {
     try {
         const response = await fetch(
-            "https://counter.wikiwiki.jp/c/13ninstudio/pv/index.html",
+            "https://counter.wikiwiki.jp/c/14ninstudio/pv/index.html",
             {
                 headers: {
                     "User-Agent": "asakura-wiki-server",

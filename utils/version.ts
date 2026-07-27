@@ -5,5 +5,5 @@ const versions:string[] = [
     `V.${version}`,
     `v.${version}`
 ];
-export const company:string = "13ninstudio";
+export const company:string = "14ninstudio";
 export default versions;

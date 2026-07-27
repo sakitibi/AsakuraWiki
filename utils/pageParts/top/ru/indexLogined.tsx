@@ -4,8 +4,8 @@ import Link from "next/link";
 import { formatDate, LoginedUIProps } from "@/utils/pageParts/top/jp/indexLogined";
 
 export default function LoginedUI({
-    wiki13ninstudioCounter,
-    wiki13ninstudioCounterTotal,
+    wiki14ninstudioCounter,
+    wiki14ninstudioCounterTotal,
     loadingLiked,
     likedWikis,
     H2Styles,
@@ -26,10 +26,10 @@ export default function LoginedUI({
                 </h1>
 
                 <section id="view-counter" className={styles.counterWidget}>
-                    <div className={styles.counterItem}>Сейчас онлайн: <strong>{wiki13ninstudioCounter?.online ?? 0}</strong></div>
-                    <div className={styles.counterItem}>Сегодня: <strong>{wiki13ninstudioCounter?.today ?? 0}</strong></div>
-                    <div className={styles.counterItem}>Вчера: <strong>{wiki13ninstudioCounter?.yesterday ?? 0}</strong></div>
-                    <div className={styles.counterItem}>Всего: <strong>{wiki13ninstudioCounterTotal}</strong></div>
+                    <div className={styles.counterItem}>Сейчас онлайн: <strong>{wiki14ninstudioCounter?.online ?? 0}</strong></div>
+                    <div className={styles.counterItem}>Сегодня: <strong>{wiki14ninstudioCounter?.today ?? 0}</strong></div>
+                    <div className={styles.counterItem}>Вчера: <strong>{wiki14ninstudioCounter?.yesterday ?? 0}</strong></div>
+                    <div className={styles.counterItem}>Всего: <strong>{wiki14ninstudioCounterTotal}</strong></div>
                 </section>
             </header>
 
@@ -73,7 +73,7 @@ export default function LoginedUI({
 
                     <ul className={styles.wikiCardList}>
                         <li className={styles.wikiCardItem}>
-                            <Link href="/special_wiki/13ninstudio">
+                            <Link href="/special_wiki/14ninstudio">
                                 <button>
                                     <strong>あさクラ{versions[0]} Wiki*</strong>
                                 </button>

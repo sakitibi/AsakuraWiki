@@ -77,7 +77,7 @@ module.exports = {
             priority: 0.6,
         }, 
         {
-            loc: "/special_wiki/13ninstudio/不審者が出た時の対処法",
+            loc: "/special_wiki/14ninstudio/不審者が出た時の対処法",
             lastmod: new Date().toISOString(),
             changefreq: 'daily',
             priority: 0.6,

@@ -16,7 +16,7 @@ import LogoutedUI from '@/utils/pageParts/top/jp/indexLogouted';
 import {
     fetchRecentPages,
     fetchLikedWikis,
-    fetched13ninstudioCounter
+    fetched14ninstudioCounter
 } from '@/utils/pageParts/top/jp/indexfetchs';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/auth-helpers-react';
@@ -42,7 +42,7 @@ export default function Home() {
     const [loadingLiked, setLoadingLiked] = useState(true);
     const [loadingRecent, setLoadingRecent] = useState(true);
     const [menuStatus, setMenuStatus] = useState(false);
-    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] =
+    const [wiki14ninstudioCounter, setWiki14ninstudioCounter] =
         useState<WikiCounter | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [mounted, setMounted] = useState(false);
@@ -149,7 +149,7 @@ export default function Home() {
             setLoading
         );
         fetchLikedWikis(setLoadingLiked, setLikedWikis);
-        fetched13ninstudioCounter(setWiki13ninstudioCounter);
+        fetched14ninstudioCounter(setWiki14ninstudioCounter);
     }, [isBot]);
 
     /* ===============================
@@ -157,16 +157,16 @@ export default function Home() {
     =============================== */
     useEffect(() => {
         if (isBot) return;
-        console.log('[counter]', wiki13ninstudioCounter);
-    }, [wiki13ninstudioCounter, isBot]);
+        console.log('[counter]', wiki14ninstudioCounter);
+    }, [wiki14ninstudioCounter, isBot]);
 
-    const wiki13ninstudioCounterTotal =
-        (wiki13ninstudioCounter?.total ?? 0) + 1391;
+    const wiki14ninstudioCounterTotal =
+        (wiki14ninstudioCounter?.total ?? 0) + 3695;
 
-    if (!isBot && !isNaN(wiki13ninstudioCounterTotal)) {
+    if (!isBot && !isNaN(wiki14ninstudioCounterTotal)) {
         console.log(
             'ApplicationAllViewedCounter:',
-            wiki13ninstudioCounterTotal
+            wiki14ninstudioCounterTotal
         );
     }
 
@@ -242,11 +242,11 @@ export default function Home() {
                     <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
                         {user && !isBot ? (
                             <LoginedUI
-                                wiki13ninstudioCounter={
-                                    wiki13ninstudioCounter
+                                wiki14ninstudioCounter={
+                                    wiki14ninstudioCounter
                                 }
-                                wiki13ninstudioCounterTotal={
-                                    wiki13ninstudioCounterTotal
+                                wiki14ninstudioCounterTotal={
+                                    wiki14ninstudioCounterTotal
                                 }
                                 loadingLiked={loadingLiked}
                                 loadingRecent={loadingRecent}

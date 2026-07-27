@@ -87,7 +87,7 @@ export default function BKMT_Front(){
         setText(document.getElementById("text") as HTMLDivElement);
         text!.innerHTML = (`
             <ul>
-                <li><a href="/wiki/13ninstudio/SakitibiRailway.com" target="_blank">さきちび</a></li>
+                <li><a href="/wiki/14ninstudio/SakitibiRailway.com" target="_blank">さきちび</a></li>
                 <li><a href="https://discord.gg/zbvXxCWcg6" target="_blank">匿名</a></li>
                 <li><a href="https://youtube.com/@mizore471" target="_blank">みぞれ</a></li>
             </ul>
@@ -106,7 +106,7 @@ export default function BKMT_Front(){
         setText(document.getElementById("text") as HTMLDivElement);
         text!.innerHTML = (`
             <ul>
-                <li><a href="/wiki/13ninstudio/SakitibiRailway.com" target="_blank">さきちび</a></li>
+                <li><a href="/wiki/14ninstudio/SakitibiRailway.com" target="_blank">さきちび</a></li>
             </ul>
         `);
     }
@@ -139,7 +139,7 @@ export default function BKMT_Front(){
                     <li><a href="https://c.kuku.lu/d5rxyxs6" target="_blank">マイ鉄ネット撲滅委員会のチャットルーム開設</a> -- さきちび 2025-04-04 (金) 11:41:54</li>
                     <li>匿名を委員会メンバーに追加 -- さきちび 2025-04-13 (日) 11:35:01</li>
                     <li>メンバーになりたいです。現在は荒らし対策委員会にいます -- マグロのユッケ 2025-05-08 (木) 12:54:03</li>
-                    <li><a href="https://sakitibi-com9.webnode.jp/page/9" target="_blank">13ninアカウントを作成し、あさクラメンバーになって下さい</a><br/>また、あなた様が<a href="/wiki/13ninstudio/要注意人物リスト" target="_blank">要注意人物リスト</a>に載って居る人物と<br/>関係が無いかチェックします -- さきちび 2025-05-09 (金) 12:40:11</li>
+                    <li><a href="https://sakitibi-com9.webnode.jp/page/9" target="_blank">13ninアカウントを作成し、あさクラメンバーになって下さい</a><br/>また、あなた様が<a href="/wiki/14ninstudio/要注意人物リスト" target="_blank">要注意人物リスト</a>に載って居る人物と<br/>関係が無いかチェックします -- さきちび 2025-05-09 (金) 12:40:11</li>
                     <li>あなた様はマイ鉄ネットで13ninアカウントにログインすることをお勧めします<br/>13ninアカウントでログインの下にあるはずです -- さきちび 2025-05-09 (金) 12:46:35</li>
                     <li>ログインしました。 -- マグロのユッケ 2025-05-28 (水) 20:15:51</li>
                     <li>上のコメントの人を2時間前に管理者コンタクトで通報しました<br/>通報メッセージは削除されました<br/>リクエストは完了したみたいです<br/>さきちび「対応しといたわ 23:08」 -- みぞれ 2025-05-28 (水) 23:14:03</li>
@@ -167,7 +167,7 @@ export default function BKMT_Front(){
                     <li>マイ鉄ネットワークの参加者がどんどん増えて来ちゃってる..<br/>これどうしよ -- みぞれ 2025-11-01 (土) 16:50:21</li>
                     <li><a href="https://wikiwiki.jp/p/information/view?id=8">これwikiwikiに警戒されてるんじゃ..</a> -- みぞれ 2025-12-08 (日) 12:21:53</li>
                     <li>やっぱ警戒されてそう -- さきちび 2025-12-15 (月) 17:56:32</li>
-                    <li>正当な活動なのに荒らし判定されてますなぜか<br/><a href="https://wikiwiki.jp/maitestu-net/-s/2b12c755">敵対勢力</a>のコメント欄にて(1525airexp)さんの投稿<br/>場合によっては<a href="/wiki/13ninstudio/要注意人物リスト">要注意人物リスト</a>に入れる場合がございます、 -- さきちび 2026-01-10 (土) 16:54:34</li>
+                    <li>正当な活動なのに荒らし判定されてますなぜか<br/><a href="https://wikiwiki.jp/maitestu-net/-s/2b12c755">敵対勢力</a>のコメント欄にて(1525airexp)さんの投稿<br/>場合によっては<a href="/wiki/14ninstudio/要注意人物リスト">要注意人物リスト</a>に入れる場合がございます、 -- さきちび 2026-01-10 (土) 16:54:34</li>
                     <li>ちなみに1525airexpさんの情報全てさきちびさんに開示請求した -- みぞれ 2026-01-16 (金) 15:57:23</li>
                     <li>いいですね -- ジャイアントパンダ 2026-02-22 (日) 18:25:47</li>
                     <li>サイト管理者です、 マイ鉄ネット撲滅委員会の利用規約に同意して下さい<a href="https://sakitibi.github.io/selects/e3839ee382a4e98984e3838de38383e38388e692b2e6bb85e5a794e593a1e4bc9a">(ここから)</a> -- さきちび 2026-02-27 (金) 22:04:54</li>

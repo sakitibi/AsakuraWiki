@@ -1,4 +1,4 @@
-import { StopStation, PassingStation } from "@/pages/special_wiki/13ninstudio/Minecraft.Metro.com";
+import { StopStation, PassingStation } from "@/pages/special_wiki/14ninstudio/Minecraft.Metro.com";
 
 const LineColor = '#9f00ff';
 export default function PurpleLine(){

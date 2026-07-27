@@ -60,15 +60,15 @@ export async function fetchLikedWikis(
     setLoadingLiked(false);
 }
 
-export async function fetched13ninstudioCounter(
-    setWiki13ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
+export async function fetched14ninstudioCounter(
+    setWiki14ninstudioCounter: React.Dispatch<React.SetStateAction<WikiCounter | null>>
 ) {
-    const requestURL:string = "https://counter.wikiwiki.jp/c/13ninstudio/pv/ru/index.html";
+    const requestURL:string = "https://counter.wikiwiki.jp/c/14ninstudio/pv/ru/index.html";
     const response:Response = await fetch(requestURL);
     try {
         isOpendns(response);
         const userData = await response.json();
-        setWiki13ninstudioCounter(userData);
+        setWiki14ninstudioCounter(userData);
     } catch (error) {
         isOpendns(response);
         console.error("fetch error:", error);

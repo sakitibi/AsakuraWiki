@@ -7,7 +7,7 @@ import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
 import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
 import FooterRu from '@/utils/pageParts/top/ru/Footer';
 import type { WikiPage, LikedWiki, WikiCounter } from '@/utils/pageParts/top/indexInterfaces';
-import { fetchRecentPages, fetchLikedWikis, fetched13ninstudioCounter } from '@/utils/pageParts/top/ru/indexfetchs';
+import { fetchRecentPages, fetchLikedWikis, fetched14ninstudioCounter } from '@/utils/pageParts/top/ru/indexfetchs';
 import { User } from '@supabase/auth-helpers-react';
 import LoginedUI from '@/utils/pageParts/top/ru/indexLogined';
 import LogoutedUI from '@/utils/pageParts/top/ru/indexLogouted';
@@ -22,7 +22,7 @@ export default function Home() {
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [likedWikis, setLikedWikis] = useState<LikedWiki[]>([]);
     const [loadingLiked, setLoadingLiked] = useState<boolean>(true);
-    const [wiki13ninstudioCounter, setWiki13ninstudioCounter] = useState<WikiCounter | null>(null);
+    const [wiki14ninstudioCounter, setWiki14ninstudioCounter] = useState<WikiCounter | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [mounted, setMounted] = useState(false);
     const [clientError, setClientError] = useState<ClientError | null>(null);
@@ -131,12 +131,12 @@ export default function Home() {
             setLoading
         );
         fetchLikedWikis(setLoadingLiked, setLikedWikis);
-        fetched13ninstudioCounter(setWiki13ninstudioCounter);
+        fetched14ninstudioCounter(setWiki14ninstudioCounter);
     }, [isBot]);
 
     useEffect(() => {
-        console.log("index: ", wiki13ninstudioCounter);
-    }, [wiki13ninstudioCounter]);
+        console.log("index: ", wiki14ninstudioCounter);
+    }, [wiki14ninstudioCounter]);
 
     /* ===============================
         theme（人間のみ）
@@ -149,7 +149,7 @@ export default function Home() {
         else html.removeAttribute('data-theme');
     }, [user, isBot]);
 
-    const wiki13ninstudioCounterTotal = wiki13ninstudioCounter?.total! + 1391;
+    const wiki14ninstudioCounterTotal = wiki14ninstudioCounter?.total! + 3695;
 
     /* ===============================
         body lock（人間のみ）
@@ -196,8 +196,8 @@ export default function Home() {
                 <main style={{ padding: '2rem', flex: 1, color: 'white' }}>
                     {user && !isBot ? (
                         <LoginedUI
-                            wiki13ninstudioCounter={wiki13ninstudioCounter}
-                            wiki13ninstudioCounterTotal={wiki13ninstudioCounterTotal}
+                            wiki14ninstudioCounter={wiki14ninstudioCounter}
+                            wiki14ninstudioCounterTotal={wiki14ninstudioCounterTotal}
                             pages={pages}
                             loading={loading}
                             likedWikis={likedWikis}

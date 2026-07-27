@@ -270,7 +270,7 @@ export default function WikiPage() {
     useEffect(() => {
         if(!wikiSlugStr || !pageSlugStr) return;
         async function counterfetch(){
-            return await fetch(`https://counter.wikiwiki.jp/c/13ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`);
+            return await fetch(`https://counter.wikiwiki.jp/c/14ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`);
         }
         counterfetch();
         if(wikiSlugStr === special_wiki_list[0] && pageSlugStr === "FrontPage"){

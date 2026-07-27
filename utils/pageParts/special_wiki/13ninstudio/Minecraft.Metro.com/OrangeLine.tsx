@@ -1,4 +1,4 @@
-import { StopStation, SomeStopStation } from "@/pages/special_wiki/13ninstudio/Minecraft.Metro.com";
+import { StopStation, SomeStopStation } from "@/pages/special_wiki/14ninstudio/Minecraft.Metro.com";
 
 const LineColor = '#ff6000';
 export default function OrangeLine(){

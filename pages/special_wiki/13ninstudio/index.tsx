@@ -9,7 +9,7 @@ export default function Redirecting() {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         redirect: {
-            destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/wiki/13ninstudio`,
+            destination: `${process.env.NEXT_PUBLIC_API_BASE_URL}/wiki/14ninstudio`,
             permanent: false,
         },
     };

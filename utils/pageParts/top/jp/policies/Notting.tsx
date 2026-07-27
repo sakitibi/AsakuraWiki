@@ -1,4 +1,5 @@
 import { kokuseiChousaStr } from "@/pages/news/2025/10/08/1";
+import { company } from "@/utils/version";
 
 export default function PoliciesNotting(){
     return(
@@ -63,7 +64,7 @@ export default function PoliciesNotting(){
                         <a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>の配信の概要欄を見る、または概要欄を勧める行為
                     </strong>
                 </li>
-                <li><a className="danger_list" href="https://sakitibi-com9.webnode.jp/page/10">13ninstudioの利用規約</a>に反する行為</li>
+                <li><a className="danger_list" href="https://sakitibi-com9.webnode.jp/page/10">{company}の利用規約</a>に反する行為</li>
                 <li>前各号の行為を直接または間接に惹起し、または容易にする行為</li>
                 <li>その他、当社が不適切と判断する行為</li>
             </ol>

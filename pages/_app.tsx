@@ -25,7 +25,7 @@ const TermsAgreeIgnorePaths: string[] = [
     "/policies",
     "/privacy",
     "/rules",
-    "/special_wiki/13ninstudio/amongus/rules"
+    "/special_wiki/14ninstudio/amongus/rules"
 ]
 
 const ImageContainerIgnorePaths: string[] = [
@@ -88,6 +88,18 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         if (typeof window === 'undefined') return;
 
         const { pathname, search, hash } = window.location;
+
+        if (
+            pathname.startsWith("/special_wiki/13ninstudio")
+        ) {
+            router.replace("/special_wiki/14ninstudio" + pathname.slice(25, pathname.length) + search + hash);
+        }
+
+        if (
+            pathname.startsWith("/wiki/13ninstudio")
+        ) {
+            router.replace("/wiki/14ninstudio" + pathname.slice(17, pathname.length) + search + hash);
+        }
 
         if (pathname === '/index.askr') {
             router.replace('/' + search + hash);
@@ -163,7 +175,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     }, [isBot]);
 
     /* ===============================
-        wiki13ninstudioCounter（人間のみ）
+        wiki14ninstudioCounter（人間のみ）
     =============================== */
     useEffect(() => {
         if (isBot) return;
@@ -171,7 +183,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         (async () => {
             try {
                 const res = await fetch(
-                    'https://counter.wikiwiki.jp/c/13ninstudio/pv/_app',
+                    'https://counter.wikiwiki.jp/c/14ninstudio/pv/_app',
                     { cache: 'no-store' }
                 );
                 if (!res.ok) return;
@@ -273,7 +285,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     useEffect(() => {
         if (isBot === false && !asakura_member_list_found) {
             (async function(){/*
-                const res = await fetch("/api/wiki13-counter2");
+                const res = await fetch("/api/wiki14-counter2");
                 const data = await res.json();
                 console.log("counter2 response: ", data);
                 setRes(data);*/

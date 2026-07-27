@@ -47,7 +47,7 @@ export default function NewsPage() {
                         <p>名前は長い方が有利の部屋に入らないで下さい</p>
                         <p>名前は長い方が有利の概要欄を見ないで下さい</p>
                         <p>これは重要警告です</p>
-                        <p><a href="/wiki/13ninstudio/名前は長い方が有利被害者">詳しくはこちら</a></p>
+                        <p><a href="/wiki/14ninstudio/名前は長い方が有利被害者">詳しくはこちら</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>

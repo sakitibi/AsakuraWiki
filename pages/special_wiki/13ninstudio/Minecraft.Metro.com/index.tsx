@@ -3,15 +3,15 @@ import { useRouter } from 'next/router';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import Head from 'next/head';
 import Script from 'next/script';
-import DarkOakForestLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/DarkOakForestLine';
-import RedLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/RedLine';
-import CyanLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/CyanLine';
-import OrangeLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/OrangeLine';
-import PurpleLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/PurpleLine';
-import YellowLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/YellowLine';
-import BrownLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/BrownLine';
-import GreenLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/GreenLine';
-import AirPortLine from '@/utils/pageParts/special_wiki/13ninstudio/Minecraft.Metro.com/AirPortLine';
+import DarkOakForestLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/DarkOakForestLine';
+import RedLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/RedLine';
+import CyanLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/CyanLine';
+import OrangeLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/OrangeLine';
+import PurpleLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/PurpleLine';
+import YellowLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/YellowLine';
+import BrownLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/BrownLine';
+import GreenLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/GreenLine';
+import AirPortLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/AirPortLine';
 import { User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
 
@@ -252,7 +252,7 @@ export default function WikiPage() {
                                     </>
                                 ))}
                                 <div className="center">
-                                    <p style={{ color: 'yellow' }}><a href="/wiki/13ninstudio/Minecraft.Metro.com/コメント">コメント欄はこちら</a></p>
+                                    <p style={{ color: 'yellow' }}><a href="/wiki/14ninstudio/Minecraft.Metro.com/コメント">コメント欄はこちら</a></p>
                                 </div>
                             </div>
                         </div>

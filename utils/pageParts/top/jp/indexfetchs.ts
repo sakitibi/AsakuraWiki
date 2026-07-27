@@ -76,16 +76,16 @@ export async function fetchLikedWikis(
 }
 
 /* =========================
- * 13ninstudio Counter
+ * 14ninstudio Counter
  * ========================= */
-export async function fetched13ninstudioCounter(
-    setWiki13ninstudioCounter: React.Dispatch<
+export async function fetched14ninstudioCounter(
+    setWiki14ninstudioCounter: React.Dispatch<
         React.SetStateAction<WikiCounter | null>
     >
 ): Promise<void> {
     try {
         // ★ クライアント → 自サイト API（CORS 回避）
-        const response = await fetch("/api/wiki13-counter", {
+        const response = await fetch("/api/wiki14-counter", {
             cache: "no-store",
         });
 
@@ -94,9 +94,9 @@ export async function fetched13ninstudioCounter(
         }
 
         const userData: WikiCounter = await response.json();
-        setWiki13ninstudioCounter(userData);
+        setWiki14ninstudioCounter(userData);
     } catch (error) {
-        console.error("fetched13ninstudioCounter error:", error);
+        console.error("fetched14ninstudioCounter error:", error);
 
         // ★ 人間ブラウザのみ通知（bot/GSC完全無視）
         if (

@@ -170,7 +170,7 @@ export default function MinecraftVS(){
                                 <h2>切り抜きについて</h2>
                                 <p>ご自由に構いませんが、以下のルールを厳守して下さい、</p>
                                 <ul>
-                                    <li>クレジット表記をする 例: 「マイクラバーサスは13ninstudioの企画です」</li>
+                                    <li>クレジット表記をする 例: 「マイクラバーサスは14ninstudioの企画です」</li>
                                     <li><a href="/policies">13nin利用規約</a>を厳守する</li>
                                     <li>配信者のガイドラインを厳守する</li>
                                     <li>このページのリンクを概要欄に貼る</li>

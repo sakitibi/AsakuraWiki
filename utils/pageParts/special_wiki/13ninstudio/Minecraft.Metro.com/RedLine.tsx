@@ -1,4 +1,4 @@
-import { StopStation } from "@/pages/special_wiki/13ninstudio/Minecraft.Metro.com";
+import { StopStation } from "@/pages/special_wiki/14ninstudio/Minecraft.Metro.com";
 
 const LineColor = 'red';
 export default function RedLine(){
