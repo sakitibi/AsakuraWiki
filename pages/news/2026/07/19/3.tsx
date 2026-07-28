@@ -108,9 +108,9 @@ export default function NewsPage() {
                         <p><a href="https://github.com/sakitibi/AsakuraWiki-Images/tree/main/BloadcastCommittee/snap-2026-schedule/part2">後団ルート</a></p>
                         <p>
                             <a
-                                href="https://release-assets.githubusercontent.com/github-production-release-asset/1021277781/cc46f7f9-5e30-42a7-a97d-adcf075b280b?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-07-28T02%3A50%3A28Z&rscd=attachment%3B+filename%3Dsnap-2026.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-07-28T01%3A49%3A29Z&ske=2026-07-28T02%3A50%3A28Z&sks=b&skv=2018-11-09&sig=ZGFzsu%2FBGyCp1xbDewMcPJpGEnLzwl4X3K9XbLDRFRE%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4NTIwNjU1MSwibmJmIjoxNzg1MjA0NzUxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.unpfkif8LJV5GZWZnwLs038C7Kp7LMcVDCo7rCHhguI&response-content-disposition=attachment%3B%20filename%3Dsnap-2026.zip&response-content-type=application%2Foctet-stream"
-                                download="広報委員会写真撮影活動2026前団.zip"
-                            >前団撮影写真ダウンロード(zip形式)</a>
+                                href="https://release-assets.githubusercontent.com/github-production-release-asset/1021277781/e113402b-a0ae-4180-82b6-59e8dc84030f?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-07-28T14%3A40%3A49Z&rscd=attachment%3B+filename%3Dsnap-2026.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-07-28T13%3A39%3A55Z&ske=2026-07-28T14%3A40%3A49Z&sks=b&skv=2018-11-09&sig=LiJN4k%2FLz8casasZ5My4iebWSHBtvtDJkp32fvYsqXo%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc4NTI0OTk5MywibmJmIjoxNzg1MjQ2MzkzLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.jzfBWywlvf9sw0e9sGnsg_4X7aBwSzwNpDqwujqGLJ0&response-content-disposition=attachment%3B%20filename%3Dsnap-2026.zip&response-content-type=application%2Foctet-stream"
+                                download="広報委員会写真撮影活動2026.zip"
+                            >撮影写真ダウンロード(zip形式)</a>
                         </p>
                         <hr/><br/>
                         <p><a href="/news/2026/07/19/2">第2ページに戻る..</a></p>

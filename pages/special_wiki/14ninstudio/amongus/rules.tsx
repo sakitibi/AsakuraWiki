@@ -45,7 +45,7 @@ export default function AmongusRoomRulesRedirect() {
                     <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
                         <div id="body">
                             <h1>リダイレクト</h1>
-                            <p><a href="https://sakitibi.github.io/14nin.com/Amongusの13人TV部屋のルール">Amongusの13人TV部屋のルール</a></p>
+                            <p><a href="https://sakitibi.github.io/14nin.com/Amongusの14人TV部屋のルール">Amongusの13人TV部屋のルール</a></p>
                         </div>
                         <br/>
                         <div id="ad-container" style={{ textAlign: 'center' }}>
