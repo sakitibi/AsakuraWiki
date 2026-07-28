@@ -24,7 +24,7 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/12/14 18-е — 13ninGamesStore в полном разгаре!</title>
+                <title>2025/12/14 18-е — 14ninGamesStore в полном разгаре!</title>
             </Head>
             <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -32,10 +32,10 @@ export default function NewsPage() {
                 <div className={styles.contents}>
                     <LeftMenuRu URL="/news/2025/12/14/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/12/14 18-е — 13ninGamesStore в полном разгаре!</h1>
+                        <h1>2025/12/14 18-е — 14ninGamesStore в полном разгаре!</h1>
                         <p>Причина в том, что Закон о смартфонах<br/> вступит в силу с 18 декабря 2025 года</p>
                         <p>Он был там уже давно, но практически<br/> невозможно было его опубликовать</p>
-                        <p>18 декабря 2025 года — Любой, у кого есть аккаунт 13nin</p>
+                        <p>18 декабря 2025 года — Любой, у кого есть аккаунт 14nin</p>
                         <p>Любой может его опубликовать</p>
                         <p><a href='/store'>Нажмите здесь для получения подробностей</a></p>
                     </main>

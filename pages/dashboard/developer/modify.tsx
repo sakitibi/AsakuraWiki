@@ -54,8 +54,8 @@ export default function DeveloperConsoleModify() {
         setLoading(true);
         try{
             if(!user){
-                alert("Error: 13ninアカウントが未登録です");
-                throw new Error("Error: 13ninアカウントが未登録です");
+                alert("Error: 14ninアカウントが未登録です");
+                throw new Error("Error: 14ninアカウントが未登録です");
             }
             const developerData:DeveloperProps[] | undefined = await devFetch();
             if(!developerData || developerData.length === 0){
@@ -92,7 +92,7 @@ export default function DeveloperConsoleModify() {
                 console.error("Error: ", error.message);
                 return;
             }
-            alert("13ninDeveloperConsole変更完了!");
+            alert("14ninDeveloperConsole変更完了!");
             location.replace(`/store/developer/${developerTopLevelDomain}.${developerid}`);
         } catch(e){
             console.error("Error: ", e);
@@ -104,7 +104,7 @@ export default function DeveloperConsoleModify() {
         <>
             <Head>
                 <meta charSet='UTF-8' />
-                <title>13ninデベロッパコンソール変更</title>
+                <title>14ninデベロッパコンソール変更</title>
                 <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/store.module.css" />
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
@@ -119,7 +119,7 @@ export default function DeveloperConsoleModify() {
                                     className="fa-solid fa-gear-complex-code"
                                     style={{ fontSize: "inherit" }}
                                 ></i>
-                                13ninデベロッパコンソール変更
+                                14ninデベロッパコンソール変更
                             </h1>
                             <form onSubmit={DevConsoleRegister}>
                                 <label>
@@ -151,7 +151,7 @@ export default function DeveloperConsoleModify() {
                                 </label>
                                 <br/><br/>
                                 <button type="submit" disabled={loading}>
-                                    <span>13ninデベロッパコンソール変更</span>
+                                    <span>14ninデベロッパコンソール変更</span>
                                 </button>
                             </form>
                         </>

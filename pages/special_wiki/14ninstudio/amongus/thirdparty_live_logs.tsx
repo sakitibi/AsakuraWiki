@@ -41,8 +41,8 @@ export default function AmongusOthersRoomJoinedLogs() {
                     <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
                         <div id="body">
                             <h1>Amongusの13人TVの他配信者さんの部屋での試合記録</h1>
-                            <p><a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">ルールはこちら</a></p>
-                            <p>該当の他配信者さんが<a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">ルール</a>や<a href="/policies">利用規約</a>に違反した場合は削除されます。</p>
+                            <p><a href="https://sakitibi.github.io/14nin.com/Amongusの13人TV部屋のルール">ルールはこちら</a></p>
+                            <p>該当の他配信者さんが<a href="https://sakitibi.github.io/14nin.com/Amongusの13人TV部屋のルール">ルール</a>や<a href="/policies">利用規約</a>に違反した場合は削除されます。</p>
                             <div id="live_logs">
                                 <section id="UC1HxHVAadoOwBN6k5oozGcw">
                                     <p><a href="https://youtube.com/channel/UC1HxHVAadoOwBN6k5oozGcw">國産わっふる さん</a></p>
@@ -113,10 +113,10 @@ export default function AmongusOthersRoomJoinedLogs() {
                     {asakura_member_list_found ? null : (
                         <>
                             <Script
-                                src='https://sakitibi.github.io/14ninadmanager.com/js/13nin_vignette_v2_main.js'
+                                src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_main.js'
                             />
                             <Script
-                                src='https://sakitibi.github.io/14ninadmanager.com/js/13nin_vignette_v2_util.js'
+                                src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_util.js'
                             />    
                         </>
                     )}

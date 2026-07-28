@@ -5,7 +5,7 @@ import {
     encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
 import { User } from "@supabase/auth-helpers-react";
-import { getAge, type BirthDayProps, type CountrieTypes, type GenderTypes } from "@/pages/login/13nin/signup";
+import { getAge, type BirthDayProps, type CountrieTypes, type GenderTypes } from "@/pages/login/14nin/signup";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { encodeBase64Unicode, gzipAndBase64 } from "@/lib/base64";
 import upack from '@/node_modules/upack.js/src/index';
@@ -203,7 +203,7 @@ export default function AccountsSetup(){
                         </label>
                         <br /><br />
                         <label>
-                            <a href="https://sakitibi-com9.webnode.jp/page/10">13nin利用規約</a>に同意
+                            <a href="https://sakitibi-com9.webnode.jp/page/10">14nin利用規約</a>に同意
                             <input
                                 type="checkbox" 
                                 required

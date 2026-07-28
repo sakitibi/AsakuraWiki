@@ -11,7 +11,7 @@ export default function Redirecting() {
         const isBot = /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
 
         if (isBot) {
-            location.replace("https://sakitibi.github.io/13nin.com/staff_credits");
+            location.replace("https://sakitibi.github.io/14nin.com/staff_credits");
             return;
         }
         const url = new URL(location.href);
@@ -27,7 +27,7 @@ export default function Redirecting() {
             const { data } = await supabaseClient.auth.getSession();
             const token = data.session?.access_token;
             location.replace(
-                `https://sakitibi.github.io/13nin.com/staff_credits?login=${token}${id ? `&id=${id}` : ""}`
+                `https://sakitibi.github.io/14nin.com/staff_credits?login=${token}${id ? `&id=${id}` : ""}`
             );
         } else {
             location.replace("/login");

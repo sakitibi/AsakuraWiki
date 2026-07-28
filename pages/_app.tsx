@@ -90,13 +90,13 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         const { pathname, search, hash } = window.location;
 
         if (
-            pathname.startsWith("/special_wiki/13ninstudio")
+            pathname.startsWith("/special_wiki/14ninstudio")
         ) {
             router.replace("/special_wiki/14ninstudio" + pathname.slice(25, pathname.length) + search + hash);
         }
 
         if (
-            pathname.startsWith("/wiki/13ninstudio")
+            pathname.startsWith("/wiki/14ninstudio")
         ) {
             router.replace("/wiki/14ninstudio" + pathname.slice(17, pathname.length) + search + hash);
         }

@@ -32,7 +32,7 @@ export default function AmongusRoomRulesRedirect() {
     }, [designColor]);
 
     useEffect(() => {
-        location.replace("https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール");
+        location.replace("https://sakitibi.github.io/14nin.com/Amongusの13人TV部屋のルール");
     }, [])
 
     return (
@@ -45,7 +45,7 @@ export default function AmongusRoomRulesRedirect() {
                     <article style={{ padding: '2rem', maxWidth: 800 }} className='columnCenter'>
                         <div id="body">
                             <h1>リダイレクト</h1>
-                            <p><a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">Amongusの13人TV部屋のルール</a></p>
+                            <p><a href="https://sakitibi.github.io/14nin.com/Amongusの13人TV部屋のルール">Amongusの13人TV部屋のルール</a></p>
                         </div>
                         <br/>
                         <div id="ad-container" style={{ textAlign: 'center' }}>
@@ -55,10 +55,10 @@ export default function AmongusRoomRulesRedirect() {
                     {asakura_member_list_found ? null : (
                         <>
                             <Script
-                                src='https://sakitibi.github.io/14ninadmanager.com/js/13nin_vignette_v2_main.js'
+                                src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_main.js'
                             />
                             <Script
-                                src='https://sakitibi.github.io/14ninadmanager.com/js/13nin_vignette_v2_util.js'
+                                src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_util.js'
                             />    
                         </>
                     )}

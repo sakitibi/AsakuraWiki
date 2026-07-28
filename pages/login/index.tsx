@@ -105,10 +105,10 @@ export default function LoginPage() {
                         </h1>
                         <p>ログイン方法を選択してください：</p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.5rem' }}>
-                            <Link href="/login/13nin/">
-                                <button style={buttonStyle}><span>13ninアカウントでログイン(推奨)</span></button>
+                            <Link href="/login/14nin/">
+                                <button style={buttonStyle}><span>14ninアカウントでログイン(推奨)</span></button>
                             </Link>
-                            <Link href="/login/13nin/secretcodes">
+                            <Link href="/login/14nin/secretcodes">
                                 <button style={buttonStyle}><span>あさクラシークレットコードでログイン</span></button>
                             </Link>
                             <Link href="/login/github">

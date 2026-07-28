@@ -54,7 +54,7 @@ export default function Store({ osusume }: StoreProps) {
         <>
             <Head>
                 <meta charSet="UTF-8" />
-                <title>13ninGamesStore</title>
+                <title>14ninGamesStore</title>
             </Head>
 
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />
@@ -66,7 +66,7 @@ export default function Store({ osusume }: StoreProps) {
                     <LeftMenuJp URL="/store" rupages="false" />
 
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>13ninGamesStore</h1>
+                        <h1>14ninGamesStore</h1>
                         <div id="osusume-apps">
                             <p>おすすめアプリ</p>
                             {osusume.length > 0 ? (

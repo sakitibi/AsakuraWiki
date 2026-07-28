@@ -137,7 +137,7 @@ export default function Store() {
         <>
             <Head>
                 <meta charSet='UTF-8' />
-                <title>13ninGamesStoreに公開</title>
+                <title>14ninGamesStoreに公開</title>
                 <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/store.module.css" />
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />

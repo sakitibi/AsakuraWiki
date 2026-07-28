@@ -5,7 +5,7 @@ import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 import { User } from '@supabase/auth-helpers-react';
 import { gzipAndBase64 } from '@/lib/base64';
-import { BirthDayProps, CountrieTypes, GenderTypes, getAge } from '@/pages/login/13nin/signup';
+import { BirthDayProps, CountrieTypes, GenderTypes, getAge } from '@/pages/login/14nin/signup';
 
 export default function ModifyPage() {
     const [email, setEmail] = useState('');
@@ -154,12 +154,12 @@ export default function ModifyPage() {
     return provider === "email" ? (
         <>
             <Head>
-                <title>13ninアカウントを情報変更</title>
+                <title>14ninアカウントを情報変更</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 500 }}>
                 <h1>
                     <i className="fa-duotone fa-solid fa-user-pen"></i>
-                    13ninアカウントを情報変更
+                    14ninアカウントを情報変更
                 </h1>
                 <form onSubmit={handleModify}>
                     <input
@@ -265,8 +265,8 @@ export default function ModifyPage() {
             </Head>
             <main style={{ padding: '2rem', maxWidth: 600 }}>
                 <h1>403 Forbidden</h1>
-                <p>13ninアカウントを情報変更する権限が有りません</p>
-                <p><a href="/login/13nin">他のアカウントにログイン</a></p>
+                <p>14ninアカウントを情報変更する権限が有りません</p>
+                <p><a href="/login/14nin">他のアカウントにログイン</a></p>
             </main>
         </>
     );

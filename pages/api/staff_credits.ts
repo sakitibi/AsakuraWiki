@@ -43,7 +43,7 @@ export default async function handler(
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-data-type');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
     // 取得したいURLのリスト
-    const base_url = "https://sakitibi.github.io/13nin.com/staff_credits/staff_data_";
+    const base_url = "https://sakitibi.github.io/14nin.com/staff_credits/staff_data_";
     const urls = [
         `${base_url}1_64.json.br`,
         `${base_url}65_128.json.br`,

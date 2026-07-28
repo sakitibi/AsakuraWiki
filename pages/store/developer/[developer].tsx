@@ -40,7 +40,7 @@ export default function Store({ apps, developers, developersStr }: StorePageProp
         <>
             <Head>
                 <meta charSet='UTF-8' />
-                <title>{developers.developer_name} 13ninGamesStore</title>
+                <title>{developers.developer_name} 14ninGamesStore</title>
                 <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/store.module.css" />
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus} />

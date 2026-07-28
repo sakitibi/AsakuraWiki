@@ -27,7 +27,7 @@ export default function RightMenuJp(){
                 <h2 className={styles.pForBeginner__title}>姉妹サービス</h2>
                 <ul className={styles.pForBeginner__list}>
                     <li className={styles.pForBeginner__item}>
-                        <a href="/store">13ninGamesStore</a>
+                        <a href="/store">14ninGamesStore</a>
                     </li>
                 </ul>
             </div>

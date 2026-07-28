@@ -59,7 +59,7 @@ export default function NewsPage() {
                             <p>その「{kokuseiChousaStr}」は<strong>個人情報を抜くための罠です!!</strong></p>
                             <p>騙されないで下さい!!</p>
                             <p>「https://www.e-kokusei.go.jp」は危険なサイトです!!</p>
-                            <p><a href="https://sakitibi-com9.webnode.jp/page/10">13nin利用規約</a>では個人情報を抜くなどの行為は「悪意のあるマルウェアやウイルス」</p>
+                            <p><a href="https://sakitibi-com9.webnode.jp/page/10">14nin利用規約</a>では個人情報を抜くなどの行為は「悪意のあるマルウェアやウイルス」</p>
                             <p>に該当する場合がございます、</p>
                             <p><a href='https://www.torproject.org/ja/'>Tor Browser</a>を使用している場合でもアクセスしないで下さい!!</p>
                             <p>また、全{company}サービス(SKNewRolesなどのゲーム類含む)</p>
@@ -67,10 +67,10 @@ export default function NewsPage() {
                                 <strong style={{ color: 'red' }}>一発でBAN&IPブロック</strong>
                             をします、</p>
                             <p>名前は長い方が有利よりも知名度が高い為、もし「{kokuseiChousaStr}」を勧める様な行為は見かけた際は</p>
-                            <p><a href="https://sakitibi-com9.webnode.jp/page/3">13ninフィードバック</a>をお送りして下さい、</p>
+                            <p><a href="https://sakitibi-com9.webnode.jp/page/3">14ninフィードバック</a>をお送りして下さい、</p>
                             <p>意図的に「{kokuseiChousaStr}」を勧める様な行為を無視して通報しなかった場合も</p>
                             <p><strong style={{ color: 'red' }}>一発でBAN&IPブロック</strong>をします、</p>
-                            <p>この情報は自動的に全13ninアカウントユーザーにメールで送信されました</p>
+                            <p>この情報は自動的に全14ninアカウントユーザーにメールで送信されました</p>
                         </div>
                         <div id="taisaku">
                             <h2>{kokuseiChousaStr}対策</h2>

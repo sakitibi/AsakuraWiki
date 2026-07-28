@@ -91,7 +91,7 @@ export default function CreateSecretCode() {
                             ></i>
                             あさクラシークレットコードを作る
                         </h1>
-                        <p>注意 13ninアカウントでログインしないと<br/>この機能は使用出来ません</p>
+                        <p>注意 14ninアカウントでログインしないと<br/>この機能は使用出来ません</p>
                         <button onClick={async() => await handleClick()} disabled={loading}>
                             <span>{loading ? '作成中…' : 'あさクラシークレットコードを作成'}</span>
                         </button>
@@ -112,7 +112,7 @@ export default function CreateSecretCode() {
                     <main style={{ padding: '2rem', maxWidth: 600 }}>
                         <h1>403 Forbidden</h1>
                         <p>あさクラシークレットコードを作成する権限が有りません</p>
-                        <p><a href="/login/13nin">他のアカウントにログイン</a></p>
+                        <p><a href="/login/14nin">他のアカウントにログイン</a></p>
                     </main>
                 </>
             )}

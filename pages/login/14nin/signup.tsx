@@ -133,7 +133,7 @@ export default function SignUpPage() {
     return (
         <>
             <Head>
-                <title>13ninアカウントを新規登録</title>
+                <title>14ninアカウントを新規登録</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 500 }}>
                 <h1>📝 新規登録</h1>
@@ -222,7 +222,7 @@ export default function SignUpPage() {
                     </label>
                     <br /><br />
                     <label>
-                        <a href="https://sakitibi-com9.webnode.jp/page/10">13nin利用規約</a>に同意
+                        <a href="https://sakitibi-com9.webnode.jp/page/10">14nin利用規約</a>に同意
                         <input
                             type="checkbox" 
                             required

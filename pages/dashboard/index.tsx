@@ -106,7 +106,7 @@ export default function DashboardPage({ user, mywikis, developerData, serverHour
                                 }
                             >
                                 <span>
-                                    13ninアカウント情報変更
+                                    14ninアカウント情報変更
                                     {provider !== 'email' ? '(使用不可)' : null}
                                 </span>
                             </button>
@@ -118,7 +118,7 @@ export default function DashboardPage({ user, mywikis, developerData, serverHour
                                     }
                                 >
                                     <span>
-                                        13ninデベロッパコンソール情報変更
+                                        14ninデベロッパコンソール情報変更
                                     </span>
                                 </button>
                             ) : (
@@ -128,7 +128,7 @@ export default function DashboardPage({ user, mywikis, developerData, serverHour
                                     }
                                 >
                                     <span>
-                                        13ninデベロッパコンソール登録
+                                        14ninデベロッパコンソール登録
                                     </span>
                                 </button>
                             )}

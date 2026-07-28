@@ -74,7 +74,7 @@ export default function BKMT_Front(){
                 <h3 style="${H3Styles}">著作権侵害について</h3>
                 <p>著作権法第十条で挙げられたものには、例外なく全てに著作権が発生します。著作権をはじめとする知的財産権の侵害は、時には裁判などに発展することもあります。</p>
                 <p>権利侵害を受けた方は、当委員会に直接お問い合わせください。解決が難しいと当委員会が判断した場合は、<a href="https://sakitibi-com9.webnode.jp/page/3" target="_blank">管理者への相談をお勧めします。</a></p>
-                <p>(※送信防止措置の請求には、問い合わせフォームにて13ninアカウントが必要です。)</p>
+                <p>(※送信防止措置の請求には、問い合わせフォームにて14ninアカウントが必要です。)</p>
             </div>
             <div id="about-terms">
                 <h3 style="${H3Styles}">利用規約について</h3>
@@ -139,8 +139,8 @@ export default function BKMT_Front(){
                     <li><a href="https://c.kuku.lu/d5rxyxs6" target="_blank">マイ鉄ネット撲滅委員会のチャットルーム開設</a> -- さきちび 2025-04-04 (金) 11:41:54</li>
                     <li>匿名を委員会メンバーに追加 -- さきちび 2025-04-13 (日) 11:35:01</li>
                     <li>メンバーになりたいです。現在は荒らし対策委員会にいます -- マグロのユッケ 2025-05-08 (木) 12:54:03</li>
-                    <li><a href="https://sakitibi-com9.webnode.jp/page/9" target="_blank">13ninアカウントを作成し、あさクラメンバーになって下さい</a><br/>また、あなた様が<a href="/wiki/14ninstudio/要注意人物リスト" target="_blank">要注意人物リスト</a>に載って居る人物と<br/>関係が無いかチェックします -- さきちび 2025-05-09 (金) 12:40:11</li>
-                    <li>あなた様はマイ鉄ネットで13ninアカウントにログインすることをお勧めします<br/>13ninアカウントでログインの下にあるはずです -- さきちび 2025-05-09 (金) 12:46:35</li>
+                    <li><a href="https://sakitibi-com9.webnode.jp/page/9" target="_blank">14ninアカウントを作成し、あさクラメンバーになって下さい</a><br/>また、あなた様が<a href="/wiki/14ninstudio/要注意人物リスト" target="_blank">要注意人物リスト</a>に載って居る人物と<br/>関係が無いかチェックします -- さきちび 2025-05-09 (金) 12:40:11</li>
+                    <li>あなた様はマイ鉄ネットで14ninアカウントにログインすることをお勧めします<br/>14ninアカウントでログインの下にあるはずです -- さきちび 2025-05-09 (金) 12:46:35</li>
                     <li>ログインしました。 -- マグロのユッケ 2025-05-28 (水) 20:15:51</li>
                     <li>上のコメントの人を2時間前に管理者コンタクトで通報しました<br/>通報メッセージは削除されました<br/>リクエストは完了したみたいです<br/>さきちび「対応しといたわ 23:08」 -- みぞれ 2025-05-28 (水) 23:14:03</li>
                     <li>対応しといたわ、みぞれさん、<br/>ご協力ありがとうございます。 -- さきちび 2025-05-28 (水) 23:20:18</li>
@@ -218,10 +218,10 @@ export default function BKMT_Front(){
             {isBot || asakura_member_list_found ? null : (
                 <>
                     <Script
-                        src='https://sakitibi.github.io/14ninadmanager.com/js/13nin_vignette_v2_main.js'
+                        src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_main.js'
                     />
                     <Script
-                        src='https://sakitibi.github.io/14ninadmanager.com/js/13nin_vignette_v2_util.js'
+                        src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_util.js'
                     />    
                 </>
             )}

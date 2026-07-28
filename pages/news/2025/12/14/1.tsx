@@ -35,7 +35,7 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2025/12/14 18日〜13ninGamesStore本格開設!</title>
+                <title>2025/12/14 18日〜14ninGamesStore本格開設!</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -43,10 +43,10 @@ export default function NewsPage() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/news/2025/12/14/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2025/12/14 18日〜13ninGamesStore本格開設!</h1>
+                        <h1>2025/12/14 18日〜14ninGamesStore本格開設!</h1>
                         <p>理由は2025年12月18日〜スマホ法が実施されるためです</p>
                         <p>前からもありましたが、公開が基本できませんでした</p>
-                        <p>が2025年12月18日〜誰でも13ninアカウントがあれば</p>
+                        <p>が2025年12月18日〜誰でも14ninアカウントがあれば</p>
                         <p>誰でも公開が出来ます</p>
                         <p><a href="/store">詳しくはこちら</a></p>
                     </main>

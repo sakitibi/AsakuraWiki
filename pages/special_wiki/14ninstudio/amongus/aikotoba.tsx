@@ -120,7 +120,7 @@ export default function AmongusRoomAuthCode() {
                                 <>
                                     <h1>認証が完了しました!</h1>
                                     <p><a href="amongus:">Amongus部屋にお戻り下さい</a></p>
-                                    <p><a href="https://sakitibi.github.io/13nin.com/Amongusの13人TV部屋のルール">Amongusの13人TV部屋のルール</a></p>
+                                    <p><a href="https://sakitibi.github.io/14nin.com/Amongusの13人TV部屋のルール">Amongusの13人TV部屋のルール</a></p>
                                     <p><a href="/policies">利用規約</a></p>
                                 </>
                             ) : (

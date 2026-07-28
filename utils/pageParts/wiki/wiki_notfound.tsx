@@ -30,7 +30,7 @@ export function WikiBanned(){
                         </span>
                         <span className="noticeWikiRemoval__text">
                             関連ページ：
-                            <a href="https://sakitibi-com9.webnode.jp/page/10" target='_blank'>13nin利用規約</a>
+                            <a href="https://sakitibi-com9.webnode.jp/page/10" target='_blank'>14nin利用規約</a>
                             <a href="/policies" target='_blank'>あさクラWiki利用規約</a>
                         </span>
                     </div>

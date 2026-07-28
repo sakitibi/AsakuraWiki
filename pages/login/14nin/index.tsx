@@ -79,7 +79,7 @@ export default function LoginPage() {
     return (
         <>
             <Head>
-                <title>13ninアカウントでログイン</title>
+                <title>14ninアカウントでログイン</title>
             </Head>
             <main style={{ padding: '2rem', maxWidth: 500 }}>
                 <h1>
@@ -87,7 +87,7 @@ export default function LoginPage() {
                         className="fa-solid fa-key"
                         style={{ fontSize: 'inherit' }}
                     ></i>
-                    13ninアカウントでログイン
+                    14ninアカウントでログイン
                 </h1>
                 <form onSubmit={handleLogin}>
                     <input
@@ -116,7 +116,7 @@ export default function LoginPage() {
                     </button>
                 </form>
                 <h2>まだアカウントを持っていませんか?</h2>
-                <Link href="/login/13nin/signup">
+                <Link href="/login/14nin/signup">
                     <a>
                         <button><span>新規登録</span></button>
                     </a>

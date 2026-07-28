@@ -10,7 +10,7 @@ export default function CreateWikiPage() {
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [agreeASKR, setAgreeASKR] = useState<boolean>(false);
-    const [agree13nin, setAgree13nin] = useState<boolean>(false);
+    const [agree14nin, setAgree14nin] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const router: NextRouter = useRouter();
     const [user, setUser] = useState<User | null>(null);
@@ -23,7 +23,7 @@ export default function CreateWikiPage() {
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
-        if (!agreeASKR || !agree13nin) {
+        if (!agreeASKR || !agree14nin) {
             alert('利用規約に同意してください。');
             return;
         }
@@ -148,8 +148,8 @@ export default function CreateWikiPage() {
                             </label>
                             <br/><br/>
                             <label>
-                                <input type="checkbox" checked={agree13nin} onChange={(e) => setAgree13nin(e.target.checked)} required />
-                                <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>13nin利用規約</a>に同意します
+                                <input type="checkbox" checked={agree14nin} onChange={(e) => setAgree14nin(e.target.checked)} required />
+                                <a href='https://sakitibi-com9.webnode.jp/page/10' target='_blank'>14nin利用規約</a>に同意します
                             </label>
                             <br/><br/>
                             <button type="submit" disabled={loading}>
@@ -160,7 +160,7 @@ export default function CreateWikiPage() {
                 ) : (
                     <>
                         <h1>Error 403 Forbidden</h1>
-                        <p><a href='/login'>13ninアカウントにログインして下さい</a></p>
+                        <p><a href='/login'>14ninアカウントにログインして下さい</a></p>
                     </>
                 )}
             </main>
