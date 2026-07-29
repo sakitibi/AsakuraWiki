@@ -51,21 +51,27 @@ export default async function handler(
     let zipReader: zip.ZipReader<any> | null = null;
 
     try {
+        // 通信オーバーヘッドを防ぐため、元のZIPバイナリを一括取得
+        const fetchRes = await fetch(url);
+        if (!fetchRes.ok) {
+            throw new Error(`ZIPファイルの取得に失敗しました: ${fetchRes.statusText}`);
+        }
+        const arrayBuffer = await fetchRes.arrayBuffer();
+
+        // 解凍用 Reader を作成
+        zipReader = new zip.ZipReader(new zip.Uint8ArrayReader(new Uint8Array(arrayBuffer)));
+        const entries = await zipReader.getEntries();
+
         res.setHeader('Content-Type', 'application/zip');
         res.setHeader('Content-Disposition', 'attachment; filename="unlocked.zip"');
 
-        // Node.js の PassThrough ストリームを作成し、レスポンスへパイプ接続
         const passThroughStream = new PassThrough();
         passThroughStream.pipe(res);
 
         const webWritableStream = Writable.toWeb(passThroughStream);
         const zipWriter = new zip.ZipWriter(webWritableStream);
 
-        // 元の暗号化ZIPを読み込み
-        zipReader = new zip.ZipReader(new zip.HttpReader(url));
-        const entries = await zipReader.getEntries();
-
-        // 各エントリを順番に復号して書き込み（高速化のため無圧縮 level: 0）
+        // 各エントリを高速インデックスループで復号・書き出し
         const entriesLength = entries.length;
         for (let i = entriesLength - 1; i >= 0; i--) {
             const entry = entries[i];
@@ -80,13 +86,13 @@ export default async function handler(
                 options.password = password;
             }
 
-            // 1ファイルごとに Uint8ArrayWriter で復号
+            // 1ファイルごとに復号
             const decompressedData = await entry.getData!(
                 new zip.Uint8ArrayWriter(), 
                 options
             );
 
-            // 無圧縮（level: 0）でストリームに流し込む
+            // 無圧縮（level: 0）で追加（再圧縮処理の負荷をスキップ）
             await zipWriter.add(
                 entry.filename, 
                 new zip.Uint8ArrayReader(decompressedData), 
@@ -94,7 +100,7 @@ export default async function handler(
             );
         }
 
-        // 書き込み完了処理
+        // クローズ処理（レスポンス完了）
         await zipWriter.close();
         await zipReader.close();
 
