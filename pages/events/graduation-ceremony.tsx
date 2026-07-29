@@ -3,21 +3,25 @@ import Head from 'next/head';
 import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { useCeremonyBroadcast } from '@/utils/useCeremonyBroadcast';
+import { rankColors } from '@/pages/admin/graduation-ceremony';
 
 export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | 'CLOSING';
 
-interface BroadcastPayload {
-    phase: Phase;
-    message: string;
-    soundFile?: string;
-    triggerConfetti?: boolean;
+export interface EmployeeInfo {
+    no: string;
+    name: string;
+    kana: string;
+    role: string;
+    rank: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
 export default function RetirementPage() {
     const [isJoined, setIsJoined] = useState(false);
     const [phase, setPhase] = useState<Phase>('WAITING');
     const [message, setMessage] = useState('退社式 開始までお待ちください');
-    
+
+
+    const [employee, setEmployee] = useState<EmployeeInfo | null>(null);
     // isJoinedの状態をRealtime通信内で正しく参照するためのRef
     const isJoinedRef = useRef(false);
 
@@ -53,50 +57,57 @@ export default function RetirementPage() {
     }, []);
 
     // 2. Realtime 購読 (退社式用チャンネル 'retirement' を指定)
-    useCeremonyBroadcast('retirement', (payload: BroadcastPayload) => {
+    useCeremonyBroadcast('retirement', (event, payload) => {
         // Refを使用して最新の入場状態をチェック
         if (!isJoinedRef.current) return; 
 
-        if (payload.phase) setPhase(payload.phase);
-        if (payload.message) setMessage(payload.message);
+        switch (event) {
+            case 'trigger':
+                if (payload.phase) setPhase(payload.phase);
+                if (payload.message) setMessage(payload.message);
 
-        // 音声再生 (audio要素を再利用する安定した方法)
-        const audioElements = document.getElementsByClassName("retirement_closing") as HTMLCollectionOf<HTMLAudioElement>;
-        if (payload.soundFile && audioElements.length > 0) {
-            for (let i = 0; i < audioElements.length; i++) {
-                audioElements[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
-                audioElements[i].play().catch(e => console.log("Audio play blocked", e));
-            }
-        }
-
-        // 金銀の紙吹雪 (退社式らしい演出)
-        if (payload.triggerConfetti) {
-            const duration = 5 * 1000;
-            const animationEnd = Date.now() + duration;
-
-            const frame = () => {
-                confetti({
-                    particleCount: 2,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0, y: 0.8 },
-                    colors: ['#FFD700', '#C0C0C0'], // ゴールド・シルバー
-                    zIndex: 9999
-                });
-                confetti({
-                    particleCount: 2,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1, y: 0.8 },
-                    colors: ['#FFD700', '#C0C0C0'],
-                    zIndex: 9999
-                });
-
-                if (Date.now() < animationEnd) {
-                    requestAnimationFrame(frame);
+                // 音声再生 (audio要素を再利用する安定した方法)
+                const audioElements = document.getElementsByClassName("retirement_closing") as HTMLCollectionOf<HTMLAudioElement>;
+                if (payload.soundFile && audioElements.length > 0) {
+                    for (let i = 0; i < audioElements.length; i++) {
+                        audioElements[i].src = `https://sakitibi.github.io/static.asakurawiki.com/sounds/${payload.soundFile}`;
+                        audioElements[i].play().catch(e => console.log("Audio play blocked", e));
+                    }
                 }
-            };
-            frame();
+
+                // 金銀の紙吹雪 (退社式らしい演出)
+                if (payload.triggerConfetti) {
+                    const duration = 5 * 1000;
+                    const animationEnd = Date.now() + duration;
+
+                    const frame = () => {
+                        confetti({
+                            particleCount: 2,
+                            angle: 60,
+                            spread: 55,
+                            origin: { x: 0, y: 0.8 },
+                            colors: ['#FFD700', '#C0C0C0'], // ゴールド・シルバー
+                            zIndex: 9999
+                        });
+                        confetti({
+                            particleCount: 2,
+                            angle: 120,
+                            spread: 55,
+                            origin: { x: 1, y: 0.8 },
+                            colors: ['#FFD700', '#C0C0C0'],
+                            zIndex: 9999
+                        });
+
+                        if (Date.now() < animationEnd) {
+                            requestAnimationFrame(frame);
+                        }
+                    };
+                    frame();
+                }
+                break;
+            case 'employee':
+                setEmployee(payload as EmployeeInfo);
+                break;
         }
     });
 
@@ -165,6 +176,26 @@ export default function RetirementPage() {
                         {message}
                     </h2>
                 </div>
+
+                {employee && (
+                    <div className="mt-12 rounded-xl border border-slate-700 bg-slate-900/60 p-8">
+                        <div className="text-lg text-slate-400">
+                            {employee.no}番
+                        </div>
+
+                        <div className={`mt-2 text-5xl font-bold ${rankColors[employee.rank]}`}>
+                            {employee.name}
+                        </div>
+
+                        <div className="mt-2 text-2xl text-slate-300">
+                            {employee.kana}
+                        </div>
+
+                        <div className="mt-4 text-3xl">
+                            {employee.role}
+                        </div>
+                    </div>
+                )}
 
                 <div className="absolute bottom-12 opacity-30">
                     <div className="text-[10px] tracking-[1em] text-slate-500 uppercase">Asakura Wiki Ceremony System</div>

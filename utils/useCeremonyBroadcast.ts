@@ -1,29 +1,21 @@
 import { supabaseClient } from '@/lib/supabaseClient';
 import { useEffect, useRef } from 'react';
 
-/**
- * 式典用リアルタイム通信フック
- * @param type 'entrance' | 'retirement' | 'birthday'
- * @param onTrigger メッセージ受信時のコールバック
- */
 export const useCeremonyBroadcast = (
-    type: 'entrance' | 'retirement' | 'birthday', 
-    onTrigger: (payload: any) => void
+    type: 'entrance' | 'retirement' | 'birthday',
+    onTrigger: (event: string, payload: any) => void
 ) => {
-    // 最新のコールバック関数を保持するためのRef（クロージャによる古い値の参照を防止）
     const triggerRef = useRef(onTrigger);
 
-    // 常に最新の onTrigger を Ref に入れる
     useEffect(() => {
         triggerRef.current = onTrigger;
     }, [onTrigger]);
 
     useEffect(() => {
-        // 管理画面の送信名に合わせてチャンネル名を動的に決定
         const channelName = `ceremony_room_${type}`;
 
         const channel = supabaseClient.channel(channelName, {
-            config: { 
+            config: {
                 broadcast: { self: false },
                 presence: { key: type }
             }
@@ -31,14 +23,14 @@ export const useCeremonyBroadcast = (
 
         console.log(`[Realtime] Connecting to ${channelName}...`);
 
+        const receive = (event: string) => ({ payload }: { payload: any }) => {
+            console.log(`[Realtime] ${event}`, payload);
+            triggerRef.current?.(event, payload);
+        };
+
         channel
-            .on('broadcast', { event: 'trigger' }, ({ payload }) => {
-                console.log(`[Realtime] Broadcast received from ${channelName}:`, payload);
-                // Ref経由で常に最新の関数を実行
-                if (triggerRef.current) {
-                    triggerRef.current(payload);
-                }
-            })
+            .on('broadcast', { event: 'trigger' }, receive('trigger'))
+            .on('broadcast', { event: 'employee' }, receive('employee'))
             .subscribe((status) => {
                 if (status === 'SUBSCRIBED') {
                     console.log(`✅ [Realtime] Successfully subscribed to ${channelName}`);
@@ -51,10 +43,9 @@ export const useCeremonyBroadcast = (
                 }
             });
 
-        // アンマウント時にのみ解除
         return () => {
             console.log(`[Realtime] Cleaning up channel: ${channelName}`);
             supabaseClient.removeChannel(channel);
         };
-    }, [type]); // typeが変更された場合のみ再接続
+    }, [type]);
 };

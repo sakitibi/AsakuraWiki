@@ -2,7 +2,7 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
-import { Phase } from '@/pages/events/graduation-ceremony'; // 退社式用Phase
+import { EmployeeInfo, Phase } from '@/pages/events/graduation-ceremony'; // 退社式用Phase
 
 interface CeremonyConfig {
     label: string;
@@ -65,26 +65,26 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
     },
 ];
 
+export const rankColors = {
+    1: 'text-blue-400',
+    2: 'text-sky-300',
+    3: 'text-green-400',
+    4: 'text-yellow-300',
+    5: 'text-orange-400',
+    6: 'text-red-500',
+};
+
 export default function RetirementAdminPage() {
     const [loading, setLoading] = useState(false);
     const [lastAction, setLastAction] = useState<string>('');
     const [user, setUser] = useState<User | null>(null);
-    const [employeeInfo, setEmployeeInfo] = useState({
+    const [employeeInfo, setEmployeeInfo] = useState<EmployeeInfo>({
         no: '',
         name: '',
         kana: '',
         role: '',
         rank: 1,
     });
-
-    const rankColors = {
-        1: 'bg-blue-500',
-        2: 'bg-sky-400',
-        3: 'bg-green-500',
-        4: 'bg-yellow-400 text-black',
-        5: 'bg-orange-500',
-        6: 'bg-red-600',
-    } as const;
 
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data }) => {
@@ -238,7 +238,7 @@ export default function RetirementAdminPage() {
                         value={employeeInfo.rank}
                         onChange={e=>setEmployeeInfo({
                             ...employeeInfo,
-                            rank:Number(e.target.value)
+                            rank: Number(e.target.value) as EmployeeInfo['rank'],
                         })}
                     >
                         <option value={1}>🔵 その他退社社員</option>
