@@ -28,7 +28,7 @@ export default function EntranceCeremonyPage() {
     }, []);
 
     // 2. Realtime 購読 (カスタムフックを使用)
-    useCeremonyBroadcast('entrance', (payload: BroadcastPayload) => {
+    useCeremonyBroadcast('entrance', (_, payload: BroadcastPayload) => {
         if (!isJoined) return; // 入場前は処理しない
         handleRealtimeEvent(payload);
     });

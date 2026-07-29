@@ -72,7 +72,7 @@ export default function BirthdayCeremonyPage() {
     }, []);
 
     // 3. Realtime 購読 (birthday チャンネル)
-    useCeremonyBroadcast('birthday', (payload: BroadcastPayload) => {
+    useCeremonyBroadcast('birthday', (_, payload: BroadcastPayload) => {
         if (!isJoinedRef.current) return; 
 
         if (payload.phase) setPhase(payload.phase);
