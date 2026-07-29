@@ -56,34 +56,41 @@ export default async function handler(
 
         const zipWriter = new zip.ZipWriter(new zip.Uint8ArrayWriter());
 
-        // 各エントリを順番に復号して新しいZIPに追加
+        // 指定の高速逆順ループ
         const entriesLength = entries.length;
         for (let i = entriesLength - 1; i >= 0; i--) {
             const entry = entries[i];
+            
             // ディレクトリ（フォルダ）の場合
             if (entry.directory) {
                 await zipWriter.add(entry.filename, undefined, { directory: true });
                 continue;
             }
 
-            // 非暗号化のデータ書き出し（TransformStreamを使ってストリーム処理）
-            const transformStream = new TransformStream();
             const options: zip.EntryGetDataOptions = { checkSignature: false };
             if (password) {
                 options.password = password;
             }
 
-            // getData と add を並行でパイプ処理
-            const getDataPromise = entry.getData!(transformStream.writable, options);
-            await zipWriter.add(entry.filename, transformStream.readable);
-            await getDataPromise;
+            // 【改善点1】 Uint8ArrayWriter で確実に復号データを受信（デッドロック回避）
+            const decompressedData = await entry.getData!(
+                new zip.Uint8ArrayWriter(), 
+                options
+            );
+
+            // 【改善点2】 level: 0 (無圧縮) で書き出すことでCPU負荷・実行時間を大幅削減
+            await zipWriter.add(
+                entry.filename, 
+                new zip.Uint8ArrayReader(decompressedData), 
+                { level: 0 }
+            );
         }
 
         // パスワード解除済みの新しいZIPバイナリを取得
         const unencryptedZipBuffer = await zipWriter.close();
         await zipReader.close();
 
-        // クライアントヘ返信
+        // クライアントへ返信
         res.setHeader('Content-Type', 'application/zip');
         res.setHeader('Content-Disposition', 'attachment; filename="unlocked.zip"');
         return res.status(200).send(Buffer.from(unencryptedZipBuffer));
