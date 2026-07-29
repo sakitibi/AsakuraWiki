@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import * as zip from '@zip.js/zip.js';
 import { webcrypto } from 'node:crypto';
+import { PassThrough, Writable } from 'node:stream';
 
 if (!globalThis.crypto) {
     globalThis.crypto = webcrypto as any;
@@ -50,18 +51,25 @@ export default async function handler(
     let zipReader: zip.ZipReader<any> | null = null;
 
     try {
+        res.setHeader('Content-Type', 'application/zip');
+        res.setHeader('Content-Disposition', 'attachment; filename="unlocked.zip"');
+
+        // Node.js の PassThrough ストリームを作成し、レスポンスへパイプ接続
+        const passThroughStream = new PassThrough();
+        passThroughStream.pipe(res);
+
+        const webWritableStream = Writable.toWeb(passThroughStream);
+        const zipWriter = new zip.ZipWriter(webWritableStream);
+
         // 元の暗号化ZIPを読み込み
         zipReader = new zip.ZipReader(new zip.HttpReader(url));
         const entries = await zipReader.getEntries();
 
-        const zipWriter = new zip.ZipWriter(new zip.Uint8ArrayWriter());
-
-        // 指定の高速逆順ループ
+        // 各エントリを順番に復号して書き込み（高速化のため無圧縮 level: 0）
         const entriesLength = entries.length;
         for (let i = entriesLength - 1; i >= 0; i--) {
             const entry = entries[i];
-            
-            // ディレクトリ（フォルダ）の場合
+
             if (entry.directory) {
                 await zipWriter.add(entry.filename, undefined, { directory: true });
                 continue;
@@ -72,13 +80,13 @@ export default async function handler(
                 options.password = password;
             }
 
-            // 【改善点1】 Uint8ArrayWriter で確実に復号データを受信（デッドロック回避）
+            // 1ファイルごとに Uint8ArrayWriter で復号
             const decompressedData = await entry.getData!(
                 new zip.Uint8ArrayWriter(), 
                 options
             );
 
-            // 【改善点2】 level: 0 (無圧縮) で書き出すことでCPU負荷・実行時間を大幅削減
+            // 無圧縮（level: 0）でストリームに流し込む
             await zipWriter.add(
                 entry.filename, 
                 new zip.Uint8ArrayReader(decompressedData), 
@@ -86,19 +94,18 @@ export default async function handler(
             );
         }
 
-        // パスワード解除済みの新しいZIPバイナリを取得
-        const unencryptedZipBuffer = await zipWriter.close();
+        // 書き込み完了処理
+        await zipWriter.close();
         await zipReader.close();
-
-        // クライアントへ返信
-        res.setHeader('Content-Type', 'application/zip');
-        res.setHeader('Content-Disposition', 'attachment; filename="unlocked.zip"');
-        return res.status(200).send(Buffer.from(unencryptedZipBuffer));
 
     } catch (error: any) {
         if (zipReader) await zipReader.close().catch(() => {});
 
         console.error('=== [Unlock Password Error] ===', error);
+
+        if (res.headersSent) {
+            return res.destroy();
+        }
 
         const errorMsg = (error?.message || "").toLowerCase();
         const isPasswordError = 
