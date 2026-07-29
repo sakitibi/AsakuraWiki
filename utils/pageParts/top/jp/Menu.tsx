@@ -42,7 +42,7 @@ export default function MenuJp({ handleClick, menuStatus }: MenuJpProps){
                         <a href="/privacy">プライバシーポリシー</a>
                     </li>
                     <li className={styles.pSpNav__item}>
-                        <a href="/about">当レンタルWikiについて</a>
+                        <a href="/about">あさクラについて</a>
                     </li>
                 </ul>
             </nav>

@@ -42,7 +42,7 @@ export default function MenuRu({ handleClick, menuStatus }: MenuRuProps){
                         <a href="/ru/privacy">политика конфиденциальности</a>
                     </li>
                     <li className={styles.pSpNav__item}>
-                        <a href="/ru/about">Об этом вики-сайте по аренде</a>
+                        <a href="/ru/about">Об Асакуре</a>
                     </li>
                 </ul>
             </nav>

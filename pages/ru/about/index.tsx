@@ -35,7 +35,7 @@ export default function About() {
         <>
             <Head>
                 <meta charSet='UTF-8'/>
-                <title>Об этом вики-сайте по аренде</title>
+                <title>Об Асакуре</title>
             </Head>
             <nav className={styles.pSpNav} id="p-sp-nav" style={{display: menuStatus ? 'block' : 'none', zIndex: menuStatus ? 9999 : -9999}}>
                 <div className={styles.pSpNav__title}>
@@ -51,7 +51,7 @@ export default function About() {
                 <div className={styles.contents}>
                     <LeftMenuRu URL="/about"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>Об этом вики-сайте по аренде</h1>
+                        <h1>Об Асакуре</h1>
                         <p>Эта Wiki (далее именуемая Asakura Wiki)</p>
                         <p>Открытый исходный код, например<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a></p>
                         <p>Наша цель — предоставить простую в использовании услугу аренды Wiki.</p>

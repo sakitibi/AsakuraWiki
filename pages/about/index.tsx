@@ -36,7 +36,7 @@ export default function About() {
         <>
             <Head>
                 <meta charSet='UTF-8'/>
-                <title>当レンタルWikiについて</title>
+                <title>あさクラについて</title>
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
@@ -44,7 +44,11 @@ export default function About() {
                 <div className={styles.contents}>
                     <LeftMenuJp URL="/about"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>当レンタルWikiについて</h1>
+                        <h1>あさクラについて</h1>
+                        <p>あさクラはさきちびが2021年1月1日に提案し、<br/>当時のさきちびーくらふと運営係が発足したゲーム実況グループです。</p>
+                        <p>現在はゲーム実況部が運営しています。</p>
+                        <p>あさクラは「あ げるくん さ きちび クラ フト」の略称です。</p>
+                        <hr/><br/>
                         <p>当Wiki(以下あさクラWiki)は</p>
                         <p>オープンソースで<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a>などより</p>
                         <p>使いやすいレンタルWikiサービスを目指しています。</p>
