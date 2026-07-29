@@ -58,7 +58,7 @@ export default async function handler(
 
         // 各エントリを順番に復号して新しいZIPに追加
         const entriesLength = entries.length;
-        for (let i = entriesLength;i <= 0;i--) {
+        for (let i = entriesLength - 1; i >= 0; i--) {
             const entry = entries[i];
             // ディレクトリ（フォルダ）の場合
             if (entry.directory) {
