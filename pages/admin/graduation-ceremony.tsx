@@ -186,7 +186,7 @@ export default function RetirementAdminPage() {
         }
     };
 
-    if (!isAuthorized && user) {
+    if (!isAuthorized || !user) {
         return <div className="p-8"><h1>Error 403 Forbidden</h1><p>アクセス権限がありません。</p></div>;
     }
 
