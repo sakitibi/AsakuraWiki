@@ -14,7 +14,7 @@ export default function Redirecting() {
         });
     }, []);
 
-    const handleRedirect = async () => {
+    const handleRedirect = () => {
         // 1. ボット判定
         const ua = navigator.userAgent;
         const isBot = /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
@@ -26,16 +26,18 @@ export default function Redirecting() {
         const url = new URL(location.href);
         const id = url.searchParams.get("id");
 
-        if (user) {
-            const { data } = await supabaseClient.auth.getSession();
-            const token = data.session?.access_token;
-            location.replace(
-                `https://sakitibi.github.io/14nin.com/staff_credits?login=${token}${id ? `&id=${id}` : ""}`
-            );
-        } else {
-            location.replace("/login");
-        }
-        setLoading(false);
+        setTimeout(async() => {
+            if (user) {
+                const { data } = await supabaseClient.auth.getSession();
+                const token = data.session?.access_token;
+                location.replace(
+                    `https://sakitibi.github.io/14nin.com/staff_credits?login=${token}${id ? `&id=${id}` : ""}`
+                );
+            } else {
+                location.replace("/login");
+            }
+            setLoading(false);
+        }, 200);
     };
 
     useEffect(() => {
