@@ -37,7 +37,7 @@ export default function Redirecting() {
                 location.replace("/login");
             }
             setLoading(false);
-        }, 200);
+        }, 1000);
     };
 
     useEffect(() => {
