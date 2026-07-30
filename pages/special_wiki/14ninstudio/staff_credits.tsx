@@ -1,9 +1,18 @@
 import { supabaseClient } from "@/lib/supabaseClient";
+import { User } from "@supabase/supabase-js";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
 export default function Redirecting() {
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+    useEffect(() => {
+        supabaseClient.auth.getUser().then(({ data }) => {
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+    }, []);
 
     const handleRedirect = async () => {
         // 1. ボット判定
@@ -16,12 +25,6 @@ export default function Redirecting() {
         }
         const url = new URL(location.href);
         const id = url.searchParams.get("id");
-
-        // 2. ユーザー取得を待機
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        
-        // 1秒待機を入れる場合（必要なければ削除可）
-        await new Promise(resolve => setTimeout(resolve, 1000));
 
         if (user) {
             const { data } = await supabaseClient.auth.getSession();
