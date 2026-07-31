@@ -5,7 +5,6 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
 
 interface Graduate {
-    cls: number;
     no: number;
     name: string;
     kana: string;
@@ -13,7 +12,29 @@ interface Graduate {
     rank: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-const graduates: Graduate[] = [];
+const graduates: Graduate[] = [
+    {
+        "no": 2,
+        "name": "入江 紗菜",
+        "kana": "いりえ さな",
+        "role": "社員",
+        "rank": 1,
+    },
+    {
+        "no": 10,
+        "name": "小佐々 晄",
+        "kana": "こざさ ひかる",
+        "role": "元副部長",
+        "rank": 2,
+    },
+    {
+        "no": 30,
+        "name": "横田 彩芽",
+        "kana": "よこた あやめ",
+        "role": "社員",
+        "rank": 1
+    }
+];
 
 const rankColor = {
     1: 'border-blue-500 text-blue-400',
@@ -142,7 +163,7 @@ export default function GraduationCeremonyScriptPage() {
                                             {graduate ? (
                                                 <>
                                                     <div className="mt-8 text-4xl">
-                                                        {graduate.cls}組 {graduate.no}番
+                                                        {graduate.no}番
                                                     </div>
                                                     <div
                                                         className={`mt-10 text-6xl font-bold ${
