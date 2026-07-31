@@ -258,6 +258,27 @@ const graduates: Graduate[] = [
         "role": "社員",
         "rank": 1
     },
+    {
+        "no": 62,
+        "name": "黒田 大翔",
+        "kana": "くろだ やまと",
+        "role": "社員",
+        "rank": 1
+    },
+    {
+        "no": 63,
+        "name": "佐野 葵",
+        "kana": "さの あおい",
+        "role": "社員",
+        "rank": 1
+    },
+    {
+        "no": 64,
+        "name": "杉山 七海",
+        "kana": "すぎやま ななみ",
+        "role": "社員",
+        "rank": 1
+    },
 ];
 
 const rankColor = {
@@ -429,7 +450,7 @@ export default function GraduationCeremonyScriptPage() {
                                 }
                                 className="rounded-lg bg-gray-700 px-10 py-4 text-2xl font-bold transition hover:bg-gray-600"
                             >
-                                ← 前へ
+                                <span>前へ</span>
                             </button>
                             <button
                                 onClick={() =>
@@ -442,7 +463,7 @@ export default function GraduationCeremonyScriptPage() {
                                 }
                                 className="rounded-lg bg-blue-700 px-10 py-4 text-2xl font-bold transition hover:bg-blue-600"
                             >
-                                次へ →
+                                <span>次へ</span>
                             </button>
                         </div>
                         <div className="mt-12 rounded-lg border border-gray-700 bg-neutral-900 p-6">
