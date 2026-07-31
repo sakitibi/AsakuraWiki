@@ -17,16 +17,14 @@ export default function Redirecting() {
                 location.replace("https://sakitibi.github.io/14nin.com/staff_credits");
                 return;
             }
-            supabaseClient.auth.getUser().then(({ data }) => {
-                if (data.user) {
-                    setUser(data.user);
-                }
-            });
+            
+            const { data: userData } = await supabaseClient.auth.getUser();
+            const user = userData?.user;
 
             const url = new URL(location.href);
             const id = url.searchParams.get("id");
 
-            await new Promise(() => setTimeout(() => {}, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
             if (user) {
                 const { data } = await supabaseClient.auth.getSession();
