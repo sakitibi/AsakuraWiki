@@ -7,7 +7,7 @@ export default function Redirecting() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User | null>(null);
 
-    const handleRedirect = () => {
+    const handleRedirect = async () => {
         // 1. ボット判定
         const ua = navigator.userAgent;
         const isBot = /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
@@ -25,18 +25,18 @@ export default function Redirecting() {
         const url = new URL(location.href);
         const id = url.searchParams.get("id");
 
-        setTimeout(async() => {
-            if (user) {
-                const { data } = await supabaseClient.auth.getSession();
-                const token = data.session?.access_token;
-                location.replace(
-                    `https://sakitibi.github.io/14nin.com/staff_credits?login=${token}${id ? `&id=${id}` : ""}`
-                );
-            } else {
-                location.replace("/login");
-            }
-            setLoading(false);
-        }, 1000);
+        await new Promise(() => setTimeout(() => {}, 1000));
+
+        if (user) {
+            const { data } = await supabaseClient.auth.getSession();
+            const token = data.session?.access_token;
+            location.replace(
+                `https://sakitibi.github.io/14nin.com/staff_credits?login=${token}${id ? `&id=${id}` : ""}`
+            );
+        } else {
+            location.replace("/login");
+        }
+        setLoading(false);
     };
 
     useEffect(() => {
