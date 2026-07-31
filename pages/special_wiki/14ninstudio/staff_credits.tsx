@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 
 export default function Redirecting() {
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState<User | null>(null);
 
     const handleRedirect = async () => {
+        console.log("handleRedirect 開始");
         try{
             // 1. ボット判定
             const ua = navigator.userAgent;
@@ -43,6 +43,7 @@ export default function Redirecting() {
     };
 
     useEffect(() => {
+        if (typeof window === "undefined") return;
         handleRedirect();
     }, []);
 
