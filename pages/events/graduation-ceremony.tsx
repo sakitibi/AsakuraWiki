@@ -39,7 +39,6 @@ export default function RetirementPage() {
         };
     }, []);
 
-    // 1. 初期状態の取得 (退社式 ID: 2 を指定)
     useEffect(() => {
         const fetchCurrentStatus = async () => {
             const { data } = await supabaseClient
@@ -56,7 +55,6 @@ export default function RetirementPage() {
         fetchCurrentStatus();
     }, []);
 
-    // 2. Realtime 購読 (退社式用チャンネル 'retirement' を指定)
     useCeremonyBroadcast('retirement', (event, payload) => {
         // Refを使用して最新の入場状態をチェック
         if (!isJoinedRef.current) return; 
@@ -124,7 +122,6 @@ export default function RetirementPage() {
         }
     };
 
-    // 3. 入場前の待機画面
     if (!isJoined) {
         return (
             <div className="flex h-screen flex-col items-center justify-center bg-slate-950 text-white font-serif tailwind-scope">
@@ -151,7 +148,6 @@ export default function RetirementPage() {
         );
     }
 
-    // 4. 式典本番の画面
     return (
         <div className="min-h-screen bg-slate-950 text-slate-100 font-serif overflow-hidden tailwind-scope">
             <Head>

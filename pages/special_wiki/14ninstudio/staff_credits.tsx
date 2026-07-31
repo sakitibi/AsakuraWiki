@@ -6,13 +6,6 @@ import { useEffect, useState } from "react";
 export default function Redirecting() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data }) => {
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
-    }, []);
 
     const handleRedirect = () => {
         // 1. ボット判定
@@ -23,6 +16,12 @@ export default function Redirecting() {
             location.replace("https://sakitibi.github.io/14nin.com/staff_credits");
             return;
         }
+        supabaseClient.auth.getUser().then(({ data }) => {
+            if (data.user) {
+                setUser(data.user);
+            }
+        });
+
         const url = new URL(location.href);
         const id = url.searchParams.get("id");
 
