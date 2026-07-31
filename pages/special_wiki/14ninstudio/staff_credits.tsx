@@ -39,16 +39,21 @@ export default function Redirecting() {
             const id = url.searchParams.get("id");
 
             if (user) {
-                console.log("4-A. セッションを取得中...");
                 const { data } = await supabaseClient.auth.getSession();
-                const token = data.session?.access_token;
+                const rawToken = data.session?.access_token;
+                // トークンを安全にエンコード
+                const token = rawToken ? encodeURIComponent(rawToken) : "";
 
-                const targetUrl = `https://sakitibi.github.io/14nin.com/staff_credits?login=${token}${
-                    id ? `&id=${id}` : ""
+                const targetUrl = `https://sakitibi.github.io/14nin.com/staff_credits?login=${
+                encodeURIComponent(token)
+                }${id ? `&id=${encodeURIComponent(id)}` : ""
                 }`;
 
-                console.log("5-A. リダイレクト実行:", targetUrl);
-                window.location.href = targetUrl;
+                console.log("5-A. リダイレクト実行指示:", targetUrl);
+
+                setTimeout(() => {
+                    window.location.assign(targetUrl);
+                }, 100);
             } else {
                 console.log("4-B. 未ログインのため /login へ遷移します");
                 window.location.href = "/login";
