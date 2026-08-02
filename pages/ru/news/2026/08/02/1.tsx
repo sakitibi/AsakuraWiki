@@ -45,6 +45,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2026/08/02 Завтра состоится 14-я прощальная церемония.</h1>
                         <p><a href="https://sakitibi.github.io/14nin.com/events/graduation/2026-2/1.html">Нажмите здесь для получения дополнительной информации</a></p>
+                        <p><a href="/events/graduation-ceremony">Присоединяйтесь отсюда!</a></p>
                     </main>
                     <RightMenuRu/>
                 </div>

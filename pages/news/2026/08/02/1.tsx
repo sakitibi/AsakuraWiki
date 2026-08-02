@@ -45,6 +45,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>2026/08/02 明日、第十四回退社式を実行します</h1>
                         <p><a href="https://sakitibi.github.io/14nin.com/events/graduation/2026-2/1.html">詳しくはこちら</a></p>
+                        <p><a href="/events/graduation-ceremony">ここから参加!</a></p>
                     </main>
                     <RightMenuJp/>
                 </div>
