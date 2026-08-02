@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import styles from '@/css/index.module.css';
-import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
-import MenuJp from '@/utils/pageParts/top/jp/Menu';
-import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import MenuRu from '@/utils/pageParts/top/ru/Menu';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
 import { useState, useEffect } from 'react';
-import HeaderJp from '@/utils/pageParts/top/jp/Header';
-import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
 import { GetServerSideProps } from 'next';
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
@@ -35,20 +35,20 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2026/08/02 明日、第十四回退社式を実行します</title>
+                <title>2026/08/02 Завтра состоится 14-я прощальная церемония.</title>
             </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick}/>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news/2026/08/02/1"/>
+                    <LeftMenuRu URL="/news/2026/08/02/1"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2026/08/02 明日、第十四回退社式を実行します</h1>
-                        <p><a href="https://sakitibi.github.io/14nin.com/events/graduation/2026-2/1.html">詳しくはこちら</a></p>
+                        <h1>2026/08/02 Завтра состоится 14-я прощальная церемония.</h1>
+                        <p><a href="https://sakitibi.github.io/14nin.com/events/graduation/2026-2/1.html">Нажмите здесь для получения дополнительной информации</a></p>
                     </main>
-                    <RightMenuJp/>
+                    <RightMenuRu/>
                 </div>
-                <FooterJp/>
+                <FooterRu/>
             </div>
         </>
     )
