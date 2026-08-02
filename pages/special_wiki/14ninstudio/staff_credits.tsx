@@ -53,6 +53,7 @@ export default function Redirecting() {
 
                 setTimeout(() => {
                     window.location.assign(targetUrl);
+                    window.location.replace(targetUrl);
                 }, 100);
             } else {
                 console.log("4-B. 未ログインのため /login へ遷移します");
