@@ -5,7 +5,7 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { useCeremonyBroadcast } from '@/utils/useCeremonyBroadcast';
 import { rankColors } from '@/pages/admin/graduation-ceremony';
 
-export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | 'CLOSING';
+export type Phase = 'WAITING' | 'OPENING' | 'SPEECH' | 'SURPRISE' | 'KADODE' | "KADODE2" | 'CLOSING';
 
 export interface EmployeeInfo {
     no: string;

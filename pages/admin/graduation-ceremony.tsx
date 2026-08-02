@@ -56,6 +56,14 @@ const RETIREMENT_STEPS: CeremonyConfig[] = [
         description: 'BGM：正解'
     },
     { 
+        label: '門出の言葉2', 
+        phase: 'KADODE2', 
+        message: '門出の言葉2 音楽: 変わらないもの', 
+        soundFile: 'retirement_closing_3.mp3', 
+        color: 'bg-emerald-800',
+        description: 'BGM：変わらないもの'
+    },
+    { 
         label: '閉式', 
         phase: 'CLOSING', 
         message: '本日は誠におめでとうございました', 
