@@ -108,6 +108,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
         const authHeader = req.headers.authorization;
         const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+        const rawApiKey = req.headers['x-apikey'];
+        const ApiKey = Array.isArray(rawApiKey) ? rawApiKey[0] : rawApiKey ?? "";
 
         const [userRes, wikiRes] = await Promise.all([
             token ? supabaseServer.auth.getUser(token) : Promise.resolve({ data: { user: null } }),
@@ -119,6 +121,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const wiki = wikiRes.data;
 
         if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
+
+        const ApiKeyVerified = ApiKey === wiki.cli_token;
 
         // ======================
         // PUT / POST: 保存
@@ -151,6 +155,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     args: [wikiSlug, targetSlug]
                 });
                 const wasFrozen = currentRecord.rows.length > 0 && Boolean(currentRecord.rows[0].freeze);
+
+                if (isCli && !ApiKeyVerified) return res.status(401).json({ error: 'Unauthorized' });
 
                 if (!isAdmin) {
                     if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
@@ -209,9 +215,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
             const isFrozen = currentRecord.rows.length > 0 && Boolean(currentRecord.rows[0].freeze);
 
+            if (isCli && !ApiKeyVerified) return res.status(401).json({ error: 'Unauthorized' });
+
             if (!isAdmin) {
                 if (isFrozen) return res.status(403).json({ error: 'This page is frozen.' });
-                if (wiki.owner_id !== userId) return res.status(403).json({ error: 'Permission denied' });
+                if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
+                if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
+                if (wiki.cli_used === false && isCli && userId !== wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
             }
 
             await turso.execute({
