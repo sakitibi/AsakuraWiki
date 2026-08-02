@@ -218,6 +218,10 @@ export default function Home() {
             <Head>
                 <title>{AsakuraWikiTitle}</title>
                 <meta name="description" content="なんと1周年!これまでを大切に、これからも進化し続けます。"/>
+                <meta property="og:title" content={AsakuraWikiTitle} />
+                <meta property="og:description" content={AsakuraWikiTitle} />
+                <meta property="og:site_name" content={AsakuraWikiTitle} />
+                <meta property="og:url" content={process.env.NEXT_PUBLIC_API_BASE_URL} />
                 {mounted && !user && (
                     <link
                         rel="stylesheet"
