@@ -113,7 +113,7 @@ export default function RetirementPage() {
     const handleJoin = () => {
         setIsJoined(true);
         // 音声アンロック用に要素生成
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 35; i++) {
             const audio = document.createElement("audio");
             audio.classList.add("retirement_closing");
             audio.style.display = "none";
