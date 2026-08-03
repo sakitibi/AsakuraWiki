@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 
 export default function Redirecting() {
     const [loading, setLoading] = useState(true);
+    const [location, setLocation] = useState<Location | null>(null);
+
+    useEffect(() => {
+        if (!window.location) return;
+        setLocation(window.location);
+    }, []);
 
     const handleRedirect = async () => {
         console.log("1. handleRedirect 開始");
@@ -15,7 +21,7 @@ export default function Redirecting() {
 
             if (isBot) {
                 console.log("2-Bot. ボットと判定されました");
-                window.location.href = "https://sakitibi.github.io/14nin.com/staff_credits";
+                location!.href = "https://sakitibi.github.io/14nin.com/staff_credits";
                 return;
             }
 
@@ -35,7 +41,7 @@ export default function Redirecting() {
             const user = userData?.user;
             console.log("3. ユーザー判定結果:", user ? "ログイン済み" : "未ログイン");
 
-            const url = new URL(window.location.href);
+            const url = new URL(location!.href);
             const id = url.searchParams.get("id");
 
             if (user) {
@@ -52,16 +58,16 @@ export default function Redirecting() {
                 console.log("5-A. リダイレクト実行指示:", targetUrl);
 
                 setTimeout(() => {
-                    window.location.assign(targetUrl);
-                    window.location.replace(targetUrl);
+                    location!.assign(targetUrl);
+                    location!.replace(targetUrl);
                 }, 100);
             } else {
                 console.log("4-B. 未ログインのため /login へ遷移します");
-                window.location.href = "/login";
+                location!.href = "/login";
             }
         } catch (e) {
             console.error("リダイレクト処理エラー（安全のため/loginへ送ります）:", e);
-            window.location.href = "/login";
+            location!.href = "/login";
         } finally {
             setLoading(false);
         }
@@ -69,9 +75,9 @@ export default function Redirecting() {
 
     useEffect(() => {
         // SSR（サーバー側）での実行を回避
-        if (typeof window === "undefined") return;
+        if (typeof window === "undefined" || location === null) return;
         handleRedirect();
-    }, []);
+    }, [location]);
 
     return (
         <>
