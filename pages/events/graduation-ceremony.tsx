@@ -130,7 +130,7 @@ export default function RetirementPage() {
                 </Head>
                 <div className="text-center border border-amber-900/50 p-12 bg-slate-900 shadow-2xl rounded-sm">
                     <h1 className="mb-2 text-3xl tracking-widest text-amber-200">退社式</h1>
-                    <p className="mb-10 text-slate-400 text-sm italic">Farewell Ceremony Entrance</p>
+                    <p className="mb-10 text-slate-400 text-sm italic">Graduation Ceremony Entrance</p>
                     
                     <button
                         onClick={handleJoin}
