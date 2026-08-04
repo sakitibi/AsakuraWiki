@@ -27,7 +27,7 @@ export default function BKMT_Front(){
 
         const ua = navigator.userAgent;
         const bot =
-            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider|facebook.com)/i.test(ua);
 
         setIsBot(bot);
 

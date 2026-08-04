@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const ua = req.headers["user-agent"] || "";
 
     // ボット判定
-    const isBot = /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider)/i.test(ua);
+    const isBot = /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider|facebook.com)/i.test(ua);
 
     if (isBot) {
         return {
