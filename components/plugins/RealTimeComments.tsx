@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { User } from '@supabase/auth-helpers-react';
-import { PostgrestSingleResponse, RealtimeChannel } from '@supabase/supabase-js';
+import { PostgrestSingleResponse, RealtimeChannel, User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
 
 interface Comment {

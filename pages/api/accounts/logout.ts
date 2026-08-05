@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { serialize } from 'cookie';
 
