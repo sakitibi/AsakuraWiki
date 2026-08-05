@@ -117,7 +117,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ]);
 
         const userId = userRes.data.user?.id || null;
-        const isAdmin = adminerUserId.includes(userId || '');
+        //const isAdmin = adminerUserId.includes(userId || '');
         const wiki = wikiRes.data;
 
         if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
@@ -158,12 +158,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (isCli && !ApiKeyVerified) return res.status(401).json({ error: 'Unauthorized' });
 
-                if (!isAdmin) {
-                    if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
-                    if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
-                    if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
-                    if (wiki.cli_used === false && isCli && userId !== wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
-                }
+                if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
+                if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
+                if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
+                if (wiki.cli_used === false && isCli && userId !== wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
 
                 const finalContent = content.replace(/&now;/g, formatNow());
                 const compressed = Pako.gzip(finalContent, { level: 9 });
@@ -217,12 +215,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (isCli && !ApiKeyVerified) return res.status(401).json({ error: 'Unauthorized' });
 
-            if (!isAdmin) {
-                if (isFrozen) return res.status(403).json({ error: 'This page is frozen.' });
-                if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
-                if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
-                if (wiki.cli_used === false && isCli && userId !== wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
-            }
+            if (isFrozen) return res.status(403).json({ error: 'This page is frozen.' });
+            if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
+            if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
+            if (wiki.cli_used === false && isCli && userId !== wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
 
             await turso.execute({
                 sql: "DELETE FROM wiki_pages WHERE wiki_slug = ? AND slug = ?",
