@@ -46,7 +46,7 @@ export default function Policies(){
     const Agreed = async () => {
         const encoded = 
             await upack.SEncoder.encodeSEncode(
-                upack.encoder.encode(Date.now().toString(36)),
+                Date.now().toString(36),
                 process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
             )
         setAgreed(encoded);
