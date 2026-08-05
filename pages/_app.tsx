@@ -90,13 +90,13 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
         const { pathname, search, hash } = window.location;
 
         if (
-            pathname.startsWith("/special_wiki/14ninstudio")
+            pathname.startsWith("/special_wiki/13ninstudio")
         ) {
             router.replace("/special_wiki/14ninstudio" + pathname.slice(25, pathname.length) + search + hash);
         }
 
         if (
-            pathname.startsWith("/wiki/14ninstudio")
+            pathname.startsWith("/wiki/13ninstudio")
         ) {
             router.replace("/wiki/14ninstudio" + pathname.slice(17, pathname.length) + search + hash);
         }
@@ -263,25 +263,53 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
     }, [ipaddress, user, isBot]);
 
     useEffect(() => {
-        if(!location || !localStorage || isBot) return;
-        (async function(){
-            if(
-                !adminer_user_id_list && 
-                TermsAgreeIgnorePaths.some(value => value === location.pathname)
-            ) return;
-            const terms_agree:string = localStorage.getItem("terms_agree") || "0";
-            const termsAgreeTime = parseInt(
-                await upack.SEncoder.decodeSEncode(terms_agree, process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!, true) as string
-            );
-            // ログインしていると2週間、ログインしていないと1週間でセッションが切れるようにする
-            if((Date.now() - termsAgreeTime) > (user ? 12096e5 : 6048e5)){
+        if (typeof window === 'undefined' || !location || !localStorage || isBot) return;
+
+        (async function () {
+            const currentPath = location.pathname;
+
+            if (
+                adminer_user_id_list ||
+                TermsAgreeIgnorePaths.some(ignorePath => currentPath.startsWith(ignorePath))
+            ) {
+                return;
+            }
+
+            const terms_agree = localStorage.getItem("terms_agree");
+
+            if (!terms_agree) {
+                location.replace(
+                    `/policies?redirect=${encodeURIComponent(currentPath)}${encodeURIComponent(location.search)}`
+                );
+                return;
+            }
+
+            try {
+                const decoded = await upack.SEncoder.decodeSEncode(
+                    terms_agree,
+                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                    true
+                );
+                const termsAgreeTime = parseInt(decoded as string, 10);
+
+                const expirePeriod = user ? 12096e5 : 6048e5;
+
+                if (!termsAgreeTime || isNaN(termsAgreeTime) || (Date.now() - termsAgreeTime) > expirePeriod) {
+                    localStorage.removeItem("terms_agree");
+                    location.replace(
+                        `/policies?redirect=${encodeURIComponent(currentPath)}${encodeURIComponent(location.search)}`
+                    );
+                }
+            } catch (e) {
+                console.error("terms_agree decode error:", e);
                 localStorage.removeItem("terms_agree");
                 location.replace(
-                    `/policies?redirect=${encodeURIComponent(location.pathname)}${encodeURIComponent(location.search)}`
+                    `/policies?redirect=${encodeURIComponent(currentPath)}${encodeURIComponent(location.search)}`
                 );
             }
         })();
-    }, [isBot]);
+    }, [isBot, user, adminer_user_id_list, router.asPath]);
+
     useEffect(() => {
         if (isBot === false && !asakura_member_list_found) {
             (async function(){/*
