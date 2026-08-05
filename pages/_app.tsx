@@ -290,7 +290,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                     process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
                     true
                 );
-                const termsAgreeTime = parseInt(decoded as string, 10);
+                const termsAgreeTime = parseInt(decoded as string, 36);
 
                 const expirePeriod = user ? 12096e5 : 6048e5;
 
