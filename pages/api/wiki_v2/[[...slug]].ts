@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { createClient } from '@libsql/client';
 import Pako from 'pako';
-import { adminerUserId } from '@/utils/user_list';
 import { randomUUID } from 'node:crypto';
 
 export const config = {
@@ -40,8 +39,16 @@ function toBase64(content: any): string {
     return Buffer.from(content as any).toString('base64');
 }
 
+function decodeLatin1ToUtf8(str: string): string {
+    if (!str) return '';
+    try {
+        return Buffer.from(str, 'binary').toString('utf-8');
+    } catch {
+        return str;
+    }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // CORS設定 (x-cliを許可ヘッダーに追加)
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-apikey, x-cli, x-type');
@@ -108,8 +115,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const type = Array.isArray(rawtype) ? rawtype[0] : rawtype;
         const authHeader = req.headers.authorization;
         const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+        
         const rawApiKey = req.headers['x-apikey'];
-        const ApiKey = Array.isArray(rawApiKey) ? rawApiKey[0] : rawApiKey ?? "";
+        const extractedApiKey = Array.isArray(rawApiKey) ? rawApiKey[0] : rawApiKey ?? "";
+        const ApiKey = decodeLatin1ToUtf8(extractedApiKey);
+        
         console.log("ApiKey: ", ApiKey);
 
         const [userRes, wikiRes] = await Promise.all([
@@ -189,7 +199,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     ]
                 });
 
-                // Supabase更新処理をバックグラウンド実行（レスポンスをブロックしない）
                 supabaseServer
                     .from("wikis")
                     .update({
