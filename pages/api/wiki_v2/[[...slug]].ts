@@ -119,8 +119,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const rawApiKey = req.headers['x-apikey'];
         const extractedApiKey = Array.isArray(rawApiKey) ? rawApiKey[0] : rawApiKey ?? "";
         const ApiKey = decodeLatin1ToUtf8(extractedApiKey);
-        
-        console.log("ApiKey: ", ApiKey);
 
         const [userRes, wikiRes] = await Promise.all([
             token ? supabaseServer.auth.getUser(token) : Promise.resolve({ data: { user: null } }),
@@ -134,7 +132,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
 
         const ApiKeyVerified = ApiKey === wiki.cli_token;
-        console.log("ApiKeyVerified: ", ApiKeyVerified);
 
         // ======================
         // PUT / POST: 保存
@@ -170,7 +167,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (isCli && !ApiKeyVerified) return res.status(401).json({ error: 'Unauthorized' });
 
-                if (wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
+                if (!wiki.cli_freeze_edit && wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
                 if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
                 if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
                 if (wiki.cli_used === false && isCli && userId !== wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
@@ -226,7 +223,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (isCli && !ApiKeyVerified) return res.status(401).json({ error: 'Unauthorized' });
 
-            if (isFrozen) return res.status(403).json({ error: 'This page is frozen.' });
+            if (!wiki.cli_freeze_edit && isFrozen) return res.status(403).json({ error: 'This page is frozen.' });
             if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
             if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
             if (wiki.cli_used === false && isCli && userId !== wiki.owner_id) return res.status(403).json({ error: 'Access denied' });
