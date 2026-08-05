@@ -155,37 +155,65 @@ export default function WikiPage() {
 
     // MenuBar / SideBar 取得とパース統合
     useEffect(() => {
-        if (!wikiSlugStr || !pageSlugStr || !designColor) return;
+        if (!wikiSlugStr || !pageSlugStr) return;
 
-        let isMounted = true; // クリーンアップ用フラグ
+        let isMounted = true;
 
         async function loadAndParseSidebar() {
-            let [menuPage, sidePage] = await Promise.all([
-                wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`),
-                wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`)
-            ]);
+            try {
+                let menuPage = null;
+                try {
+                    if (pageSlugStr !== 'FrontPage' && pageSlugStr !== '') {
+                        menuPage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
+                    }
+                } catch (e) {
+                }
+                if (!menuPage) {
+                    try {
+                        menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
+                    } catch (e) {
+                        console.warn('MenuBar not found:', e);
+                    }
+                }
 
-            if (!menuPage) menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
-            if (!sidePage) sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar');
+                let sidePage = null;
+                try {
+                    if (pageSlugStr !== 'FrontPage' && pageSlugStr !== '') {
+                        sidePage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
+                    }
+                } catch (e) {
+                }
+                if (!sidePage) {
+                    try {
+                        sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar');
+                    } catch (e) {
+                        console.warn('SideBar not found:', e);
+                    }
+                }
 
-            if (!isMounted) return;
+                if (!isMounted) return;
 
-            setMenubar(menuPage ?? null);
-            setSidebar(sidePage ?? null);
+                setMenubar(menuPage ?? null);
+                setSidebar(sidePage ?? null);
 
-            const menuPromise = menuPage?.content
-                ? parseWikiContent(menuPage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor || "default")
-                : Promise.resolve(null);
+                if (designColor) {
+                    const menuPromise = menuPage?.content
+                        ? parseWikiContent(menuPage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor)
+                        : Promise.resolve(null);
 
-            const sidePromise = sidePage?.content
-                ? parseWikiContent(sidePage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor || "default")
-                : Promise.resolve(null);
+                    const sidePromise = sidePage?.content
+                        ? parseWikiContent(sidePage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor)
+                        : Promise.resolve(null);
 
-            const [menuParsed, sideParsed] = await Promise.all([menuPromise, sidePromise]);
+                    const [menuParsed, sideParsed] = await Promise.all([menuPromise, sidePromise]);
 
-            if (isMounted) {
-                setParsedMenubar(menuParsed);
-                setParsedSidebar(sideParsed);
+                    if (isMounted) {
+                        setParsedMenubar(menuParsed);
+                        setParsedSidebar(sideParsed);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load menu/sidebar:', err);
             }
         }
 
@@ -276,14 +304,16 @@ export default function WikiPage() {
 
     useEffect(() => {
         if (!wikiSlugStr || !pageSlugStr) return;
-        
-        async function counterfetch() {
-            return await fetch(`https://counter.wikiwiki.jp/c/14ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`);
-        }
-        counterfetch();
+
+        fetch(`https://counter.wikiwiki.jp/c/14ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`)
+            .catch(err => console.error('Counter fetch error:', err));
+    }, [wikiSlugStr, pageSlugStr]);
+
+
+    useEffect(() => {
+        if (!wikiSlugStr || !pageSlugStr) return;
 
         if (wikiSlugStr === special_wiki_list[0] && pageSlugStr === "FrontPage") {
-            // すでにリダイレクト先にいる場合は実行しない
             if (router.asPath !== "/special_wiki/maitetsu_bkmt") {
                 router.replace("/special_wiki/maitetsu_bkmt");
             }
