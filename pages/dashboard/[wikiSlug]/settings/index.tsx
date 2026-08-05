@@ -29,7 +29,8 @@ export default function WikiSettingsPage() {
     const [errorMsg, setErrorMsg] = useState<string>('');
     const [designColor, setdesignColor] = useState<designColor>('default');
     const [osusume_hyouji_mode, setOsusume_hyouji_mode] = useState<boolean>(true);
-    const [isCLI, setIsCLI] = useState<boolean>(true);
+    const [isCLI, setIsCLI] = useState<boolean>(false);
+    const [cliFreezePageEditing, setCliFreezePageEditing] = useState<boolean>(false);
 
     useEffect(() => {
         if (!slugStr || !user) return;
@@ -38,7 +39,7 @@ export default function WikiSettingsPage() {
             setLoading(true);
             const { data, error } = await supabaseClient
             .from('wikis')
-            .select('name, description, owner_id, edit_mode, design_color, cli_used, osusume_hyouji_mode')
+            .select('name, description, owner_id, edit_mode, design_color, cli_used, cli_freeze_edit, osusume_hyouji_mode')
             .eq('slug', slugStr)
             .maybeSingle();
 
@@ -63,6 +64,7 @@ export default function WikiSettingsPage() {
             setDescription(data.description);
             setEditMode(data.edit_mode === 'private' ? 'private' : 'public');
             setIsCLI(data.cli_used);
+            setCliFreezePageEditing(data.cli_freeze_edit);
             setdesignColor(
                 data.design_color === 'pink' ? 'pink' : 
                 data.design_color === 'blue' ? 'blue' : 
@@ -81,7 +83,7 @@ export default function WikiSettingsPage() {
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        const cli_token = isCLI ? await upack.SEncoder.randomGenerate(10) : null;
+        const cli_token = isCLI ? await upack.SEncoder.randomGenerate(20) : null;
 
         const { error } = await supabaseClient
         .from('wikis')
@@ -93,6 +95,7 @@ export default function WikiSettingsPage() {
             design_color: designColor,
             cli_used: isCLI,
             cli_token: cli_token,
+            cli_freeze_edit: !isCLI ? false : cliFreezePageEditing,
             osusume_hyouji_mode
         })
         .eq('slug', slugStr);
@@ -107,7 +110,7 @@ export default function WikiSettingsPage() {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "cli_token.txt";
+                a.download = "apikey.asenv";
                 a.click();
                 URL.revokeObjectURL(url);
             }
@@ -169,6 +172,10 @@ export default function WikiSettingsPage() {
 
     const isCLIChanges = () => {
         isCLI ? setIsCLI(false) : setIsCLI(true);
+    }
+
+    const cliFreezePageEditingChanges = () => {
+        cliFreezePageEditing ? setCliFreezePageEditing(false) : setCliFreezePageEditing(true);
     }
 
     const isOsusumeChanges = () => {
@@ -277,6 +284,18 @@ export default function WikiSettingsPage() {
                                     value="true"
                                     onChange={() => isCLIChanges()}
                                     checked={isCLI}
+                                />
+                            </label>
+                            <br /><br />
+                            <label>
+                                CLIトークンの凍結ページ編集
+                                <input
+                                    type="checkbox"
+                                    name='clitoken_freeze_edit'
+                                    disabled={!isCLI}
+                                    value="false"
+                                    onChange={() => cliFreezePageEditingChanges()}
+                                    checked={!isCLI ? false : cliFreezePageEditing}
                                 />
                             </label>
                             <br /><br />
