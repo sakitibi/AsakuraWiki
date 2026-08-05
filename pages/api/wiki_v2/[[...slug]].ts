@@ -110,6 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
         const rawApiKey = req.headers['x-apikey'];
         const ApiKey = Array.isArray(rawApiKey) ? rawApiKey[0] : rawApiKey ?? "";
+        console.log("ApiKey: ", ApiKey);
 
         const [userRes, wikiRes] = await Promise.all([
             token ? supabaseServer.auth.getUser(token) : Promise.resolve({ data: { user: null } }),
@@ -123,6 +124,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
 
         const ApiKeyVerified = ApiKey === wiki.cli_token;
+        console.log("ApiKeyVerified: ", ApiKeyVerified);
 
         // ======================
         // PUT / POST: 保存
