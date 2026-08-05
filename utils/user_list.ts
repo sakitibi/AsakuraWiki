@@ -92,16 +92,16 @@ export const blockedIP:RegExp[] = [ // ブロックするipリスト
 
 export const adminerUserId:string[] = [ // 管理者のuser_idリスト
     "9d2347a2-6322-4d55-93f1-71d8440e5f32",
-    "b23a6b6a-9ec2-4ea8-b492-371d0dd7c958",
+    "ab1ed29a-007d-454b-a400-764b4db18e86",
     "ba159f68-814f-4564-935f-cea46624fd53",
     "96b00cd8-d43b-4a5b-b473-84433c0b3c98",
-    "232e8a18-b82f-46e3-983c-4f2abfb37e7e",
+    "b436ac5e-f950-48b2-9557-83fce2d2c671",
 ];
 
 export const asakuraMenberUserId:string[] = [
     "9d2347a2-6322-4d55-93f1-71d8440e5f32",
-    "b23a6b6a-9ec2-4ea8-b492-371d0dd7c958",
+    "ab1ed29a-007d-454b-a400-764b4db18e86",
     "ba159f68-814f-4564-935f-cea46624fd53",
     "96b00cd8-d43b-4a5b-b473-84433c0b3c98",
-    "232e8a18-b82f-46e3-983c-4f2abfb37e7e",
+    "b436ac5e-f950-48b2-9557-83fce2d2c671",
 ]
