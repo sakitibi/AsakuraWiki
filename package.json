@@ -8,10 +8,10 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"next dev\"",
-    "build": "next build && tsc -p tsconfig.json && node ./common_js/common.cjs",
-    "start": "npm run start",
-    "postbuild": "next-sitemap"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "postbuild": "node ./common_js/common.cjs && next-sitemap"
   },
   "dependencies": {
     "@libsql/client": "^0.17.3",
