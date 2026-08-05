@@ -17,6 +17,7 @@ import upack from 'upack';
 export default function Policies(){
     const [menuStatus, setMenuStatus] = useState(false);
     const [url, setUrl] = useState<URL | null>(null);
+    const [agreed, setAgreed] = useState<boolean>(false);
 
     useEffect(() => {
         if(typeof document !== "undefined"){
@@ -26,10 +27,16 @@ export default function Policies(){
             };
         }
     }, [menuStatus]);
+
     useEffect(() => {
         if(!location) return;
         setUrl(new URL(location.href));
-    }, [])
+    }, []);
+    
+    useEffect(() => {
+        if (!agreed) return;
+        location.replace(`${url?.searchParams.get("redirect") ?? "/policies"}`);
+    }, [agreed]);
 
     const handleClick = () => {
         setMenuStatus(prev => !prev);
@@ -38,7 +45,7 @@ export default function Policies(){
         localStorage.setItem("terms_agree", await upack.SEncoder.encodeSEncode(
             upack.encoder.encode(Date.now().toString(36)), process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
         ));
-        location.replace(`${url?.searchParams.get("redirect") ?? "/policies"}`);
+        setAgreed(true);
     }
     return(
         <>
