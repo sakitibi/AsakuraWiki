@@ -155,38 +155,45 @@ export default function WikiPage() {
 
     // MenuBar / SideBar 取得とパース統合
     useEffect(() => {
-        if (!wikiSlugStr || !pageSlugStr) return;
+        if (!wikiSlugStr || !pageSlugStr || !designColor) return;
 
-        async function loadMenuAndSidebar() {
-            // --- MenuBar ---
+        let isMounted = true; // クリーンアップ用フラグ
+
+        async function loadAndParseSidebar() {
             let [menuPage, sidePage] = await Promise.all([
                 wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`),
                 wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`)
             ]);
 
             if (!menuPage) menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
-            setMenubar(menuPage ?? null);
-
-            if (menuPage?.content) {
-                if (!designColor) return;
-                setMenuContent(menuPage.content);
-            } else {
-                setParsedMenubar(null);
-            }
-
-            // --- SideBar ---
             if (!sidePage) sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar');
+
+            if (!isMounted) return;
+
+            setMenubar(menuPage ?? null);
             setSidebar(sidePage ?? null);
 
-            if (sidePage?.content) {
-                if (!designColor) return;
-                setSideContent(sidePage.content);
-            } else {
-                setParsedSidebar(null);
+            const menuPromise = menuPage?.content
+                ? parseWikiContent(menuPage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor || "default")
+                : Promise.resolve(null);
+
+            const sidePromise = sidePage?.content
+                ? parseWikiContent(sidePage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor || "default")
+                : Promise.resolve(null);
+
+            const [menuParsed, sideParsed] = await Promise.all([menuPromise, sidePromise]);
+
+            if (isMounted) {
+                setParsedMenubar(menuParsed);
+                setParsedSidebar(sideParsed);
             }
         }
 
-        loadMenuAndSidebar();
+        loadAndParseSidebar();
+
+        return () => {
+            isMounted = false;
+        };
     }, [wikiSlugStr, pageSlugStr, designColor]);
 
     useEffect(() => {
@@ -268,21 +275,30 @@ export default function WikiPage() {
     }, [content, editContent, cmdStr]);
 
     useEffect(() => {
-        if(!wikiSlugStr || !pageSlugStr) return;
-        async function counterfetch(){
+        if (!wikiSlugStr || !pageSlugStr) return;
+        
+        async function counterfetch() {
             return await fetch(`https://counter.wikiwiki.jp/c/14ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`);
         }
         counterfetch();
-        if(wikiSlugStr === special_wiki_list[0] && pageSlugStr === "FrontPage"){
-            location.replace("/special_wiki/maitetsu_bkmt");
-        } else if(
+
+        if (wikiSlugStr === special_wiki_list[0] && pageSlugStr === "FrontPage") {
+            // すでにリダイレクト先にいる場合は実行しない
+            if (router.asPath !== "/special_wiki/maitetsu_bkmt") {
+                router.replace("/special_wiki/maitetsu_bkmt");
+            }
+        } else if (
             wikiSlugStr === "authentication" &&
             pageSlugStr === "tokumei3971" &&
             url?.searchParams.get("client_id") === "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzdhNzgxLTJlMjUtOTNjMi01NGEzLTE0ZjNmZDIyMjZmYyIsInVzZXIiOiJ0b2t1bWVpMzk3MSJ9.Ekkwg_Oy54jFwW0-aUp-LHyYYzUh8b77EFwo-FJkHMk"
-        ){
-            location.replace(`/login/discord?client_id=${url.searchParams.get("client_id")}`);
+        ) {
+            const clientId = url.searchParams.get("client_id");
+            const targetPath = `/login/discord?client_id=${clientId}`;
+            if (router.asPath !== targetPath) {
+                router.replace(targetPath);
+            }
         }
-    }, [wikiSlugStr, pageSlugStr]);
+    }, [wikiSlugStr, pageSlugStr, url, router]);
 
     useEffect(() => {
         console.log("MenuBar: ", menubar);
