@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     productionBrowserSourceMaps: true,
-    output: 'standalone',
     transpilePackages: ['upack.js'],
     turbopack: {},
     typescript: {
