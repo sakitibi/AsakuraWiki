@@ -47,23 +47,6 @@ export default async function handler(
         if (error) {
             return res.status(500).json({error: error});
         }
-        const date = new Date(data.updated_at);
-        if (!data.value || isOneDayEarlier(date)) {
-            return res.status(500).json({error: "token is null"});
-        }
-        const encrypted = await upack.SEncoder.encodeSEncode(
-            new TextEncoder().encode(data.value).buffer,
-            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
-            5
-        );
-        return res.status(200).json({
-            obfuscate: "upack.js",
-            token: encrypted ?? null
-        })
-    }
-
-    if (req.method === "PUT") {
-        const body = req.body;
 
         const response = await fetch("https://api.epicgames.dev:443/auth/v1/oauth/token", {
             method: "POST",
@@ -79,24 +62,44 @@ export default async function handler(
                 "accept-encoding": "gzip",
                 "content-type": "application/x-www-form-urlencoded",
             },
-            body: `grant_type=external_auth&external_auth_type=apple_id_token&external_auth_token=${body}&deployment_id=503cd077a7804777aee5a6eeb5cfe62d&nonce=${generateRandomString(22)}&display_name=14人TVバン66回`,
+            body: `grant_type=external_auth&external_auth_type=apple_id_token&external_auth_token=${data.value}&deployment_id=503cd077a7804777aee5a6eeb5cfe62d&nonce=${generateRandomString(22)}&display_name=14人TVバン66回`,
         });
-        const data = await response.json();
-        if (response.ok) {
-            const {error} = await supabaseClient
-                .from("wiki_variables")
-                .update([{
-                    value: data.id_token,
-                    updated_at: new Date()
-                }])
-                .eq("id", "a7869bcb-1c09-b4b2-4939-d382a5f27247")
-            if (error) {
-                return res.status(500).json({error})
-            }
+        const resdata = await response.json();
+
+        if (!response.ok) {
+            return res.status(500).json({error: "oauth_token failed."});
+        }
+
+        const date = new Date(data.updated_at);
+        if (!data.value || isOneDayEarlier(date)) {
+            return res.status(500).json({error: "token is null"});
+        }
+        const encrypted = await upack.SEncoder.encodeSEncode(
+            new TextEncoder().encode(resdata.id_token).buffer,
+            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+            5
+        );
+        return res.status(200).json({
+            obfuscate: "upack.js",
+            token: encrypted ?? null
+        })
+    }
+
+    if (req.method === "PUT") {
+        const body = req.body;
+
+        const {error} = await supabaseClient
+            .from("wiki_variables")
+            .update([{
+                value: body,
+                updated_at: new Date()
+            }])
+            .eq("id", "a7869bcb-1c09-b4b2-4939-d382a5f27247")
+        if (error) {
+            return res.status(500).json({error})
         }
         return res.status(200).json({
-            success: response.ok,
-            id_token: data.id_token
+            success: true,
         });
     }
 }
