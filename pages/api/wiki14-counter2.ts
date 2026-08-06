@@ -7,21 +7,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 /*import 'kind-of';
 import 'is-plain-object'*/
 
-function generateRandomString(length: number) {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    const charsLength = chars.length;
-
-    // 暗号学的に安全な乱数を使用
-    const randomValues = new Uint32Array(length);
-    crypto.getRandomValues(randomValues);
-
-    for (let i = 0; i < length; i++) {
-        result += chars[randomValues[i] % charsLength];
-    }
-    return result;
-}
-
 /*(puppeteer as any).vanilla = vanillaPuppeteer;
 puppeteer.use(StealthPlugin());*/
 

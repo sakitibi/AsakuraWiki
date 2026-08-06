@@ -2,6 +2,21 @@ import { supabaseClient } from "@/lib/supabaseClient";
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
 
+function generateRandomString(length: number) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    let result = '';
+    const charsLength = chars.length;
+
+    // 暗号学的に安全な乱数を使用
+    const randomValues = new Uint32Array(length);
+    crypto.getRandomValues(randomValues);
+
+    for (let i = 0; i < length; i++) {
+        result += chars[randomValues[i] % charsLength];
+    }
+    return result;
+}
+
 export function isOneDayEarlier(referenceDate: Date) {
     if (!(referenceDate instanceof Date)) {
         throw new Error("referenceDate は有効な Date オブジェクトである必要があります");
@@ -64,7 +79,7 @@ export default async function handler(
                 "accept-encoding": "gzip",
                 "content-type": "application/x-www-form-urlencoded",
             },
-            body: `grant_type=external_auth&external_auth_type=apple_id_token&external_auth_token=${body}&deployment_id=503cd077a7804777aee5a6eeb5cfe62d&nonce=mN-NswBbTcWomf3srOh0fQ&display_name=14人TVバン66回`,
+            body: `grant_type=external_auth&external_auth_type=apple_id_token&external_auth_token=${body}&deployment_id=503cd077a7804777aee5a6eeb5cfe62d&nonce=${generateRandomString(22)}&display_name=14人TVバン66回`,
         });
         const data = await response.json();
         if (response.ok) {
@@ -81,7 +96,7 @@ export default async function handler(
         }
         return res.status(200).json({
             success: response.ok,
-            data
+            id_token: data.id_token
         });
     }
 }

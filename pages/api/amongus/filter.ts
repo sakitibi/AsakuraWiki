@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
 import { supabaseClient } from "@/lib/supabaseClient";
-import { isOneHourEarlier } from "@/pages/api/amongus/token";
+import { isOneDayEarlier } from "@/pages/api/amongus/token";
 
 export default async function handler(
     req: NextApiRequest,
@@ -49,7 +49,7 @@ export default async function handler(
             .select("value,updated_at")
             .eq("id", "9cc08dca-cf55-4639-9ad1-42e1b67f53b9")
             .single();
-        if (backup_error || isOneHourEarlier(backup_token.updated_at)){
+        if (backup_error || isOneDayEarlier(backup_token.updated_at)){
             return res.status(500).json({error: backup_error, token: backup_token});
         }
         headers.set("authorization", `Bearer ${backup_token.value}`);
