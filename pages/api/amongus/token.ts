@@ -64,10 +64,9 @@ export default async function handler(
                 authorization: "CC858E6E3A4EDD565D0B30818F944F40",
             },
         });
-        const [headers1, data1] = await Promise.all([
-            response1.headers,
-            response1.json()
-        ])
+
+        const headers1 = Object.fromEntries(response1.headers.entries());
+        const data1 = await response1.json();
 
         const {error} = await supabaseClient
             .from("wiki_variables")
