@@ -31,6 +31,9 @@ export default function DashboardPage({ user, mywikis, developerData, serverHour
         user?.user_metadata?.username ||
         user?.email ||
         'ゲスト';
+    
+    const isBoy = user?.user_metadata?.gender === "boy";
+    const isGirl = user?.user_metadata?.gender === "girl";
 
     const provider = user?.app_metadata?.provider;
 
@@ -65,7 +68,7 @@ export default function DashboardPage({ user, mywikis, developerData, serverHour
                             hours >= 17 && hours <= 21 ? "こんばんは" : 
                             hours <= 5 || hours >= 22 ? "おやすみなさい" :
                             "こんにちは"
-                        }、{name} さん！</p>
+                        }、{name} {isBoy ? "くん" : isGirl ? "ちゃん" : "さん"}！</p>
                         <div id="dashboard">
                             <div id="my_wiki_container">
                                 {mywikis.map((data) => (

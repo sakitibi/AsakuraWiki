@@ -55,12 +55,16 @@ export default function SignUpPage() {
             month: parseInt(birthday.split("-")[1], 10),
             date: parseInt(birthday.split("-")[2], 10)
         }
+
+        // 登録時に子供かどうか判定
+        const isKids = getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender;
+        console.log("isKids: ", isKids);
         
         // メタデータ暗号化
         setTimeout(async () => {
             const updatedInputs:string[] | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
-                getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender,
+                isKids,
                 fullname
             );
 
