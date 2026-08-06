@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { User } from "@supabase/auth-helpers-react";
 import { adminerUserId } from "@/utils/user_list";
 import { supabaseClient } from "@/lib/supabaseClient";
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 interface obj{
     encrypted: {
@@ -55,15 +56,12 @@ export default function UserDataGet(){
         setMenuStatus(prev => !prev);
     };
     const [user, setUser] = useState<User | null>(null);
+    
     useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
-
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
+
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
     const FetchUserMetaData = async() => {
         try{

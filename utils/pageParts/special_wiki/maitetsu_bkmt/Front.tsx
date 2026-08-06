@@ -4,22 +4,19 @@ import { useEffect, useState } from "react";
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { User } from "@supabase/supabase-js";
 import { supabaseClient } from "@/lib/supabaseClient";
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function BKMT_Front(){
     const [text, setText] = useState<HTMLDivElement | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [isBot, setIsBot] = useState(true);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
-    useEffect(() => {
 
+    useEffect(() => {
         if (typeof window === 'undefined') {
             setIsBot(true);
             return;

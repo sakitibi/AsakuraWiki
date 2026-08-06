@@ -3,10 +3,7 @@ const nextConfig = {
     productionBrowserSourceMaps: true,
     transpilePackages: ['upack.js'],
     turbopack: {},
-    typescript: {
-        ignoreBuildErrors: true,
-    },
-
+    
     webpack(config, { isServer }) {
         if (isServer) {
             config.externals = [...(config.externals || []), 'isows'];

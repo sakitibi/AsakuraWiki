@@ -1,23 +1,20 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
-import { supabaseServer } from '@/lib/supabaseClientServer'; // ← realtime用クライアント
 import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function AmongusRoomCode() {
     const [roomcode, setRoomcode] = useState<string>("");
     const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
+
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
 
     const designColor: "default" = "default";
@@ -38,7 +35,7 @@ export default function AmongusRoomCode() {
     useEffect(() => {
         async function roomCodeFetched() {
             try {
-                const { data, error } = await supabaseServer
+                const { data, error } = await supabaseClient
                     .from("wiki_variables")
                     .select("*")
                     .eq("id", "640a4587-5be7-4727-aee6-e9493050f022")
@@ -56,7 +53,7 @@ export default function AmongusRoomCode() {
 
     // ★ Realtime 購読（更新が来たら自動反映）
     useEffect(() => {
-        const channel = supabaseServer
+        const channel = supabaseClient
             .channel("amongus_roomcode_realtime")
             .on(
                 "postgres_changes",
@@ -77,7 +74,7 @@ export default function AmongusRoomCode() {
             .subscribe();
 
         return () => {
-            supabaseServer.removeChannel(channel);
+            supabaseClient.removeChannel(channel);
         };
     }, []);
 

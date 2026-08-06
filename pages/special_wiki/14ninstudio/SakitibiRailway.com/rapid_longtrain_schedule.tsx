@@ -4,19 +4,17 @@ import Script from 'next/script';
 import { User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function RapidLongTrainSchedule() {
     const designColor: "default" = "default";
     const [user, setUser] = useState<User | null>(null);
+    
     useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
-
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
+
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
     // 初期表示
     useEffect(() => {

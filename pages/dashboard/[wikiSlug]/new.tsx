@@ -4,6 +4,7 @@ import { useSession, User, Session } from '@supabase/auth-helpers-react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { Editor, Monaco } from '@monaco-editor/react';
 import { handleEditorBeforeMount } from '@/utils/pageParts/wiki/wiki_edit';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 import Head from 'next/head';
 
 export default function NewPage() {
@@ -15,17 +16,14 @@ export default function NewPage() {
     };
     const router:NextRouter = useRouter();
     const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
+
     const session:Session | null = useSession();
-    const { wikiSlug } = router.query; // ✅ 変数名統一
+    const { wikiSlug } = router.query;
     const wikiSlugStr:string = typeof wikiSlug === 'string' ? wikiSlug : '';
 
     const [title, setTitle] = useState<string>('');

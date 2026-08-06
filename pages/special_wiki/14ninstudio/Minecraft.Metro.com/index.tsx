@@ -14,6 +14,7 @@ import GreenLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metr
 import AirPortLine from '@/utils/pageParts/special_wiki/14ninstudio/Minecraft.Metro.com/AirPortLine';
 import { User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export const StopStation = () => {
     return(
@@ -69,13 +70,8 @@ export default function WikiPage() {
     ]);
 
     useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
-
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
 
     useEffect(() => {

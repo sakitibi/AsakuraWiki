@@ -4,20 +4,18 @@ import { useEffect, useState } from 'react';
 import { NextRouter, useRouter } from 'next/router';
 import { User } from '@supabase/auth-helpers-react';
 import { supabaseClient } from '@/lib/supabaseClient';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export const usePageLikeHandlers = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const router:NextRouter = useRouter();
     const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
+    
     const userId:string | undefined = user?.id;
 
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;

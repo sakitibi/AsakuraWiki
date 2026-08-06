@@ -9,6 +9,7 @@ import { getAge, type BirthDayProps, type CountrieTypes, type GenderTypes } from
 import { supabaseClient } from "@/lib/supabaseClient";
 import { encodeBase64Unicode, gzipAndBase64 } from "@/lib/base64";
 import upack from '@/node_modules/upack.js/src/index';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function AccountsSetup(){
     const [birthday, setBirthday] = useState<string>('');
@@ -23,16 +24,13 @@ export default function AccountsSetup(){
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
-    const handleSignUp = async (e: React.FormEvent) => {
+
+    const handleSignUp = async (e: React.SubmitEvent) => {
         e.preventDefault();
         if(typeof window !== "undefined"){
             setLoading(true);

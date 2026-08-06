@@ -9,6 +9,7 @@ import React, { useState, useEffect } from "react";
 import { adminerUserId } from "@/utils/user_list";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { User } from "@supabase/supabase-js";
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function MinecraftVSAdminer(){
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
@@ -30,15 +31,12 @@ export default function MinecraftVSAdminer(){
         setMenuStatus(prev => !prev);
     };
     const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
+    
     const adminer_user_id_list = adminerUserId.find(value => value === user?.id);
     useEffect(() => {
         if (!Teams) return; // null のときは fetch しない

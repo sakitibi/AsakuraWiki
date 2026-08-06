@@ -6,6 +6,7 @@ import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import type { User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export interface DeveloperProps{
     developer_id?: string;
@@ -17,15 +18,12 @@ export default function DeveloperConsoleRegister() {
     const [loading, setLoading] = useState<boolean>(false);
     const [menuStatus, setMenuStatus] = useState<boolean>(false);
     const [user, setUser] = useState<User | null>(null);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
+    
     useEffect(() => {
         if(typeof document !== "undefined"){
             document.body.style.overflow = menuStatus ? "hidden" : "";

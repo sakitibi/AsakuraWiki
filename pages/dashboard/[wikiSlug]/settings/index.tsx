@@ -5,19 +5,16 @@ import Head from 'next/head';
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { supabaseClient } from '@/lib/supabaseClient';
 import upack from '@/node_modules/upack.js/src/index';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function WikiSettingsPage() {
     const router:NextRouter = useRouter();
     const { wikiSlug } = router.query;
     const [user, setUser] = useState<User | null>(null);
+    
     useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
-
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
 
     // slug を文字列に正規化

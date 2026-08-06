@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { PostgrestSingleResponse, RealtimeChannel, User } from '@supabase/supabase-js';
 import { supabaseClient } from '@/lib/supabaseClient';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 interface Comment {
     id: number
@@ -22,14 +23,10 @@ export default function RealTimeComments({ wikiSlug, pageSlug }: Props) {
     const [body, setBody] = useState<string>('')
     const [isSending, setIsSending] = useState<boolean>(false)
     const [user, setUser] = useState<User | null>(null);
+    
     useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
-
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
 
     useEffect(() => {

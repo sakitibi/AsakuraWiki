@@ -18,6 +18,7 @@ import fetchColor from '@/utils/fetchColor';
 import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
+import { fetchAndSetUser } from '@/lib/authGetUser';
 
 // Chromium系判定
 export function isSafari() {
@@ -75,16 +76,13 @@ export default function WikiPage() {
     const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
     const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
     const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
-    useEffect(() => {
-        supabaseClient.auth.getUser().then(({ data, error }) => {
-            console.log('[getUser]', { data, error });
 
-            if (data.user) {
-                setUser(data.user);
-            }
-        });
+    useEffect(() => {
+        // ユーザー情報を取得
+        fetchAndSetUser(supabaseClient, setUser);
     }, []);
-        /* ===============================
+    
+    /* ===============================
         mount & bot detect
     =============================== */
     useEffect(() => {
