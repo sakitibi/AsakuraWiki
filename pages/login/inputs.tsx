@@ -25,11 +25,16 @@ export default function AccountsSetup(){
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const [user, setUser] = useState<User | null>(null);
+    const [isEmail, setIsEmail] = useState<boolean>(false);
 
     useEffect(() => {
         // ユーザー情報を取得
         fetchAndSetUser(supabaseClient, setUser);
     }, []);
+    useEffect(() => {
+        if (!user) return;
+        setIsEmail(user?.app_metadata.provider === "email");
+    }, [user]);
 
     const handleSignUp = async (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -54,7 +59,7 @@ export default function AccountsSetup(){
             setTimeout(async () => {
                 // メタデータ暗号化
                 const updatedInputs:string[] | undefined = await secureEncrypt(
-                    user?.email!, user?.app_metadata.provider === "email" ? password : "null",
+                    user?.email!, isEmail ? password : "null",
                     birthday, username, countries,
                     IsKids,
                     fullname
@@ -141,10 +146,10 @@ export default function AccountsSetup(){
                     <form onSubmit={handleSignUp}>
                         <input 
                             type="password"
-                            placeholder="パスワード"
+                            placeholder={`パスワード${isEmail ? "(入力不用)" : ""}`}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
-                            required
+                            disabled={isEmail}
                             style={{ width: '100%', padding: '0.5rem' }}
                         />
                         <br /><br />
