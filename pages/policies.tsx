@@ -54,7 +54,12 @@ export default function Policies(){
     return(
         <>
             <Head>
-                <title>あさクラWiki利用規約</title>
+                <title>14nin利用規約・あさクラ利用規約</title>
+                <meta name="description" content="なんと1周年!これまでを大切に、これからも進化し続けます。"/>
+                <meta property="og:title" content="あさクラ利用規約" />
+                <meta property="og:description" content="本利用規約には、本サービスの提供条件及び当社とユーザーの皆様との間の権利義務関係が定められています。本サービスの利用に際しては、本規約の全文をお読みいただいたうえで、本規約に同意いただく必要があります。" />
+                <meta property="og:site_name" content="あさクラWiki" />
+                <meta property="og:url" content={`${process.env.NEXT_PUBLIC_API_BASE_URL}/policies`} />
             </Head>
             <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper} style={{ fontFamily: 'Noto Sans Japanese,sans-serif' }}>
@@ -63,7 +68,7 @@ export default function Policies(){
                     <LeftMenuJp URL="/policies" rupages="false"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <header className="pEntry__header">
-                            <h1>利用規約</h1>
+                            <h1>14nin利用規約・あさクラ利用規約</h1>
                         </header>
                         <p>本利用規約（以下「本規約」と言います。）には、本サービスの提供条件及び当社とユーザーの皆様との間の権利義務関係が定められています。本サービスの利用に際しては、本規約の全文をお読みいただいたうえで、本規約に同意いただく必要があります。</p>
                         <div className="p-entry__content">
