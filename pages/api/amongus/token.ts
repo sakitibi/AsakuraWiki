@@ -66,7 +66,29 @@ export default async function handler(
         });
 
         const headers1 = Object.fromEntries(response1.headers.entries());
+        const cfbm = headers1.__cf_bm;
         const data1 = await response1.json();
+
+        const response2 = await fetch("https://api.epicgames.dev:443/auth/v1/oauth/token", {
+            method: "POST",
+            headers: {
+                "user-agent": "EOS-SDK/1.19.0.3-49960398 (IOS/26.5) AmongUs/1.0",
+                "content-length": "76",
+                host: "api.epicgames.dev",
+                "x-eos-version": "1.19.0.3-49960398",
+                connection: "keep-alive",
+                accept: "application/json",
+                "x-epic-correlation-id": "EOS-JFwdl1FYQ4yH93N-UupUWw-9Ke-O9vaTiCV28wglMZrUw",
+                cookie: `__cf_bm=${cfbm}`,
+                "accept-encoding": "gzip",
+                authorization: `Basic ${process.env.AMONG_EPICAPIKEY}`,
+                "accept-language": "ja",
+                "content-type": "application/x-www-form-urlencoded",
+            },
+            body: "grant_type=client_credentials&deployment_id=503cd077a7804777aee5a6eeb5cfe62d",
+        });
+
+        const data2 = await response2.json();
 
         const {error} = await supabaseClient
             .from("wiki_variables")
@@ -84,6 +106,9 @@ export default async function handler(
                 res1: {
                     data: data1,
                     headers: headers1
+                },
+                res2: {
+                    data: data2
                 }
             }
         });
