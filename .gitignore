@@ -1,6 +1,5 @@
 .env.local
 .DS_Store
-secrets
 ._*
 .vscode
 node_modules
@@ -8,3 +7,4 @@ static
 .next
 pnpm-lock.yaml
 v10
+tsconfig.tsbuildinfo
