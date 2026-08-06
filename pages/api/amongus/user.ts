@@ -19,7 +19,7 @@ export default async function handler(
             data1.token,
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
             true,
-            10
+            5
         );
 
     // ヘッダーをセット
@@ -52,7 +52,7 @@ export default async function handler(
     await upack.SEncoder.encodeSEncode(
         new TextEncoder().encode(data2).buffer,
         process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
-        10
+        5
     );
     if (!response.ok) {
         return res.status(401).json({error: data2, auth_token});

@@ -39,7 +39,7 @@ export default async function handler(
         const encrypted = await upack.SEncoder.encodeSEncode(
             new TextEncoder().encode(data.value).buffer,
             process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
-            10
+            5
         );
         return res.status(200).json({
             obfuscate: "upack.js",
@@ -49,6 +49,26 @@ export default async function handler(
 
     if (req.method === "PUT") {
         const body = req.body;
+        
+        const response1 = await fetch("https://api.epicgames.dev:443/sdk/v1/default?platformId=IOS", {
+            method: "GET",
+            headers: {
+                "x-eos-version": "1.19.0.3-49960398",
+                "user-agent": "EOS-SDK/1.19.0.3-49960398 (IOS/26.5) AmongUs/1.0",
+                "accept-encoding": "gzip",
+                "accept-language": "ja",
+                host: "api.epicgames.dev",
+                "x-epic-correlation-id": "EOS-Ha2V_58pRYGzvYm6du4sVQ-WU_2eSYlQQ-Zx72n9b9yZQ",
+                accept: "application/json",
+                connection: "keep-alive",
+                authorization: "CC858E6E3A4EDD565D0B30818F944F40",
+            },
+        });
+        const [headers1, data1] = await Promise.all([
+            response1.headers,
+            response1.json()
+        ])
+
         const {error} = await supabaseClient
             .from("wiki_variables")
             .update([{
@@ -59,6 +79,14 @@ export default async function handler(
         if (error) {
             return res.status(500).json({error})
         }
-        return res.status(204).json({success: true});
+        return res.status(200).json({
+            success: true,
+            data: {
+                res1: {
+                    data: data1,
+                    headers: headers1
+                }
+            }
+        });
     }
 }
