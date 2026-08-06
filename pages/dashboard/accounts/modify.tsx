@@ -14,7 +14,7 @@ export default function ModifyPage() {
     const [countries, setCountries] = useState<CountrieTypes>('japan');
     const [gender, setGender] = useState<GenderTypes>('man');
     const [username, setUsername] = useState('');
-    const [shimei, setShimei] = useState<string>('');
+    const [fullname, setFullname] = useState<string>('');
     const [view_font, setView_Font] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -36,7 +36,7 @@ export default function ModifyPage() {
         setBirthday(user.user_metadata.birthday);
         setCountries(user.user_metadata.countries);
         setGender(user.user_metadata.gender);
-        setShimei(user.user_metadata.shimei);
+        setFullname(user.user_metadata.fullname);
         setUsername(user.user_metadata.username);
         setView_Font(localStorage.getItem("font_setting") || "");
     }, [user]);
@@ -72,7 +72,7 @@ export default function ModifyPage() {
                 const updatedInputs: string[] | undefined = await secureEncrypt(
                     email, password, birthday, username, countries,
                     getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender,
-                    shimei
+                    fullname
                 );
 
                 // 暗号化メタデータ送信
@@ -183,8 +183,8 @@ export default function ModifyPage() {
                     <input 
                         type="text"
                         placeholder="氏名"
-                        value={shimei}
-                        onChange={e => setShimei(e.target.value)}
+                        value={fullname}
+                        onChange={e => setFullname(e.target.value)}
                         required
                         style={{ width: '100%', padding: '0.5rem' }}
                     />

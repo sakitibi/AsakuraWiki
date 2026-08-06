@@ -12,11 +12,12 @@ import upack from '@/node_modules/upack.js/src/index';
 import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function AccountsSetup(){
+    const [password, setPassword] = useState('');
     const [birthday, setBirthday] = useState<string>('');
     const [countries, setCountries] = useState<CountrieTypes>('japan');
     const [gender, setGender] = useState<GenderTypes>('man');
     const [username, setUsername] = useState<string>('');
-    const [shimei, setShimei] = useState<string>('');
+    const [fullname, setFullname] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [isSetuped, setIsSetuped] = useState<boolean>(false);
     const [errorMsg, setErrorMsg] = useState<string>('');
@@ -47,13 +48,16 @@ export default function AccountsSetup(){
                 month: parseInt(birthday.split("-")[1], 10),
                 date: parseInt(birthday.split("-")[2], 10)
             }
+            // 登録時に子供かどうか判定
+            const IsKids = getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender
 
             setTimeout(async () => {
                 // メタデータ暗号化
                 const updatedInputs:string[] | undefined = await secureEncrypt(
-                    user?.email!, "null", birthday, username, countries,
-                    getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender,
-                    shimei
+                    user?.email!, user?.app_metadata.provider === "email" ? password : "null",
+                    birthday, username, countries,
+                    IsKids,
+                    fullname
                 );
                 // 暗号化メタデータ送信
                 try {
@@ -136,10 +140,19 @@ export default function AccountsSetup(){
                 <main style={{ padding: '2rem', maxWidth: 500 }}>
                     <form onSubmit={handleSignUp}>
                         <input 
+                            type="password"
+                            placeholder="パスワード"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            required
+                            style={{ width: '100%', padding: '0.5rem' }}
+                        />
+                        <br /><br />
+                        <input 
                             type="text"
                             placeholder="氏名"
-                            value={shimei}
-                            onChange={e => setShimei(e.target.value)}
+                            value={fullname}
+                            onChange={e => setFullname(e.target.value)}
                             required
                             style={{ width: '100%', padding: '0.5rem' }}
                         />

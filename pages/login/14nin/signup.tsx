@@ -14,14 +14,6 @@ export interface BirthDayProps {
     date: number;
 }
 
-interface EosSignupResponse {
-    message: string;
-    accountIndex: number;
-    access_token: string;
-    product_user_id: string;
-    expires_in: number;
-}
-
 export function getAge(birthday: BirthDayProps) {
     // 今日の日付
     const today = new Date();
@@ -43,7 +35,7 @@ export default function SignUpPage() {
     const [countries, setCountries] = useState<CountrieTypes>('japan');
     const [gender, setGender] = useState<GenderTypes>('man');
     const [username, setUsername] = useState('');
-    const [shimei, setShimei] = useState<string>('');
+    const [fullname, setFullname] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [userMeta, setUserMeta] = useState<any[]>([]);
@@ -69,7 +61,7 @@ export default function SignUpPage() {
             const updatedInputs:string[] | undefined = await secureEncrypt(
                 email, password, birthday, username, countries,
                 getAge(checkerBirthday) < 18 ? gender === "woman" ? "girl" : "boy" : gender,
-                shimei
+                fullname
             );
 
             // Supabase にユーザー登録
@@ -81,7 +73,7 @@ export default function SignUpPage() {
                         username,
                         birthday,
                         countries,
-                        shimei,
+                        fullname,
                         gender
                     }
                 }
@@ -159,8 +151,8 @@ export default function SignUpPage() {
                     <input 
                         type="text"
                         placeholder="氏名"
-                        value={shimei}
-                        onChange={e => setShimei(e.target.value)}
+                        value={fullname}
+                        onChange={e => setFullname(e.target.value)}
                         required
                         style={{ width: '100%', padding: '0.5rem' }}
                     />
