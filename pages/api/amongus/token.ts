@@ -2,16 +2,16 @@ import { supabaseClient } from "@/lib/supabaseClient";
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
 
-export function isOneHourEarlier(referenceDate: Date) {
+export function isOneDayEarlier(referenceDate: Date) {
     if (!(referenceDate instanceof Date)) {
         throw new Error("referenceDate は有効な Date オブジェクトである必要があります");
     }
 
     const now = new Date();
     const diffMs = referenceDate.getTime() - now.getTime(); // 基準 - 現在
-    const oneHourMs = 60 * 60 * 1000;
+    const oneDayMs = 24 * 60 * 60 * 1000;
 
-    return diffMs >= oneHourMs;
+    return diffMs >= oneDayMs;
 }
 
 export default async function handler(
@@ -33,7 +33,7 @@ export default async function handler(
             return res.status(500).json({error: error});
         }
         const date = new Date(data.updated_at);
-        if (!data.value || isOneHourEarlier(date)) {
+        if (!data.value || isOneDayEarlier(date)) {
             return res.status(500).json({error: "token is null"});
         }
         const encrypted = await upack.SEncoder.encodeSEncode(
@@ -49,68 +49,39 @@ export default async function handler(
 
     if (req.method === "PUT") {
         const body = req.body;
-        
-        const response1 = await fetch("https://api.epicgames.dev:443/sdk/v1/default?platformId=IOS", {
-            method: "GET",
-            headers: {
-                "x-eos-version": "1.19.0.3-49960398",
-                "user-agent": "EOS-SDK/1.19.0.3-49960398 (IOS/26.5) AmongUs/1.0",
-                "accept-encoding": "gzip",
-                "accept-language": "ja",
-                host: "api.epicgames.dev",
-                "x-epic-correlation-id": "EOS-Ha2V_58pRYGzvYm6du4sVQ-WU_2eSYlQQ-Zx72n9b9yZQ",
-                accept: "application/json",
-                connection: "keep-alive",
-                authorization: "CC858E6E3A4EDD565D0B30818F944F40",
-            },
-        });
 
-        const headers1 = Object.fromEntries(response1.headers.entries());
-        const cfbm = headers1.__cf_bm;
-        const data1 = await response1.json();
-
-        const response2 = await fetch("https://api.epicgames.dev:443/auth/v1/oauth/token", {
+        const response = await fetch("https://api.epicgames.dev:443/auth/v1/oauth/token", {
             method: "POST",
             headers: {
-                "user-agent": "EOS-SDK/1.19.0.3-49960398 (IOS/26.5) AmongUs/1.0",
-                "content-length": "76",
-                host: "api.epicgames.dev",
-                "x-eos-version": "1.19.0.3-49960398",
                 connection: "keep-alive",
+                "user-agent": "EOS-SDK/1.19.0.3-49960398 (IOS/26.5) AmongUs/1.0",
+                "x-eos-version": "1.19.0.3-49960398",
+                "x-epic-correlation-id": "EOS-j1paBsBeRC6OSGsH0uOGOQ-9n1cSWXfQ_-jpuL2BMBJcg",
+                host: "api.epicgames.dev",
                 accept: "application/json",
-                "x-epic-correlation-id": "EOS-JFwdl1FYQ4yH93N-UupUWw-9Ke-O9vaTiCV28wglMZrUw",
-                cookie: `__cf_bm=${cfbm}`,
-                "accept-encoding": "gzip",
                 authorization: `Basic ${process.env.AMONG_EPICAPIKEY}`,
                 "accept-language": "ja",
+                "accept-encoding": "gzip",
                 "content-type": "application/x-www-form-urlencoded",
             },
-            body: "grant_type=client_credentials&deployment_id=503cd077a7804777aee5a6eeb5cfe62d",
+            body: `grant_type=external_auth&external_auth_type=apple_id_token&external_auth_token=${body}&deployment_id=503cd077a7804777aee5a6eeb5cfe62d&nonce=mN-NswBbTcWomf3srOh0fQ&display_name=14人TVバン66回`,
         });
-
-        const data2 = await response2.json();
-
-        const {error} = await supabaseClient
-            .from("wiki_variables")
-            .update([{
-                value: body,
-                updated_at: new Date()
-            }])
-            .eq("id", "a7869bcb-1c09-b4b2-4939-d382a5f27247")
-        if (error) {
-            return res.status(500).json({error})
+        const data = await response.json();
+        if (response.ok) {
+            const {error} = await supabaseClient
+                .from("wiki_variables")
+                .update([{
+                    value: data.id_token,
+                    updated_at: new Date()
+                }])
+                .eq("id", "a7869bcb-1c09-b4b2-4939-d382a5f27247")
+            if (error) {
+                return res.status(500).json({error})
+            }
         }
         return res.status(200).json({
-            success: true,
-            data: {
-                res1: {
-                    data: data1,
-                    headers: headers1
-                },
-                res2: {
-                    data: data2
-                }
-            }
+            success: response.ok,
+            data
         });
     }
 }
