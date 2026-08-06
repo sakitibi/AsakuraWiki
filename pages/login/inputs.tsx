@@ -146,10 +146,10 @@ export default function AccountsSetup(){
                     <form onSubmit={handleSignUp}>
                         <input 
                             type="password"
-                            placeholder={`パスワード${isEmail ? "(入力不用)" : ""}`}
+                            placeholder={`パスワード${isEmail ? "" : "(入力不用)"}`}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
-                            disabled={isEmail}
+                            disabled={!isEmail}
                             style={{ width: '100%', padding: '0.5rem' }}
                         />
                         <br /><br />
