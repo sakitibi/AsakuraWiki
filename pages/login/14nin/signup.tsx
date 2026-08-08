@@ -78,7 +78,7 @@ export default function SignUpPage() {
                         birthday,
                         countries,
                         fullname,
-                        gender
+                        gender: isKids
                     }
                 }
             });
