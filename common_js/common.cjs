@@ -63,9 +63,14 @@ async function encrypt(FilePath) {
             fs.readFileSync(`${dirPath}/${sliced["/"][0]}`)
         ).trim();
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
-        await encrypt(rootBaseParsed[0]);
-        await encrypt(rootBaseParsed[1]);
-        await encrypt(rootBaseParsed[2]);
+
+        Promise.all(rootBaseParsed.slice(0, 3).map(item => encrypt(item)))
+            .then(() => {
+                console.log("すべての暗号化が完了しました");
+            })
+            .catch(err => {
+                console.error("エラー:", err);
+            });
     } catch (err) {
         console.error('エラーが発生しました:', err);
     }
