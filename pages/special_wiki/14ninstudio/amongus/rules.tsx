@@ -30,13 +30,13 @@ export default function AmongusRoomRulesRedirect() {
     }, [designColor]);
 
     useEffect(() => {
-        location.replace("https://sakitibi.github.io/14nin.com/Amongusの13人TV部屋のルール");
+        location.replace("https://sakitibi.github.io/14nin.com/Amongusの14人TV部屋のルール");
     }, [])
 
     return (
         <>
             <Head>
-                <title>Amongusの13人TV部屋のルール</title>
+                <title>Amongusの14人TV部屋のルール</title>
             </Head>
             <div id="contents-wrapper" style={{display: 'flex'}}>
                 <div id="container" style={{display: 'flex'}}>
