@@ -1,4 +1,4 @@
-const version:string = "2.1.5";
+const version:string = "2.1.6";
 const versions:string[] = [
     `V${version}`,
     `v${version}`,
