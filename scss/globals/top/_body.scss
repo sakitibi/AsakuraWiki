@@ -181,7 +181,7 @@ body {
     &.wiki-font {
         font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
         font-size: 12px;
-        line-height: 1.6em;
+        line-height: 1.6em !important;
         @include background;
 
         // グリッドカラムの生成
