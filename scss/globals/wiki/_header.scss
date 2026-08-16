@@ -27,6 +27,7 @@
     border-bottom: 1px solid;
     border-left: 15px solid;
     margin-block: 0.83em;
+    padding: .3em .3em .15em .5em;
     @include header_common;
 }
 
@@ -35,6 +36,7 @@
     border: 1px solid;
     border-left: 15px solid;
     margin-block: 1em;
+    padding: .3em .3em .15em .5em;
     @include header_common;
 }
 
