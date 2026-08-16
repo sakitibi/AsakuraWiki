@@ -29,7 +29,7 @@ $columns: (
 );
 
 body {
-    // 1. リストスタイルの動的生成
+    // リストスタイルの動的生成
     @each $name, $style in $list-styles-ul {
         ul.#{$name} { list-style-type: $style; }
     }
@@ -37,7 +37,7 @@ body {
         ol.#{$name} { list-style-type: $style; }
     }
 
-    // 2. 共通コンポーネント
+    // 共通コンポーネント
     .noticeWikiRemoval__icon {
         display: flex;
         align-items: center;
@@ -104,7 +104,7 @@ body {
         }
     }
 
-    // 3. レイアウト（Container）の整理
+    // レイアウトの整理
     .container,
     .container-fluid,
     .container-lg,
@@ -127,7 +127,7 @@ body {
     }
 
 
-    // 4. 条件付きスタイル（:not(.wiki-font)）
+    // 条件付きスタイル
     &:not(.wiki-font) {
         font-family: Noto Sans Japanese, sans-serif;
         &.udshingo_kyokasho {
@@ -178,10 +178,10 @@ body {
         }
     }
 
-    // 5. 条件付きスタイル（.wiki-font）
     &.wiki-font {
         font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
         font-size: 12px;
+        line-height: 1.6em;
         @include background;
 
         // グリッドカラムの生成
@@ -225,7 +225,6 @@ body {
             background-color: #fff;
             border: 1px solid #ccc;
             text-align: left;
-            // 重複していたメディアクエリの最小化
         }
     }
 }
