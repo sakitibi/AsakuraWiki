@@ -16,7 +16,7 @@
 @use 'wiki/navfold';
 @use 'wiki/table';
 
-@use "bootstrap/scss/bootstrap" as *;
+@use "bootstrap" as *;
 
 @tailwind base;
 @tailwind components;
