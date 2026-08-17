@@ -3,6 +3,10 @@ language: "ja"
 reviews:
   profile: "chill"
   poem: true # デフォルトのウサギポエムを完全に無効化
+  
+  auto_review:
+    enabled: true
+    drafts: false
 
   # AIへの具体的なカスタム指示
   system_instructions: |
