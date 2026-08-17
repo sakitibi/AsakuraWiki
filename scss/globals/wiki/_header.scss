@@ -9,7 +9,6 @@
     unicode-bidi: isolate;
     background-color: transparent;
     color: #000;
-    margin: .2em 0 .5em;
     padding: .3em .3em .15em .5em;
     margin-inline: 0;
 }
@@ -26,7 +25,6 @@
     font-size: 1.5em;
     border-bottom: 1px solid;
     border-left: 15px solid;
-    margin-block: 0.83em;
     padding: .3em .3em .15em .5em;
     @include header_common;
 }
@@ -35,13 +33,7 @@
     font-size: 1.17em;
     border: 1px solid;
     border-left: 15px solid;
-    margin-block: 1em;
     padding: .3em .3em .15em .5em;
-    @include header_common;
-}
-
-@mixin header_h4 {
-    margin-block: 1.33em;
     @include header_common;
 }
 
@@ -90,6 +82,10 @@ body.wiki-font {
         &.accordion-header {
             @include accordion_header;
         }
+
+        &:not(.accordion-header) {
+            margin-block: 0.83em;
+        }
     }
 
     h3 {
@@ -98,13 +94,22 @@ body.wiki-font {
         &.accordion-header {
             @include accordion_header;
         }
+
+        &:not(.accordion-header) {
+            margin-block: 1em;
+        }
     }
 
     h4 {
-        @include header_h4;
+        // h4用のmixinは無くてもいい
+        @include header_common;
 
         &.accordion-header {
             @include accordion_header;
+        }
+
+        &:not(.accordion-header) {
+            margin-block: 1.33em;
         }
     }
 }
