@@ -22,6 +22,7 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/auth-helpers-react';
 import ClientErrorUI from '@/utils/pageParts/top/clienterrorUI';
 import ImageContainer from '@/utils/pageParts/top/ImageContainer';
+import Script from 'next/script';
 
 export interface ClientError {
     type: 'error' | 'promise';
@@ -228,6 +229,18 @@ export default function Home() {
                         href="https://sakitibi.github.io/static.asakurawiki.com/css/unlogined.static.css"
                     />
                 )}
+                <Script
+                    id="json-ld-website"
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "WebSite",
+                            "name": "AsakuraWiki",
+                            "url": process.env.NEXT_PUBLIC_API_BASE_URL,
+                        }),
+                    }}
+                />
             </Head>
 
             <ImageContainer/>
