@@ -1,8 +1,10 @@
-/* p~ の共通mixin定義 */
+/* pForBeginnerとpContact の共通mixin定義 */
 
-@mixin pCommon($bgcolor){
-    background-color: $bgcolor;
-    background-image: url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white.png");
+@mixin pCommon($startColor, $endColor){
+    // 画像とグラデーションを重ねて指定
+    background-image: 
+        url("https://sakitibi.github.io/AsakuraWiki-Images/dot_white.png"),
+        linear-gradient(135deg, $startColor, $endColor);
     border-radius: 10px;
     padding: 18px;
 }
@@ -18,17 +20,14 @@
 }
 
 @mixin pCommon__item($color, $imgcolor){
-    align-items: center !important;
-    background-color: #fff !important;
-    border-radius: 5px !important;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 5px;
     color: $color !important;
-    display: flex !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    justify-content: center !important;
-    padding: 10px !important;
-    text-align: center !important;
-    -webkit-text-decoration: none !important;
+    display: flex;
+    font-size: 13px;
+    justify-content: center;
+    padding: 10px;
     text-decoration: none !important;
 
     &::before {
