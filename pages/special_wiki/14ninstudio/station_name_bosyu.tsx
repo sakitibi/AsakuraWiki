@@ -45,12 +45,10 @@ export default function StationNameBosyu() {
                                     <p>基本的に上から順に採用されます。</p>
                                 </summary>
                                 <ul>
-                                    <li>{'{地名}'}井原</li>
-                                    <li>今谷</li>
-                                    <li>優乃</li>
                                     <li>葵</li>
                                     <li>竹内</li>
                                     <li>百花</li>
+                                    <li>愛実</li>
                                 </ul>
                             </details>
                         </div>
