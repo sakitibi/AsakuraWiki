@@ -3,7 +3,8 @@
 
 .pForBeginner {
     @include pCommon.pCommon(
-        #abf1b6
+        #abf1b6,
+        #abeff1
     );
     li::marker {
         content: none;
