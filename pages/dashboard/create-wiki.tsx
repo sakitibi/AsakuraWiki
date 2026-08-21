@@ -63,13 +63,10 @@ export default function CreateWikiPage() {
                 throw new Error('Wikiの基本情報作成に失敗しました: ' + wikiError.message);
             }
 
-            // 2) FrontPage を Vercel Blob に作成 (API v2 呼び出し)
             // セッショントークンの取得
             const { data: { session } } = await supabaseClient.auth.getSession();
             const token = session?.access_token;
 
-            // API v2 へ POST リクエストを送る
-            // POST は新規作成用として実装しているため、これを使用します
             const res = await fetch(`/api/wiki_v2/${slug}/FrontPage`, {
                 method: 'POST',
                 headers: {
@@ -79,7 +76,7 @@ export default function CreateWikiPage() {
                 body: JSON.stringify({
                     title: 'FrontPage',
                     content: `* ${title} Wiki* へようこそ！\n\nここは新しいWikiのホームページです。`,
-                    slug: 'FrontPage' // POST時に必要な場合
+                    slug: 'FrontPage'
                 }),
             });
 
