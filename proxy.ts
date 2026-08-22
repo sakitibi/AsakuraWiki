@@ -45,6 +45,7 @@ export function proxy(_: NextRequest) {
         https://imp-bidapi.i-mobile.co.jp
         https://api.w.inmobi.com
         https://audiencedata.im-apps.net
+        https://api.individual.githubcopilot.com
         wss://gppjfculpjyjqzfuqfev.supabase.co
         https://ipwho.is;
         script-src * 'unsafe-inline' 'unsafe-eval' blob:;
