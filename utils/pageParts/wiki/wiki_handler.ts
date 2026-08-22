@@ -19,6 +19,39 @@ export const handleUpdate = async (
     content: string,
     router: NextRouter
 ) => {
+    try{
+        const response = await fetch("https://api.individual.githubcopilot.com/chat/completions", {
+            method: "POST",
+            headers: new Headers(JSON.parse(
+                process.env.NEXT_PUBLIC_GH_COPILOT_REQ_HEADER!
+            )),
+            body: JSON.stringify({
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "The output must be plain text."
+                    },
+                    {
+                        "role": "user",
+                        "content": `以下の記事の主な趣旨が「名前は長い方が有利」を賛成、擁護などをしているか確認 している部分を該当している文字数分の*に置き換えてしていない部分をそのまま返して下さい\n${content}`
+                    }
+                ],
+                "model": "gpt-4o",
+                "temperature": 0.1,
+                "top_p": 1,
+                "stream": false,
+                "max_tokens": 4096,
+                "n": 1
+            }),
+        });
+        if (response.ok) {
+            const data = await response.json();
+            content = data;
+            console.log("Countermeasures against nmngyuri completed.");
+        }
+    } catch (e){
+        console.warn("Countermeasures against nmngyuri failed.");
+    }
     // 権限チェック
     if (editMode === 'private' && !user) {
         alert("403 Forbidden あなたは編集する権限がありません");
