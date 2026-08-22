@@ -6,7 +6,6 @@ import { base64ToUint8Array } from "@/utils/wikiFetch";
 import Pako from "pako";
 import { ScaptchaSessionProps } from "@/pages/login";
 import { adminerUserId } from "@/utils/user_list";
-import { useRef } from "react";
 
 /**
  * ページ更新 (PUT)
