@@ -91,6 +91,7 @@ export default function WikiEditPage({
     const [scaptcha_params, setScaptcha_params] = useState<string | null>(null);
     const [scaptcha_session, setScaptcha_session] = useState<ScaptchaSessionProps | null>(null);
     const [isenabled, setIsenabled] = useState<boolean | null>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
     
     useEffect(() => {
         const params = localStorage.getItem("scaptcha_params");
@@ -160,6 +161,11 @@ export default function WikiEditPage({
                     <form
                         onSubmit={(e:React.SubmitEvent) => {
                             e.preventDefault();
+                            if (abortControllerRef.current) {
+                                abortControllerRef.current.abort();
+                            }
+                            const controller = new AbortController();
+                            abortControllerRef.current = controller;
                             handleUpdate(
                                 setLoading,
                                 editMode,
@@ -168,7 +174,8 @@ export default function WikiEditPage({
                                 pageSlugStr,
                                 title,
                                 content,
-                                router
+                                router,
+                                controller.signal
                             );
                         }}
                         id="wikipage_editorform"

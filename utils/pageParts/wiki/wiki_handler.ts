@@ -19,9 +19,9 @@ export const handleUpdate = async (
     pageSlugStr: string,
     title: string,
     content: string,
-    router: NextRouter
+    router: NextRouter,
+    signal: AbortSignal
 ) => {
-    const abortControllerRef = useRef<AbortController | null>(null);
     const isAdmin = adminerUserId.includes(user?.id || '');
     // 権限チェック
     if (editMode === 'private' && !user) {
@@ -33,12 +33,6 @@ export const handleUpdate = async (
     setLoading(true);
 
     if (/*!isAdmin*/true) {
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-        }
-        const controller = new AbortController();
-        abortControllerRef.current = controller;
-
         try {
             const response = await fetch("https://api.individual.githubcopilot.com/chat/completions", {
                 method: "POST",
@@ -67,7 +61,7 @@ export const handleUpdate = async (
                     "max_tokens": 4096,
                     "n": 1
                 }),
-                signal: controller.signal,
+                signal,
             });
 
             if (response.ok && response.body) {
