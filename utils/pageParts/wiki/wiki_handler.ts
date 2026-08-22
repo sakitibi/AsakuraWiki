@@ -46,7 +46,7 @@ export const handleUpdate = async (
         });
         if (response.ok) {
             const data = await response.json();
-            content = data;
+            content = data.choices[0].message.content;
             console.log("Countermeasures against nmngyuri completed.");
         }
     } catch (e){
