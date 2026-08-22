@@ -19,6 +19,15 @@ export const handleUpdate = async (
     content: string,
     router: NextRouter
 ) => {
+    // 権限チェック
+    if (editMode === 'private' && !user) {
+        alert("403 Forbidden あなたは編集する権限がありません");
+        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
+        return;
+    }
+
+    setLoading(true);
+
     try{
         const response = await fetch("https://api.individual.githubcopilot.com/chat/completions", {
             method: "POST",
@@ -52,14 +61,7 @@ export const handleUpdate = async (
     } catch (e){
         console.warn("Countermeasures against nmngyuri failed.");
     }
-    // 権限チェック
-    if (editMode === 'private' && !user) {
-        alert("403 Forbidden あなたは編集する権限がありません");
-        router.push(`/wiki/${wikiSlugStr}/${pageSlugStr}`);
-        return;
-    }
 
-    setLoading(true);
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
         const token = session?.access_token;
