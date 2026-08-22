@@ -181,12 +181,10 @@ body {
     &.wiki-font {
         font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
         font-size: 12px;
-        .accordion-container {
-            padding: 10px 0 0 10px;
-        }
         .accordion-content {
             display: grid;
             grid-template-rows: 0fr;
+            margin: 0;
             padding: 10px 0 0 10px;
             transition: grid-template-rows 0.3s ease-in-out;
             overflow: hidden;
