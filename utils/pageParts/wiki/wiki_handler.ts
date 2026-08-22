@@ -6,6 +6,7 @@ import { base64ToUint8Array } from "@/utils/wikiFetch";
 import Pako from "pako";
 import { ScaptchaSessionProps } from "@/pages/login";
 import { adminerUserId } from "@/utils/user_list";
+import { useRef } from "react";
 
 /**
  * ページ更新 (PUT)
@@ -20,6 +21,7 @@ export const handleUpdate = async (
     content: string,
     router: NextRouter
 ) => {
+    const abortControllerRef = useRef<AbortController | null>(null);
     const isAdmin = adminerUserId.includes(user?.id || '');
     // 権限チェック
     if (editMode === 'private' && !user) {
@@ -30,8 +32,14 @@ export const handleUpdate = async (
 
     setLoading(true);
 
-    if (!isAdmin) {
-        try{
+    if (/*!isAdmin*/true) {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+        }
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+
+        try {
             const response = await fetch("https://api.individual.githubcopilot.com/chat/completions", {
                 method: "POST",
                 headers: new Headers(JSON.parse(
@@ -45,24 +53,61 @@ export const handleUpdate = async (
                         },
                         {
                             "role": "user",
-                            "content": `以下の記事の主な趣旨が「名前は長い方が有利」を賛成、擁護などをしているか確認 している部分を該当している文字数分の*に置き換えてしていない部分をそのまま返して下さい\n${content}`
+                            "content": `
+                                以下の記事の主な趣旨が「名前は長い方が有利」を賛成、擁護などをしているか確認、
+                                している部分を該当している文字数分の*に置き換えてしていない部分をそのまま返して下さい。
+                                余計な文字を加えずに最低限にして下さい。
+                                ${content}`
                         }
                     ],
                     "model": "gpt-4o",
                     "temperature": 0.1,
                     "top_p": 1,
-                    "stream": false,
+                    "stream": true,
                     "max_tokens": 4096,
                     "n": 1
                 }),
+                signal: controller.signal,
             });
-            if (response.ok) {
-                const data = await response.json();
-                content = data.choices[0].message.content;
+
+            if (response.ok && response.body) {
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder("utf-8");
+                let accumulatedContent = ""; // 取得した全文字列を保持する変数
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value, { stream: true });
+                    const lines = chunk.split("\n");
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        const trimmed = line.trim();
+
+                        if (trimmed.startsWith("data:") && !trimmed.includes("[DONE]")) {
+                            const jsonStr = trimmed.replace(/^data:\s*/, "");
+                            try {
+                                const parsed = JSON.parse(jsonStr);
+                                // ストリーミング時は delta.content から取得
+                                const deltaContent = parsed.choices[0]?.delta?.content;
+
+                                if (deltaContent) {
+                                    accumulatedContent += deltaContent;
+                                }
+                            } catch (e) {
+                                // 途切れたチャンクのJSONパース失敗は無視
+                            }
+                        }
+                    }
+                }
+
+                content = accumulatedContent; // 最終結果を代入
                 console.log("Countermeasures against nmngyuri completed.");
             }
-        } catch (e){
-            console.warn("Countermeasures against nmngyuri failed.");
+        } catch (e) {
+            console.warn("Countermeasures against nmngyuri failed.", e);
         }
     }
 
