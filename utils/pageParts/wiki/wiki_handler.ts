@@ -10,8 +10,6 @@ import { adminerUserId } from "@/utils/user_list";
 /**
  * ページ更新 (PUT)
  */
-// wiki_handler.ts
-
 export const handleUpdate = async (
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
     editMode: editMode,
@@ -34,7 +32,7 @@ export const handleUpdate = async (
 
     setLoading(true);
 
-    if (/*!isAdmin*/true) {
+    if (isAdmin) {
         try {
             if (setProgress) setProgress(5);
 
