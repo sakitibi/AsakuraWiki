@@ -32,7 +32,7 @@ export const handleUpdate = async (
 
     setLoading(true);
 
-    if (isAdmin) {
+    if (!isAdmin) {
         try {
             if (setProgress) setProgress(5);
 
