@@ -25,7 +25,7 @@
     font-size: 1.5em;
     border-bottom: 1px solid;
     border-left: 15px solid;
-    padding: .3em .3em .15em .5em;
+    margin: .2em 0 .5em;
     @include header_common;
 }
 
@@ -33,7 +33,7 @@
     font-size: 1.17em;
     border: 1px solid;
     border-left: 15px solid;
-    padding: .3em .3em .15em .5em;
+    margin: .2em 0 .5em;
     @include header_common;
 }
 
