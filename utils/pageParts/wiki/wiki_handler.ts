@@ -19,7 +19,8 @@ export const handleUpdate = async (
     title: string,
     content: string,
     router: NextRouter,
-    signal: AbortSignal
+    signal: AbortSignal,
+    setProgress: React.Dispatch<React.SetStateAction<number>> // ← 追加
 ) => {
     const isAdmin = adminerUserId.includes(user?.id || '');
     // 権限チェック
@@ -33,6 +34,8 @@ export const handleUpdate = async (
 
     if (/*!isAdmin*/true) {
         try {
+            if (setProgress) setProgress(5);
+            
             const response = await fetch("https://api.individual.githubcopilot.com/chat/completions", {
                 method: "POST",
                 headers: new Headers(JSON.parse(
@@ -63,10 +66,14 @@ export const handleUpdate = async (
                 signal,
             });
 
-            if (response.ok && response.body) {
+            if (response.status === 429) {
+                console.warn("Copilot API limit reached (429 Too Many Requests). Bypassing filter.");
+            } else if (response.ok && response.body) {
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder("utf-8");
                 let accumulatedContent = ""; // 取得した全文字列を保持する変数
+
+                const ESTIMATED_MAX_CHARS = 2000;
 
                 while (true) {
                     const { done, value } = await reader.read();
@@ -83,23 +90,37 @@ export const handleUpdate = async (
                             const jsonStr = trimmed.replace(/^data:\s*/, "");
                             try {
                                 const parsed = JSON.parse(jsonStr);
-                                // ストリーミング時は delta.content から取得
                                 const deltaContent = parsed.choices[0]?.delta?.content;
 
                                 if (deltaContent) {
                                     accumulatedContent += deltaContent;
+
+                                    // 受信テキスト長に基づいて進捗率を計算
+                                    if (setProgress) {
+                                        const calcProgress = Math.min(
+                                            95,
+                                            5 + Math.floor((accumulatedContent.length / ESTIMATED_MAX_CHARS) * 90)
+                                        );
+                                        setProgress(calcProgress);
+                                    }
                                 }
                             } catch (e) {
-                                // 途切れたチャンクのJSONパース失敗は無視
+                                // チャンク切れのパース失敗は無視
                             }
                         }
                     }
                 }
 
-                content = accumulatedContent; // 最終結果を代入
+                if (accumulatedContent) {
+                    content = accumulatedContent; // 最終結果を代入
+                }
+                if (setProgress) setProgress(100);
                 console.log("Countermeasures against nmngyuri completed.");
+            } else {
+                console.warn(`Copilot API responded with status ${response.status}. Bypassing filter.`);
             }
         } catch (e) {
+            if (setProgress) setProgress(100);
             console.warn("Countermeasures against nmngyuri failed.", e);
         }
     }

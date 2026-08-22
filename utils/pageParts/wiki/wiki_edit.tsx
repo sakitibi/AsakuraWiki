@@ -92,6 +92,7 @@ export default function WikiEditPage({
     const [scaptcha_session, setScaptcha_session] = useState<ScaptchaSessionProps | null>(null);
     const [isenabled, setIsenabled] = useState<boolean | null>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
+    const [progress, setProgress] = useState<number>(0);
     
     useEffect(() => {
         const params = localStorage.getItem("scaptcha_params");
@@ -161,11 +162,14 @@ export default function WikiEditPage({
                     <form
                         onSubmit={(e:React.SubmitEvent) => {
                             e.preventDefault();
+                            setProgress(0);
+
                             if (abortControllerRef.current) {
                                 abortControllerRef.current.abort();
                             }
                             const controller = new AbortController();
                             abortControllerRef.current = controller;
+
                             handleUpdate(
                                 setLoading,
                                 editMode,
@@ -175,7 +179,8 @@ export default function WikiEditPage({
                                 title,
                                 content,
                                 router,
-                                controller.signal
+                                controller.signal,
+                                setProgress
                             );
                         }}
                         id="wikipage_editorform"
@@ -227,17 +232,49 @@ export default function WikiEditPage({
                             <React.Fragment key={i}>{node}</React.Fragment>
                         ))}
                         </div>
+
+                        {loading && (
+                            <div style={{ margin: '16px 0' }}>
+                                <div style={{ 
+                                    display: 'flex', 
+                                    justifyContent: 'space-[#666]', 
+                                    fontSize: '14px', 
+                                    marginBottom: '4px' 
+                                }}>
+                                    <span>更新処理中...</span>
+                                    <span>{progress}%</span>
+                                </div>
+                                <div style={{
+                                    width: '100%',
+                                    height: '8px',
+                                    backgroundColor: '#e0e0e0',
+                                    borderRadius: '4px',
+                                    overflow: 'hidden'
+                                }}>
+                                    <div style={{
+                                        width: `${progress}%`,
+                                        height: '100%',
+                                        backgroundColor: '#2563eb',
+                                        transition: 'width 0.2s ease-in-out'
+                                    }} />
+                                </div>
+                            </div>
+                        )}
+
                         <button
-                        type="submit"
-                        disabled={
-                            loading ||
-                            (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei') ||
-                            !isenabled ||
-                            (content === beforeContent)
-                        }
-                        style={{ marginTop: 12, padding: '0.6rem 1.2rem' }}
+                            type="submit"
+                            disabled={
+                                loading ||
+                                (wikiSlugStr === special_wiki_list[0] && pageSlugStr !== 'sinsei') ||
+                                !isenabled ||
+                                (content === beforeContent)
+                            }
+                            style={{
+                                marginTop: 12,
+                                padding: '0.6rem 1.2rem'
+                            }}
                         >
-                            <span>{loading ? '更新中…' : '更新'}</span>
+                            <span>{loading ? `更新中 (${progress}%)…` : '更新'}</span>
                         </button>
                     </form>
                 </article>
