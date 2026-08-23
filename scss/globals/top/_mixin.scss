@@ -22,15 +22,6 @@ $breakpoints: (
     font-weight: $font-weight;
 }
 
-@mixin position($bgcolor1, $bgcolor2) {
-    background-image: linear-gradient(to left, $bgcolor1, $bgcolor2);
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    transition: filter 0.3s ease, transform 0.1s ease;
-}
-
 // 共通のグラデーション背景スタイル
 %gradient-body-base {
     font-size: 15px;

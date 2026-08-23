@@ -10,7 +10,6 @@ $theme-colors: (
 );
 
 body {
-    // 💚 デフォルトテーマ（wiki-fontが無い場合）
     &:not(
         .wiki-font,
         .wiki-font.pink,
@@ -29,9 +28,11 @@ body {
             border: none;
             border-radius: 10px;
             color: #ffffff;
-            overflow: hidden;
-            @include mixin.position(#1ce3b8, #007a59);
-            transition: filter 0.2s, transform 0.2s;
+            
+            // デフォルトの背景色
+            background-image: linear-gradient(to left, #1ce3b8, #007a59);
+
+            transition: filter 0.3s ease, transform 0.1s ease;
 
             &:active {
                 filter: brightness(0.85);
@@ -39,10 +40,6 @@ body {
             }
             &:hover {
                 filter: brightness(1.1);
-            }
-            & > * {
-                position: relative;
-                z-index: 1;
             }
             &:disabled {
                 cursor: not-allowed;
@@ -50,9 +47,8 @@ body {
         }
     }
 
-    // wiki-fontテーマ共通のボタンスタイル
     &.wiki-font {
-        & button:not(#menu-button, .navfold-summary, .fold-button) {
+        button:not(#menu-button, .navfold-summary, .fold-button, .installButton) {
             position: relative;
             padding: 10px 20px;
             margin: 10px;
@@ -60,9 +56,10 @@ body {
             border: none;
             border-radius: 10px;
             color: #ffffff;
-            background: none;
-            overflow: hidden;
-            transition: filter 0.4s, transform 0.4s;
+            
+            background-image: linear-gradient(to left, #1ce3b8, #007a59);
+
+            transition: filter 0.3s ease, transform 0.1s ease;
 
             &:active {
                 filter: brightness(0.85);
@@ -71,18 +68,15 @@ body {
             &:hover {
                 filter: brightness(1.1);
             }
-            & > * {
-                position: relative;
-                z-index: 1;
-            }
             &:disabled {
                 cursor: not-allowed;
             }
         }
 
+        // 各テーマごとの背景グラデーション上書き
         @each $theme, $colors in $theme-colors {
-            &.#{$theme} button:not(#menu-button, .navfold-summary, .fold-button) {
-                @include mixin.position(nth($colors, 1), nth($colors, 2));
+            &.#{$theme} button:not(#menu-button, .navfold-summary, .fold-button, .installButton) {
+                background-image: linear-gradient(to left, nth($colors, 1), nth($colors, 2));
             }
         }
     }
