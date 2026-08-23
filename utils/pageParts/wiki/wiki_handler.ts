@@ -32,7 +32,7 @@ export const handleUpdate = async (
 
     setLoading(true);
 
-    if (/*!isAdmin*/true) {
+    if (!isAdmin) {
         try {
             if (setProgress) setProgress(5);
 
@@ -151,7 +151,7 @@ export const handleUpdate = async (
         const { data: { session } } = await supabaseClient.auth.getSession();
         const token = session?.access_token;
 
-        // API v2 へリクエスト (サーバー側で圧縮処理を行う想定)
+        // API v2 へリクエスト
         const res = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`, {
             method: 'PUT',
             headers: {
@@ -280,7 +280,7 @@ export const handleFreeze = async(
     user: User | null
 ) => {
     try {
-        // 1. Wikiのオーナー確認 (メタデータは引き続きSupabaseのwikisテーブル)
+        // Wikiのオーナー確認
         const { data: wikiData } = await supabaseClient
             .from("wikis")
             .select("owner_id")
@@ -292,12 +292,12 @@ export const handleFreeze = async(
             return;
         }
 
-        // 2. 現在のデータを API v2 から取得
+        // 現在のデータを API v2 から取得
         const res = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`);
         if (!res.ok) throw new Error("データの取得に失敗しました");
         const currentPage = await res.json();
 
-        // 3. freezeフラグを反転させて更新リクエスト
+        // freezeフラグを反転させて更新リクエスト
         const { data: { session } } = await supabaseClient.auth.getSession();
         const token = session?.access_token;
         console.log("currentPage: ", currentPage);
