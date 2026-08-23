@@ -115,7 +115,9 @@
     --bs-form-valid-color: #5cb85c;
     --bs-form-valid-border-color: #5cb85c;
     --bs-form-invalid-color: #d9534f;
-    --bs-form-invalid-border-color: #d9534f
+    --bs-form-invalid-border-color: #d9534f;
+
+    interpolate-size: allow-keywords;
 }
 
 [data-bs-theme=dark] {

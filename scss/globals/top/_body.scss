@@ -182,21 +182,25 @@ body {
         font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
         font-size: 12px;
         .accordion-content {
-            display: grid;
-            grid-template-rows: 0fr;
+            display: block;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease-in-out;
             margin: 0;
             padding: 10px 0 0 10px;
-            transition: grid-template-rows 0.3s ease-in-out;
-            overflow: hidden;
-            &.is-open {
-                grid-template-rows: 1fr;
-            }
-
             &>.accordion-content-inner {
                 min-height: 0;
             }
+            
+            &.accordion-open {
+                height: auto;
+            }
+
+            @starting-style {
+                height: 0;
+            }
         }
-        
+
         * {
             line-height: 1.6em;
         }

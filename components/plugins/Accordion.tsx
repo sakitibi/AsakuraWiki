@@ -25,7 +25,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
                 </svg>
                 {title}
             </Tag>
-            <div className={`accordion-content ${open ? "is-open" : ""}`}>
+            <div className={`accordion-content ${open ? "accordion-open" : ""}`}>
                 <div className="accordion-content-inner">
                     {children}
                 </div>
