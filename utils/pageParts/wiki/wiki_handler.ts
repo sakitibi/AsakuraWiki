@@ -30,9 +30,7 @@ export const handleUpdate = async (
         return;
     }
 
-    setLoading(true);
-
-    if (!isAdmin) {
+    if (/*!isAdmin*/true) {
         try {
             if (setProgress) setProgress(5);
 
@@ -41,7 +39,7 @@ export const handleUpdate = async (
             const processedParagraphs: string[] = [];
 
             // 判定用簡易キーワード（関連する記述が全くない段落は通信をスキップ）
-            const targetKeywords = ["名前", "有利", "長い"];
+            const targetKeywords = ["名前は", "有利", "長い", "なまなが"];
 
             for (let i = 0; i < paragraphs.length; i++) {
                 const paragraph = paragraphs[i];
@@ -78,7 +76,7 @@ export const handleUpdate = async (
                                         - 該当する「肯定・好意・擁護の言葉」のみを局所的に「*」へ変換してください。
                                         - 感嘆符（!!）、記号、関係のない本文、文脈の説明部分は一切変更せず原文のまま維持してください。
                                         - 前置きや解説コメントは一切出力せず、**変換後の本文のみ**を出力してください。
-                                        - 名前は長い方が有利の荒らしカウントや名前は長い方が有利に騙されてるなどの批判的なものはそのまま出力してください。
+                                        - 名前は長い方が有利の荒らしカウント、名前は長い方が有利に騙されてる、名前は長い方が有利反対などの否定的なものはそのまま出力してください。
 
                                         【変換例】
                                         入力: 名前は長い方が有利大好きだ!!
@@ -146,6 +144,8 @@ export const handleUpdate = async (
             console.warn("Countermeasures failed or bypassed.", e);
         }
     }
+
+    setLoading(true);
 
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
