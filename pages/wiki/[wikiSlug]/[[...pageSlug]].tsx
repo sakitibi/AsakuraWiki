@@ -337,7 +337,7 @@ export default function WikiPage() {
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
 
     if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>
-    if (loading || !page) return <div style={{ padding: '2rem' }}>読み込み中…</div>
+    if ((loading || !page) && (content === beforeContent)) return <div style={{ padding: '2rem' }}>読み込み中…</div>
     
     return (
         <>
@@ -349,7 +349,7 @@ export default function WikiPage() {
                 <>
                     <Head>
                         <title>
-                            {page.title}
+                            {page?.title}
                             {isEdit ? ' の編集' : null}
                         </title>
                         <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/wikis.module.css" />
