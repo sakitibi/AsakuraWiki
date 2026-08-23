@@ -21,7 +21,7 @@ body {
         .wiki-font.default,
         .ceremony
     ) {
-        button:not(#menu-button,.navfold-summary,.fold-button,.installButton) {
+        button:not(#menu-button, .navfold-summary, .fold-button, .installButton) {
             position: relative;
             padding: 10px 20px;
             margin: 10px;
@@ -29,18 +29,15 @@ body {
             border: none;
             border-radius: 10px;
             color: #ffffff;
-            background: none;
             overflow: hidden;
+            @include mixin.position(#1ce3b8, #007a59);
+            transition: filter 0.2s, transform 0.2s;
 
-            &::before {
-                @include mixin.position(#1ce3b8, #007a59); // 緑系
-            }
-
-            &:active::before {
+            &:active {
                 filter: brightness(0.85);
                 transform: scale(0.98);
             }
-            &:hover::before {
+            &:hover {
                 filter: brightness(1.1);
             }
             & > * {
@@ -53,9 +50,9 @@ body {
         }
     }
 
-    // 🎨 wiki-fontテーマ共通のボタンスタイル
+    // wiki-fontテーマ共通のボタンスタイル
     &.wiki-font {
-        & button:not(#menu-button,.navfold-summary,.fold-button) {
+        & button:not(#menu-button, .navfold-summary, .fold-button) {
             position: relative;
             padding: 10px 20px;
             margin: 10px;
@@ -65,18 +62,13 @@ body {
             color: #ffffff;
             background: none;
             overflow: hidden;
-            &::before {
-                content: '';
-                position: absolute;
-                inset: 0;
-                z-index: 0;
-                border-radius: 5px;
-            }
-            &:active::before {
+            transition: filter 0.4s, transform 0.4s;
+
+            &:active {
                 filter: brightness(0.85);
                 transform: scale(0.98);
             }
-            &:hover::before {
+            &:hover {
                 filter: brightness(1.1);
             }
             & > * {
@@ -89,13 +81,13 @@ body {
         }
 
         @each $theme, $colors in $theme-colors {
-            &.#{$theme} button:not(#menu-button, .navfold-summary, .fold-button)::before {
+            &.#{$theme} button:not(#menu-button, .navfold-summary, .fold-button) {
                 @include mixin.position(nth($colors, 1), nth($colors, 2));
             }
         }
     }
 
-    // 🧾 メニューボタンは例外
+    // メニューボタンは例外
     #menu-button {
         text-rendering: auto;
         letter-spacing: normal;
