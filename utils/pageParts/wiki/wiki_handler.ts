@@ -30,6 +30,8 @@ export const handleUpdate = async (
         return;
     }
 
+    setLoading(true);
+
     if (/*!isAdmin*/true) {
         try {
             if (setProgress) setProgress(5);
@@ -144,8 +146,6 @@ export const handleUpdate = async (
             console.warn("Countermeasures failed or bypassed.", e);
         }
     }
-
-    setLoading(true);
 
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
