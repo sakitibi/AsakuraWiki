@@ -6,6 +6,7 @@ import { base64ToUint8Array } from "@/utils/wikiFetch";
 import Pako from "pako";
 import { ScaptchaSessionProps } from "@/pages/login";
 import { adminerUserId } from "@/utils/user_list";
+import React from "react";
 
 /**
  * ページ更新 (PUT)
@@ -182,7 +183,8 @@ export const handleUpdate = async (
 export const handleEdit = async (
     router: NextRouter,
     wikiSlugStr: string,
-    pageSlugStr: string
+    pageSlugStr: string,
+    setIsButtonAction: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
     // 既存の独自エディタへのリダイレクトロジックを維持
     const scaptcha_token = localStorage.getItem("scaptcha_params") || "";
@@ -199,13 +201,16 @@ export const handleEdit = async (
         const date = new Date(scaptcha_session?.created_at).getTime();
         const now = new Date().getTime();
         if (now <= date + 18e5) {
+            setIsButtonAction(false);
             router.push(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`);
             return;
         } else {
+            setIsButtonAction(false);
             location.href = scaptcha_redirurl;
             return;
         }
     } else {
+        setIsButtonAction(false);
         location.href = scaptcha_redirurl;
         return;
     }
@@ -272,7 +277,6 @@ export const handleDelete = async (
 
 /**
  * 凍結 / 凍結解除 (PUT)
- * Blob内のJSONの freeze フラグを反転させて再保存します
  */
 export const handleFreeze = async(
     wikiSlugStr: string,

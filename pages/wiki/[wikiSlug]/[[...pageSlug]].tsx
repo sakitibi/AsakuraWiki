@@ -42,19 +42,26 @@ export default function WikiPage() {
     const router:NextRouter = useRouter()
     const [isBot, setIsBot] = useState(true);
     const [user, setUser] = useState<User | null>(null);
+
     const [menuContent, setMenuContent] = useState<string>("");
     const [sideContent, setSideContent] = useState<string>("");
+
     const [page, setPage]       = useState<Page | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError]     = useState<string | null>(null)
+
     const [title, setTitle]     = useState<string>('')
     const [content, setContent] = useState<string>('')
-    const [beforeContent, setBeforeContent] = useState<string>('')
+    const [beforeContent, setBeforeContent] = useState<string>('');
+
     const [editMode, setEditMode] = useState<editMode>('public');
+    const [isButtonAction, setIsButtonAction] = useState<boolean>(false);
+
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
     const [editContent, setEditContent] = useState<string>("");
     const [url, setUrl] = useState<URL | null>(null);
+
     const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
     const [parsedMenubar, setParsedMenubar] = useState<React.ReactNode[] | null>(null);
     const [sidebar, setSidebar] = useState<Page | null | undefined>(undefined);
@@ -388,9 +395,15 @@ export default function WikiPage() {
                                                 <span>リダイレクトされない場合はこちら</span>
                                             </button>
                                         )}
-                                        <button onClick={() => 
-                                            handleEdit(router, wikiSlugStr, pageSlugStr)
-                                        } style={{ marginLeft: 8 }}>
+                                        <button
+                                            onClick={() => {
+                                                setIsButtonAction(true);
+                                                handleEdit(router, wikiSlugStr, pageSlugStr, setIsButtonAction);
+                                            }}
+                                            style={{
+                                                marginLeft: 8
+                                            }}
+                                            >
                                             <span>このページを編集</span>
                                         </button>
                                         <button onClick={async() => await handleDelete(
