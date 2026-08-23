@@ -233,7 +233,7 @@ export default function WikiEditPage({
                         ))}
                         </div>
 
-                        {loading && (
+                        {loading && content !== beforeContent ? (
                             <div style={{ margin: '16px 0' }}>
                                 <div style={{ 
                                     display: 'flex', 
@@ -259,7 +259,7 @@ export default function WikiEditPage({
                                     }} />
                                 </div>
                             </div>
-                        )}
+                        ) : null}
 
                         <button
                             type="submit"
