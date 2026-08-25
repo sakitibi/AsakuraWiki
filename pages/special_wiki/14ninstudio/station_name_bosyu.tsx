@@ -45,9 +45,9 @@ export default function StationNameBosyu() {
                                     <p>基本的に上から順に採用されます。</p>
                                 </summary>
                                 <ul>
-                                    <li>竹内</li>
                                     <li>百花</li>
                                     <li>愛実</li>
+                                    <li>加琳</li>
                                 </ul>
                             </details>
                         </div>
