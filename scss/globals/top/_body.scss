@@ -181,6 +181,9 @@ body {
     &.wiki-font {
         font-family: Verdana, Arial, "Hiragino Sans", Meiryo, sans-serif !important;
         font-size: 12px;
+        letter-spacing: .04em;
+        -webkit-text-size-adjust: none;
+        word-wrap: break-word;
         .accordion-content {
             display: block;
             height: 0;
@@ -204,6 +207,7 @@ body {
         * {
             line-height: 1.6em;
         }
+        
         @include background;
 
         // グリッドカラムの生成
