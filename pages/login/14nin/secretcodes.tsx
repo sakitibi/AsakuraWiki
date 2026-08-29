@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { decryptV3 } from '@/lib/secureObfuscator';
+import { decryptV3, importPublicKey } from '@/lib/secureObfuscator';
 import { encodeBase64Unicode, ungzipFromBase64 } from "@/lib/base64";
 import Head from 'next/head';
 import upack from '@/node_modules/upack.js/src/index';
@@ -16,7 +16,8 @@ export default function LoginPage() {
             const encrypted = encodeBase64Unicode(
                 await upack.SEncoder.encodeSEncode(
                     new TextEncoder().encode(secretCode.trim()).buffer,
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+                    await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
+                    0
                 )!
             );
             const res = await fetch("/api/accounts/secretcode", {
@@ -73,11 +74,7 @@ export default function LoginPage() {
             const raw = fetched!.metadatas; // Supabaseから取得
             const jsonString = ungzipFromBase64(raw);
             const parsed:string[] = JSON.parse(jsonString);
-            const filtered = [
-                parsed.filter(value => value.includes("入江由莉子")),
-                parsed.filter(value => !value.includes("入江由莉子"))
-            ];
-            const decrypted = await decryptV3(filtered[1], filtered[0][0]);
+            const decrypted = await decryptV3(parsed);
             const { error } = await supabaseClient.auth.signInWithPassword({
                 email: decrypted![0],
                 password: decrypted![1],

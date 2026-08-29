@@ -1,6 +1,7 @@
 import { supabaseClient } from "@/lib/supabaseClient";
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
+import { importPublicKey } from "@/lib/secureObfuscator";
 
 function generateRandomString(length: number) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
@@ -76,7 +77,7 @@ export default async function handler(
         }
         const encrypted = await upack.SEncoder.encodeSEncode(
             new TextEncoder().encode(resdata.id_token).buffer,
-            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+            await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
             5
         );
         return res.status(200).json({

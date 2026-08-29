@@ -7,7 +7,7 @@ import Head from 'next/head';
 import type { IPAddress } from '@/utils/pageParts/top/indexInterfaces';
 import { adminerUserId } from '@/utils/user_list';
 import Pako from 'pako';
-import { secureRandomString } from '@/lib/secureObfuscator';
+import { importPrivateKey, secureRandomString } from '@/lib/secureObfuscator';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import '@/styles/globals.css';
 import ImageContainer from '@/utils/pageParts/top/ImageContainer';
@@ -287,7 +287,8 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             try {
                 const decoded = await upack.SEncoder.decodeSEncode(
                     terms_agree,
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                    await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+                    0,
                     true
                 );
                 const termsAgreeTime = parseInt(decoded as string, 36);

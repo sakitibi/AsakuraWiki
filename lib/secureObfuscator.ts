@@ -16,9 +16,34 @@ export function getCookieValueByRegex(key: string) {
     return match ? match[1] : null;
 }
 
-async function encryptText(plainText:string, passphrase:string){
+// 文字列から公開鍵を復元
+export async function importPublicKey(base64Key: string): Promise<CryptoKey> {
+    const buffer = Uint8Array.from(atob(base64Key), c => c.charCodeAt(0));
+    return await crypto.subtle.importKey(
+        "spki",
+        buffer,
+        { name: "ECDH", namedCurve: "P-256" },
+        true,
+        []
+    );
+}
+
+// 文字列から秘密鍵を復元
+export async function importPrivateKey(base64Key: string): Promise<CryptoKey> {
+    const buffer = Uint8Array.from(atob(base64Key), c => c.charCodeAt(0));
+    return await crypto.subtle.importKey(
+        "pkcs8",
+        buffer,
+        { name: "ECDH", namedCurve: "P-256" },
+        true,
+        ["deriveKey", "deriveBits"]
+    );
+}
+
+async function encryptText(plainText:string){
     const encoded = new TextEncoder().encode(plainText);
-    const encrypted = upack.SEncoder.encodeSEncode(encoded.buffer, passphrase);
+    const passphrase = process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0];
+    const encrypted = upack.SEncoder.encodeSEncode(encoded.buffer, await importPublicKey(passphrase!), 0);
     return encrypted;
 }
 
@@ -41,20 +66,14 @@ export async function encrypt(
     fullname: string
 ): Promise<string[] | undefined> {
     try{
-        const passphrase = await upack.SEncoder.randomGenerate(
-            Math.floor(Math.random() * 10) + 32,
-            "_", "_入江由莉子_"
-        );
-        const passphraseFiltered = passphrase.replaceAll("_入江由莉子_", "_");
-
         const [emailenc, passenc, birthenc, userenc, countriesenc, genderenc, fullnameenc] = await Promise.all([
-            encryptText(email, passphraseFiltered),
-            encryptText(password, passphraseFiltered),
-            encryptText(birthday, passphraseFiltered),
-            encryptText(username, passphraseFiltered),
-            encryptText(contries, passphraseFiltered),
-            encryptText(gender, passphraseFiltered),
-            encryptText(fullname, passphraseFiltered),
+            encryptText(email),
+            encryptText(password),
+            encryptText(birthday),
+            encryptText(username),
+            encryptText(contries),
+            encryptText(gender),
+            encryptText(fullname),
         ])
 
         const encryptedArray:string[] = [
@@ -65,7 +84,6 @@ export async function encrypt(
             countriesenc,
             genderenc,
             fullnameenc,
-            passphrase
         ];
         return encryptedArray;
     } catch(e:any){
@@ -75,13 +93,13 @@ export async function encrypt(
 
 export async function decryptV3(
     encrypted: string[],
-    passphrase: string
 ): Promise<string[] | undefined> {
     const decryptedArray = [];
     for (let i = 0;i < encrypted.length;i++) {
         const decrypted = await upack.SEncoder.decodeSEncode(
             encrypted[i],
-            passphrase.replaceAll("_入江由莉子_", "_"),
+            await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+            0,
             true
         ) as string;
         decryptedArray.push(decrypted);

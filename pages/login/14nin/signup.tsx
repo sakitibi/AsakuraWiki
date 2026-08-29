@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { notuseUsername } from '@/utils/user_list';
-import { encrypt as secureEncrypt } from "@/lib/secureObfuscator";
+import { importPublicKey, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 import { encodeBase64Unicode, gzipAndBase64 } from '@/lib/base64';
 import upack from '@/node_modules/upack.js/src/index';
@@ -101,7 +101,8 @@ export default function SignUpPage() {
                     const session = await supabaseClient.auth.getSession();
                     const token = encodeBase64Unicode(await upack.SEncoder.encodeSEncode(
                         (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
-                        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+                        await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
+                        0
                     )!);
                     const res = await fetch('/api/accounts/users', {
                         method: 'POST',

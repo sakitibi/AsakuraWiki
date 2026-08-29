@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
 import { supabaseClient } from "@/lib/supabaseClient";
 import { isOneDayEarlier } from "@/pages/api/amongus/token";
+import { importPrivateKey } from "@/lib/secureObfuscator";
 
 export default async function handler(
     req: NextApiRequest,
@@ -19,9 +20,9 @@ export default async function handler(
     const auth_token = 
         await upack.SEncoder.decodeSEncode(
             data1.token,
-            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+            await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+            5,
             true,
-            5
         );
     const filter = req.headers["x-filter"] || '{"FilterSets":[{"GameMode":1,"Filters":[{"OptionType":"map","Key":"Map","SubFilterString":"{\\"AcceptedValues\\":54,\\"FilterType\\":\\"map\\"}"},{"OptionType":"int","Key":"ImpostorNumber","SubFilterString":"{\\"AcceptedValues\\":[3],\\"OptionEnum\\":1,\\"FilterType\\":\\"int\\"}"},{"OptionType":"bool","Key":"ConfirmEjects","SubFilterString":"{\\"AcceptedValues\\":[false],\\"OptionEnum\\":3,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"bool","Key":"AnonymousVotes","SubFilterString":"{\\"AcceptedValues\\":[true],\\"OptionEnum\\":4,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"chat","Key":"Chat","SubFilterString":"{\\"AcceptedValues\\":1,\\"FilterType\\":\\"chat\\"}"},{"OptionType":"languages","Key":"Language","SubFilterString":"{\\"AcceptedValues\\":512,\\"FilterType\\":\\"languages\\"}"}]}]}'
 

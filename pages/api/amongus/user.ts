@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
 import { supabaseClient } from "@/lib/supabaseClient";
+import { importPrivateKey, importPublicKey } from "@/lib/secureObfuscator";
 
 export default async function handler(
     _req: NextApiRequest,
@@ -17,9 +18,9 @@ export default async function handler(
     const auth_token = 
         await upack.SEncoder.decodeSEncode(
             data1.token,
-            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+            await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+            5,
             true,
-            5
         );
 
     // ヘッダーをセット
@@ -51,7 +52,7 @@ export default async function handler(
     const auth_token_with_lobby = 
     await upack.SEncoder.encodeSEncode(
         new TextEncoder().encode(data2).buffer,
-        process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+        await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
         5
     );
     if (!response.ok) {

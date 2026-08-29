@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { notuseUsername } from "@/utils/user_list";
 import {
+    importPublicKey,
     encrypt as secureEncrypt
 } from "@/lib/secureObfuscator";
 import { User } from "@supabase/auth-helpers-react";
@@ -77,7 +78,8 @@ export default function AccountsSetup(){
                         const session = await supabaseClient.auth.getSession();
                         const token = encodeBase64Unicode(await upack.SEncoder.encodeSEncode(
                             (new TextEncoder().encode(session?.data?.session?.access_token || "")).buffer,
-                            process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+                            await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
+                            0
                         ));
                         const res = await fetch('/api/accounts/users', {
                             method: 'POST',

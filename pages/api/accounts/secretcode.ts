@@ -3,6 +3,7 @@ import { JWTPayload, SignJWT } from 'jose';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import upack from '@/node_modules/upack.js/src/index';
 import { decodeBase64Unicode } from '@/lib/base64';
+import { importPrivateKey } from '@/lib/secureObfuscator';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 const Key = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
@@ -35,7 +36,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             const secretcode = 
                 await upack.SEncoder.decodeSEncode(
                     decodeBase64Unicode(req.headers.authorization ?? ""),
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                    await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+                    0,
                     true
                 ) as string;
             const { data, error } = await supabaseServer

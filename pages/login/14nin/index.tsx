@@ -4,6 +4,7 @@ import Head from 'next/head';
 import upack from '@/node_modules/upack.js/src/index';
 import { encodeBase64Unicode } from '@/lib/base64';
 import { supabaseClient } from '@/lib/supabaseClient';
+import { importPrivateKey, importPublicKey } from '@/lib/secureObfuscator';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleLogin = async (e: React.SubmitEvent) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
@@ -23,7 +24,7 @@ export default function LoginPage() {
                         password
                     })
                 ),
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
                 5
             )
         );
@@ -49,17 +50,17 @@ export default function LoginPage() {
             const access_token = 
                 await upack.SEncoder.decodeSEncode(
                     data.access_token,
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
-                    true,
-                    5
+                    await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+                    5,
+                    true
                 ) as string;
 
             const refresh_token = 
                 await upack.SEncoder.decodeSEncode(
                     data.refresh_token,
-                    process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
-                    true,
-                    5
+                    await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+                    5,
+                    true
                 ) as string;
 
             const { error } = await supabaseClient.auth.setSession({

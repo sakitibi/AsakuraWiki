@@ -3,6 +3,7 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import upack from '@/node_modules/upack.js/src/index';
 import { decodeBase64Unicode } from '@/lib/base64';
 import { normalizeIp } from '@/pages/api/ipaddress';
+import { importPrivateKey, importPublicKey } from '@/lib/secureObfuscator';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -36,9 +37,9 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         const decoded = JSON.parse(
             await upack.SEncoder.decodeSEncode(
                 decodeBase64Unicode(body.data),
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
-                true,
-                5
+                await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+                5,
+                true
             ) as string
         );
         
@@ -57,12 +58,12 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
         return res.status(200).json({
             access_token: await upack.SEncoder.encodeSEncode(
                 upack.encoder.encode(Actokenfiltered),
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
                 5
             ),
             refresh_token: await upack.SEncoder.encodeSEncode(
                 upack.encoder.encode(Rftokenfiltered),
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
                 5
             )
         });

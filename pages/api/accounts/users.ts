@@ -2,6 +2,7 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminerUserId } from '@/utils/user_list';
 import upack from '@/node_modules/upack.js/src/index';
+import { importPrivateKey } from '@/lib/secureObfuscator';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -49,7 +50,8 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             const base64JwtStr = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf-8');
             const token = await upack.SEncoder.decodeSEncode(
                 base64JwtStr,
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!,
+                await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
+                0,
                 true,
             ) as string;
 

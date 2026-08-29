@@ -13,6 +13,7 @@ import PoliciesRegister, {
     PoliciesRegisterUser
 } from "@/utils/pageParts/top/jp/policies/Register";
 import upack from 'upack';
+import { importPublicKey } from "@/lib/secureObfuscator";
 
 export default function Policies(){
     const [menuStatus, setMenuStatus] = useState(false);
@@ -46,8 +47,9 @@ export default function Policies(){
     const Agreed = async () => {
         const encoded = 
             await upack.SEncoder.encodeSEncode(
-                Date.now().toString(36),
-                process.env.NEXT_PUBLIC_UPACK_SECRET_KEY!
+                upack.encoder.encode(Date.now().toString(36)),
+                await importPublicKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[0]!),
+                0,
             )
         setAgreed(encoded);
     }
