@@ -49,6 +49,11 @@ $breakpoints: (
     @include background($font-weight);
 }
 
+@mixin halloweenDark {
+    background-image: linear-gradient(to right, #0a0813, #2e1443, #121b46, #0a0813);
+    @extend %gradient-body-base;
+}
+
 @mixin menubar($bgcolor) {
     background-color: $bgcolor;
     border: 1px solid #000;

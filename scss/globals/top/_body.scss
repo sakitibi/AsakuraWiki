@@ -133,12 +133,13 @@ body {
         &.udshingo_kyokasho {
             font-family: "UDShingoKyokasho";
         }
-        &.dark_green {
+        @include halloweenDark;
+        /*&.dark_green {
             @include darkGreen;
         }
         &:not(.dark_green) {
             @include defaultGreen;
-        }
+        }*/
 
         *,
         *::before,

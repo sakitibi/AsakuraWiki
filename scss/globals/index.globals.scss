@@ -26,15 +26,6 @@ input:not([type=submit],[type=checkbox]) {
     width: 100%;
 }
 
-a, a:active, a:focus, a:hover {
-    color: #ef8688;
-    -webkit-text-decoration: underline;
-    text-decoration: underline;
-}
-a {
-    color: #337ab7;
-}
-
 @keyframes bg-color{
     from{
         background-position: 0% 0%;
