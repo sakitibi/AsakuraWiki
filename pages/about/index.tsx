@@ -53,6 +53,7 @@ export default function About() {
                         <p>オープンソースで<a href='https://wikiwiki.jp' target='_blank'>WIKIWIKI</a>などより</p>
                         <p>使いやすいレンタルWikiサービスを目指しています。</p>
                         <p><a href='https://github.com/sakitibi/AsakuraWiki' target='_blank'>ソースはここ</a></p>
+                        <p><a href="https://github.com/kotoken/wikiwiki">WIKIWIKIのgithub(現在は非公開)</a></p>
                         <p><img
                             src="https://sakitibi.github.io/AsakuraWiki-Images/title/6.png"
                             width="700px"
