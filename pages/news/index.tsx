@@ -46,6 +46,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
+                            <li>2026/09/05 <a href="/news/2026/09/05/1">名前は長い方が有利に対して緊急事態発令</a></li>
                             <li>2026/08/02 <a href="/news/2026/08/02/1">明日、第十四回退社式を実行します</a></li>
                             <ol reversed>
                                 <li>2026/07/19 <a href="/news/2026/07/19/3">広報委員会の写真撮影活動について 3ページ目</a></li>

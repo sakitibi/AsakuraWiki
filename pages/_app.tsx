@@ -376,14 +376,14 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
                 </>
             )}
             {/*<p hidden>{JSON.stringify(res)}</p>*/}
-            {/*<div
+            <div
                 style={{
                     textAlign: 'center',
                     color: '20px'
                 }}
             >
                 <p><strong>警告 名前は長い方が有利は悪質なAmongUsの荒らしです、<br/><a href="https://sakitibi.github.io/14nin.com/nmng_kinkyujitai">詳しくはこちら</a></strong></p>
-            </div>*/}
+            </div>
             {
                 typeof location !== "undefined" ? 
                 !adminer_user_id_list &&
