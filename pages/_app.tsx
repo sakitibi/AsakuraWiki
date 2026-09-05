@@ -379,7 +379,7 @@ export default function AsakuraWiki({ Component, pageProps }: CustomAppProps) {
             <div
                 style={{
                     textAlign: 'center',
-                    color: '20px'
+                    fontSize: '20px',
                 }}
             >
                 <p><strong>警告 名前は長い方が有利は悪質なAmongUsの荒らしです、<br/><a href="https://sakitibi.github.io/14nin.com/nmng_kinkyujitai">詳しくはこちら</a></strong></p>
