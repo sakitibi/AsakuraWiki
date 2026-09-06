@@ -20,6 +20,8 @@ export default function ModifyPage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [user, setUser] = useState<User | null>(null);
     const [provider, setProvider] = useState<string | undefined>();
+    const [isMobile, setIsMobile] = useState(false);
+
     useEffect(() => {
         supabaseClient.auth.getUser().then(({ data, error }) => {
             console.log('[getUser]', { data, error });
@@ -30,16 +32,29 @@ export default function ModifyPage() {
             }
         });
     }, []);
+
     useEffect(() => {
         if (!user || typeof localStorage === "undefined") return;
-        setEmail(user.email || "");
+        setEmail(user?.email || "");
         setBirthday(user.user_metadata.birthday);
         setCountries(user.user_metadata.countries);
         setGender(user.user_metadata.gender);
         setFullname(user.user_metadata.fullname);
         setUsername(user.user_metadata.username);
         setView_Font(localStorage.getItem("font_setting") || "");
+        setIsMobile(window.innerWidth < 768);
     }, [user]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const notuseUser_list_found = notuseUsername.find(value => username.match(value));
     const handleModify = async (e: React.SubmitEvent) => {
@@ -151,107 +166,150 @@ export default function ModifyPage() {
         }
     };
 
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePassword = (password: string) => {
+        return password.length >= 6;
+    };
+
+    const validateBirthday = (birthday: string) => {
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        return dateRegex.test(birthday);
+    };
+
+    const validateUsername = (username: string) => {
+        const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
+        return usernameRegex.test(username);
+    };
+
     return provider === "email" ? (
         <>
             <Head>
                 <title>14ninアカウントを情報変更</title>
             </Head>
-            <main style={{ padding: '2rem', maxWidth: 500 }}>
+            <main style={{ padding: '2rem', maxWidth: isMobile ? 300 : 500 }}>
                 <h1>
                     <i className="fa-duotone fa-solid fa-user-pen"></i>
                     14ninアカウントを情報変更
                 </h1>
                 <form onSubmit={handleModify}>
-                    <input
-                        type="email"
-                        placeholder="メールアドレス"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        required
-                        style={{ width: '100%', padding: '0.5rem' }}
-                    />
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1rem' }}>
+                        <div style={{ flex: 1 }}>
+                            <input
+                                type="email"
+                                placeholder="メールアドレス"
+                                value={email}
+                                onChange={e => setEmail(e.target.value)}
+                                required
+                                style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                            />
+                            {errorMsg && <p style={{ color: 'red', fontSize: isMobile ? '0.8rem' : '1rem' }}>{errorMsg}</p>}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <input 
+                                type="password"
+                                placeholder="パスワード"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                                style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                            />
+                        </div>
+                    </div>
                     <br /><br />
-                    <input 
-                        type="password"
-                        placeholder="パスワード"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        required
-                        style={{ width: '100%', padding: '0.5rem' }}
-                    />
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1rem' }}>
+                        <div style={{ flex: 1 }}>
+                            <input 
+                                type="text"
+                                placeholder="氏名"
+                                value={fullname}
+                                onChange={e => setFullname(e.target.value)}
+                                required
+                                style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                            />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <label>
+                                性別
+                                <select
+                                    value={gender === "woman" || gender === "girl" ? "woman" : "man"}
+                                    onChange={(e) =>
+                                        setGender(e.target.value as GenderTypes)
+                                    }
+                                    required
+                                    style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                                >
+                                    <option selected value="man">男</option>
+                                    <option value="woman">女</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
                     <br /><br />
-                    <input 
-                        type="text"
-                        placeholder="氏名"
-                        value={fullname}
-                        onChange={e => setFullname(e.target.value)}
-                        required
-                        style={{ width: '100%', padding: '0.5rem' }}
-                    />
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1rem' }}>
+                        <div style={{ flex: 1 }}>
+                            <label>
+                                生年月日
+                                <input
+                                    type="date"
+                                    value={birthday}
+                                    onChange={e => setBirthday(e.target.value)}
+                                    required
+                                    style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                                />
+                            </label>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <label>
+                                国籍(通知・お知らせメールの言語に影響)
+                                <select
+                                    value={countries}
+                                    onChange={(e) =>
+                                        setCountries(e.target.value as CountrieTypes)
+                                    }
+                                    required
+                                    style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                                >
+                                    <option selected value="japan">日本 Japan</option>
+                                    <option value="russia">ロシア Русский</option>
+                                    <option value="others">その他 Others</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
                     <br /><br />
-                    <label>
-                        性別
-                        <select
-                            value={gender === "woman" || gender === "girl" ? "woman" : "man"}
-                            onChange={(e) =>
-                                setGender(e.target.value as GenderTypes)
-                            }
-                            required
-                        >
-                            <option selected value="man">男</option>
-                            <option value="woman">女</option>
-                        </select>
-                    </label>
+                    <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1rem' }}>
+                        <div style={{ flex: 1 }}>
+                            <label>
+                                サイト表示フォント
+                                <select
+                                    value={view_font}
+                                    onChange={(e) =>
+                                        setView_Font(e.target.value)
+                                    }
+                                    required
+                                    style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                                >
+                                    <option selected value="noto_sans_japanese">Noto Sans Japanese, sans-serif</option>
+                                    <option value="udshingo_kyokasho">UDデジタル教科書体 ProN</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <input
+                                type="text"
+                                placeholder="ユーザー名"
+                                value={username}
+                                onChange={e => setUsername(e.target.value)}
+                                required
+                                style={{ width: '100%', padding: '0.5rem', fontSize: isMobile ? '1rem' : '1.2rem' }}
+                            />
+                        </div>
+                    </div>
                     <br /><br />
-                    <label>
-                        生年月日
-                        <input
-                            type="date"
-                            value={birthday}
-                            onChange={e => setBirthday(e.target.value)}
-                            required
-                            style={{ width: '100%', padding: '0.5rem' }}
-                        />
-                    </label>
-                    <br /><br />
-                    <label>
-                        国籍(通知・お知らせメールの言語に影響)
-                        <select
-                            value={countries}
-                            onChange={(e) =>
-                                setCountries(e.target.value as CountrieTypes)
-                            }
-                            required
-                        >
-                            <option selected value="japan">日本 Japan</option>
-                            <option value="russia">ロシア Русский</option>
-                            <option value="others">その他 Others</option>
-                        </select>
-                    </label>
-                    <br /><br />
-                    <label>
-                        サイト表示フォント
-                        <select
-                            value={view_font}
-                            onChange={(e) =>
-                                setView_Font(e.target.value)
-                            }
-                            required
-                        >
-                            <option selected value="noto_sans_japanese">Noto Sans Japanese, sans-serif</option>
-                            <option value="udshingo_kyokasho">UDデジタル教科書体 ProN</option>
-                        </select>
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="ユーザー名"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        required
-                        style={{ width: '100%', padding: '0.5rem' }}
-                    />
-                    <br /><br />
-                    {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
                     <button type="submit" disabled={loading}>
                         <span>{loading ? '情報変更中…' : '情報変更'}</span>
                     </button>
