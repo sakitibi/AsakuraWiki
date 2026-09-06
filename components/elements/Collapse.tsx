@@ -8,8 +8,27 @@ interface CollapseItemProps {
     isStrong?: boolean;
 }
 
-export default function CollapseItem ({ title, children, eventKey, isStrong }: CollapseItemProps) {
+export default function CollapseItem({ title, children, eventKey, isStrong }: CollapseItemProps) {
     const [open, setOpen] = useState(false);
+
+    // Function to handle click events
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault(); // Prevent the default action of the anchor tag
+        setOpen(!open);
+    };
+
+    // Function to render the title
+    const renderTitle = () => {
+        if (isStrong) {
+            return <strong>{title}</strong>;
+        }
+        return <>{title}</>;
+    };
+
+    // Function to render the caret icon
+    const renderCaretIcon = () => {
+        return <i className={`fa-duotone fa-regular fa-caret-${open ? 'up' : 'down'} fa-fw`}></i>;
+    };
 
     return (
         <>
@@ -23,20 +42,13 @@ export default function CollapseItem ({ title, children, eventKey, isStrong }: C
                         alignItems: "center",
                         gap: "8px" 
                     }}
-                    onClick={(e) => {
-                        e.preventDefault(); // aタグのデフォルト挙動を防止
-                        setOpen(!open);
-                    }}
+                    onClick={handleClick}
                     aria-controls={eventKey}
                     aria-expanded={open}
                     className={open ? "" : "collapsed"}
                 >
-                    {isStrong ? (
-                        <strong>{title}</strong>
-                    ) : (
-                        <>{title}</>
-                    )}
-                    <i className={`fa-duotone fa-regular fa-caret-${open ? 'up' : 'down'} fa-fw`}></i>
+                    {renderTitle()}
+                    {renderCaretIcon()}
                 </a>
             </li>
             
