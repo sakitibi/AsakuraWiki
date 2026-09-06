@@ -8,3 +8,5 @@ static
 pnpm-lock.yaml
 v10
 tsconfig.tsbuildinfo
+.aider*
+*.py
