@@ -28,14 +28,14 @@ type EpicTokenResponse struct {
 // 暗号学的に安全なランダム文字列を生成
 func generateRandomString(length int) string {
 	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
-	bytes := make([]byte, length)
-	if _, err := rand.Read(bytes); err != nil {
+	b := make([]byte, length)
+	if _, err := rand.Read(b); err != nil {
 		return ""
 	}
-	for i, b := range bytes {
-		bytes[i] = chars[b%byte(len(chars))]
+	for i, v := range b {
+		b[i] = chars[v%byte(len(chars))]
 	}
-	return string(bytes)
+	return string(b)
 }
 
 // 基準日時が現在より1日以上前かチェック
@@ -53,7 +53,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
-	serviceKey := strings.TrimSpace(os.Getenv("SUPABASE_SERVICE_ROLE_KEY"))
+	anonKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
 	targetID := "a7869bcb-1c09-b4b2-4939-d382a5f27247"
 
 	// ----------------------------------------------------
@@ -67,20 +67,31 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		req.Header.Set("apikey", serviceKey)
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", serviceKey))
+
+		req.Header.Set("apikey", anonKey)
 
 		client := &http.Client{}
 		resp, err := client.Do(req)
-		if err != nil || resp.StatusCode != http.StatusOK {
-			http.Error(w, "Failed to fetch from supabase", http.StatusInternalServerError)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Supabase request failed: %v", err), http.StatusInternalServerError)
 			return
 		}
 		defer resp.Body.Close()
 
+		if resp.StatusCode != http.StatusOK {
+			bodyBytes, _ := io.ReadAll(resp.Body)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]any{
+				"error":   "Failed to fetch from supabase",
+				"status":  resp.StatusCode,
+				"details": string(bodyBytes),
+			})
+			return
+		}
+
 		var vars []WikiVariable
 		if err := json.NewDecoder(resp.Body).Decode(&vars); err != nil || len(vars) == 0 {
-			http.Error(w, "Data not found", http.StatusInternalServerError)
+			http.Error(w, "Data not found or decode error", http.StatusInternalServerError)
 			return
 		}
 		data := vars[0]
@@ -106,15 +117,19 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		epicReq.Header.Set("X-Epic-Correlation-ID", "EOS-j1paBsBeRC6OSGsH0uOGOQ-9n1cSWXfQ_-jpuL2BMBJcg")
 		epicReq.Header.Set("Host", "api.epicgames.dev")
 		epicReq.Header.Set("Accept", "application/json")
-		epicReq.Header.Set("Authorization", fmt.Sprintf("Basic %s", os.Getenv("AMONG_EPICAPIKEY")))
+		epicReq.Header.Set("Authorization", fmt.Sprintf("Basic %s", strings.TrimSpace(os.Getenv("AMONG_EPICAPIKEY"))))
 		epicReq.Header.Set("Accept-Language", "ja")
 		epicReq.Header.Set("Accept-Encoding", "gzip")
 		epicReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 		epicResp, err := client.Do(epicReq)
 		if err != nil || epicResp.StatusCode != http.StatusOK {
+			bodyBytes, _ := io.ReadAll(epicResp.Body)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "oauth_token failed."})
+			json.NewEncoder(w).Encode(map[string]any{
+				"error":   "oauth_token failed.",
+				"details": string(bodyBytes),
+			})
 			return
 		}
 		defer epicResp.Body.Close()
@@ -181,7 +196,6 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// ヌル文字除去処理（22P05エラー防止）
 		cleanedBody := strings.ReplaceAll(string(bodyBytes), "\u0000", "")
 
 		updatePayload := map[string]any{
@@ -197,15 +211,21 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// ANON_KEY をセット
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("apikey", serviceKey)
-		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", serviceKey))
+		req.Header.Set("apikey", anonKey)
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", anonKey))
 		req.Header.Set("Prefer", "return=minimal")
 
 		client := &http.Client{}
 		resp, err := client.Do(req)
 		if err != nil || resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			http.Error(w, "Supabase update failed", http.StatusInternalServerError)
+			body, _ := io.ReadAll(resp.Body)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]any{
+				"error":   "Supabase update failed",
+				"details": string(body),
+			})
 			return
 		}
 		defer resp.Body.Close()
