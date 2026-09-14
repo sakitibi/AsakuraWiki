@@ -82,8 +82,10 @@ func UpdateWikiVariable(data string) error {
 
 	endpoint := fmt.Sprintf("%s/rest/v1/wiki_variables?id=eq.%s", cleanURL, cleanID)
 
+	cleanedData := strings.ReplaceAll(data, "\u0000", "")
+
 	updateData := SupabaseUpdatePayload{
-		Value:     data,
+		Value:     cleanedData,
 		UpdatedAt: time.Now(),
 	}
 
