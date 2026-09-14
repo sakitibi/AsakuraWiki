@@ -71,7 +71,11 @@ async function encrypt(FilePath) {
         ).trim();
         const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
 
-        Promise.all(rootBaseParsed.slice(0, 3).map(item => encrypt(item)))
+        Promise.all(
+            rootBaseParsed.slice(0, 3).map(async (item) => {
+                await encrypt(item)
+            })
+        )
             .then(() => {
                 console.log("すべての暗号化が完了しました");
             })
