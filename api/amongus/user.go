@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -43,34 +44,47 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// トークンの取得
 	apiBaseURL := os.Getenv("NEXT_PUBLIC_API_BASE_URL")
 	resp1, err := http.Get(fmt.Sprintf("%s/api/amongus/token", apiBaseURL))
-	if err != nil || resp1.StatusCode != http.StatusOK {
-		var errData string
-		if resp1 != nil {
-			b, _ := io.ReadAll(resp1.Body)
-			errData = string(b)
-			resp1.Body.Close()
-		}
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "token error", "data": errData})
+		json.NewEncoder(w).Encode(map[string]any{"error": "failed to request token", "details": err.Error()})
+		return
+	}
+	defer resp1.Body.Close()
+
+	if resp1.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp1.Body)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]any{"error": "token error", "data": string(body)})
 		return
 	}
 
 	var tokenRes TokenResponse
-	json.NewDecoder(resp1.Body).Decode(&tokenRes)
-	resp1.Body.Close()
+	if err := json.NewDecoder(resp1.Body).Decode(&tokenRes); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]any{"error": "invalid token response json"})
+		return
+	}
 
 	// upackによるトークンの解読
 	decodedResult, err := sencode.DecodeSEncode(tokenRes.Token, privKey, true, 5)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "failed to decode token"})
+		json.NewEncoder(w).Encode(map[string]any{"error": "failed to decode token"})
 		return
 	}
 
-	authToken, ok := decodedResult.(string)
-	if !ok {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "invalid decoded token type"})
+	var authToken string
+	switch v := decodedResult.(type) {
+	case string:
+		authToken = v
+	case []byte:
+		authToken = string(v)
+	default:
+		log.Printf("sencode returned dummy buffer ([]byte) due to decode failure or signature mismatch")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]any{
+			"error": "failed to decode token (signature mismatch or invalid format)",
+		})
 		return
 	}
 
@@ -78,7 +92,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	data2, statusCode, err := amongus.FetchAmongUsUser(authToken)
 	if err != nil || statusCode != http.StatusOK {
 		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{
+		json.NewEncoder(w).Encode(map[string]any{
 			"error":      data2,
 			"auth_token": authToken,
 		})
@@ -89,25 +103,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	authTokenWithLobby, err := sencode.EncodeSEncode([]byte(data2), pubKey, 5)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "failed to encode response token"})
+		json.NewEncoder(w).Encode(map[string]any{"error": "failed to encode response token"})
 		return
 	}
 
 	// Supabase の DB 更新
 	if err := amongus.UpdateWikiVariable(data2); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(
-			map[string]any{
-				"error": err.Error(),
-			},
-		)
+		json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
 		return
 	}
 
 	// レスポンス返却
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{
+	json.NewEncoder(w).Encode(map[string]any{
 		"obfuscate": "upack.js",
 		"token":     authTokenWithLobby,
 	})
