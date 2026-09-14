@@ -19,17 +19,18 @@ import (
 
 // JSONProps はレスポンスのスタッフデータ構造体
 type JSONProps struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Kana     string `json:"kana"`
-	Dept     string `json:"dept"`
-	Location string `json:"location"`
-	Seat     string `json:"seat"`
-	Joined   string `json:"joined"`
-	Team     string `json:"team"`
-	Birthday string `json:"birthday,omitempty"`
-	Intro    string `json:"intro,omitempty"`
-	Comment  string `json:"comment,omitempty"`
+	ID           int    `json:"id"`
+	Name         string `json:"name"`
+	Kana         string `json:"kana"`
+	Dept         string `json:"dept"`
+	Location     string `json:"location"`
+	Seat         string `json:"seat"`
+	Joined       string `json:"joined"`
+	Team         string `json:"team"`
+	Birthday     string `json:"birthday,omitempty"`
+	Intro        string `json:"intro,omitempty"`
+	Comment      string `json:"comment,omitempty"`
+	Graduationed string `json:"graduationed,omitempty"`
 }
 
 type StaffDataResponse struct {

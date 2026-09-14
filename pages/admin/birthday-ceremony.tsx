@@ -17,6 +17,7 @@ export interface JSONProps {
     birthday?: string;
     intro?: string;
     comment?: string;
+    graduationed?: string;
 }
 
 interface CeremonyConfig extends BroadcastPayload {
