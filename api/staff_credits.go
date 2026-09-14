@@ -50,7 +50,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	authHeader := r.Header.Get("Authorization")
-	user, err := staff.GetSupabaseUser(authHeader)
+	user, err := pkg.GetSupabaseUser(authHeader)
 	if err != nil {
 		log.Printf("Auth check error: %v", err)
 	}
@@ -60,7 +60,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		userID = user.ID
 	}
 
-	isAdmin := staff.AdminerUserId[userID]
+	isAdmin := pkg.AdminerUserId[userID]
 	if !isAdmin {
 		log.Printf("Unauthorized access attempt. UserID: %s", userID)
 		w.Header().Set("Content-Type", "application/json")

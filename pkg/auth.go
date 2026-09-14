@@ -10,7 +10,6 @@ import (
 	"strings"
 )
 
-// 関数名を大文字 (GetSupabaseUser) に変更してエクスポート
 func GetSupabaseUser(authHeader string) (*SupabaseUserResponse, error) {
 	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
 	supabaseAnonKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
