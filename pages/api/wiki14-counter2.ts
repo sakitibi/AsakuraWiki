@@ -10,12 +10,22 @@ import 'is-plain-object'*/
 /*(puppeteer as any).vanilla = vanillaPuppeteer;
 puppeteer.use(StealthPlugin());*/
 
+export const config = {
+    api: {
+        responseLimit: false,
+    },
+    maxDuration: 600,
+};
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
     res.setHeader('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
+    res.setHeader('Connection', 'keep-alive');
     
     if (req.method === "OPTIONS") {
         return res.status(200).end();
@@ -33,7 +43,7 @@ export default async function handler(
                 body: `name=マグロのユッケ#${random}&msg=同意見`
             }
         );
-        const data1 = await response1.text();*/
+        const data1 = await response1.text();
         const response1 = await fetch("https://z.wikiwiki.jp/asakura-wiki/topic/1");
         const data1 = await response1.text();
         // 1. FormData オブジェクトを作成
@@ -52,7 +62,6 @@ export default async function handler(
         })
         console.log("status: ", response2.status);
         const data2 = await response2.text();
-/*
         let digest: string | null = null;
         let browser: any = null;
 
@@ -188,14 +197,25 @@ export default async function handler(
             if (browser) await browser.close();
             console.error("システムエラー:", error.message);
             return res.status(500).json({ success: false, error: error.message });
-        }*/
-/*
+        }
+
         if (!response1.ok || !response2.ok) {
             return res.status(500).json({
                 error: "counter2 fetch failed",
                 data: `data1: , data2: ${data2}`
             });
         }*/
-        return res.status(200).json({success: true, data: [data1, data2]});
+
+        // データの順次送信
+        for (let i = 1; i <= 100; i++) {
+            res.write(`データチャンク #${i}\n`);
+            if ('flush' in res && typeof res.flush === 'function') {
+            (res as any).flush();
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+
+        // ストリームを終了
+        res.end();
     }
 }
