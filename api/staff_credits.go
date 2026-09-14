@@ -4,136 +4,18 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
-	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"os"
-	"regexp"
 	"strconv"
-	"strings"
 	"sync"
+
+	"asakura-wiki.vercel.app/pkg"
+	"asakura-wiki.vercel.app/pkg/staff"
 
 	"github.com/andybalholm/brotli"
 )
 
-// JSONProps はレスポンスのスタッフデータ構造体
-type JSONProps struct {
-	ID           int    `json:"id"`
-	Name         string `json:"name"`
-	Kana         string `json:"kana"`
-	Dept         string `json:"dept"`
-	Location     string `json:"location"`
-	Seat         string `json:"seat"`
-	Joined       string `json:"joined"`
-	Team         string `json:"team"`
-	Birthday     string `json:"birthday,omitempty"`
-	Intro        string `json:"intro,omitempty"`
-	Comment      string `json:"comment,omitempty"`
-	Graduationed string `json:"graduationed,omitempty"`
-}
-
-type StaffDataResponse struct {
-	StaffData []JSONProps `json:"staff_data"`
-}
-
-// Supabase User 取得用レスポンス構造体
-type SupabaseUserResponse struct {
-	ID string `json:"id"`
-}
-
-// 管理者ユーザーIDリスト
-var adminerUserId = map[string]bool{
-	"9d2347a2-6322-4d55-93f1-71d8440e5f32": true,
-	"cbbccb1c-ab8f-4b67-b903-fb75cf26c60a": true,
-	"ba159f68-814f-4564-935f-cea46624fd53": true,
-	"96b00cd8-d43b-4a5b-b473-84433c0b3c98": true,
-	"f06de8f9-7ae1-4e69-8c62-7dbf40708137": true,
-}
-
-var birthdayRegex = regexp.MustCompile(`\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日`)
-
-// 単一のURLを処理するヘルパー関数
-func fetchAndDecompress(url string) ([]JSONProps, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch %s: %s", url, resp.Status)
-	}
-
-	// Brotli 解凍
-	brReader := brotli.NewReader(resp.Body)
-	body, err := io.ReadAll(brReader)
-	if err != nil {
-		return nil, err
-	}
-
-	var data StaffDataResponse
-	if err := json.Unmarshal(body, &data); err != nil {
-		return nil, err
-	}
-
-	return data.StaffData, nil
-}
-
-// Supabase Server API を使用してユーザー情報を取得
-func getSupabaseUser(authHeader string) (*SupabaseUserResponse, error) {
-	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
-	supabaseAnonKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
-
-	if supabaseURL == "" || supabaseAnonKey == "" || authHeader == "" {
-		return nil, nil
-	}
-
-	token := strings.TrimSpace(authHeader)
-	if strings.HasPrefix(strings.ToLower(token), "bearer ") {
-		token = strings.TrimSpace(token[7:])
-	}
-
-	// トークン自体が存在しない場合は失敗
-	if token == "" {
-		log.Printf("Auth check failed: Token is empty")
-		return nil, nil
-	}
-
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/auth/v1/user", supabaseURL), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
-	req.Header.Set("apikey", supabaseAnonKey)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("Supabase auth request failed: %v", err)
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		bodyBytes, _ := io.ReadAll(resp.Body)
-		log.Printf("Supabase Auth Error Status: %d, Response: %s", resp.StatusCode, string(bodyBytes))
-		return nil, fmt.Errorf("auth error: status %d", resp.StatusCode)
-	}
-
-	var user SupabaseUserResponse
-	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
-		log.Printf("Failed to decode Supabase user: %v", err)
-		return nil, err
-	}
-
-	return &user, nil
-}
-
-// エントリーポイント Handler
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// CORS ヘッダーの設定
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, x-data-type")
 	w.Header().Set("Access-Control-Allow-Methods", "GET,OPTIONS")
@@ -158,7 +40,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 取得対象のURLリスト
 	baseURL := "https://sakitibi.github.io/14nin.com/staff_credits/staff_data_"
 	urls := []string{
 		baseURL + "1_64.json.br",
@@ -168,9 +49,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		baseURL + "257_320.json.br",
 	}
 
-	// 認証チェック
 	authHeader := r.Header.Get("Authorization")
-	user, err := getSupabaseUser(authHeader)
+	user, err := staff.GetSupabaseUser(authHeader)
 	if err != nil {
 		log.Printf("Auth check error: %v", err)
 	}
@@ -180,7 +60,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		userID = user.ID
 	}
 
-	isAdmin := adminerUserId[userID]
+	isAdmin := staff.AdminerUserId[userID]
 	if !isAdmin {
 		log.Printf("Unauthorized access attempt. UserID: %s", userID)
 		w.Header().Set("Content-Type", "application/json")
@@ -189,10 +69,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// すべてのURLを並列処理
 	type resultStruct struct {
 		index int
-		data  []JSONProps
+		data  []staff.JSONProps
 		err   error
 	}
 
@@ -203,7 +82,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		wg.Add(1)
 		go func(i int, u string) {
 			defer wg.Done()
-			data, err := fetchAndDecompress(u)
+			data, err := staff.FetchAndDecompress(u)
 			ch <- resultStruct{index: i, data: data, err: err}
 		}(index, url)
 	}
@@ -211,7 +90,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	wg.Wait()
 	close(ch)
 
-	resultsMap := make(map[int][]JSONProps)
+	resultsMap := make(map[int][]staff.JSONProps)
 	for res := range ch {
 		if res.err != nil {
 			log.Printf("Batch Processing Error: %v", res.err)
@@ -226,65 +105,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		resultsMap[res.index] = res.data
 	}
 
-	// 取得した配列の結合
-	var staffData []JSONProps
+	var staffData []staff.JSONProps
 	for i := range len(urls) {
 		staffData = append(staffData, resultsMap[i]...)
 	}
 
-	log.Printf("staff_data count: %d", len(staffData))
+	results := staff.ProcessBirthdays(staffData)
 
-	// 生年月日の置換処理
-	results := make([]JSONProps, len(staffData))
-	for index, data := range staffData {
-		shouldSkipReplace := (index >= 77 && index <= 80) || (index >= 83 && index <= 90)
-
-		if data.Birthday != "" {
-			if shouldSkipReplace {
-				var year string
-				switch index {
-				case 85:
-					year = "2019"
-				case 83:
-					year = "2018"
-				case 77, 86, 87:
-					year = "2016"
-				case 78, 88:
-					year = "2015"
-				case 79, 80, 90:
-					year = "2014"
-				}
-
-				data.Birthday = birthdayRegex.ReplaceAllStringFunc(data.Birthday, func(match string) string {
-					submatches := birthdayRegex.FindStringSubmatch(match)
-					if len(submatches) < 3 {
-						return match
-					}
-					return fmt.Sprintf("%s年%s月%s日", year, submatches[1], submatches[2])
-				})
-			} else {
-				data.Birthday = birthdayRegex.ReplaceAllStringFunc(data.Birthday, func(match string) string {
-					submatches := birthdayRegex.FindStringSubmatch(match)
-					if len(submatches) < 3 {
-						return match
-					}
-					m, _ := strconv.Atoi(submatches[1])
-					d, _ := strconv.Atoi(submatches[2])
-
-					isBeforeApril := (m >= 1 && m <= 3) || (m == 4 && d == 1)
-					if isBeforeApril {
-						return fmt.Sprintf("2014年%d月%d日", m, d)
-					}
-					return fmt.Sprintf("2013年%d月%d日", m, d)
-				})
-			}
-		}
-		results[index] = data
-	}
-
-	log.Printf("results count: %d", len(results))
-
-	// レスポンスの作成・圧縮
 	jsonBytes, err := json.Marshal(results)
 	if err != nil {
 		log.Printf("JSON Marshal error: %v", err)
