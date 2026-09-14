@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sakitibi/upack.go/sencode"
 	"asakura-wiki.vercel.app/pkg/amongus/token"
+	"github.com/sakitibi/upack.go/sencode"
 )
 
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,14 +28,14 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	// GET リクエスト処理
 	// ----------------------------------------------------
 	if r.Method == http.MethodGet {
-		data, errResp := FetchWikiVariable(supabaseURL, anonKey, targetID)
+		data, errResp := token.FetchWikiVariable(supabaseURL, anonKey, targetID)
 		if errResp != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(errResp)
 			return
 		}
 
-		idToken, errResp := FetchEpicToken(data.Value)
+		idToken, errResp := token.FetchEpicToken(data.Value)
 		if errResp != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(errResp)
@@ -94,7 +94,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	// PUT リクエスト処理
 	// ----------------------------------------------------
 	if r.Method == http.MethodPut {
-		errResp := UpdateWikiVariable(r.Body, supabaseURL, anonKey, targetID)
+		errResp := token.UpdateWikiVariable(r.Body, supabaseURL, anonKey, targetID)
 		if errResp != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(errResp)
