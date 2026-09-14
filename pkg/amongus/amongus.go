@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -70,13 +71,16 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 	return string(bodyBytes), resp.StatusCode, nil
 }
 
-// Supabase (REST API) 経由で DB を更新
 func UpdateWikiVariable(data string) error {
 	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
 	serviceKey := os.Getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 	targetID := "9cc08dca-cf55-4639-9ad1-42e1b67f53b9"
-	endpoint := fmt.Sprintf("%s/rest/v1/wiki_variables?id=eq.%s", supabaseURL, targetID)
+
+	cleanURL := strings.TrimSpace(supabaseURL)
+	cleanID := strings.TrimSpace(targetID)
+
+	endpoint := fmt.Sprintf("%s/rest/v1/wiki_variables?id=eq.%s", cleanURL, cleanID)
 
 	updateData := SupabaseUpdatePayload{
 		Value:     data,
