@@ -11,6 +11,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/andybalholm/brotli"
@@ -77,8 +78,8 @@ func fetchAndDecompress(url string) ([]JSONProps, error) {
 
 // Supabase Server API を使用してユーザー情報を取得
 func getSupabaseUser(authHeader string) (*SupabaseUserResponse, error) {
-	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
-	supabaseAnonKey := os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
+	supabaseAnonKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
 
 	if supabaseURL == "" || authHeader == "" {
 		return nil, nil
