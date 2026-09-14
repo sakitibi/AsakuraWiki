@@ -69,6 +69,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		req.Header.Set("apikey", anonKey)
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", anonKey))
 
 		client := &http.Client{}
 		resp, err := client.Do(req)

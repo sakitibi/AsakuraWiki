@@ -84,7 +84,7 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 
 func UpdateWikiVariable(data string) error {
 	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
-	serviceKey := os.Getenv("SUPABASE_SERVICE_ROLE_KEY")
+	anonKey := os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
 	targetID := "9cc08dca-cf55-4639-9ad1-42e1b67f53b9"
 
@@ -111,8 +111,8 @@ func UpdateWikiVariable(data string) error {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("apikey", serviceKey)
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", serviceKey))
+	req.Header.Set("apikey", anonKey)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", anonKey))
 	req.Header.Set("Prefer", "return=minimal")
 
 	client := &http.Client{}
