@@ -9,7 +9,6 @@ import (
 	"os"
 	"strings"
 
-	"asakura-wiki.vercel.app/pkg"
 	"asakura-wiki.vercel.app/pkg/amongus"
 	"github.com/sakitibi/upack.go/sencode"
 )
@@ -29,13 +28,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pubKey, err := pkg.ImportPublicKey(keys[0])
+	pubKey, err := sencode.ImportPublicKey(keys[0])
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Public key import error: %v", err), http.StatusInternalServerError)
 		return
 	}
 
-	privKey, err := pkg.ImportPrivateKey(keys[1])
+	privKey, err := sencode.ImportPrivateKey(keys[1])
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Private key import error: %v", err), http.StatusInternalServerError)
 		return
