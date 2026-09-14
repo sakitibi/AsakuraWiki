@@ -2,9 +2,22 @@ import { supabaseClient } from '@/lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { useEffect, useState, useMemo } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
-import { JSONProps } from '../api/staff_credits';
 import { BroadcastPayload } from '@/pages/events/birthday-ceremony';
 import Pako from 'pako';
+
+export interface JSONProps {
+    id: number;
+    name: string;
+    kana: string;
+    dept: string;
+    location: string;
+    seat: string;
+    joined: string;
+    team: string;
+    birthday?: string;
+    intro?: string;
+    comment?: string;
+}
 
 interface CeremonyConfig extends BroadcastPayload {
     label: string;

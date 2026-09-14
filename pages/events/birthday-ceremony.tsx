@@ -3,7 +3,7 @@ import Head from 'next/head';
 import confetti from 'canvas-confetti';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { useCeremonyBroadcast } from '@/utils/useCeremonyBroadcast';
-import { JSONProps } from '@/pages/api/staff_credits';
+import { JSONProps } from '@/pages/admin/birthday-ceremony';
 import Pako from 'pako';
 
 // 型定義

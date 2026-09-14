@@ -39,7 +39,7 @@ type SupabaseUserResponse struct {
 	ID string `json:"id"`
 }
 
-// 管理者ユーザーIDリスト (元の adminerUserId に相当)
+// 管理者ユーザーIDリスト
 var adminerUserId = map[string]bool{
 	"USER_ID_1": true,
 	"USER_ID_2": true,
@@ -47,7 +47,7 @@ var adminerUserId = map[string]bool{
 
 var birthdayRegex = regexp.MustCompile(`\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日`)
 
-// 単一のURLを処理するヘルパー関数 (fetchAndDecompress に相当)
+// 単一のURLを処理するヘルパー関数
 func fetchAndDecompress(url string) ([]JSONProps, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -150,7 +150,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// すべてのURLを並列処理 (Promise.all 相当)
+	// すべてのURLを並列処理
 	type resultStruct struct {
 		index int
 		data  []JSONProps
@@ -185,13 +185,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		resultsMap[res.index] = res.data
 	}
 
-	// 取得した配列の結合 (.flat() 相当)
+	// 取得した配列の結合
 	var staffData []JSONProps
-	for i := 0; i < len(urls); i++ {
+	for i := range len(urls) {
 		staffData = append(staffData, resultsMap[i]...)
 	}
 
-	// 生年月日の置換処理 (JavaScriptの .map() による変換を再現)
+	// 生年月日の置換処理
 	results := make([]JSONProps, len(staffData))
 	for index, data := range staffData {
 		shouldSkipReplace := (index >= 77 && index <= 80) || (index >= 83 && index <= 90)
@@ -199,15 +199,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		if data.Birthday != "" {
 			if shouldSkipReplace {
 				var year string
-				if index == 85 {
+				switch index {
+				case 85:
 					year = "2019"
-				} else if index == 83 {
+				case 83:
 					year = "2018"
-				} else if index == 77 || index == 86 || index == 87 {
+				case 77, 86, 87:
 					year = "2016"
-				} else if index == 78 || index == 88 {
+				case 78, 88:
 					year = "2015"
-				} else if index == 79 || index == 80 || index == 90 {
+				case 79, 80, 90:
 					year = "2014"
 				}
 
@@ -250,7 +251,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// x-data-type ヘッダーに応じた圧縮分岐
 	if r.Header.Get("x-data-type") == "gzip" {
 		var buf bytes.Buffer
-		gzWriter, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression) // level: 9
+		gzWriter, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
 		gzWriter.Write(jsonBytes)
 		gzWriter.Close()
 
@@ -258,7 +259,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.Write(buf.Bytes())
 	} else {
 		var buf bytes.Buffer
-		// Pako / zlib の quality 11 に相当する最高圧縮レベル
 		brWriter := brotli.NewWriterLevel(&buf, brotli.BestCompression)
 		brWriter.Write(jsonBytes)
 		brWriter.Close()
