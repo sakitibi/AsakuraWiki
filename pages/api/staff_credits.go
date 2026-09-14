@@ -1,0 +1,270 @@
+package handler
+
+import (
+	"bytes"
+	"compress/gzip"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"regexp"
+	"strconv"
+	"sync"
+
+	"github.com/andybalholm/brotli"
+)
+
+// JSONProps はレスポンスのスタッフデータ構造体
+type JSONProps struct {
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	Kana     string `json:"kana"`
+	Dept     string `json:"dept"`
+	Location string `json:"location"`
+	Seat     string `json:"seat"`
+	Joined   string `json:"joined"`
+	Team     string `json:"team"`
+	Birthday string `json:"birthday,omitempty"`
+	Intro    string `json:"intro,omitempty"`
+	Comment  string `json:"comment,omitempty"`
+}
+
+type StaffDataResponse struct {
+	StaffData []JSONProps `json:"staff_data"`
+}
+
+// Supabase User 取得用レスポンス構造体
+type SupabaseUserResponse struct {
+	ID string `json:"id"`
+}
+
+// 管理者ユーザーIDリスト (元の adminerUserId に相当)
+var adminerUserId = map[string]bool{
+	"USER_ID_1": true,
+	"USER_ID_2": true,
+}
+
+var birthdayRegex = regexp.MustCompile(`\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日`)
+
+// 単一のURLを処理するヘルパー関数 (fetchAndDecompress に相当)
+func fetchAndDecompress(url string) ([]JSONProps, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch %s: %s", url, resp.Status)
+	}
+
+	// Brotli 解凍
+	brReader := brotli.NewReader(resp.Body)
+	body, err := io.ReadAll(brReader)
+	if err != nil {
+		return nil, err
+	}
+
+	var data StaffDataResponse
+	if err := json.Unmarshal(body, &data); err != nil {
+		return nil, err
+	}
+
+	return data.StaffData, nil
+}
+
+// Supabase Server API を使用してユーザー情報を取得
+func getSupabaseUser(authHeader string) (*SupabaseUserResponse, error) {
+	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
+	supabaseAnonKey := os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+
+	if supabaseURL == "" || authHeader == "" {
+		return nil, nil
+	}
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/auth/v1/user", supabaseURL), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", authHeader)
+	req.Header.Set("apikey", supabaseAnonKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var user SupabaseUserResponse
+	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// エントリーポイント Handler
+func Handler(w http.ResponseWriter, r *http.Request) {
+	// CORS ヘッダーの設定
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, x-data-type")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,OPTIONS")
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// 取得対象のURLリスト
+	baseURL := "https://sakitibi.github.io/14nin.com/staff_credits/staff_data_"
+	urls := []string{
+		baseURL + "1_64.json.br",
+		baseURL + "65_128.json.br",
+		baseURL + "129_192.json.br",
+		baseURL + "193_256.json.br",
+		baseURL + "257_320.json.br",
+	}
+
+	// 認証チェック
+	authHeader := r.Header.Get("Authorization")
+	user, _ := getSupabaseUser(authHeader)
+
+	userID := ""
+	if user != nil {
+		userID = user.ID
+	}
+
+	isAdmin := adminerUserId[userID]
+	if !isAdmin {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Unauthorized"})
+		return
+	}
+
+	// すべてのURLを並列処理 (Promise.all 相当)
+	type resultStruct struct {
+		index int
+		data  []JSONProps
+		err   error
+	}
+
+	ch := make(chan resultStruct, len(urls))
+	var wg sync.WaitGroup
+
+	for index, url := range urls {
+		wg.Add(1)
+		go func(i int, u string) {
+			defer wg.Done()
+			data, err := fetchAndDecompress(u)
+			ch <- resultStruct{index: i, data: data, err: err}
+		}(index, url)
+	}
+
+	wg.Wait()
+	close(ch)
+
+	resultsMap := make(map[int][]JSONProps)
+	for res := range ch {
+		if res.err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": "一部またはすべてのデータの取得・解凍に失敗しました",
+			})
+			return
+		}
+		resultsMap[res.index] = res.data
+	}
+
+	// 取得した配列の結合 (.flat() 相当)
+	var staffData []JSONProps
+	for i := 0; i < len(urls); i++ {
+		staffData = append(staffData, resultsMap[i]...)
+	}
+
+	// 生年月日の置換処理 (JavaScriptの .map() による変換を再現)
+	results := make([]JSONProps, len(staffData))
+	for index, data := range staffData {
+		shouldSkipReplace := (index >= 77 && index <= 80) || (index >= 83 && index <= 90)
+
+		if data.Birthday != "" {
+			if shouldSkipReplace {
+				var year string
+				if index == 85 {
+					year = "2019"
+				} else if index == 83 {
+					year = "2018"
+				} else if index == 77 || index == 86 || index == 87 {
+					year = "2016"
+				} else if index == 78 || index == 88 {
+					year = "2015"
+				} else if index == 79 || index == 80 || index == 90 {
+					year = "2014"
+				}
+
+				data.Birthday = birthdayRegex.ReplaceAllStringFunc(data.Birthday, func(match string) string {
+					submatches := birthdayRegex.FindStringSubmatch(match)
+					if len(submatches) < 3 {
+						return match
+					}
+					return fmt.Sprintf("%s年%s月%s日", year, submatches[1], submatches[2])
+				})
+			} else {
+				data.Birthday = birthdayRegex.ReplaceAllStringFunc(data.Birthday, func(match string) string {
+					submatches := birthdayRegex.FindStringSubmatch(match)
+					if len(submatches) < 3 {
+						return match
+					}
+					m, _ := strconv.Atoi(submatches[1])
+					d, _ := strconv.Atoi(submatches[2])
+
+					isBeforeApril := (m >= 1 && m <= 3) || (m == 4 && d == 1)
+					if isBeforeApril {
+						return fmt.Sprintf("2014年%d月%d日", m, d)
+					}
+					return fmt.Sprintf("2013年%d月%d日", m, d)
+				})
+			}
+		}
+		results[index] = data
+	}
+
+	// レスポンスの作成・圧縮
+	jsonBytes, err := json.Marshal(results)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/octet-stream")
+
+	// x-data-type ヘッダーに応じた圧縮分岐
+	if r.Header.Get("x-data-type") == "gzip" {
+		var buf bytes.Buffer
+		gzWriter, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression) // level: 9
+		gzWriter.Write(jsonBytes)
+		gzWriter.Close()
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(buf.Bytes())
+	} else {
+		var buf bytes.Buffer
+		// Pako / zlib の quality 11 に相当する最高圧縮レベル
+		brWriter := brotli.NewWriterLevel(&buf, brotli.BestCompression)
+		brWriter.Write(jsonBytes)
+		brWriter.Close()
+
+		w.Header().Set("Content-Length", strconv.Itoa(buf.Len()))
+		w.WriteHeader(http.StatusOK)
+		w.Write(buf.Bytes())
+	}
+}
