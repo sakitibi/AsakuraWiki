@@ -41,15 +41,18 @@ type SupabaseUserResponse struct {
 	ID string `json:"id"`
 }
 
-// 管理者ユーザーIDリスト (元の adminerUserId に相当)
+// 管理者ユーザーIDリスト
 var adminerUserId = map[string]bool{
-	"USER_ID_1": true,
-	"USER_ID_2": true,
+	"9d2347a2-6322-4d55-93f1-71d8440e5f32": true,
+	"cbbccb1c-ab8f-4b67-b903-fb75cf26c60a": true,
+	"ba159f68-814f-4564-935f-cea46624fd53": true,
+	"96b00cd8-d43b-4a5b-b473-84433c0b3c98": true,
+	"f06de8f9-7ae1-4e69-8c62-7dbf40708137": true,
 }
 
 var birthdayRegex = regexp.MustCompile(`\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日`)
 
-// 単一のURLを処理するヘルパー関数 (fetchAndDecompress に相当)
+// 単一のURLを処理するヘルパー関数
 func fetchAndDecompress(url string) ([]JSONProps, error) {
 	resp, err := http.Get(url)
 	if err != nil {
