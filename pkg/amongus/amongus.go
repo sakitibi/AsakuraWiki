@@ -110,7 +110,8 @@ func UpdateWikiVariable(data string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return fmt.Errorf("supabase update failed with status: %d", resp.StatusCode)
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("supabase update failed with status: %d, response: %s", resp.StatusCode, string(bodyBytes))
 	}
 
 	return nil
