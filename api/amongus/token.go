@@ -153,9 +153,24 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// バリデーションチェック
-		if data.Value == "" || isOneDayEarlier(data.UpdatedAt) {
+		if data.Value == "" {
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "token is null"})
+			json.NewEncoder(w).Encode(map[string]any{
+				"error":   "token is null",
+				"reason":  "value is empty",
+				"updated": data.UpdatedAt,
+			})
+			return
+		}
+
+		if isOneDayEarlier(data.UpdatedAt) {
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]any{
+				"error":   "token is null",
+				"reason":  "data is older than 24 hours",
+				"updated": data.UpdatedAt,
+				"now":     time.Now(),
+			})
 			return
 		}
 
