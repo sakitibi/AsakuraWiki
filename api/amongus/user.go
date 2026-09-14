@@ -68,23 +68,29 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	// upackによるトークンの解読
 	decodedResult, err := sencode.DecodeSEncode(tokenRes.Token, privKey, true, 5)
 	if err != nil {
+		log.Printf("[DEBUG] DecodeSEncode error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]any{"error": "failed to decode token"})
 		return
 	}
+
+	log.Printf("[DEBUG] Raw token received: %s", tokenRes.Token)
+	log.Printf("[DEBUG] Decoded result type: %T, value: %v", decodedResult, decodedResult)
 
 	var authToken string
 	switch v := decodedResult.(type) {
 	case string:
 		authToken = v
 	case []byte:
-		authToken = string(v)
-	default:
-		log.Printf("sencode returned dummy buffer ([]byte) due to decode failure or signature mismatch")
+		log.Printf("[DEBUG] Decoded as []byte (length: %d): %s", len(v), string(v))
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(map[string]any{
 			"error": "failed to decode token (signature mismatch or invalid format)",
 		})
+		return
+	default:
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]any{"error": "invalid token type"})
 		return
 	}
 
