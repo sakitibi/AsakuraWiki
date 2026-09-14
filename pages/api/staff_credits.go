@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -39,7 +40,7 @@ type SupabaseUserResponse struct {
 	ID string `json:"id"`
 }
 
-// 管理者ユーザーIDリスト
+// 管理者ユーザーIDリスト (元の adminerUserId に相当)
 var adminerUserId = map[string]bool{
 	"USER_ID_1": true,
 	"USER_ID_2": true,
@@ -47,7 +48,7 @@ var adminerUserId = map[string]bool{
 
 var birthdayRegex = regexp.MustCompile(`\b(?:19\d{2}|200\d)年(\d{1,2})月(\d{1,2})日`)
 
-// 単一のURLを処理するヘルパー関数
+// 単一のURLを処理するヘルパー関数 (fetchAndDecompress に相当)
 func fetchAndDecompress(url string) ([]JSONProps, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -93,13 +94,20 @@ func getSupabaseUser(authHeader string) (*SupabaseUserResponse, error) {
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
-	if err != nil || resp.StatusCode != http.StatusOK {
+	if err != nil {
+		log.Printf("Supabase auth request failed: %v", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("Supabase auth returned non-200 status: %d", resp.StatusCode)
+		return nil, fmt.Errorf("auth error: status %d", resp.StatusCode)
+	}
+
 	var user SupabaseUserResponse
 	if err := json.NewDecoder(resp.Body).Decode(&user); err != nil {
+		log.Printf("Failed to decode Supabase user: %v", err)
 		return nil, err
 	}
 
@@ -112,6 +120,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, x-data-type")
 	w.Header().Set("Access-Control-Allow-Methods", "GET,OPTIONS")
+
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("Recovered from panic: %v", r)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{
+				"error": "予期せぬ内部エラーが発生しました",
+			})
+		}
+	}()
 
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -135,7 +153,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	// 認証チェック
 	authHeader := r.Header.Get("Authorization")
-	user, _ := getSupabaseUser(authHeader)
+	user, err := getSupabaseUser(authHeader)
+	if err != nil {
+		log.Printf("Auth check error: %v", err)
+	}
 
 	userID := ""
 	if user != nil {
@@ -144,6 +165,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	isAdmin := adminerUserId[userID]
 	if !isAdmin {
+		log.Printf("Unauthorized access attempt. UserID: %s", userID)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Unauthorized"})
@@ -175,6 +197,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	resultsMap := make(map[int][]JSONProps)
 	for res := range ch {
 		if res.err != nil {
+			log.Printf("Batch Processing Error: %v", res.err)
+
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{
@@ -190,6 +214,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	for i := range len(urls) {
 		staffData = append(staffData, resultsMap[i]...)
 	}
+
+	log.Printf("staff_data count: %d", len(staffData))
 
 	// 生年月日の置換処理
 	results := make([]JSONProps, len(staffData))
@@ -239,16 +265,18 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		results[index] = data
 	}
 
+	log.Printf("results count: %d", len(results))
+
 	// レスポンスの作成・圧縮
 	jsonBytes, err := json.Marshal(results)
 	if err != nil {
+		log.Printf("JSON Marshal error: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/octet-stream")
 
-	// x-data-type ヘッダーに応じた圧縮分岐
 	if r.Header.Get("x-data-type") == "gzip" {
 		var buf bytes.Buffer
 		gzWriter, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
