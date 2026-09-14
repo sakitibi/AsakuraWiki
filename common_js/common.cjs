@@ -20,7 +20,7 @@ async function exportPrivateKey(key) {
 
 async function encrypt(FilePath) {
     try{
-        const KeyPair = upack.SEncoder.generateKeyPair();
+        const KeyPair = await upack.SEncoder.generateKeyPair();
 
         const PrivateKeyB64 = await exportPrivateKey(KeyPair.privateKey);
 
@@ -30,7 +30,7 @@ async function encrypt(FilePath) {
         const [headPart, tailPart] = splitAtLastDoubleNewline(File);
         const FileEncoded = await upack.SEncoder.encodeSEncode(
             new TextEncoder().encode(headPart),
-            await KeyPair.publicKey,
+            KeyPair.publicKey,
             10
         );
         const compressedBuffer = zlib.gzipSync(FileEncoded, { level: zlib.constants.Z_BEST_COMPRESSION });
