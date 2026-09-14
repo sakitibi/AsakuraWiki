@@ -1,4 +1,4 @@
-module golang.asakurawiki.com
+module asakura-wiki.vercel.app
 
 go 1.24.0
 
