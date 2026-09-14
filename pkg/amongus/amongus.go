@@ -50,7 +50,7 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 	req.Header.Set("Accept", "text/plain")
 	req.Header.Set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.4.7,sentry-trace_id=ab4fcbbca8194bcea5ac9be5a6aff102")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", authToken))
-	req.Header.Set("Accept-Encoding", "gzip, deflate, br")
+	req.Header.Set("Accept-Encoding", "gzip, deflate")
 	req.Header.Set("sentry-trace", "ab4fcbbca8194bcea5ac9be5a6aff102-8783ca69fcb04104-0")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "AmongUs/1 CFNetwork/3860.500.112 Darwin/25.4.0")
