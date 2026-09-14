@@ -2,6 +2,7 @@ package amongus
 
 import (
 	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -63,7 +64,17 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 	}
 	defer resp.Body.Close()
 
-	bodyBytes, err := io.ReadAll(resp.Body)
+	var reader io.Reader = resp.Body
+	if resp.Header.Get("Content-Encoding") == "gzip" {
+		gzReader, err := gzip.NewReader(resp.Body)
+		if err != nil {
+			return "", resp.StatusCode, err
+		}
+		defer gzReader.Close()
+		reader = gzReader
+	}
+
+	bodyBytes, err := io.ReadAll(reader)
 	if err != nil {
 		return "", resp.StatusCode, err
 	}
