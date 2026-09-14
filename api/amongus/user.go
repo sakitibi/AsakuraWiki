@@ -17,7 +17,7 @@ type TokenResponse struct {
 	Token string `json:"token"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func UserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	// 環境変数からの鍵読み込み

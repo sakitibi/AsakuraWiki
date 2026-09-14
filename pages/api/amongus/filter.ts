@@ -1,8 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import upack from '@/node_modules/upack.js/src/index';
 import { supabaseClient } from "@/lib/supabaseClient";
-import { isOneDayEarlier } from "@/pages/api/amongus/token";
 import { importPrivateKey } from "@/lib/secureObfuscator";
+
+function isOneDayEarlier(referenceDate: Date) {
+    if (!(referenceDate instanceof Date)) {
+        throw new Error("referenceDate は有効な Date オブジェクトである必要があります");
+    }
+
+    const now = new Date();
+    const diffMs = referenceDate.getTime() - now.getTime(); // 基準 - 現在
+    const oneDayMs = 24 * 60 * 60 * 1000;
+
+    return diffMs >= oneDayMs;
+}
 
 export default async function handler(
     req: NextApiRequest,
