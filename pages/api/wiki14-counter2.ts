@@ -14,7 +14,7 @@ export const config = {
     api: {
         responseLimit: false,
     },
-    maxDuration: 600,
+    maxDuration: 300,
 };
 
 export default async function handler(
