@@ -75,7 +75,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		encrypted, err := sencode.EncodeSEncode([]byte(idToken), pubKey, 5)
+		encrypted, err := sencode.EncodeSEncode([]byte(idToken), pubKey, 20)
 		if err != nil {
 			http.Error(w, "Failed to encode token", http.StatusInternalServerError)
 			return

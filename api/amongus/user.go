@@ -65,7 +65,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// upackによるトークンの解読
-	decodedResult, err := sencode.DecodeSEncode(tokenRes.Token, privKey, true, 5)
+	decodedResult, err := sencode.DecodeSEncode(tokenRes.Token, privKey, true, 20)
 	if err != nil {
 		log.Printf("[DEBUG] DecodeSEncode error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -105,7 +105,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// upackによるレスポンスデータの難読化
-	authTokenWithLobby, err := sencode.EncodeSEncode([]byte(data2), pubKey, 5)
+	authTokenWithLobby, err := sencode.EncodeSEncode([]byte(data2), pubKey, 20)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]any{"error": "failed to encode response token"})
