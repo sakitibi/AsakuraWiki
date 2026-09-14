@@ -81,7 +81,10 @@ func getSupabaseUser(authHeader string) (*SupabaseUserResponse, error) {
 	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
 	supabaseAnonKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
 
-	if supabaseURL == "" || authHeader == "" {
+	// 環境変数または認証ヘッダーが無い場合は処理をスキップ
+	if supabaseURL == "" || supabaseAnonKey == "" || authHeader == "" {
+		log.Printf("Auth check skipped: URL empty=%t, AnonKey empty=%t, AuthHeader empty=%t",
+			supabaseURL == "", supabaseAnonKey == "", authHeader == "")
 		return nil, nil
 	}
 
@@ -102,7 +105,7 @@ func getSupabaseUser(authHeader string) (*SupabaseUserResponse, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("Supabase auth returned non-200 status: %d", resp.StatusCode)
+		log.Printf("Supabase auth returned non-200 status: %d (Check if ANON_KEY is valid or token expired)", resp.StatusCode)
 		return nil, fmt.Errorf("auth error: status %d", resp.StatusCode)
 	}
 
