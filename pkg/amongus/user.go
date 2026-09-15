@@ -2,7 +2,6 @@ package amongus
 
 import (
 	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,6 +9,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/andybalholm/brotli"
 )
 
 type AmongUsUserRequest struct {
@@ -51,7 +52,7 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 	req.Header.Set("Accept", "text/plain")
 	req.Header.Set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.4.7,sentry-trace_id=ab4fcbbca8194bcea5ac9be5a6aff102")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", authToken))
-	req.Header.Set("Accept-Encoding", "gzip, deflate")
+	req.Header.Set("Accept-Encoding", "br")
 	req.Header.Set("sentry-trace", "ab4fcbbca8194bcea5ac9be5a6aff102-8783ca69fcb04104-0")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "AmongUs/1 CFNetwork/3860.500.112 Darwin/25.4.0")
@@ -65,13 +66,9 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 	defer resp.Body.Close()
 
 	var reader io.Reader = resp.Body
-	if resp.Header.Get("Content-Encoding") == "gzip" {
-		gzReader, err := gzip.NewReader(resp.Body)
-		if err != nil {
-			return "", resp.StatusCode, err
-		}
-		defer gzReader.Close()
-		reader = gzReader
+
+	if resp.Header.Get("Content-Encoding") == "br" {
+		reader = brotli.NewReader(resp.Body)
 	}
 
 	bodyBytes, err := io.ReadAll(reader)

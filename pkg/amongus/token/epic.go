@@ -1,7 +1,6 @@
 package token
 
 import (
-	"compress/gzip"
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
@@ -10,6 +9,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
+
+	"github.com/andybalholm/brotli"
 )
 
 type EpicTokenResponse struct {
@@ -38,7 +39,7 @@ func FetchEpicToken(externalToken string) (string, map[string]any) {
 	epicReq.Header.Set("Accept", "application/json")
 	epicReq.Header.Set("Authorization", fmt.Sprintf("Basic %s", strings.TrimSpace(os.Getenv("AMONG_EPICAPIKEY"))))
 	epicReq.Header.Set("Accept-Language", "ja")
-	epicReq.Header.Set("Accept-Encoding", "gzip")
+	epicReq.Header.Set("Accept-Encoding", "br")
 	epicReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -58,13 +59,9 @@ func FetchEpicToken(externalToken string) (string, map[string]any) {
 	defer epicResp.Body.Close()
 
 	var reader io.Reader = epicResp.Body
-	if epicResp.Header.Get("Content-Encoding") == "gzip" {
-		gzReader, err := gzip.NewReader(epicResp.Body)
-		if err != nil {
-			return "", map[string]any{"error": "Failed to create gzip reader"}
-		}
-		defer gzReader.Close()
-		reader = gzReader
+
+	if epicResp.Header.Get("Content-Encoding") == "br" {
+		reader = brotli.NewReader(epicResp.Body)
 	}
 
 	var resdata EpicTokenResponse
