@@ -1,6 +1,6 @@
 github.com/andybalholm/brotli v1.2.4 h1:649LN6qF+/7JJYNN3Wdu4Dt5PS6eC/yP/Go3Bb0/AHI=
 github.com/andybalholm/brotli v1.2.4/go.mod h1:rzTDkvFWvIrjDXZHkuS16NPggd91W3kUSvPlQ1pLaKY=
-github.com/sakitibi/upack.go v1.0.75 h1:6e8aaG54uJhWNVLvGCv3bKiEQ+PJ2k/DqwhuRLvzdlM=
-github.com/sakitibi/upack.go v1.0.75/go.mod h1:kMkTQqCtI91C7FEPwj4ov5TMz7SiCfHVpvtjlC52RJM=
+github.com/sakitibi/upack.go v1.0.76 h1:n4djCuUP3d5aMjoldxtkuHEwW6OLR190VvN3U+b4SEQ=
+github.com/sakitibi/upack.go v1.0.76/go.mod h1:kMkTQqCtI91C7FEPwj4ov5TMz7SiCfHVpvtjlC52RJM=
 github.com/xyproto/randomstring v1.0.5 h1:YtlWPoRdgMu3NZtP45drfy1GKoojuR7hmRcnhZqKjWU=
 github.com/xyproto/randomstring v1.0.5/go.mod h1:rgmS5DeNXLivK7YprL0pY+lTuhNQW3iGxZ18UQApw/E=
