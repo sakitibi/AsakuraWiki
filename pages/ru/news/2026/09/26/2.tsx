@@ -1,11 +1,11 @@
 import Head from 'next/head';
 import styles from '@/css/index.module.css';
-import LeftMenuJp from '@/utils/pageParts/top/jp/LeftMenu';
-import MenuJp from '@/utils/pageParts/top/jp/Menu';
-import RightMenuJp from '@/utils/pageParts/top/jp/RightMenu';
+import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
+import MenuRu from '@/utils/pageParts/top/ru/Menu';
+import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
 import { useState, useEffect } from 'react';
-import HeaderJp from '@/utils/pageParts/top/jp/Header';
-import FooterJp from '@/utils/pageParts/top/jp/Footer';
+import HeaderRu from '@/utils/pageParts/top/ru/Header';
+import FooterRu from '@/utils/pageParts/top/ru/Footer';
 import { GetServerSideProps } from 'next';
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
@@ -35,17 +35,17 @@ export default function NewsPage() {
     return (
         <>
             <Head>
-                <title>2026/09/26 今年一番の朗報</title>
+                <title>2026/09/26 Лучшие новости года</title>
             </Head>
-            <MenuJp handleClick={handleClick} menuStatus={menuStatus}/>
+            <MenuRu handleClick={handleClick} menuStatus={menuStatus}/>
             <div className={styles.contentsWrapper}>
-                <HeaderJp handleClick={handleClick}/>
+                <HeaderRu handleClick={handleClick}/>
                 <div className={styles.contents}>
-                    <LeftMenuJp URL="/news/2026/09/26/2"/>
+                    <LeftMenuRu URL="/news/2026/09/26/2"/>
                     <main style={{ padding: '2rem', flex: 1 }}>
-                        <h1>2026/09/26 今年一番の朗報</h1>
-                        <p>なんと..</p>
-                        <p><a href="https://youtube.com/@NMNGyuri">名前は長い方が有利</a>が活動を取り止めてくれました!!</p>
+                        <h1>2026/09/26 Лучшие новости года</h1>
+                        <p>А потом...</p>
+                        <p>NMNGyuri прекратили свою деятельность!!</p>
                         <p>
                             <img
                                 src="https://sakitibi.github.io/AsakuraWiki-Images/2026年一番の朗報.png"
@@ -54,12 +54,10 @@ export default function NewsPage() {
                                 height="350"
                             />
                         </p>
-                        <p>全社員大興奮しています。</p>
-                        <p>執筆: 浅羽 晴美</p>
                     </main>
-                    <RightMenuJp/>
+                    <RightMenuRu/>
                 </div>
-                <FooterJp/>
+                <FooterRu/>
             </div>
         </>
     )
