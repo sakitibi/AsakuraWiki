@@ -47,6 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		baseURL + "129_192.json.br",
 		baseURL + "193_256.json.br",
 		baseURL + "257_320.json.br",
+		baseURL + "321_384.json.br",
 	}
 
 	authHeader := r.Header.Get("Authorization")
