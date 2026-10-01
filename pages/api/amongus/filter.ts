@@ -43,10 +43,10 @@ export default async function handler(
     headers.set("accept-encoding", "gzip, deflate, br")
     headers.set("priority", "u=3, i")
     headers.set("authorization", `Bearer ${auth_token}`)
-    headers.set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.4.7,sentry-trace_id=ce3704bfa2094130b35ece325432b31e")
-    headers.set("sentry-trace", "ce3704bfa2094130b35ece325432b31e-2d2d6772e7314a51-0")
-    headers.set("user-agent", "AmongUs/1 CFNetwork/3860.500.112 Darwin/25.4.0")
-    headers.set("x-unity-version", "2022.3.44f1")
+    headers.set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.9.29,sentry-trace_id=13e49ed9b8f14983975f7268d928cd66")
+    headers.set("sentry-trace", "13e49ed9b8f14983975f7268d928cd66-291a21fb87fb43e3-0")
+    headers.set("user-agent", "AmongUs/3 CFNetwork/3896.100.1.1.1 Darwin/27.0.0")
+    headers.set("x-unity-version", "2022.3.62f3")
     const response = await fetch(
         `https://matchmaker-as.among.us/api/games/filtered?filter=${filter}`,
         {
