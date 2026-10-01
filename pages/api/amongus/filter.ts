@@ -56,6 +56,7 @@ export default async function handler(
         }
     );
     const data2 = await response.json();
+    console.log("response: ", data2);
     if (!response.ok) {
         const { data: backup_token, error: backup_error } = await supabaseClient
             .from("wiki_variables")
