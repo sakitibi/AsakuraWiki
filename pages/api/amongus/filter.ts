@@ -40,6 +40,7 @@ export default async function handler(
     // ヘッダーをセット
     const headers = new Headers();
     headers.set("accept", "application/json")
+    headers.set("accept-language", "ja")
     headers.set("accept-encoding", "gzip, deflate, br")
     headers.set("priority", "u=3, i")
     headers.set("authorization", `Bearer ${auth_token}`)
