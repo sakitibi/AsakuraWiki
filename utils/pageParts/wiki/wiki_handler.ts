@@ -24,6 +24,7 @@ export const handleUpdate = async (
     setProgress?: React.Dispatch<React.SetStateAction<number>>
 ) => {
     const isAdmin = adminerUserId.includes(user?.id || '');
+    const isDebug = localStorage.getItem("is_debug") || '';
     // 権限チェック
     if (editMode === 'private' && !user) {
         alert("403 Forbidden あなたは編集する権限がありません");
@@ -33,7 +34,7 @@ export const handleUpdate = async (
 
     setLoading(true);
 
-    if (!isAdmin) {
+    if (!isAdmin || isDebug) {
         try {
             if (setProgress) setProgress(5);
 
