@@ -48,14 +48,14 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 
 	// ヘッダー設定
 	req.Header.Set("Host", "matchmaker-as.among.us")
-	req.Header.Set("X-Unity-Version", "2022.3.44f1")
+	req.Header.Set("X-Unity-Version", "2022.3.62f3")
 	req.Header.Set("Accept", "text/plain")
-	req.Header.Set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.4.7,sentry-trace_id=ab4fcbbca8194bcea5ac9be5a6aff102")
+	req.Header.Set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.9.29,sentry-trace_id=ca9446bf144c4a9a8902ebbbf83c6f75")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", authToken))
 	req.Header.Set("Accept-Encoding", "br")
-	req.Header.Set("sentry-trace", "ab4fcbbca8194bcea5ac9be5a6aff102-8783ca69fcb04104-0")
+	req.Header.Set("sentry-trace", "ca9446bf144c4a9a8902ebbbf83c6f75-6a5beca95234b239-0")
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", "AmongUs/1 CFNetwork/3860.500.112 Darwin/25.4.0")
+	req.Header.Set("User-Agent", "AmongUs/3 CFNetwork/3896.100.1.1.1 Darwin/27.0.0")
 	req.Header.Set("Connection", "keep-alive")
 
 	client := &http.Client{}
