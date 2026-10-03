@@ -43,7 +43,7 @@ export const handleUpdate = async (
             const processedParagraphs: string[] = [];
 
             // 判定用簡易キーワード（関連する記述が全くない段落は通信をスキップ）
-            const targetKeywords = ["名前は", "有利", "長い", "なまなが"];
+            const targetKeywords = ["名前は", "有利", "長い", "なまな"];
 
             for (let i = 0; i < paragraphs.length; i++) {
                 const paragraph = paragraphs[i];
