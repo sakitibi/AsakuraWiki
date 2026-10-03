@@ -32,7 +32,7 @@ func FetchAmongUsUser(authToken string) (string, int, error) {
 	payload := AmongUsUserRequest{
 		Puid:          "0002d597a46a4c7dad0eac919ff5baed",
 		Username:      "14人TVバン70回",
-		ClientVersion: 50656250,
+		ClientVersion: 50663650,
 		Language:      11,
 	}
 

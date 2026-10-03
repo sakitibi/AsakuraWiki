@@ -32,7 +32,7 @@ func FetchEpicToken(externalToken string) (string, map[string]any) {
 	}
 
 	epicReq.Header.Set("Connection", "keep-alive")
-	epicReq.Header.Set("User-Agent", "EOS-SDK/1.19.0.3-49960398 (IOS/26.5) AmongUs/1.0")
+	epicReq.Header.Set("User-Agent", "EOS-SDK/1.19.0.3-49960398 (IOS/27.0) AmongUs/1.0")
 	epicReq.Header.Set("X-EOS-Version", "1.19.0.3-49960398")
 	epicReq.Header.Set("X-Epic-Correlation-ID", "EOS-j1paBsBeRC6OSGsH0uOGOQ-9n1cSWXfQ_-jpuL2BMBJcg")
 	epicReq.Header.Set("Host", "api.epicgames.dev")
