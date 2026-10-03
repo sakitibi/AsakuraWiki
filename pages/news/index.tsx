@@ -46,6 +46,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
+                            <li>2026/10/03 <a href="/news/2026/10/03/1">明日、内定式をします。</a></li>
                             <ol reversed>
                                 <li>2026/09/26 <a href="/news/2026/09/26/2">今年一番の朗報</a></li>
                                 <li>2026/09/26 <a href="/news/2026/09/26/1">昨日、内定式の予行をしました。</a></li>
