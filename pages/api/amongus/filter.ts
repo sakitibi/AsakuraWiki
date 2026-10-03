@@ -44,8 +44,8 @@ export default async function handler(
     headers.set("accept-encoding", "gzip, deflate, br")
     headers.set("priority", "u=3, i")
     headers.set("authorization", `Bearer ${auth_token}`)
-    headers.set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.9.29,sentry-trace_id=dc5192f3b32d4d63afc7959f68af1ae0")
-    headers.set("sentry-trace", "dc5192f3b32d4d63afc7959f68af1ae0-b9db9813c281d3a2-0")
+    headers.set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.9.29,sentry-trace_id=aaefdbfd5feb4f74abf512c1588fe219")
+    headers.set("sentry-trace", "aaefdbfd5feb4f74abf512c1588fe219-f08d8990d0b359ea-0")
     headers.set("user-agent", "AmongUs/3 CFNetwork/3896.100.1.1.1 Darwin/27.0.0")
     headers.set("x-unity-version", "2022.3.62f3")
 
