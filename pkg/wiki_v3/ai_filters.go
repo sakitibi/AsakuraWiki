@@ -30,7 +30,7 @@ type ChatRequest struct {
 	Model       string        `json:"model"`
 	Temperature float64       `json:"temperature"`
 	Stream      bool          `json:"stream"`
-	MaxTokens   int           `json:"max_tokens"`
+	MaxTokens   int           `json:"max_tokens,omitempty"`
 }
 
 type StreamDelta struct {
@@ -93,7 +93,6 @@ func fetchCopilotSessionToken(ctx context.Context) (string, error) {
 	return tokenResp.Token, nil
 }
 
-// UpdateWikiVariable を呼び出すヘルパー関数
 func updateWikiToken(supabaseURL, anonKey, targetID, newToken string) {
 	log.Println("[AIFilter] Updating session token in Supabase...")
 	payload, err := json.Marshal(map[string]string{
@@ -218,6 +217,9 @@ func AIFilter(
 }
 
 func processParagraphWithCopilot(ctx context.Context, sessionToken string, paragraph string) (string, error) {
+	// 制御文字のクリーンアップ
+	cleanParagraph := strings.ReplaceAll(paragraph, "\r", "")
+
 	reqBody := ChatRequest{
 		Messages: []ChatMessage{
 			{
@@ -238,19 +240,20 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 			},
 			{
 				Role:    "user",
-				Content: paragraph,
+				Content: cleanParagraph,
 			},
 		},
 		Model:       "gpt-4o",
 		Temperature: 0,
 		Stream:      true,
-		MaxTokens:   2048,
 	}
 
 	jsonBytes, err := json.Marshal(reqBody)
 	if err != nil {
 		return "", err
 	}
+
+	log.Printf("[AIFilter] Sending payload to Copilot (Len: %d): %s\n", len(jsonBytes), string(jsonBytes))
 
 	req, err := http.NewRequestWithContext(ctx, "POST", "https://api.individual.githubcopilot.com/chat/completions", bytes.NewBuffer(jsonBytes))
 	if err != nil {
