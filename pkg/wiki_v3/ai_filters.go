@@ -46,12 +46,14 @@ type StreamResponse struct {
 	Choices []StreamChoice `json:"choices"`
 }
 
-type ErrUnauthorized struct {
+// 認証・トークンエラー判定用カスタムエラー
+type ErrTokenInvalid struct {
 	StatusCode int
+	Message    string
 }
 
-func (e *ErrUnauthorized) Error() string {
-	return fmt.Sprintf("copilot api unauthorized error: status %d", e.StatusCode)
+func (e *ErrTokenInvalid) Error() string {
+	return fmt.Sprintf("copilot token error (status %d): %s", e.StatusCode, e.Message)
 }
 
 func fetchCopilotSessionToken(ctx context.Context) (string, error) {
@@ -107,7 +109,6 @@ func AIFilter(
 	const targetID string = "67144150-8684-4424-87e7-d9d4055d8bc8"
 	isAdmin := pkg.AdminerUserId[userID]
 
-	// 管理者ではない、またはデバッグフラグが立っている場合のみ実行
 	if !isAdmin || isDebug {
 		if progressCallback != nil {
 			progressCallback(5)
@@ -147,7 +148,6 @@ func AIFilter(
 				continue
 			}
 
-			// トークンが空の場合はあらかじめ取得＆更新
 			if sessionToken == "" {
 				newToken, err := fetchCopilotSessionToken(ctx)
 				if err == nil && newToken != "" {
@@ -160,8 +160,9 @@ func AIFilter(
 
 			processed, err := processParagraphWithCopilot(ctx, sessionToken, paragraph)
 
-			if _, is401 := err.(*ErrUnauthorized); is401 {
-				log.Println("[AIFilter] 401 Unauthorized. Retrying with fresh token...")
+			// 401 または 400 (Token Error) の場合はトークンを再取得してリトライ
+			if _, isTokenErr := err.(*ErrTokenInvalid); isTokenErr {
+				log.Println("[AIFilter] Token invalid or expired. Fetching fresh token from GitHub...")
 				newToken, fetchErr := fetchCopilotSessionToken(ctx)
 				if fetchErr == nil && newToken != "" {
 					sessionToken = newToken
@@ -252,14 +253,22 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusUnauthorized {
-		return "", &ErrUnauthorized{StatusCode: resp.StatusCode}
+		return "", &ErrTokenInvalid{StatusCode: resp.StatusCode, Message: "unauthorized"}
 	}
 
 	if resp.StatusCode != http.StatusOK {
 		bodyBytes, readErr := io.ReadAll(resp.Body)
+		bodyStr := string(bodyBytes)
+
 		if readErr == nil {
-			log.Printf("[AIFilter] Copilot API Error (Status %d): %s\n", resp.StatusCode, string(bodyBytes))
+			log.Printf("[AIFilter] Copilot API Error (Status %d): %s\n", resp.StatusCode, bodyStr)
 		}
+
+		// IDE token malformed などのエラーメッセージが含まれている場合もトークンエラーとして扱う
+		if strings.Contains(bodyStr, "invalid token") || strings.Contains(bodyStr, "malformed") {
+			return "", &ErrTokenInvalid{StatusCode: resp.StatusCode, Message: bodyStr}
+		}
+
 		return "", fmt.Errorf("copilot api error status: %d", resp.StatusCode)
 	}
 
