@@ -30,6 +30,7 @@ type ChatRequest struct {
 	Model       string        `json:"model"`
 	Temperature float64       `json:"temperature"`
 	Stream      bool          `json:"stream"`
+	Intent      bool          `json:"intent"`
 	MaxTokens   int           `json:"max_tokens,omitempty"`
 }
 
@@ -243,9 +244,10 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 				Content: cleanParagraph,
 			},
 		},
-		Model:       "gpt-4o",
+		Model:       "gpt-4o-2024-05-13",
 		Temperature: 0,
 		Stream:      true,
+		Intent:      true,
 	}
 
 	jsonBytes, err := json.Marshal(reqBody)
