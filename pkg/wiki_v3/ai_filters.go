@@ -46,7 +46,6 @@ type StreamResponse struct {
 	Choices []StreamChoice `json:"choices"`
 }
 
-// 認証・トークンエラー判定用カスタムエラー
 type ErrTokenInvalid struct {
 	StatusCode int
 	Message    string
@@ -160,18 +159,18 @@ func AIFilter(
 
 			processed, err := processParagraphWithCopilot(ctx, sessionToken, paragraph)
 
-			// 401 または 400 (Token Error) の場合はトークンを再取得してリトライ
 			if _, isTokenErr := err.(*ErrTokenInvalid); isTokenErr {
-				log.Println("[AIFilter] Token invalid or expired. Fetching fresh token from GitHub...")
+				log.Println("[AIFilter] Token invalid or malformed. Refreshing token...")
 				newToken, fetchErr := fetchCopilotSessionToken(ctx)
 				if fetchErr == nil && newToken != "" {
 					sessionToken = newToken
 					updateWikiToken(supabaseURL, anonKey, targetID, sessionToken)
-
-					// 新トークンで再度呼び出し
 					processed, err = processParagraphWithCopilot(ctx, sessionToken, paragraph)
 				} else {
-					log.Printf("[AIFilter] Token refresh failed: %v\n", fetchErr)
+					githubToken := os.Getenv("GITHUB_COPILOT_TOKEN")
+					if githubToken != "" {
+						processed, err = processParagraphWithCopilot(ctx, githubToken, paragraph)
+					}
 				}
 			}
 
@@ -193,7 +192,7 @@ func AIFilter(
 	return content
 }
 
-func processParagraphWithCopilot(ctx context.Context, sessionToken string, paragraph string) (string, error) {
+func processParagraphWithCopilot(ctx context.Context, token string, paragraph string) (string, error) {
 	cleanParagraph := strings.ReplaceAll(paragraph, "\r", "")
 
 	reqBody := ChatRequest{
@@ -234,7 +233,12 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 		return "", err
 	}
 
-	req.Header.Set("Authorization", "Bearer "+sessionToken)
+	if strings.HasPrefix(token, "gho_") || strings.HasPrefix(token, "ghp_") {
+		req.Header.Set("Authorization", "Bearer "+token)
+	} else {
+		req.Header.Set("Authorization", "Bearer "+token)
+	}
+
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "GitHubCopilotChat/0.68.0")
 	req.Header.Set("editor-version", "vscode/1.140.0")
@@ -243,7 +247,6 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 	req.Header.Set("x-github-api-version", "2026-08-01")
 	req.Header.Set("x-interaction-type", "conversation-other")
 	req.Header.Set("x-initiator", "user")
-	req.Header.Set("priority", "u=4, i")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -264,7 +267,6 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 			log.Printf("[AIFilter] Copilot API Error (Status %d): %s\n", resp.StatusCode, bodyStr)
 		}
 
-		// IDE token malformed などのエラーメッセージが含まれている場合もトークンエラーとして扱う
 		if strings.Contains(bodyStr, "invalid token") || strings.Contains(bodyStr, "malformed") {
 			return "", &ErrTokenInvalid{StatusCode: resp.StatusCode, Message: bodyStr}
 		}
