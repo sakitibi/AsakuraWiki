@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -30,7 +31,6 @@ type ChatRequest struct {
 	Model       string        `json:"model"`
 	Temperature float64       `json:"temperature"`
 	Stream      bool          `json:"stream"`
-	Intent      bool          `json:"intent"`
 	MaxTokens   int           `json:"max_tokens,omitempty"`
 }
 
@@ -244,10 +244,9 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 				Content: cleanParagraph,
 			},
 		},
-		Model:       "gpt-4o-2024-05-13",
+		Model:       "gpt-4",
 		Temperature: 0,
 		Stream:      true,
-		Intent:      true,
 	}
 
 	jsonBytes, err := json.Marshal(reqBody)
@@ -287,7 +286,12 @@ func processParagraphWithCopilot(ctx context.Context, sessionToken string, parag
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("[AIFilter] Copilot API returned non-200 status: %d\n", resp.StatusCode)
+		bodyBytes, readErr := io.ReadAll(resp.Body)
+		if readErr == nil {
+			log.Printf("[AIFilter] Copilot API Error Response (Status: %d): %s\n", resp.StatusCode, string(bodyBytes))
+		} else {
+			log.Printf("[AIFilter] Copilot API returned status %d, but failed to read body: %v\n", resp.StatusCode, readErr)
+		}
 		return "", fmt.Errorf("copilot api error status: %d", resp.StatusCode)
 	}
 
