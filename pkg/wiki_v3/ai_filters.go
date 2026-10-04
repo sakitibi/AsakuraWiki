@@ -13,13 +13,7 @@ import (
 	"strings"
 
 	"asakura-wiki.vercel.app/pkg"
-	"asakura-wiki.vercel.app/pkg/amongus/token"
 )
-
-type CopilotTokenResponse struct {
-	Token     string `json:"token"`
-	ExpiresAt int64  `json:"expires_at"`
-}
 
 type ChatMessage struct {
 	Role    string `json:"role"`
@@ -31,7 +25,6 @@ type ChatRequest struct {
 	Model       string        `json:"model"`
 	Temperature float64       `json:"temperature"`
 	Stream      bool          `json:"stream"`
-	MaxTokens   int           `json:"max_tokens,omitempty"`
 }
 
 type StreamDelta struct {
@@ -46,56 +39,6 @@ type StreamResponse struct {
 	Choices []StreamChoice `json:"choices"`
 }
 
-type ErrTokenInvalid struct {
-	StatusCode int
-	Message    string
-}
-
-func (e *ErrTokenInvalid) Error() string {
-	return fmt.Sprintf("copilot token error (status %d): %s", e.StatusCode, e.Message)
-}
-
-func fetchCopilotSessionToken(ctx context.Context) (string, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://api.github.com/copilot_internal/v2/token", nil)
-	if err != nil {
-		return "", err
-	}
-
-	githubToken := os.Getenv("GITHUB_COPILOT_TOKEN")
-	req.Header.Set("Authorization", "token "+githubToken)
-	req.Header.Set("User-Agent", "GitHubCopilotChat/0.12.0")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("failed to fetch copilot session token, status: %d", resp.StatusCode)
-	}
-
-	var tokenResp CopilotTokenResponse
-	if err := json.NewDecoder(resp.Body).Decode(&tokenResp); err != nil {
-		return "", err
-	}
-
-	return tokenResp.Token, nil
-}
-
-func updateWikiToken(supabaseURL, anonKey, targetID, newToken string) {
-	payload, err := json.Marshal(map[string]string{
-		"value": newToken,
-	})
-	if err != nil {
-		log.Printf("[AIFilter] Error marshaling token payload: %v\n", err)
-		return
-	}
-
-	_ = token.UpdateWikiVariable(bytes.NewReader(payload), supabaseURL, anonKey, targetID)
-}
-
 func AIFilter(
 	ctx context.Context,
 	userID string,
@@ -105,7 +48,6 @@ func AIFilter(
 	anonKey string,
 	progressCallback func(progress int),
 ) string {
-	const targetID string = "67144150-8684-4424-87e7-d9d4055d8bc8"
 	isAdmin := pkg.AdminerUserId[userID]
 
 	if !isAdmin || isDebug {
@@ -113,14 +55,10 @@ func AIFilter(
 			progressCallback(5)
 		}
 
-		wikiVar, err := token.FetchWikiVariable(supabaseURL, anonKey, targetID)
-		if err != nil {
-			log.Printf("[AIFilter] FetchWikiVariable error: %v\n", err)
-		}
-
-		sessionToken := ""
-		if wikiVar != nil {
-			sessionToken = wikiVar.Value
+		githubToken := strings.TrimSpace(os.Getenv("GITHUB_COPILOT_TOKEN"))
+		if githubToken == "" {
+			log.Println("[AIFilter] ERROR: GITHUB_COPILOT_TOKEN is missing!")
+			return content
 		}
 
 		paragraphs := strings.Split(content, "\n")
@@ -147,32 +85,7 @@ func AIFilter(
 				continue
 			}
 
-			if sessionToken == "" {
-				newToken, err := fetchCopilotSessionToken(ctx)
-				if err == nil && newToken != "" {
-					sessionToken = newToken
-					updateWikiToken(supabaseURL, anonKey, targetID, sessionToken)
-				} else {
-					log.Printf("[AIFilter] Initial token fetch failed: %v\n", err)
-				}
-			}
-
-			processed, err := processParagraphWithCopilot(ctx, sessionToken, paragraph)
-
-			if _, isTokenErr := err.(*ErrTokenInvalid); isTokenErr {
-				log.Println("[AIFilter] Token invalid or malformed. Refreshing token...")
-				newToken, fetchErr := fetchCopilotSessionToken(ctx)
-				if fetchErr == nil && newToken != "" {
-					sessionToken = newToken
-					updateWikiToken(supabaseURL, anonKey, targetID, sessionToken)
-					processed, err = processParagraphWithCopilot(ctx, sessionToken, paragraph)
-				} else {
-					githubToken := os.Getenv("GITHUB_COPILOT_TOKEN")
-					if githubToken != "" {
-						processed, err = processParagraphWithCopilot(ctx, githubToken, paragraph)
-					}
-				}
-			}
+			processed, err := processParagraphWithCopilot(ctx, githubToken, paragraph)
 
 			if err != nil || processed == "" {
 				log.Printf("[AIFilter] Paragraph [%d/%d] processing failed: %v\n", i+1, len(paragraphs), err)
@@ -192,7 +105,7 @@ func AIFilter(
 	return content
 }
 
-func processParagraphWithCopilot(ctx context.Context, token string, paragraph string) (string, error) {
+func processParagraphWithCopilot(ctx context.Context, githubToken string, paragraph string) (string, error) {
 	cleanParagraph := strings.ReplaceAll(paragraph, "\r", "")
 
 	reqBody := ChatRequest{
@@ -233,12 +146,7 @@ func processParagraphWithCopilot(ctx context.Context, token string, paragraph st
 		return "", err
 	}
 
-	if strings.HasPrefix(token, "gho_") || strings.HasPrefix(token, "ghp_") {
-		req.Header.Set("Authorization", "Bearer "+token)
-	} else {
-		req.Header.Set("Authorization", "Bearer "+token)
-	}
-
+	req.Header.Set("Authorization", "Bearer "+githubToken)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("User-Agent", "GitHubCopilotChat/0.68.0")
 	req.Header.Set("editor-version", "vscode/1.140.0")
@@ -255,22 +163,11 @@ func processParagraphWithCopilot(ctx context.Context, token string, paragraph st
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusUnauthorized {
-		return "", &ErrTokenInvalid{StatusCode: resp.StatusCode, Message: "unauthorized"}
-	}
-
 	if resp.StatusCode != http.StatusOK {
 		bodyBytes, readErr := io.ReadAll(resp.Body)
-		bodyStr := string(bodyBytes)
-
 		if readErr == nil {
-			log.Printf("[AIFilter] Copilot API Error (Status %d): %s\n", resp.StatusCode, bodyStr)
+			log.Printf("[AIFilter] Copilot API Error (Status %d): %s\n", resp.StatusCode, string(bodyBytes))
 		}
-
-		if strings.Contains(bodyStr, "invalid token") || strings.Contains(bodyStr, "malformed") {
-			return "", &ErrTokenInvalid{StatusCode: resp.StatusCode, Message: bodyStr}
-		}
-
 		return "", fmt.Errorf("copilot api error status: %d", resp.StatusCode)
 	}
 
@@ -293,7 +190,6 @@ func processParagraphWithCopilot(ctx context.Context, token string, paragraph st
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Printf("[AIFilter] Stream read error: %v\n", err)
 		return "", err
 	}
 
