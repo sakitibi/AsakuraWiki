@@ -218,7 +218,7 @@ func processParagraphWithCopilot(ctx context.Context, token string, paragraph st
 				Content: cleanParagraph,
 			},
 		},
-		Model:       "gpt-4",
+		Model:       "gpt-4o",
 		Temperature: 0,
 		Stream:      true,
 	}
