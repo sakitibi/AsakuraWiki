@@ -1,4 +1,4 @@
-package wiki_v2
+package wiki_v3
 
 import (
 	"bufio"

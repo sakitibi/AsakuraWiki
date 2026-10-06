@@ -5,7 +5,6 @@ import { supabaseClient } from "@/lib/supabaseClient";
 import { base64ToUint8Array } from "@/utils/wikiFetch";
 import Pako from "pako";
 import { ScaptchaSessionProps } from "@/pages/login";
-import { adminerUserId } from "@/utils/user_list";
 import React from "react";
 import aiFilter from "./aiFilter";
 
