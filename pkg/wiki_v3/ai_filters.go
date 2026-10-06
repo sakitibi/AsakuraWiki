@@ -9,12 +9,14 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"asakura-wiki.vercel.app/pkg"
+	"asakura-wiki.vercel.app/pkg/amongus/token"
 )
 
-// 管理者IDリスト（TypeScriptの adminerUserId に相当）
-var adminerUserIDs = []string{
-	"admin-user-id-1",
-	"admin-user-id-2",
+type CopilotTokenResponse struct {
+	Token     string `json:"token"`
+	ExpiresAt int64  `json:"expires_at"`
 }
 
 type ChatMessage struct {
@@ -42,27 +44,81 @@ type StreamResponse struct {
 	Choices []StreamChoice `json:"choices"`
 }
 
-// AIFilter は渡された content を処理し、フィルター済みの文字列を返します。
-// progressCallback に関数を渡すことで、進捗（5〜100%）を受け取ることもできます。
+// 401 Unauthorized 判定用カスタムエラー
+type ErrUnauthorized struct {
+	StatusCode int
+}
+
+func (e *ErrUnauthorized) Error() string {
+	return fmt.Sprintf("copilot api unauthorized error: status %d", e.StatusCode)
+}
+
+func fetchCopilotSessionToken(ctx context.Context) (string, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", "https://api.github.com/copilot_internal/v2/token", nil)
+	if err != nil {
+		return "", err
+	}
+
+	githubToken := os.Getenv("GITHUB_COPILOT_TOKEN")
+	req.Header.Set("Authorization", "token "+githubToken)
+	req.Header.Set("User-Agent", "GitHubCopilotChat/0.12.0")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to fetch copilot session token, status: %d", resp.StatusCode)
+	}
+
+	var tokenResp CopilotTokenResponse
+	if err := json.NewDecoder(resp.Body).Decode(&tokenResp); err != nil {
+		return "", err
+	}
+
+	return tokenResp.Token, nil
+}
+
+// UpdateWikiVariable を呼び出すヘルパー関数
+func updateWikiToken(supabaseURL, anonKey, targetID, newToken string) {
+	// 更新用 JSON (テーブル構造に合わせてフィールド名は調整してください)
+	payload, err := json.Marshal(map[string]string{
+		"value": newToken,
+	})
+	if err != nil {
+		return
+	}
+
+	// io.Reader を第一引数として渡す
+	_ = token.UpdateWikiVariable(bytes.NewReader(payload), supabaseURL, anonKey, targetID)
+}
+
 func AIFilter(
 	ctx context.Context,
 	userID string,
 	isDebug bool,
 	content string,
+	supabaseURL string,
+	anonKey string,
 	progressCallback func(progress int),
 ) string {
-	isAdmin := false
-	for _, id := range adminerUserIDs {
-		if id == userID {
-			isAdmin = true
-			break
-		}
-	}
+	const targetID string = "67144150-8684-4424-87e7-d9d4055d8bc8"
+	isAdmin := pkg.AdminerUserId[userID]
 
 	// 管理者ではない、またはデバッグフラグが立っている場合のみ実行
 	if !isAdmin || isDebug {
 		if progressCallback != nil {
 			progressCallback(5)
+		}
+
+		wikiVar, _ := token.FetchWikiVariable(supabaseURL, anonKey, targetID)
+
+		sessionToken := ""
+		if wikiVar != nil {
+			sessionToken = wikiVar.Value
 		}
 
 		paragraphs := strings.Split(content, "\n")
@@ -91,8 +147,29 @@ func AIFilter(
 				continue
 			}
 
-			// Copilot API 呼び出し
-			processed, err := processParagraphWithCopilot(ctx, paragraph)
+			// トークンが空の場合はあらかじめ取得＆更新
+			if sessionToken == "" {
+				newToken, err := fetchCopilotSessionToken(ctx)
+				if err == nil && newToken != "" {
+					sessionToken = newToken
+					updateWikiToken(supabaseURL, anonKey, targetID, sessionToken)
+				}
+			}
+
+			processed, err := processParagraphWithCopilot(ctx, sessionToken, paragraph)
+
+			if _, is401 := err.(*ErrUnauthorized); is401 {
+				newToken, fetchErr := fetchCopilotSessionToken(ctx)
+				if fetchErr == nil && newToken != "" {
+					sessionToken = newToken
+
+					updateWikiToken(supabaseURL, anonKey, targetID, sessionToken)
+
+					// 新トークンで再度呼び出し
+					processed, err = processParagraphWithCopilot(ctx, sessionToken, paragraph)
+				}
+			}
+
 			if err != nil || processed == "" {
 				// エラーや空レスポンス時は原文をセット（フォールバック）
 				processedParagraphs[i] = paragraph
@@ -111,7 +188,7 @@ func AIFilter(
 	return content
 }
 
-func processParagraphWithCopilot(ctx context.Context, paragraph string) (string, error) {
+func processParagraphWithCopilot(ctx context.Context, sessionToken string, paragraph string) (string, error) {
 	reqBody := ChatRequest{
 		Messages: []ChatMessage{
 			{
@@ -151,16 +228,16 @@ func processParagraphWithCopilot(ctx context.Context, paragraph string) (string,
 		return "", err
 	}
 
-	headerJSON := os.Getenv("GH_COPILOT_REQ_HEADER")
-	if headerJSON != "" {
-		var headers map[string]string
-		if err := json.Unmarshal([]byte(headerJSON), &headers); err == nil {
-			for k, v := range headers {
-				req.Header.Set(k, v)
-			}
-		}
-	}
+	req.Header.Set("Authorization", "Bearer "+sessionToken)
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "GitHubCopilotChat/0.68.0")
+	req.Header.Set("editor-version", "vscode/1.140.0")
+	req.Header.Set("editor-plugin-version", "copilot-chat/0.68.0")
+	req.Header.Set("copilot-integration-id", "vscode-chat")
+	req.Header.Set("x-github-api-version", "2026-08-01")
+	req.Header.Set("x-interaction-type", "conversation-other")
+	req.Header.Set("x-initiator", "user")
+	req.Header.Set("priority", "u=4, i")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -168,6 +245,11 @@ func processParagraphWithCopilot(ctx context.Context, paragraph string) (string,
 		return "", err
 	}
 	defer resp.Body.Close()
+
+	// 401 Unauthorized の場合は専用エラーを返して呼び出し元でリトライさせる
+	if resp.StatusCode == http.StatusUnauthorized {
+		return "", &ErrUnauthorized{StatusCode: resp.StatusCode}
+	}
 
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("copilot api error status: %d", resp.StatusCode)

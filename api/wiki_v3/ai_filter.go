@@ -3,6 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"os"
+	"strings"
 
 	"asakura-wiki.vercel.app/pkg/wiki_v3"
 )
@@ -29,8 +31,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// リクエストコンテキストを引き継ぐ（クライアントが切断した場合にAPI通信もキャンセルされます）
-	filtered := wiki_v3.AIFilter(r.Context(), req.UserID, req.IsDebug, req.Content, nil)
+	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
+	anonKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
+
+	// リクエストコンテキストを引き継ぐ
+	filtered := wiki_v3.AIFilter(r.Context(), req.UserID, req.IsDebug, req.Content, supabaseURL, anonKey, nil)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(FilterResponse{
