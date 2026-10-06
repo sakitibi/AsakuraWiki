@@ -152,7 +152,7 @@ func processParagraphWithCopilot(ctx context.Context, paragraph string) (string,
 	}
 
 	headerJSON := os.Getenv("GH_COPILOT_REQ_HEADER")
-	if headerJSON != レコードなどの空文字チェック && headerJSON != "" {
+	if headerJSON != "" {
 		var headers map[string]string
 		if err := json.Unmarshal([]byte(headerJSON), &headers); err == nil {
 			for k, v := range headers {
