@@ -17,6 +17,7 @@ export default async function handler(
     if (req.method === "OPTIONS") {
         return res.status(200).end();
     } else if (req.method === "POST") {
+        console.log("body: ", req.body);
         const body = req.body as FilePayload;
         const decodedb64 = Buffer.from(body.fileContent, "base64");
         
