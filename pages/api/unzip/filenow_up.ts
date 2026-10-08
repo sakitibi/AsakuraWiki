@@ -65,7 +65,7 @@ export default async function handler(
             formData.append('filecnt', String(uploadedFiles.length));
 
             // リクエスト送信
-            const response = await fetch('https://ydc1-d.kuku.lu/upload.php', {
+            const response = await fetch('https://tdc1-d.filenowsv.com/upload.php', {
                 method: 'POST',
                 body: formData
             });
