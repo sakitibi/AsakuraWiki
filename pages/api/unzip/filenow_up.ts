@@ -47,7 +47,6 @@ export default async function handler(
             formData.append('uuid', crypto.randomUUID().replaceAll("-", ""));
             formData.append('country', 'JP');
 
-            // 受け取ったファイルを file_1, file_2 ... として追加
             uploadedFiles.forEach((file, index) => {
                 const num = index + 1;
                 
