@@ -48,6 +48,7 @@ export default function NewsPage() {
                         <p>Он начинается в 9 утра.</p>
                         <p>Проводятся такие мероприятия, как вручение сертификатов о работе от сотрудников HR и хоры из различных отделов и отделов.</p>
                         <p><a href="https://sakitibi.github.io/static.asakurawiki.com/docs/令和8年度議案書.pdf">Мы также опубликовали предложение этого года.</a></p>
+                        <p><a href="https://github.com/sakitibi/AsakuraWiki-Images/releases/download/snap2026/2026-10-04-naiteishiki-gassyou.7z">Мы также опубликовали аудиозапись выступления хора на церемонии вручения предложений о работе.</a></p>
                         <p>Автор: Сиори Судзука</p>
                     </main>
                     <RightMenuJp/>

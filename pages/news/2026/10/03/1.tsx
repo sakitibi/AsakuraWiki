@@ -48,6 +48,7 @@ export default function NewsPage() {
                         <p>朝9時から開始します。</p>
                         <p>人事の方からの内定証書授与や各部署各課の合唱などイベントがあります。</p>
                         <p><a href="https://sakitibi.github.io/static.asakurawiki.com/docs/令和8年度議案書.pdf">今年度議案書も公開しました。</a></p>
+                        <p><a href="https://github.com/sakitibi/AsakuraWiki-Images/releases/download/snap2026/2026-10-04-naiteishiki-gassyou.7z">内定式合唱音声も公開しました。</a></p>
                         <p>執筆: 鈴香 詩織</p>
                     </main>
                     <RightMenuJp/>
