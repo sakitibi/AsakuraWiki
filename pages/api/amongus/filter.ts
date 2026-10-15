@@ -15,21 +15,6 @@ function isOneDayEarlier(referenceDate: Date) {
     return diffMs >= oneDayMs;
 }
 
-function sanitizeHeaderValue(value: unknown): string {
-    if (!value) return "";
-
-    let str = "";
-    if (value instanceof ArrayBuffer) {
-        str = Buffer.from(value).toString("utf-8");
-    } else if (Buffer.isBuffer(value)) {
-        str = value.toString("utf-8");
-    } else {
-        str = String(value);
-    }
-
-    return str.replace(/[^\x00-\xFF]/g, "");
-}
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -37,24 +22,48 @@ export default async function handler(
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'x-filter');
 
-    // Amongusのトークンを取得
     const res1 = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/amongus/user`);
     if (!res1.ok) {
         const errdata = await res1.text();
+        console.error("Token API Error:", errdata);
         return res.status(500).json({error: "token error", data: errdata});
     }
     const data1 = await res1.json();
-    
-    const raw_auth_token = 
-        await upack.SEncoder.decodeSEncode(
-            data1.token,
-            await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
-            20,
-            true,
-        );
-    
-    // サニタイズ適用
-    const auth_token = sanitizeHeaderValue(raw_auth_token);
+    console.log("Fetched data1.token:", data1.token);
+
+    const b64KeypairPart = process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1];
+    console.log("B64Keypair part exists:", !!b64KeypairPart);
+
+    let privateKey;
+    try {
+        privateKey = await importPrivateKey(b64KeypairPart!);
+    } catch (e) {
+        console.error("Failed to import private key:", e);
+        return res.status(500).json({ error: "Private key import error", details: String(e) });
+    }
+
+    let auth_token: string;
+    try {
+        const rawToken = 
+            await upack.SEncoder.decodeSEncode(
+                data1.token,
+                privateKey,
+                20,
+                true,
+            );
+        
+        console.log("decodeSEncode raw result:", rawToken);
+        console.log("rawToken type:", typeof rawToken);
+
+        if (typeof rawToken !== "string") {
+            throw new Error(`decodeSEncode did not return a string. Got type: ${typeof rawToken}`);
+        }
+        
+        auth_token = rawToken;
+    } catch (e) {
+        console.error("decodeSEncode failed:", e);
+        return res.status(500).json({ error: "decodeSEncode error", details: String(e) });
+    }
 
     const filter = req.headers["x-filter"] || '{"FilterSets":[{"GameMode":1,"Filters":[{"OptionType":"map","Key":"Map","SubFilterString":"{\\"AcceptedValues\\":54,\\"FilterType\\":\\"map\\"}"},{"OptionType":"int","Key":"ImpostorNumber","SubFilterString":"{\\"AcceptedValues\\":[3],\\"OptionEnum\\":1,\\"FilterType\\":\\"int\\"}"},{"OptionType":"bool","Key":"ConfirmEjects","SubFilterString":"{\\"AcceptedValues\\":[false],\\"OptionEnum\\":3,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"bool","Key":"AnonymousVotes","SubFilterString":"{\\"AcceptedValues\\":[true],\\"OptionEnum\\":4,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"chat","Key":"Chat","SubFilterString":"{\\"AcceptedValues\\":1,\\"FilterType\\":\\"chat\\"}"},{"OptionType":"languages","Key":"Language","SubFilterString":"{\\"AcceptedValues\\":512,\\"FilterType\\":\\"languages\\"}"}]}]}';
 
@@ -69,8 +78,6 @@ export default async function handler(
     headers.set("sentry-trace", "aaefdbfd5feb4f74abf512c1588fe219-f08d8990d0b359ea-0");
     headers.set("user-agent", "AmongUs/3 CFNetwork/3896.100.1.1.1 Darwin/27.0.0");
     headers.set("x-unity-version", "2022.3.62f3");
-
-    console.log("headers: ", Object.fromEntries(headers.entries()));
     
     const response = await fetch(
         `https://matchmaker-as.among.us/api/games/filtered?filter=${filter}`,
@@ -80,7 +87,7 @@ export default async function handler(
         }
     );
     const data2 = await response.json();
-    console.log("response: ", data2);
+    console.log("response status:", response.status);
 
     if (!response.ok) {
         const { data: backup_token, error: backup_error } = await supabaseClient
@@ -93,8 +100,7 @@ export default async function handler(
             return res.status(500).json({error: backup_error, token: backup_token});
         }
         
-        const sanitized_backup_token = sanitizeHeaderValue(backup_token.value);
-        headers.set("authorization", `Bearer ${sanitized_backup_token}`);
+        headers.set("authorization", `Bearer ${backup_token.value}`);
         
         const response2 = await fetch(
             `https://matchmaker-as.among.us:443/api/games/filtered?filter=${filter}`,
