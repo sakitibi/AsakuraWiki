@@ -15,6 +15,23 @@ function isOneDayEarlier(referenceDate: Date) {
     return diffMs >= oneDayMs;
 }
 
+function sanitizeHeaderValue(value: string | ArrayBuffer | null | undefined): string {
+    if (!value) return "";
+    
+    let str = "";
+    if (value instanceof ArrayBuffer) {
+        str = Buffer.from(value).toString("utf-8");
+    } else if (typeof value === "string") {
+        str = value;
+    } else {
+        str = String(value);
+    }
+
+    return Array.from(str)
+        .filter(char => char.charCodeAt(0) <= 255)
+        .join("");
+}
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -28,13 +45,16 @@ export default async function handler(
         return res.status(500).json({error: "token error", data: errdata});
     }
     const data1 = await res1.json();
-    const auth_token = 
+    const raw_auth_token = 
         await upack.SEncoder.decodeSEncode(
             data1.token,
             await importPrivateKey(process.env.NEXT_PUBLIC_UPACK_B64KEYPAIR?.split(",")[1]!),
             20,
             true,
         );
+    
+    const auth_token = sanitizeHeaderValue(raw_auth_token);
+
     const filter = req.headers["x-filter"] || '{"FilterSets":[{"GameMode":1,"Filters":[{"OptionType":"map","Key":"Map","SubFilterString":"{\\"AcceptedValues\\":54,\\"FilterType\\":\\"map\\"}"},{"OptionType":"int","Key":"ImpostorNumber","SubFilterString":"{\\"AcceptedValues\\":[3],\\"OptionEnum\\":1,\\"FilterType\\":\\"int\\"}"},{"OptionType":"bool","Key":"ConfirmEjects","SubFilterString":"{\\"AcceptedValues\\":[false],\\"OptionEnum\\":3,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"bool","Key":"AnonymousVotes","SubFilterString":"{\\"AcceptedValues\\":[true],\\"OptionEnum\\":4,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"chat","Key":"Chat","SubFilterString":"{\\"AcceptedValues\\":1,\\"FilterType\\":\\"chat\\"}"},{"OptionType":"languages","Key":"Language","SubFilterString":"{\\"AcceptedValues\\":512,\\"FilterType\\":\\"languages\\"}"}]}]}';
 
     // ヘッダーをセット
@@ -69,7 +89,10 @@ export default async function handler(
         if (backup_error || isOneDayEarlier(backup_token.updated_at)){
             return res.status(500).json({error: backup_error, token: backup_token});
         }
-        headers.set("authorization", `Bearer ${backup_token.value}`);
+        
+        const sanitized_backup_token = sanitizeHeaderValue(backup_token.value);
+        headers.set("authorization", `Bearer ${sanitized_backup_token}`);
+        
         const response2 = await fetch(
             `https://matchmaker-as.among.us:443/api/games/filtered?filter=${filter}`,
             {
