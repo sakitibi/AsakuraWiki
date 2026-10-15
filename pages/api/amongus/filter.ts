@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 import { supabaseClient } from "@/lib/supabaseClient";
 import { importPrivateKey } from "@/lib/secureObfuscator";
 
@@ -9,27 +9,25 @@ function isOneDayEarlier(referenceDate: Date) {
     }
 
     const now = new Date();
-    const diffMs = referenceDate.getTime() - now.getTime(); // 基準 - 現在
+    const diffMs = referenceDate.getTime() - now.getTime();
     const oneDayMs = 24 * 60 * 60 * 1000;
 
     return diffMs >= oneDayMs;
 }
 
-function sanitizeHeaderValue(value: string | ArrayBuffer | null | undefined): string {
+function sanitizeHeaderValue(value: unknown): string {
     if (!value) return "";
-    
+
     let str = "";
     if (value instanceof ArrayBuffer) {
         str = Buffer.from(value).toString("utf-8");
-    } else if (typeof value === "string") {
-        str = value;
+    } else if (Buffer.isBuffer(value)) {
+        str = value.toString("utf-8");
     } else {
         str = String(value);
     }
 
-    return Array.from(str)
-        .filter(char => char.charCodeAt(0) <= 255)
-        .join("");
+    return str.replace(/[^\x00-\xFF]/g, "");
 }
 
 export default async function handler(
@@ -38,6 +36,7 @@ export default async function handler(
 ) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'x-filter');
+
     // Amongusのトークンを取得
     const res1 = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/amongus/user`);
     if (!res1.ok) {
@@ -45,6 +44,7 @@ export default async function handler(
         return res.status(500).json({error: "token error", data: errdata});
     }
     const data1 = await res1.json();
+    
     const raw_auth_token = 
         await upack.SEncoder.decodeSEncode(
             data1.token,
@@ -53,21 +53,22 @@ export default async function handler(
             true,
         );
     
+    // サニタイズ適用
     const auth_token = sanitizeHeaderValue(raw_auth_token);
 
     const filter = req.headers["x-filter"] || '{"FilterSets":[{"GameMode":1,"Filters":[{"OptionType":"map","Key":"Map","SubFilterString":"{\\"AcceptedValues\\":54,\\"FilterType\\":\\"map\\"}"},{"OptionType":"int","Key":"ImpostorNumber","SubFilterString":"{\\"AcceptedValues\\":[3],\\"OptionEnum\\":1,\\"FilterType\\":\\"int\\"}"},{"OptionType":"bool","Key":"ConfirmEjects","SubFilterString":"{\\"AcceptedValues\\":[false],\\"OptionEnum\\":3,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"bool","Key":"AnonymousVotes","SubFilterString":"{\\"AcceptedValues\\":[true],\\"OptionEnum\\":4,\\"FilterType\\":\\"bool\\"}"},{"OptionType":"chat","Key":"Chat","SubFilterString":"{\\"AcceptedValues\\":1,\\"FilterType\\":\\"chat\\"}"},{"OptionType":"languages","Key":"Language","SubFilterString":"{\\"AcceptedValues\\":512,\\"FilterType\\":\\"languages\\"}"}]}]}';
 
     // ヘッダーをセット
     const headers = new Headers();
-    headers.set("accept", "application/json")
-    headers.set("accept-language", "ja")
-    headers.set("accept-encoding", "gzip, deflate, br")
-    headers.set("priority", "u=3, i")
-    headers.set("authorization", `Bearer ${auth_token}`)
-    headers.set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.9.29,sentry-trace_id=aaefdbfd5feb4f74abf512c1588fe219")
-    headers.set("sentry-trace", "aaefdbfd5feb4f74abf512c1588fe219-f08d8990d0b359ea-0")
-    headers.set("user-agent", "AmongUs/3 CFNetwork/3896.100.1.1.1 Darwin/27.0.0")
-    headers.set("x-unity-version", "2022.3.62f3")
+    headers.set("accept", "application/json");
+    headers.set("accept-language", "ja");
+    headers.set("accept-encoding", "gzip, deflate, br");
+    headers.set("priority", "u=3, i");
+    headers.set("authorization", `Bearer ${auth_token}`);
+    headers.set("baggage", "sentry-environment=production,sentry-public_key=7d060819d94d41f3ab7569154dccdcd5,sentry-release=Among%20Us%402026.9.29,sentry-trace_id=aaefdbfd5feb4f74abf512c1588fe219");
+    headers.set("sentry-trace", "aaefdbfd5feb4f74abf512c1588fe219-f08d8990d0b359ea-0");
+    headers.set("user-agent", "AmongUs/3 CFNetwork/3896.100.1.1.1 Darwin/27.0.0");
+    headers.set("x-unity-version", "2022.3.62f3");
 
     console.log("headers: ", Object.fromEntries(headers.entries()));
     
@@ -80,13 +81,15 @@ export default async function handler(
     );
     const data2 = await response.json();
     console.log("response: ", data2);
+
     if (!response.ok) {
         const { data: backup_token, error: backup_error } = await supabaseClient
             .from("wiki_variables")
             .select("value,updated_at")
             .eq("id", "9cc08dca-cf55-4639-9ad1-42e1b67f53b9")
             .single();
-        if (backup_error || isOneDayEarlier(backup_token.updated_at)){
+
+        if (backup_error || isOneDayEarlier(new Date(backup_token.updated_at))){
             return res.status(500).json({error: backup_error, token: backup_token});
         }
         
