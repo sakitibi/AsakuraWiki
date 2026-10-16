@@ -37,7 +37,7 @@
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.3.0",
     "undici": "^8.4.1",
-    "upack.js": "^1.0.76",
+    "upack.js": "^1.0.79",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
