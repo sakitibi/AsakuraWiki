@@ -43,13 +43,6 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		isAdmin := pkg.AdminerUserId[userID]
-		if !isAdmin {
-			log.Printf("Unauthorized access attempt. UserID: %s", userID)
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Unauthorized"})
-			return
-		}
 
 		data, errResp := token.FetchWikiVariable(supabaseURL, anonKey, targetID)
 		if errResp != nil {
