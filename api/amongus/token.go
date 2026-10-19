@@ -2,11 +2,13 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
+	"asakura-wiki.vercel.app/pkg"
 	"asakura-wiki.vercel.app/pkg/amongus/token"
 	"github.com/sakitibi/upack.go/sencode"
 )
@@ -14,6 +16,7 @@ import (
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, PUT, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -28,6 +31,26 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	// GET リクエスト処理
 	// ----------------------------------------------------
 	if r.Method == http.MethodGet {
+		authHeader := r.Header.Get("Authorization")
+		user, err := pkg.GetSupabaseUser(authHeader)
+		if err != nil {
+			log.Printf("Auth check error: %v", err)
+		}
+
+		userID := ""
+		if user != nil {
+			userID = user.ID
+		}
+
+		isAdmin := pkg.AdminerUserId[userID]
+		if !isAdmin {
+			log.Printf("Unauthorized access attempt. UserID: %s", userID)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Unauthorized"})
+			return
+		}
+
 		data, errResp := token.FetchWikiVariable(supabaseURL, anonKey, targetID)
 		if errResp != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -81,11 +104,19 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		var resToken string
+
+		if isAdmin {
+			resToken = idToken
+		} else {
+			resToken = encrypted
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]any{
 			"obfuscate": "upack.js",
-			"token":     encrypted,
+			"token":     resToken,
 		})
 		return
 	}
