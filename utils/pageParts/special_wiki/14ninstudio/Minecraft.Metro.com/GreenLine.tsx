@@ -96,6 +96,11 @@ export default function GreenLine(){
                     <StopStation/>
                 </tr>
                 <tr>
+                    <th style={{ color:LineColor }}><ruby>サバンナ海岸<rt>さばんなかいがん</rt></ruby> GR18</th>
+                    <StopStation/>
+                    <StopStation/>
+                </tr>
+                <tr>
                     <th style={{ color:LineColor }}></th>
                     <td className='center' style={{ color: LineColor }} colSpan={2}>
                         <strong>本線へ</strong>
