@@ -98,17 +98,20 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var resToken string
+		var obfuscated string
 
 		if isAdmin {
 			resToken = idToken
+			obfuscated = "none"
 		} else {
 			resToken = encrypted
+			obfuscated = "upack.js"
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]any{
-			"obfuscate": "upack.js",
+			"obfuscate": obfuscated,
 			"token":     resToken,
 		})
 		return
