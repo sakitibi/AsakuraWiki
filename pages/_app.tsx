@@ -11,7 +11,7 @@ import { importPrivateKey, secureRandomString } from '@/lib/secureObfuscator';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import '@/styles/globals.css';
 import ImageContainer from '@/utils/pageParts/top/ImageContainer';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID!;
 export const blockedDomains = ['https://vercel.com', 'https://vercel.live'];

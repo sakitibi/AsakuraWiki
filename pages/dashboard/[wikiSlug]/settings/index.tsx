@@ -4,7 +4,7 @@ import { User } from '@supabase/auth-helpers-react';
 import Head from 'next/head';
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { supabaseClient } from '@/lib/supabaseClient';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function WikiSettingsPage() {

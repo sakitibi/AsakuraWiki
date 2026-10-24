@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseServer } from '@/lib/supabaseClientServer';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 import { decodeBase64Unicode } from '@/lib/base64';
 import { normalizeIp } from '@/pages/api/ipaddress';
 import { importPrivateKey, importPublicKey } from '@/lib/secureObfuscator';

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 import { encodeBase64Unicode } from '@/lib/base64';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { importPrivateKey, importPublicKey } from '@/lib/secureObfuscator';

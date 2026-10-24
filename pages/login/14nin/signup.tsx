@@ -4,7 +4,7 @@ import { notuseUsername } from '@/utils/user_list';
 import { importPublicKey, encrypt as secureEncrypt } from "@/lib/secureObfuscator";
 import Head from 'next/head';
 import { encodeBase64Unicode, gzipAndBase64 } from '@/lib/base64';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 
 export type GenderTypes = "man" | "woman" | "boy" | "girl";
 export type CountrieTypes = "japan" | "russia" | "others";

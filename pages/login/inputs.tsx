@@ -9,7 +9,7 @@ import { User } from "@supabase/auth-helpers-react";
 import { getAge, type BirthDayProps, type CountrieTypes, type GenderTypes } from "@/pages/login/14nin/signup";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { encodeBase64Unicode, gzipAndBase64 } from "@/lib/base64";
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 import { fetchAndSetUser } from '@/lib/authGetUser';
 
 export default function AccountsSetup(){

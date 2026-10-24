@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { decryptV3, importPublicKey } from '@/lib/secureObfuscator';
 import { encodeBase64Unicode, ungzipFromBase64 } from "@/lib/base64";
 import Head from 'next/head';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 
 export default function LoginPage() {
     const [secretCode, setSecretCode] = useState<string>('');

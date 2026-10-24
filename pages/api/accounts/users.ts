@@ -1,7 +1,7 @@
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { adminerUserId } from '@/utils/user_list';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 import { importPrivateKey } from '@/lib/secureObfuscator';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];

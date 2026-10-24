@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { JWTPayload, SignJWT } from 'jose';
 import { supabaseServer } from '@/lib/supabaseClientServer';
-import upack from '@/node_modules/upack.js/src/index';
+import upack from 'upack';
 import { decodeBase64Unicode } from '@/lib/base64';
 import { importPrivateKey } from '@/lib/secureObfuscator';
 
