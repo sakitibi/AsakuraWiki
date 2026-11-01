@@ -18,6 +18,14 @@ export default async function aiFilter(
             return content;
         }
 
+        if (setProgress) setProgress(20);
+
+        let currentProgress = 20;
+        const progressInterval = setProgress ? setInterval(() => {
+            currentProgress = Math.min(currentProgress + 3, 85);
+            setProgress(currentProgress);
+        }, 150) : null;
+
         const response = await fetch("/api/wiki_v3/ai_filter", {
             method: "POST",
             headers: {
@@ -31,57 +39,21 @@ export default async function aiFilter(
             signal,
         });
 
+        // 通信が完了したのでタイマーをクリア
+        if (progressInterval) {
+            clearInterval(progressInterval);
+        }
+
         if (!response.ok) {
             throw new Error(`Filter API failed: ${response.status}`);
         }
 
-        if (!response.body) {
-            throw new Error("Response body is missing");
-        }
+        if (setProgress) setProgress(90);
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder("utf-8");
-        let accumulatedContent = "";
-        let buffer = "";
-
-        if (setProgress) setProgress(20);
-
-        // ストリーミングレスポンスを読み込み
-        while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split("\n\n");
-            buffer = lines.pop() || ""; // 不完全な最後のチャンクをバッファに保持
-
-            for (const line of lines) {
-                const trimmed = line.trim();
-                if (trimmed.startsWith("data:")) {
-                    const dataStr = trimmed.slice(5).trim();
-                    if (dataStr === "[DONE]") {
-                        break;
-                    }
-                    try {
-                        const parsed = JSON.parse(dataStr);
-                        if (parsed.chunk) {
-                            accumulatedContent += parsed.chunk;
-
-                            if (setProgress && content.length > 0) {
-                                const progressRatio = Math.min(accumulatedContent.length / content.length, 1);
-                                const currentProgress = Math.floor(20 + progressRatio * 70);
-                                setProgress(currentProgress);
-                            }
-                        }
-                    } catch (e) {
-                        console.warn("Failed to parse SSE JSON:", e);
-                    }
-                }
-            }
-        }
+        const data = await response.json();
 
         if (setProgress) setProgress(100);
-        return accumulatedContent;
+        return data.filtered_content;
 
     } catch (e: any) {
         if (e.name !== 'AbortError') {
