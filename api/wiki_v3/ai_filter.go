@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,8 +17,8 @@ type FilterRequest struct {
 	Content string `json:"content"`
 }
 
-type FilterResponse struct {
-	FilteredContent string `json:"filtered_content"`
+type StreamChunkResponse struct {
+	Chunk string `json:"chunk"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +34,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("[Handler] Request received for UserID: %s (IsDebug: %t, Content Length: %d)\n", req.UserID, req.IsDebug, len(req.Content))
+	log.Printf("[Handler] Streaming Request received for UserID: %s (IsDebug: %t, Content Length: %d)\n", req.UserID, req.IsDebug, len(req.Content))
 
 	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
 	anonKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
@@ -42,13 +43,28 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		log.Println("[Handler] WARNING: Supabase environment variables might be missing.")
 	}
 
-	// リクエストコンテキストを引き継ぐ
-	filtered := wiki_v3.AIFilter(r.Context(), req.UserID, req.IsDebug, req.Content, supabaseURL, anonKey, nil)
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
 
-	log.Printf("[Handler] Returning response (Filtered Content Length: %d)\n", len(filtered))
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		http.Error(w, "Streaming unsupported!", http.StatusInternalServerError)
+		return
+	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(FilterResponse{
-		FilteredContent: filtered,
+	_ = wiki_v3.AIFilter(r.Context(), req.UserID, req.IsDebug, req.Content, supabaseURL, anonKey, nil, func(chunk string) {
+		chunkResp := StreamChunkResponse{Chunk: chunk}
+		dataBytes, err := json.Marshal(chunkResp)
+		if err == nil {
+			fmt.Fprintf(w, "data: %s\n\n", string(dataBytes))
+			flusher.Flush()
+		}
 	})
+
+	// 終了シグナルを送信
+	fmt.Fprintf(w, "data: [DONE]\n\n")
+	flusher.Flush()
+
+	log.Println("[Handler] Streaming response completed.")
 }

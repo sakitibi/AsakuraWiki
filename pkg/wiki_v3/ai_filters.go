@@ -47,6 +47,7 @@ func AIFilter(
 	supabaseURL string,
 	anonKey string,
 	progressCallback func(progress int),
+	chunkCallback func(chunk string),
 ) string {
 	isAdmin := pkg.AdminerUserId[userID]
 
@@ -62,7 +63,7 @@ func AIFilter(
 		}
 
 		paragraphs := strings.Split(content, "\n")
-		processedParagraphs := make([]string, len(paragraphs))
+		var fullResult strings.Builder
 
 		targetKeywords := []string{"名前は", "有利", "長い", "なまな"}
 
@@ -80,18 +81,30 @@ func AIFilter(
 				}
 			}
 
+			var processed string
 			if strings.TrimSpace(paragraph) == "" || !hasKeyword {
-				processedParagraphs[i] = paragraph
-				continue
+				processed = paragraph
+			} else {
+				p, err := processParagraphWithCopilot(ctx, githubToken, paragraph)
+				if err != nil || p == "" {
+					log.Printf("[AIFilter] Paragraph [%d/%d] processing failed: %v\n", i+1, len(paragraphs), err)
+					processed = paragraph
+				} else {
+					processed = p
+				}
 			}
 
-			processed, err := processParagraphWithCopilot(ctx, githubToken, paragraph)
+			// 改行を復元（最初以外）
+			lineOut := processed
+			if i > 0 {
+				lineOut = "\n" + processed
+			}
 
-			if err != nil || processed == "" {
-				log.Printf("[AIFilter] Paragraph [%d/%d] processing failed: %v\n", i+1, len(paragraphs), err)
-				processedParagraphs[i] = paragraph
-			} else {
-				processedParagraphs[i] = processed
+			fullResult.WriteString(lineOut)
+
+			// リアルタイムにチャンクをクライアントへ流す
+			if chunkCallback != nil {
+				chunkCallback(lineOut)
 			}
 		}
 
@@ -99,9 +112,12 @@ func AIFilter(
 			progressCallback(100)
 		}
 
-		return strings.Join(processedParagraphs, "\n")
+		return fullResult.String()
 	}
 
+	if chunkCallback != nil {
+		chunkCallback(content)
+	}
 	return content
 }
 
@@ -120,11 +136,7 @@ func processParagraphWithCopilot(ctx context.Context, githubToken string, paragr
 - 該当する「肯定・好意・擁護の言葉」のみを局所的に「*」へ変換してください。
 - 感嘆符（!!）、記号、関係のない本文、文脈の説明部分は一切変更せず原文のまま維持してください。
 - 前置きや解説コメントは一切出力せず、**変換後の本文のみ**を出力してください。
-- 名前は長い方が有利の荒らしカウント、名前は長い方が有利に騙されてる、名前は長い方が有利反対などの否定的なものはそのまま出力してください。
-
-【変換例】
-入力: 名前は長い方が有利大好きだ!!
-出力: *************!!`,
+- 名前は長い方が有利の荒らしカウント、名前は長い方が有利に騙されてる、名前は長い方が有利反対などの否定的なものはそのまま出力してください。`,
 			},
 			{
 				Role:    "user",
