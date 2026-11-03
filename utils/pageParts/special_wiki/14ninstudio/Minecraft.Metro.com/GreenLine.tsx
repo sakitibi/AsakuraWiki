@@ -96,15 +96,35 @@ export default function GreenLine(){
                     <StopStation/>
                 </tr>
                 <tr>
+                    <th style={{ color:LineColor }}></th>
+                    <td className='center' style={{ color: LineColor }} colSpan={2}>
+                        <strong>一部列車本線へ</strong>
+                    </td>
+                </tr>
+                <tr>
                     <th style={{ color:LineColor }}><ruby>サバンナ海岸<rt>さばんなかいがん</rt></ruby> GR18</th>
                     <StopStation/>
                     <StopStation/>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}></th>
-                    <td className='center' style={{ color: LineColor }} colSpan={2}>
-                        <strong>本線へ</strong>
-                    </td>
+                    <th style={{ color:LineColor }}><ruby>南サバンナ海岸<rt>みなみさばんなかいがん</rt></ruby> GR19</th>
+                    <StopStation/>
+                    <PassingStation/>
+                </tr>
+                <tr>
+                    <th style={{ color:LineColor }}><ruby>海木<rt>かいき</rt></ruby> GR20</th>
+                    <StopStation/>
+                    <PassingStation/>
+                </tr>
+                <tr>
+                    <th style={{ color:LineColor }}><ruby>落合山<rt>おちあいやま</rt></ruby> GR21</th>
+                    <StopStation/>
+                    <PassingStation/>
+                </tr>
+                <tr>
+                    <th style={{ color:LineColor }}><ruby>サンゴ湾<rt>さんごわん</rt></ruby> GR22</th>
+                    <StopStation/>
+                    <StopStation/>
                 </tr>
             </tbody>
         </table>
