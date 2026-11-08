@@ -52,7 +52,7 @@ export async function generateJWT(
     return jwt;
 }
 
-export async function verifyJWT(token: string): Promise<{JWTPayload: JWTPayload | string, success: boolean}> {
+export async function verifyJWT(token: string): Promise<{JWTPayload: Record<string, any> | string, success: boolean}> {
     const header = decodeProtectedHeader(token);
     const alg = header.alg;
     let key;
@@ -78,7 +78,8 @@ export async function verifyJWT(token: string): Promise<{JWTPayload: JWTPayload 
 
     try {
         const { payload } = await jwtVerify(token, key);
-        return { JWTPayload: payload, success: true };
+        const payloadObject: Record<string, unknown> = { ...payload };
+        return { JWTPayload: payloadObject, success: true };
 
     } catch (error: any) {
         return { JWTPayload: `JWT verification failed: ${error.message}`, success: false };

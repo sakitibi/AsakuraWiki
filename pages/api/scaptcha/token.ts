@@ -31,11 +31,12 @@ export default async function handler(
         if (!decodedParams.success) {
             return res.status(401).send("Error 401 The token has expired.");
         }
+        const jwtDecoded = decodedParams.JWTPayload as Record<string, any>;
 
         const { data, error } = await supabaseServer
             .from("scaptcha_session")
             .select("*")
-            .eq("data", decodedParams.JWTPayload)
+            .eq("data", jwtDecoded.access_token.secretToken)
             .single();
         if (error || !data) {
             if (error) {
