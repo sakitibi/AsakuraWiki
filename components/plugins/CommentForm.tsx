@@ -33,8 +33,7 @@ export default function CommentForm({
             // コメント行の生成
             const commentLine = `- ${body} -- ${name} &new{&now;};`;
 
-            // 1. API v2 から現在のページデータを取得
-            const response = await fetch(`/api/wiki_v2/${wikiSlug}/${pageSlug}`, {
+            const response = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlug}&page_slug=${pageSlug}`, {
                 cache: 'no-store'
             });
 
@@ -45,13 +44,11 @@ export default function CommentForm({
 
             const pageData = await response.json();
 
-            // 2. Base64 + Gzip を解凍してテキスト化
             const compressed = base64ToUint8Array(pageData.content);
             const decompressed = Pako.ungzip(compressed, { to: "string" });
             const content = decompressed;
             const title = pageData.title;
 
-            // 3. #comment の位置を探して挿入
             const commentRegex = /#comment(?:\(\s*(above|below)\s*\))?/;
             const match = content.match(commentRegex);
 
@@ -76,11 +73,10 @@ export default function CommentForm({
                     content.slice(index + tokenLength);
             }
 
-            // 4. API v2 (PUT) で更新を実行
             const { data: { session } } = await supabaseClient.auth.getSession();
             const token = session?.access_token;
 
-            const updateRes = await fetch(`/api/wiki_v2/${wikiSlug}/${pageSlug}`, {
+            const updateRes = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlug}&page_slug=${pageSlug}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

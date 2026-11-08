@@ -31,7 +31,6 @@ export default async function wikiFetch(
     try {
         setLoading(true);
 
-        // 1. Wiki情報(edit_mode等)を取得 (権限判定に必要)
         const { data: wikiData, error: wikiError } = await supabaseServer
             .from('wikis')
             .select('edit_mode')
@@ -45,9 +44,7 @@ export default async function wikiFetch(
         }
         setEditMode(wikiData.edit_mode);
 
-        // 2. 自作API v2 からページデータを取得
-        // API Route: /api/wiki_v2/[wikiSlug]/[pageSlug]
-        const response = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`, {
+        const response = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlugStr}&page_slug=${pageSlugStr}`, {
             cache: 'no-store'
         });
 
@@ -97,7 +94,7 @@ export async function wikiFetchByMenu(
     pageSlugStr: string
 ): Promise<Page | null> {
     try {
-        const response = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`);
+        const response = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlugStr}&page_slug=${pageSlugStr}`);
         if (!response.ok) return null;
 
         const pageData = await response.json();

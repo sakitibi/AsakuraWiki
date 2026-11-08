@@ -91,13 +91,13 @@ export default function NewPage() {
         setLoading(true);
 
         try {
-            const res = await fetch(`/api/wiki_v2/${wikiSlugStr}`, {
+            const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlugStr}&page_slug=${slug}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${session?.access_token ?? ''}`
                 },
-                body: JSON.stringify({ slug, title, content }),
+                body: JSON.stringify({ slug, title, content, freeze: false }),
             });
 
             const data = await res.json();

@@ -21,7 +21,7 @@ interface ExportedVariable {
  */
 const fetchPageContentV2 = async (wikiSlug: string, pageSlug: string): Promise<string> => {
     try {
-        const res = await fetch(`/api/wiki_v2/${wikiSlug}/${pageSlug}`);
+        const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlug}&page_slug=${pageSlug}`);
         if (!res.ok) return '';
         const data = await res.json();
 

@@ -33,8 +33,7 @@ export default function PageList({ prefix }: PageListProps) {
         async function load() {
             setLoading(true)
             try {
-                // API v2 から Wiki の情報を取得
-                const res = await fetch(`/api/wiki_v2/${wikiSlug}`);
+                const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlug}`);
                 if (!res.ok) throw new Error('ページリストの取得に失敗しました');
                 
                 const data = await res.json();
@@ -47,7 +46,7 @@ export default function PageList({ prefix }: PageListProps) {
                     .sort()
                     .map(slug => ({
                         slug: slug,
-                        title: slug // 現在のAPIではtitleが含まれないためslugで代用
+                        title: slug
                     }));
 
                 setPages(childPages)

@@ -34,7 +34,7 @@ export async function resolveImports(content: string, context: Context): Promise
             const [, wikiSlug, pageSlug, rawVars] = match;
             const requestedVars = rawVars.split(',').map((v: string) => v.trim());
 
-            const response = await fetch(`/api/wiki_v2/${wikiSlug}/${pageSlug}`, {
+            const response = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlug}&page_slug=${pageSlug}`, {
                 cache: 'no-store'
             });
 

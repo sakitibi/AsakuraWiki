@@ -150,6 +150,40 @@ func InsertCommentToSupabase(name, body, wikiSlug, pageSlug, userId string) erro
 	return nil
 }
 
+func DeleteWikiFromSupabase(wikiSlug string) error {
+	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
+	supabaseKey := strings.TrimSpace(getSupabaseKey())
+
+	if supabaseURL == "" {
+		return fmt.Errorf("NEXT_PUBLIC_SUPABASE_URL is not set")
+	}
+
+	apiURL := fmt.Sprintf("%s/rest/v1/wikis?slug=eq.%s", supabaseURL, wikiSlug)
+
+	req, err := http.NewRequest("DELETE", apiURL, nil)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("apikey", supabaseKey)
+	req.Header.Set("Authorization", "Bearer "+supabaseKey)
+	req.Header.Set("Prefer", "return=minimal")
+
+	client := &http.Client{Timeout: 5 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to delete wiki from supabase: %s", string(bodyBytes))
+	}
+
+	return nil
+}
+
 func UpdateWikiTimestamp(wikiSlug, pageSlug string) {
 	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
 	supabaseKey := getSupabaseKey()

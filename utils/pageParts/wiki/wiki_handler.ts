@@ -39,7 +39,7 @@ export const handleUpdate = async (
         const token = session?.access_token;
 
         // API v2 へリクエスト
-        const res = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`, {
+        const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlugStr}&page_slug=${pageSlugStr}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ export const handleDelete = async (
             const { data: { session } } = await supabaseClient.auth.getSession();
             const token = session?.access_token;
 
-            const res = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`, {
+            const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlugStr}&page_slug=${pageSlugStr}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -183,7 +183,7 @@ export const handleFreeze = async(
         }
 
         // 現在のデータを API v2 から取得
-        const res = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`);
+        const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlugStr}&page_slug=${pageSlugStr}`);
         if (!res.ok) throw new Error("データの取得に失敗しました");
         const currentPage = await res.json();
 
@@ -191,7 +191,7 @@ export const handleFreeze = async(
         const { data: { session } } = await supabaseClient.auth.getSession();
         const token = session?.access_token;
         console.log("currentPage: ", currentPage);
-        const updateRes = await fetch(`/api/wiki_v2/${wikiSlugStr}/${pageSlugStr}`, {
+        const updateRes = await fetch(`/api/wiki_v3/contents?wiki_slug${wikiSlugStr}&page_slug=${pageSlugStr}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

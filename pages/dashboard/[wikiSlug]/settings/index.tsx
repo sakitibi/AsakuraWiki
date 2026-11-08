@@ -124,11 +124,7 @@ export default function WikiSettingsPage() {
             // 認証セッションの取得
             const { data: { session } } = await supabaseClient.auth.getSession();
             
-            // ==========================================
-            // 1. Blob ストレージ内の全データを削除 (API v2 経由)
-            // ==========================================
-            // スラッグのみを指定して DELETE を叩くことで、Wiki配下の全Blobを削除させる
-            const blobDeleteRes = await fetch(`/api/wiki_v2/${slugStr}`, {
+            const blobDeleteRes = await fetch(`/api/wiki_v3/contents?wiki_slug=${slugStr}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${session?.access_token}`

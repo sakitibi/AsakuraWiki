@@ -34,7 +34,7 @@ export default function IncludePage({
         }
 
         (async function(){
-            const res = await fetch(`/api/wiki_v2/${wikiSlug}/${encodeURIComponent(page)}`)
+            const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlug}&page_slug=${encodeURIComponent(page)}`)
                 if (!res.ok) {
                     console.error(`${res.status} ${res.statusText}`);
                     setError(`${res.status} ${res.statusText}`);

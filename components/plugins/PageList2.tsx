@@ -32,7 +32,7 @@ export default function PageList2({
         async function load() {
             try {
                 // API v2 から Wiki のメタデータを取得
-                const res = await fetch(`/api/wiki_v2/${wikiSlug}`);
+                const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${wikiSlug}`);
                 if (!res.ok) throw new Error('Wiki情報の取得に失敗しました');
                 
                 const data = await res.json();

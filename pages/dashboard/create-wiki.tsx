@@ -67,7 +67,7 @@ export default function CreateWikiPage() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             const token = session?.access_token;
 
-            const res = await fetch(`/api/wiki_v2/${slug}/FrontPage`, {
+            const res = await fetch(`/api/wiki_v3/contents?wiki_slug=${slug}&page_slug=FrontPage`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
