@@ -37,6 +37,8 @@ func WikiHandler(w http.ResponseWriter, r *http.Request) {
 	wikiSlug := query.Get("wiki_slug")
 	rawPageSlug := query.Get("page_slug")
 
+	println("DEBUG REQUEST -> Path:", r.URL.Path, "wiki_slug:", wikiSlug, "page_slug:", rawPageSlug)
+
 	if wikiSlug == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "wiki_slug parameter is required"})
