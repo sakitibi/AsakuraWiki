@@ -3,6 +3,7 @@ import { supabaseServer } from '@/lib/supabaseClientServer';
 import { createClient } from '@libsql/client';
 import Pako from 'pako';
 import { randomUUID } from 'node:crypto';
+import { adminerUserId } from '@/utils/user_list';
 
 export const config = {
     regions: ['kix1'],
@@ -126,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ]);
 
         const userId = userRes.data.user?.id || null;
-        //const isAdmin = adminerUserId.includes(userId || '');
+        const isAdmin = adminerUserId.includes(userId || '');
         const wiki = wikiRes.data;
 
         if (!wiki) return res.status(404).json({ error: 'Wiki not found' });
@@ -167,7 +168,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                 if (isCli && !ApiKeyVerified) return res.status(401).json({ error: 'Unauthorized' });
 
-                if (userId !== wiki.owner_id) {
+                if (userId !== wiki.owner_id && !isAdmin) {
                     if (!wiki.cli_freeze_edit && wasFrozen) return res.status(403).json({ error: 'This page is frozen.' });
                     if (wiki.edit_mode === 'private' && !userId) return res.status(403).json({ error: 'Access denied' });
                     if (!userId && isCli) return res.status(403).json({ error: 'Access denied' });
