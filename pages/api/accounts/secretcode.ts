@@ -1,20 +1,88 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { JWTPayload, SignJWT } from 'jose';
+import {
+    decodeProtectedHeader,
+    importPKCS8,
+    importSPKI,
+    JWTHeaderParameters,
+    JWTPayload,
+    jwtVerify,
+    SignJWT
+} from 'jose';
 import { supabaseServer } from '@/lib/supabaseClientServer';
 import upack from 'upack';
 import { decodeBase64Unicode } from '@/lib/base64';
 import { importPrivateKey } from '@/lib/secureObfuscator';
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
-const Key = new TextEncoder().encode(process.env.JWT_SIGN_SECRET);
 
-export async function generateJWT(payload:JWTPayload, exp: string) {
+export async function generateJWT(
+    header: JWTHeaderParameters, 
+    payload: JWTPayload, 
+    exp: string
+) {
+    const alg = header.alg;
+    let key;
+
+    if (alg === 'HS256') {
+        const secret = process.env.JWT_SIGN_SECRET;
+        if (!secret) {
+            throw new Error('JWT_SIGN_SECRET is not defined');
+        }
+        key = new TextEncoder().encode(secret);
+
+    } else if (alg === 'RS256') {
+        const privateKeyPEM = process.env.JWT_PRIVATE_KEY;
+        if (!privateKeyPEM) {
+            throw new Error('JWT_PRIVATE_KEY is not defined');
+        }
+        
+        const importedKey = await importPKCS8(privateKeyPEM.replace(/\\n/g, '\n'), 'RS256');
+        key = importedKey;
+
+    } else {
+        throw new Error(`Unsupported algorithm: ${alg}`);
+    }
+
     const jwt = await new SignJWT(payload)
-        .setProtectedHeader({ alg: 'HS256' }) // アルゴリズムを指定
-        .setIssuedAt() // 発行日時
-        .setExpirationTime(exp) // 有効期限（6年）
-        .sign(Key); // シークレットキーで署名
+        .setProtectedHeader(header)
+        .setIssuedAt()
+        .setExpirationTime(exp)
+        .sign(key);
+
     return jwt;
+}
+
+export async function verifyJWT(token: string): Promise<{JWTPayload: JWTPayload | string, success: boolean}> {
+    const header = decodeProtectedHeader(token);
+    const alg = header.alg;
+    let key;
+
+    if (alg === 'HS256') {
+        const secret = process.env.JWT_SIGN_SECRET;
+        if (!secret) {
+            throw new Error('JWT_SIGN_SECRET is not defined');
+        }
+        // HS256の場合は共通のシークレットキーを使用
+        key = new TextEncoder().encode(secret);
+
+    } else if (alg === 'RS256') {
+        const publicKeyPEM = process.env.JWT_PUBLIC_KEY;
+        if (!publicKeyPEM) {
+            throw new Error('JWT_PUBLIC_KEY is not defined');
+        }
+        key = await importSPKI(publicKeyPEM.replace(/\\n/g, '\n'), 'RS256');
+
+    } else {
+        return { JWTPayload: `Unsupported algorithm: ${alg}`, success: false };
+    }
+
+    try {
+        const { payload } = await jwtVerify(token, key);
+        return { JWTPayload: payload, success: true };
+
+    } catch (error: any) {
+        return { JWTPayload: `JWT verification failed: ${error.message}`, success: false };
+    }
 }
 
 export default async function handler(req:NextApiRequest, res: NextApiResponse) {
@@ -75,7 +143,7 @@ export default async function handler(req:NextApiRequest, res: NextApiResponse) 
             // JWTペイロードを作成
             const payload = { userId, userEmail, created_at };
             // JWTを生成
-            const jwt = await generateJWT(payload, '6y');
+            const jwt = await generateJWT({alg: "RS256"}, payload, '6y');
             // トークンを返す
             console.log("jwt: ", jwt);
             const { error } = await supabaseServer

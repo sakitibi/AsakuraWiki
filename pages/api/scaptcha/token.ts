@@ -1,5 +1,6 @@
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { generateJWT, verifyJWT } from "@/pages/api/accounts/secretcode";
 
 const ALLOWED_ORIGINS = ['https://asakura-wiki.vercel.app', 'https://sakitibi.github.io'];
 
@@ -22,10 +23,19 @@ export default async function handler(
         if (!scaptcha_params) {
             return res.status(401).send("Error 401 Unauthorized");
         }
+
+        const filtered_params = Array.isArray(scaptcha_params) ? scaptcha_params[0] : scaptcha_params;
+
+        const decodedParams = await verifyJWT(filtered_params);
+
+        if (!decodedParams.success) {
+            return res.status(401).send("Error 401 The token has expired.");
+        }
+
         const { data, error } = await supabaseServer
             .from("scaptcha_session")
             .select("*")
-            .eq("data", scaptcha_params)
+            .eq("data", decodedParams.JWTPayload)
             .single();
         if (error || !data) {
             if (error) {
@@ -40,14 +50,20 @@ export default async function handler(
         }
         const body = { ...req.body };
         const redirect_url = body.redirecturl;
+        const created_at = new Date();
+        const Datenow = created_at.getTime();
+
         const { error } = await supabaseServer
             .from("scaptcha_session")
             .insert([{
                 data: body.secretToken,
-                created_at: new Date(),
+                created_at,
                 ua: body.userAgent
             }])
             .single();
+        
+        const payload = { access_token: body, iat: Datenow, exp: Datenow + (1000 * 60 * 60) }
+        const jwt = await generateJWT({alg: "RS256"}, payload, '1h');
         
         if (error) {
             console.error("Error: ", error.message);
@@ -59,7 +75,7 @@ export default async function handler(
             <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/index.globals.css"/>
             </head><body><script>
             localStorage.removeItem("scaptcha_params");
-            localStorage.setItem("scaptcha_params", "${body.secretToken}");
+            localStorage.setItem("scaptcha_params", "${jwt}");
             location.replace("${redirect_url}");
             </script></body></html>`
         );
