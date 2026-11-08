@@ -116,7 +116,7 @@ func InsertCommentToSupabase(name, body, wikiSlug, pageSlug, userId string) erro
 
 	apiURL := supabaseURL + "/rest/v1/comments"
 
-	payload := map[string]interface{}{
+	payload := map[string]any{
 		"name":      name,
 		"body":      body,
 		"wiki_slug": wikiSlug,

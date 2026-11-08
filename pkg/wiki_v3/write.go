@@ -29,7 +29,7 @@ func HandleWrite(w http.ResponseWriter, r *http.Request, dbConn *sql.DB, wikiSlu
 			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 			return
 		}
-		json.NewEncoder(w).Encode(map[string]interface{}{"success": true})
+		json.NewEncoder(w).Encode(map[string]any{"success": true})
 		return
 	}
 
@@ -84,17 +84,17 @@ func HandleWrite(w http.ResponseWriter, r *http.Request, dbConn *sql.DB, wikiSlu
 		}
 		if editMode == "private" && userId == "" {
 			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Access denied"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "Edit Mode is Private. Access denied"})
 			return
 		}
 		if userId == "" && isCli {
 			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Access denied"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "No CLI Authenticationed. Access denied"})
 			return
 		}
 		if !cliUsed && isCli {
 			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Access denied"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "Wiki Setting is cannot use CLI. Access denied"})
 			return
 		}
 	}
