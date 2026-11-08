@@ -84,7 +84,7 @@ func HandleWrite(w http.ResponseWriter, r *http.Request, dbConn *sql.DB, wikiSlu
 		}
 		if editMode == "private" && userId == "" {
 			w.WriteHeader(http.StatusForbidden)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Edit Mode is Private. Access denied"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "Edit Mode is Private. Access denied", "user_id": userId})
 			return
 		}
 		if userId == "" && isCli {
