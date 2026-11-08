@@ -33,7 +33,7 @@ const fetchPageContentV2 = async (wikiSlug: string, pageSlug: string): Promise<s
         for (let i = 0; i < binaryString.length; i++) {
             bytes[i] = binaryString.charCodeAt(i);
         }
-        return Pako.ungzip(bytes, { to: 'string' });
+        return Pako.ungzip(bytes, { toText: true });
     } catch (err) {
         console.error('Fetch Error (v2):', err);
         return '';

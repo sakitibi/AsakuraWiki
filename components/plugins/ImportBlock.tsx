@@ -45,11 +45,9 @@ export async function resolveImports(content: string, context: Context): Promise
 
             const pageData = await response.json();
             
-            // content (Base64 + Gzip) を解凍
             const compressed = base64ToUint8Array(pageData.content);
-            const decompressedContent = Pako.ungzip(compressed, { to: "string" });
+            const decompressedContent = Pako.ungzip(compressed, { toText: true });
 
-            // #export を探すロジックは維持
             const exportMatch: RegExpMatchArray | null = decompressedContent.match(/#export\((global|local)\)\{(.+?)\};/);
             if (!exportMatch) continue;
 
@@ -63,7 +61,7 @@ export async function resolveImports(content: string, context: Context): Promise
 
             if (validVars.length === 0) continue;
 
-            // 変数の実体取得（メタデータなので引き続きSupabaseを利用）
+            // 変数の実体取得
             const { data: varData } = await supabaseClient
                 .from('wiki_variables')
                 .select('name, value, type, kind')

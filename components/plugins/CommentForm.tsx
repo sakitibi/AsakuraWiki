@@ -45,7 +45,7 @@ export default function CommentForm({
             const pageData = await response.json();
 
             const compressed = base64ToUint8Array(pageData.content);
-            const decompressed = Pako.ungzip(compressed, { to: "string" });
+            const decompressed = Pako.ungzip(compressed, { toText: true });
             const content = decompressed;
             const title = pageData.title;
 

@@ -62,7 +62,7 @@ export default async function wikiFetch(
 
         // 3. content (Base64 + Gzip) をデコードして解凍
         const compressed = base64ToUint8Array(pageData.content);
-        const decompressed = Pako.ungzip(compressed, { to: "string" });
+        const decompressed = Pako.ungzip(compressed, { toText: true });
 
         const pageDataResult: Page = {
             title: pageData.title,
@@ -99,7 +99,7 @@ export async function wikiFetchByMenu(
 
         const pageData = await response.json();
         const compressed = base64ToUint8Array(pageData.content);
-        const decompressed = Pako.ungzip(compressed, { to: "string" });
+        const decompressed = Pako.ungzip(compressed, { toText: true });
 
         return {
             title: pageData.title,

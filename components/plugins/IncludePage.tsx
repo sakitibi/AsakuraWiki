@@ -44,7 +44,7 @@ export default function IncludePage({
                         const content: string = data.content ?? ''
                         const decoded: string = Pako.ungzip(
                             Uint8Array.fromBase64(content),
-                            {to: "string"}
+                            {toText: true}
                         );
                         let text = decoded;
 
