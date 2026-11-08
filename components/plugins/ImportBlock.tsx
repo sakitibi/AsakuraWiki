@@ -1,6 +1,6 @@
 import { supabaseClient } from '@/lib/supabaseClient';
 import { Context, ImportBlockProps } from '@/components/plugins/parsePluginTypes';
-import Pako from 'pako';
+import { ungzip } from 'pako';
 
 /**
  * Base64をUint8Arrayに変換 (Blobデータ用)
@@ -46,7 +46,7 @@ export async function resolveImports(content: string, context: Context): Promise
             const pageData = await response.json();
             
             const compressed = base64ToUint8Array(pageData.content);
-            const decompressedContent = Pako.ungzip(compressed, { toText: true });
+            const decompressedContent = ungzip(compressed, { toText: true });
 
             const exportMatch: RegExpMatchArray | null = decompressedContent.match(/#export\((global|local)\)\{(.+?)\};/);
             if (!exportMatch) continue;

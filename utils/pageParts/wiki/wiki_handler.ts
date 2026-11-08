@@ -3,7 +3,7 @@ import { User } from "@supabase/supabase-js";
 import { NextRouter } from "next/router";
 import { supabaseClient } from "@/lib/supabaseClient";
 import { base64ToUint8Array } from "@/utils/wikiFetch";
-import Pako from "pako";
+import { ungzip } from "pako";
 import { ScaptchaSessionProps } from "@/pages/login";
 import React from "react";
 import aiFilter from "./aiFilter";
@@ -199,7 +199,7 @@ export const handleFreeze = async(
             },
             body: JSON.stringify({
                 title: currentPage.title,
-                content: Pako.ungzip(base64ToUint8Array(currentPage.content), { toText: true }), // API側がBase64でも生テキストでも受け取れるよう調整が必要
+                content: ungzip(base64ToUint8Array(currentPage.content), { toText: true }), // API側がBase64でも生テキストでも受け取れるよう調整が必要
                 freeze: !currentPage.freeze   // 新しいフラグを送信
             }),
         });

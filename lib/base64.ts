@@ -1,4 +1,4 @@
-import Pako from "pako";
+import { gzip, ungzip } from "pako";
 
 /**
  * hex文字列をUTF-8文字列にする関数
@@ -62,13 +62,13 @@ export function decodeBase64Unicode(str:string):string {
 
 export function gzipAndBase64(str: string): string {
     const encoded = new TextEncoder().encode(str);   // string → Uint8Array
-    const gzipped = Pako.gzip(encoded);               // gzip
+    const gzipped = gzip(encoded);               // gzip
     return uint8ToBase64(gzipped);                     // → base64
 }
 
 export function ungzipFromBase64(base64: string): string {
     const binary = atob(base64);
     const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
-    const decompressed = Pako.ungzip(bytes);
+    const decompressed = ungzip(bytes);
     return new TextDecoder().decode(decompressed);
 }

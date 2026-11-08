@@ -3,7 +3,7 @@ import { User } from '@supabase/supabase-js';
 import { useEffect, useState, useMemo } from 'react';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { BroadcastPayload } from '@/pages/events/birthday-ceremony';
-import Pako from 'pako';
+import { ungzip } from 'pako';
 
 export interface JSONProps {
     id: number;
@@ -49,7 +49,7 @@ export default function BirthdayAdminPage() {
                 headers.set("x-data-type", "gzip");
                 const res = await fetch('/api/staff_credits', { headers });
                 const buffer = await res.arrayBuffer();
-                const data = JSON.parse(Pako.ungzip(new Uint8Array(buffer), { toText: true}));
+                const data = JSON.parse(ungzip(new Uint8Array(buffer), { toText: true}));
 
                 const today = new Date();
                 const monthDay = `${today.getMonth() + 1}月${today.getDate()}日`;

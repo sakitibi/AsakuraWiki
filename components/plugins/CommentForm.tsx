@@ -1,5 +1,5 @@
 import { supabaseClient } from '@/lib/supabaseClient';
-import Pako from 'pako';
+import { ungzip } from 'pako';
 import React, { useState } from 'react';
 
 interface CommentFormProps {
@@ -45,7 +45,7 @@ export default function CommentForm({
             const pageData = await response.json();
 
             const compressed = base64ToUint8Array(pageData.content);
-            const decompressed = Pako.ungzip(compressed, { toText: true });
+            const decompressed = ungzip(compressed, { toText: true });
             const content = decompressed;
             const title = pageData.title;
 

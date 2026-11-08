@@ -1,6 +1,6 @@
 import { supabaseServer } from "@/lib/supabaseClientServer";
 import type { editMode } from '@/utils/wiki_settings';
-import Pako from "pako";
+import { ungzip } from "pako";
 
 export interface Page {
     title: string;
@@ -60,9 +60,8 @@ export default async function wikiFetch(
 
         const pageData = await response.json();
 
-        // 3. content (Base64 + Gzip) をデコードして解凍
         const compressed = base64ToUint8Array(pageData.content);
-        const decompressed = Pako.ungzip(compressed, { toText: true });
+        const decompressed = ungzip(compressed, { toText: true });
 
         const pageDataResult: Page = {
             title: pageData.title,
@@ -99,7 +98,7 @@ export async function wikiFetchByMenu(
 
         const pageData = await response.json();
         const compressed = base64ToUint8Array(pageData.content);
-        const decompressed = Pako.ungzip(compressed, { toText: true });
+        const decompressed = ungzip(compressed, { toText: true });
 
         return {
             title: pageData.title,

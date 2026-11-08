@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
 import { designColor } from '@/utils/wiki_settings'
-import Pako from 'pako';
+import { ungzip } from 'pako';
 
 interface IncludePageProps {
     wikiSlug: string;
@@ -42,7 +42,7 @@ export default function IncludePage({
                     const data = await res.json();
                     try {
                         const content: string = data.content ?? ''
-                        const decoded: string = Pako.ungzip(
+                        const decoded: string = ungzip(
                             Uint8Array.fromBase64(content),
                             {toText: true}
                         );
