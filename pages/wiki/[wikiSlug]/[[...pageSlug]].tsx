@@ -1,65 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { NextRouter, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { parseWikiContent } from '@/utils/parsePlugins';
-import { User } from '@supabase/auth-helpers-react';
-import { usePageLikeHandlers } from '@/utils/pageParts/wiki/like/page';
-import { useWikiLikeHandlers } from '@/utils/pageParts/wiki/like/wiki';
 import Script from 'next/script';
+import { User } from '@supabase/auth-helpers-react';
+
+import { parseWikiContent } from '@/utils/parsePlugins';
 import { special_wiki_list, ban_wiki_list, deleted_wiki_list } from '@/utils/wiki_list';
 import type { editMode, designColor } from '@/utils/wiki_settings';
 import { WikiBanned, WikiDeleted } from '@/utils/pageParts/wiki/wiki_notfound';
 import WikiEditPage from '@/utils/pageParts/wiki/wiki_edit';
-import { handleDelete, handleEdit, handleFreeze } from '@/utils/pageParts/wiki/wiki_handler';
 import CommentSubmitFunc from '@/utils/pageParts/wiki/comment_submit';
 import deletePage from '@/utils/pageParts/wiki/deletePage';
 import wikiFetch, { Page, wikiFetchByMenu } from '@/utils/wikiFetch';
 import fetchColor from '@/utils/fetchColor';
-import Link from 'next/link';
 import { supabaseClient } from '@/lib/supabaseClient';
 import { asakuraMenberUserId } from '@/utils/user_list';
 import { fetchAndSetUser } from '@/lib/authGetUser';
-
-// Chromium系判定
-export function isSafari() {
-    if(!navigator) return;
-    const ua = navigator.userAgent.toLowerCase();
-
-    const isSafari =
-        ua.includes('safari') &&
-        // Chrome、iOS版Chrome、iOS版FirefoxはSafariという文字列を含むので除外する
-        !ua.includes('chrome') &&
-        !ua.includes('crios') &&
-        !ua.includes('fxios');
-
-    // WebViewの場合はSafariという文字列を含まないため個別に確認が必要
-    const isIosWebView = (ua.includes('iphone') || ua.includes('ipad')) && ua.includes('applewebkit') && !ua.includes('safari');
-
-    return isSafari || isIosWebView;
-}
+import { useBeforeUnload } from '@/lib/hooks/useBeforeUnload';
+import { useWikiRedirect } from '@/lib/hooks/useWikiRedirect';
+import { WikiActions } from '@/components/elements/WikiActions';
+import { WikiNavigation } from '@/components/elements/WikiNavigation';
 
 export default function WikiPage() {
-    const router:NextRouter = useRouter()
+    const router = useRouter();
     const [isBot, setIsBot] = useState(true);
     const [user, setUser] = useState<User | null>(null);
 
-    const [menuContent, setMenuContent] = useState<string>("");
-    const [sideContent, setSideContent] = useState<string>("");
+    const [page, setPage] = useState<Page | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const [page, setPage]       = useState<Page | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError]     = useState<string | null>(null)
-
-    const [title, setTitle]     = useState<string>('')
-    const [content, setContent] = useState<string>('')
+    const [title, setTitle] = useState<string>('');
+    const [content, setContent] = useState<string>('');
     const [beforeContent, setBeforeContent] = useState<string>('');
 
     const [editMode, setEditMode] = useState<editMode>('public');
-    const [isButtonAction, setIsButtonAction] = useState<boolean>(false);
+    const [, setIsButtonAction] = useState<boolean>(false);
 
     const [designColor, setDesignColor] = useState<designColor | null>(null);
     const [parsedPreview, setParsedPreview] = useState<React.ReactNode[] | null>(null);
-    const [editContent, setEditContent] = useState<string>("");
     const [url, setUrl] = useState<URL | null>(null);
 
     const [menubar, setMenubar] = useState<Page | null | undefined>(undefined);
@@ -68,44 +47,34 @@ export default function WikiPage() {
     const [parsedSidebar, setParsedSidebar] = useState<React.ReactNode[] | null>(null);
 
     const { wikiSlug, pageSlug, page: pageQuery } = router.query;
-    const cmdStr:string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
+    const cmdStr: string = typeof router.query.cmd === 'string' ? router.query.cmd : '';
 
-    // クエリ→文字列化
-        const wikiSlugStr:string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
-        const pageSlugStr:string =
+    const wikiSlugStr: string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
+    const pageSlugStr: string =
         typeof pageQuery === 'string'
             ? pageQuery
             : Array.isArray(pageSlug)
             ? pageSlug.join('/')
             : pageSlug ?? 'FrontPage';
 
-    const special_wiki_list_found:string | undefined = special_wiki_list.find(value => value === wikiSlugStr);
-    const ban_wiki_list_found:string | undefined = ban_wiki_list.find(value => value === wikiSlugStr);
-    const deleted_wiki_list_found:string | undefined = deleted_wiki_list.find(value => value === wikiSlugStr);
-    const asakura_member_list_found:string | undefined = asakuraMenberUserId.find(value => value === user?.id);
+    const isEdit: boolean = cmdStr === 'edit';
+    const special_wiki_list_found = special_wiki_list.find(value => value === wikiSlugStr);
+    const ban_wiki_list_found = ban_wiki_list.find(value => value === wikiSlugStr);
+    const deleted_wiki_list_found = deleted_wiki_list.find(value => value === wikiSlugStr);
+    const asakura_member_list_found = asakuraMenberUserId.find(value => value === user?.id);
 
+    // カスタムフック適用
+    useBeforeUnload(isEdit, content !== beforeContent);
+    useWikiRedirect(wikiSlugStr, pageSlugStr, url, router);
+
+    // 初期ユーザー取得 & Bot判定
     useEffect(() => {
-        // ユーザー情報を取得
         fetchAndSetUser(supabaseClient, setUser);
-    }, []);
-    
-    /* ===============================
-        mount & bot detect
-    =============================== */
-    useEffect(() => {
-        if (typeof window === 'undefined') {
-            setIsBot(true);
-            return;
+        if (typeof window !== 'undefined') {
+            const ua = navigator.userAgent;
+            const bot = /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider|facebook\.com|HeadlessChrome)/i.test(ua);
+            setIsBot(bot);
         }
-
-        const ua = navigator.userAgent;
-        const bot =
-            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider|facebook\.com|HeadlessChrome)/i.test(ua);
-
-        setIsBot(bot);
-
-        console.log('[UA]', ua);
-        console.log('[isBot]', bot);
     }, []);
 
     useEffect(() => {
@@ -113,35 +82,13 @@ export default function WikiPage() {
         setUrl(new URL(window.location.href));
     }, [isBot]);
 
+    // デザインカラー取得
     useEffect(() => {
         if (!wikiSlugStr) return;
-        fetchColor(
-            wikiSlugStr,
-            setDesignColor
-        );
+        fetchColor(wikiSlugStr, setDesignColor);
     }, [wikiSlugStr]);
 
-    useEffect(() => {
-        if (!designColor || !menuContent || !sideContent) return;
-        (async function(){
-            const [menuParsed, sideParsed] = await Promise.all([
-                parseWikiContent(
-                    menuContent,
-                    { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} },
-                    designColor
-                ),
-                parseWikiContent(
-                    sideContent,
-                    { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} },
-                    designColor
-                )
-            ]);
-            setParsedMenubar(menuParsed);
-            setParsedSidebar(sideParsed);
-        })();
-    }, [menuContent, sideContent, designColor]);
-
-    // URL取得（編集モード判定用）
+    // ページデータ取得
     useEffect(() => {
         if (!wikiSlugStr || !pageSlugStr) return;
         setLoading(true);
@@ -158,46 +105,28 @@ export default function WikiPage() {
         );
     }, [wikiSlugStr, pageSlugStr]);
 
-    // MenuBar / SideBar 取得とパース統合
+    // MenuBar / SideBar 取得
     useEffect(() => {
         if (!wikiSlugStr || !pageSlugStr) return;
-
         let isMounted = true;
 
         async function loadAndParseSidebar() {
             try {
                 let menuPage = null;
-                try {
-                    if (pageSlugStr !== 'FrontPage' && pageSlugStr !== '') {
-                        menuPage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`);
-                    }
-                } catch (e) {
+                let sidePage = null;
+
+                if (pageSlugStr !== 'FrontPage' && pageSlugStr !== '') {
+                    try { menuPage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/MenuBar`); } catch {}
+                    try { sidePage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`); } catch {}
                 }
                 if (!menuPage) {
-                    try {
-                        menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar');
-                    } catch (e) {
-                        console.warn('MenuBar not found:', e);
-                    }
-                }
-
-                let sidePage = null;
-                try {
-                    if (pageSlugStr !== 'FrontPage' && pageSlugStr !== '') {
-                        sidePage = await wikiFetchByMenu(wikiSlugStr, `${pageSlugStr}/SideBar`);
-                    }
-                } catch (e) {
+                    try { menuPage = await wikiFetchByMenu(wikiSlugStr, 'MenuBar'); } catch (e) { console.warn('MenuBar not found:', e); }
                 }
                 if (!sidePage) {
-                    try {
-                        sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar');
-                    } catch (e) {
-                        console.warn('SideBar not found:', e);
-                    }
+                    try { sidePage = await wikiFetchByMenu(wikiSlugStr, 'SideBar'); } catch (e) { console.warn('SideBar not found:', e); }
                 }
 
                 if (!isMounted) return;
-
                 setMenubar(menuPage ?? null);
                 setSidebar(sidePage ?? null);
 
@@ -205,13 +134,11 @@ export default function WikiPage() {
                     const menuPromise = menuPage?.content
                         ? parseWikiContent(menuPage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor)
                         : Promise.resolve(null);
-
                     const sidePromise = sidePage?.content
                         ? parseWikiContent(sidePage.content, { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} }, designColor)
                         : Promise.resolve(null);
 
                     const [menuParsed, sideParsed] = await Promise.all([menuPromise, sidePromise]);
-
                     if (isMounted) {
                         setParsedMenubar(menuParsed);
                         setParsedSidebar(sideParsed);
@@ -223,135 +150,59 @@ export default function WikiPage() {
         }
 
         loadAndParseSidebar();
-
-        return () => {
-            isMounted = false;
-        };
+        return () => { isMounted = false; };
     }, [wikiSlugStr, pageSlugStr, designColor]);
 
+    // テーマクラスの適用
     useEffect(() => {
-        console.log('更新された editMode:', editMode);
-    }, [editMode]);
-
-    useEffect(() => {
-        if (!designColor) return; // ← nullの間はスキップ
-
-        document.body.classList.add('wiki-font');
-        document.body.classList.add(designColor); // ← 'pink' や 'blue' など
-
+        if (!designColor) return;
+        document.body.classList.add('wiki-font', designColor);
         return () => {
-            document.body.classList.remove('wiki-font');
-            document.body.classList.remove('pink');
-            document.body.classList.remove('blue');
-            document.body.classList.remove('yellow');
-            document.body.classList.remove('purple');
-            document.body.classList.remove('emerald');
+            document.body.classList.remove('wiki-font', 'pink', 'blue', 'yellow', 'purple', 'emerald');
         };
     }, [designColor]);
+
+    // 削除コマンド実行
     useEffect(() => {
-        if (cmdStr !== 'delete') return;
-        if (!pageSlugStr || !wikiSlugStr) return;
-        if (!user) return; // ← user が取得できるまで待機
-        deletePage(
-            wikiSlugStr,
-            pageSlugStr,
-            router,
-            user
-        );
+        if (cmdStr !== 'delete' || !pageSlugStr || !wikiSlugStr || !user) return;
+        deletePage(wikiSlugStr, pageSlugStr, router, user);
     }, [cmdStr, pageSlugStr, wikiSlugStr, user]);
 
-    const isEdit:boolean = cmdStr === 'edit';
+    // コメント送信初期化
     useEffect(() => {
-        CommentSubmitFunc(
-            isEdit,
-            wikiSlugStr,
-            pageSlugStr
-        );
-    }, []);
-    const previewText = isEdit ? content : page?.content ?? ''
+        CommentSubmitFunc(isEdit, wikiSlugStr, pageSlugStr);
+    }, [isEdit, wikiSlugStr, pageSlugStr]);
+
+    // プレビューパース
+    const previewText = isEdit ? content : page?.content ?? '';
     useEffect(() => {
         const fetchParsedPreview = async () => {
             if (!designColor) return;
-            console.time("AsakuraWikiParserEngineTimer");
             const result = await parseWikiContent(
                 previewText,
-                {
-                    wikiSlug: wikiSlugStr,
-                    pageSlug: pageSlugStr,
-                    variables: {},
-                },
+                { wikiSlug: wikiSlugStr, pageSlug: pageSlugStr, variables: {} },
                 designColor
             );
-            console.timeEnd("AsakuraWikiParserEngineTimer");
             setParsedPreview(result);
         };
-
         fetchParsedPreview();
     }, [previewText, wikiSlugStr, pageSlugStr, designColor]);
 
-    useEffect(() => {
-        setEditContent(content);
-    }, [content]);
-    useEffect(() => {
-        if(cmdStr === "edit"){
-            const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-                if (content !== editContent) {
-                    const message = "あさクラWikiから移動しますか?\n変更内容が保存されない可能性があります。"
-                    e.preventDefault();
-                    e.returnValue = message;
-                    return message;
-                }
-            };
-
-            window.addEventListener("beforeunload", handleBeforeUnload);
-        }
-    }, [content, editContent, cmdStr]);
-
+    // PVカウント
     useEffect(() => {
         if (!wikiSlugStr || !pageSlugStr) return;
-
-        fetch(`https://counter.wikiwiki.jp/c/14ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`)
-            .catch(err => console.error('Counter fetch error:', err));
+        fetch(`https://counter.wikiwiki.jp/c/14ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`).catch(err => console.error(err));
     }, [wikiSlugStr, pageSlugStr]);
 
+    if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>;
+    if ((loading || !page) && content === beforeContent) return <div style={{ padding: '2rem' }}>読み込み中…</div>;
 
-    useEffect(() => {
-        if (!wikiSlugStr || !pageSlugStr) return;
-
-        if (wikiSlugStr === special_wiki_list[0] && pageSlugStr === "FrontPage") {
-            if (router.asPath !== "/special_wiki/maitetsu_bkmt") {
-                router.replace("/special_wiki/maitetsu_bkmt");
-            }
-        } else if (
-            wikiSlugStr === "authentication" &&
-            pageSlugStr === "tokumei3971" &&
-            url?.searchParams.get("client_id") === "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRjYzdhNzgxLTJlMjUtOTNjMi01NGEzLTE0ZjNmZDIyMjZmYyIsInVzZXIiOiJ0b2t1bWVpMzk3MSJ9.Ekkwg_Oy54jFwW0-aUp-LHyYYzUh8b77EFwo-FJkHMk"
-        ) {
-            const clientId = url.searchParams.get("client_id");
-            const targetPath = `/login/discord?client_id=${clientId}`;
-            if (router.asPath !== targetPath) {
-                router.replace(targetPath);
-            }
-        }
-    }, [wikiSlugStr, pageSlugStr, url, router]);
-
-    useEffect(() => {
-        console.log("MenuBar: ", menubar);
-        console.log("SideBar: ", sidebar);
-    }, [menubar, sidebar])
-
-    const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
-    const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
-
-    if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>
-    if ((loading || !page) && (content === beforeContent)) return <div style={{ padding: '2rem' }}>読み込み中…</div>
-    
     return (
         <>
             {ban_wiki_list_found ? (
-                <WikiBanned/>
+                <WikiBanned />
             ) : deleted_wiki_list_found ? (
-                <WikiDeleted/>
+                <WikiDeleted />
             ) : (
                 <>
                     <Head>
@@ -379,106 +230,41 @@ export default function WikiPage() {
                         />
                     ) : (
                         <>
-                            <div id="contents-wrapper" style={{display: 'flex'}}>
-                                <div className="container" style={{display: 'grid', gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"}}>
+                            <div id="contents-wrapper" style={{ display: 'flex' }}>
+                                <div className="container" style={{ display: 'grid', gridTemplateColumns: sidebar ? '172px 1fr 170px' : '172px 1fr' }}>
                                     <article style={{ padding: '2rem', minWidth: 700, maxWidth: 1000 }} className="columnCenter clearfix">
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
-                                        {wikiSlugStr === special_wiki_list[0] &&
-                                        (pageSlugStr === 'FrontPage') && (
-                                            <button
-                                            onClick={() =>
-                                                router.replace(`/special_wiki/${special_wiki_list[0]}/${pageSlugStr}`)
-                                            }
-                                            >
-                                                <span>リダイレクトされない場合はこちら</span>
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={() => {
-                                                setIsButtonAction(true);
-                                                handleEdit(router, wikiSlugStr, pageSlugStr, setIsButtonAction);
-                                            }}
-                                            style={{
-                                                marginLeft: 8
-                                            }}
-                                            >
-                                            <span>このページを編集</span>
-                                        </button>
-                                        <button onClick={async() => await handleDelete(
-                                            special_wiki_list_found,
-                                            wikiSlugStr,
-                                            pageSlugStr,
-                                            router
-                                        )}>
-                                            <span>このページを削除</span>
-                                        </button>
-                                        <br />
-                                        <Link href={`/dashboard/${wikiSlugStr}/new`}>
-                                            <button style={{ marginLeft: 12 }}>
-                                                <span>新しいページを作成</span>
-                                            </button>
-                                        </Link>
-                                        <button onClick={() => handleFreeze(wikiSlugStr, pageSlugStr, user)}>
-                                            <span>このページを凍結 / 凍結解除</span>
-                                        </button>
-                                        <button onClick={handlePageLike} style={{ marginTop: 12 }}>
-                                            <span>このページを高く評価</span>
-                                        </button>
-                                        <button onClick={handlePageDisLike} style={{ marginLeft: 8 }}>
-                                            <span>このページを低く評価</span>
-                                        </button>
-                                        <br/>
-                                        <button onClick={handleWikiLike} style={{ marginLeft: 12}}>
-                                            <span>このWikiを高く評価</span>
-                                        </button>
-                                        <button onClick={handleWikiDisLike} style={{ marginLeft: 8 }}>
-                                            <span>このWikiを低く評価</span>
-                                        </button>
-                                        <br/>
-                                        {asakura_member_list_found ? null : (
-                                            <div id="ad-container" style={{ textAlign: 'center' }}>
-                                                <iframe src="https://sakitibi.github.io/14ninadmanager.com/main-contents-buttom" width="700" height="350"></iframe>
-                                            </div>
-                                        )}
+                                        <WikiActions
+                                            router={router}
+                                            wikiSlugStr={wikiSlugStr}
+                                            pageSlugStr={pageSlugStr}
+                                            specialWikiFound={special_wiki_list_found}
+                                            user={user}
+                                            isAsakuraMember={Boolean(asakura_member_list_found)}
+                                            setIsButtonAction={setIsButtonAction}
+                                        />
                                     </article>
-                                    {isEdit ? null : (
+                                    <WikiNavigation
+                                        sidebar={sidebar}
+                                        menubar={menubar}
+                                        parsedSidebar={parsedSidebar}
+                                        parsedMenubar={parsedMenubar}
+                                    />
+                                    {!asakura_member_list_found && (
                                         <>
-                                            <aside style={{ width: '170px', padding: '1rem' }} className='columnRight'>
-                                                {sidebar === undefined && 'SideBar 読み込み中…'}
-                                                {sidebar !== undefined && sidebar === null && 'SideBar は存在しません'}
-                                                {parsedSidebar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
-                                            </aside>
-                                            <aside style={{ width: '172px', padding: '1rem' }} className='columnLeft'>
-                                                {menubar === undefined && 'MenuBar 読み込み中…'}
-                                                {menubar !== undefined && menubar === null && 'MenuBar は存在しません'}
-                                                {parsedMenubar?.map((node, i) => <React.Fragment key={i}>{node}</React.Fragment>)}
-                                            </aside>
-                                        </>
-                                    )}
-                                    {asakura_member_list_found ? null : (
-                                        <>
-                                            <Script
-                                                src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_main.js'
-                                            />
-                                            <Script
-                                                src='https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_util.js'
-                                            />    
+                                            <Script src="https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_main.js" />
+                                            <Script src="https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_util.js" />
                                         </>
                                     )}
                                 </div>
                             </div>
                             <div className={`footer_${designColor} clearfix`}>
-                                <div style={{ display: "inline-block" }}>
-                                    レンタルWiki by
-                                    <a href="/" title='無料レンタルWikiサービス'>
-                                        あさクラWiki
-                                    </a>
+                                <div style={{ display: 'inline-block' }}>
+                                    レンタルWiki by <a href="/" title="無料レンタルWikiサービス">あさクラWiki</a>
                                     &nbsp;/&nbsp;
-                                    <a href="/about/ad" title='広告について'>
-                                        広告について
-                                    </a>
+                                    <a href="/about/ad" title="広告について">広告について</a>
                                 </div>
                             </div>
                         </>
@@ -486,5 +272,5 @@ export default function WikiPage() {
                 </>
             )}
         </>
-    )
+    );
 }
