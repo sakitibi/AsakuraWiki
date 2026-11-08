@@ -41,7 +41,7 @@ async function encrypt(FilePath) {
 
         const FileJavascriptCode = `;${pako}\n${upack_js}\n
         ;(async function(){async function importPrivateKey(e){const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])};
-        eval(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]), {to: "string"}), await importPrivateKey("${PrivateKeyB64}"), 10, true))})();`;
+        eval(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]),{toText:true}), await importPrivateKey("${PrivateKeyB64}"), 10, true))})();`;
         const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + tailPart;
         fs.writeFileSync(
             `${dirPath}/${FilePath}`,
