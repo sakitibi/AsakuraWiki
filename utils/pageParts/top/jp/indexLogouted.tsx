@@ -16,8 +16,8 @@ export default function LogoutedUI(){
             <h1>あさクラWikiへようこそ!</h1>
             <div className="text-dark">
                 <strong className="masthead-notice rounded-3 p-2">あさクラWikiの新機能</strong>
-                <h2>名前は長い方が有利対策のAI導入</h2>
-                <p>名前は長い方が有利を擁護する勢力の撲滅へ</p>
+                <h2>wiki restapiの使用言語をgoに変更</h2>
+                <p>APIの高速化の促進</p>
             </div>
             <h2 className="mb-3 fw-semibold lh-1">あさクラWikiのたくさんの機能で<br/>自分だけのWikiを作成しよう。</h2>
             <p className="lead mb-4">
