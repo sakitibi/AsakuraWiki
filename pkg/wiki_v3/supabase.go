@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -23,10 +24,13 @@ func FetchWikiFromSupabase(slug string) (map[string]interface{}, error) {
 	supabaseKey := getSupabaseKey()
 
 	if supabaseURL == "" {
-		return nil, fmt.Errorf("SUPABASE_URL is not set")
+		return nil, fmt.Errorf("NEXT_PUBLIC_SUPABASE_URL is not set")
 	}
 
 	apiURL := fmt.Sprintf("%s/rest/v1/wikis?slug=eq.%s&select=*", supabaseURL, slug)
+
+	log.Printf("[Supabase] Fetching Wiki URL: %s", apiURL)
+
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
 		return nil, err
@@ -38,20 +42,25 @@ func FetchWikiFromSupabase(slug string) (map[string]interface{}, error) {
 	client := &http.Client{Timeout: 5 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Printf("[Supabase] HTTP Request Error: %v", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("supabase returned status: %d", resp.StatusCode)
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		log.Printf("[Supabase] Error Response (Status %d): %s", resp.StatusCode, string(bodyBytes))
+		return nil, fmt.Errorf("supabase returned status: %d, body: %s", resp.StatusCode, string(bodyBytes))
 	}
 
 	var results []map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&results); err != nil {
+		log.Printf("[Supabase] JSON Decode Error: %v", err)
 		return nil, err
 	}
 
 	if len(results) == 0 {
+		log.Printf("[Supabase] Wiki not found for slug: %s", slug)
 		return nil, nil
 	}
 
@@ -144,7 +153,7 @@ func UpdateWikiTimestamp(wikiSlug, pageSlug string) {
 	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
 	supabaseKey := getSupabaseKey()
 
-	apiURL := fmt.Sprintf("%s/rest/v1/wikis?slug=eq.%s", supabaseURL, wikiSlug)
+	apiURL := fmt.Sprintf("%s/rest/v1/wikis?slug=eq.%s", supabaseURL, slugOrAlias(wikiSlug))
 
 	payload := map[string]any{
 		"updated_at":   time.Now().UTC().Format(time.RFC3339),
@@ -168,4 +177,9 @@ func UpdateWikiTimestamp(wikiSlug, pageSlug string) {
 		return
 	}
 	defer resp.Body.Close()
+}
+
+// 補助関数
+func slugOrAlias(s string) string {
+	return s
 }
