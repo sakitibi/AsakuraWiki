@@ -70,19 +70,22 @@ func FetchWikiFromSupabase(slug string) (map[string]interface{}, error) {
 
 func VerifySupabaseToken(token string) string {
 	if token == "" {
+		log.Println("[Auth] Token is empty in request header")
 		return ""
 	}
 
-	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
-	supabaseKey := os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
+	supabaseKey := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"))
 
 	if supabaseURL == "" {
+		log.Println("[Auth] NEXT_PUBLIC_SUPABASE_URL is not set")
 		return ""
 	}
 
 	apiURL := supabaseURL + "/auth/v1/user"
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
+		log.Printf("[Auth] NewRequest error: %v", err)
 		return ""
 	}
 
@@ -92,9 +95,13 @@ func VerifySupabaseToken(token string) string {
 	client := &http.Client{Timeout: 3 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Printf("[Auth] HTTP client.Do error: %v", err)
 		return ""
 	}
 	defer resp.Body.Close()
+
+	bodyBytes, _ := io.ReadAll(resp.Body)
+	log.Printf("[Auth] Supabase /auth/v1/user Status: %d, Body: %s", resp.StatusCode, string(bodyBytes))
 
 	if resp.StatusCode != http.StatusOK {
 		return ""
@@ -103,10 +110,12 @@ func VerifySupabaseToken(token string) string {
 	var userResp struct {
 		ID string `json:"id"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&userResp); err != nil {
+	if err := json.Unmarshal(bodyBytes, &userResp); err != nil {
+		log.Printf("[Auth] JSON Decode error: %v", err)
 		return ""
 	}
 
+	log.Printf("[Auth] Successfully verified userId: %s", userResp.ID)
 	return userResp.ID
 }
 
