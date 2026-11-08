@@ -35,7 +35,7 @@ func WikiHandler(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 	wikiSlug := query.Get("wiki_slug")
-	pageSlug := query.Get("page_slug")
+	rawPageSlug := query.Get("page_slug")
 
 	if wikiSlug == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -43,17 +43,18 @@ func WikiHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isRootWikiRequest := false
-	if pageSlug == "" {
-		pageSlug = "FrontPage"
-		isRootWikiRequest = true
+	// page_slug が明示的に指定されているかどうかを判定
+	hasPageSlug := (rawPageSlug != "")
+	pageSlug := rawPageSlug
+	if !hasPageSlug {
+		pageSlug = "FrontPage" // デフォルト値
 	}
 
 	// ======================
 	// GET: 読み取り
 	// ======================
 	if r.Method == http.MethodGet {
-		if isRootWikiRequest {
+		if !hasPageSlug {
 			wiki, err := wiki_v3.FetchWikiFromSupabase(wikiSlug)
 			if err != nil || wiki == nil {
 				w.WriteHeader(http.StatusNotFound)
@@ -77,7 +78,7 @@ func WikiHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 
-			resData := map[string]interface{}{
+			resData := map[string]any{
 				"wiki_slug":  wikiSlug,
 				"title":      wiki["name"],
 				"page_slugs": pageSlugs,
@@ -104,7 +105,7 @@ func WikiHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		resData := map[string]interface{}{
+		resData := map[string]any{
 			"page_id":    id,
 			"title":      title,
 			"content":    wiki_v3.ToBase64(content),
