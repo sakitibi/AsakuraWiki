@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -20,8 +21,8 @@ func getSupabaseKey() string {
 }
 
 func FetchWikiFromSupabase(slug string) (map[string]interface{}, error) {
-	supabaseURL := os.Getenv("NEXT_PUBLIC_SUPABASE_URL")
-	supabaseKey := getSupabaseKey()
+	supabaseURL := strings.TrimSpace(os.Getenv("NEXT_PUBLIC_SUPABASE_URL"))
+	supabaseKey := strings.TrimSpace(getSupabaseKey())
 
 	if supabaseURL == "" {
 		return nil, fmt.Errorf("NEXT_PUBLIC_SUPABASE_URL is not set")
