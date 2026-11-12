@@ -11,6 +11,8 @@
     color: #000;
     padding: .3em .3em .15em .5em;
     margin-inline: 0;
+    margin-left: -19px;
+    margin-right: -19px;
 }
 
 @mixin accordion_header {
@@ -81,10 +83,6 @@ body.wiki-font {
         &.accordion-header {
             @include accordion_header;
         }
-
-        &:not(.accordion-header) {
-            margin-block: 0.83em;
-        }
     }
 
     h3 {
@@ -92,10 +90,6 @@ body.wiki-font {
 
         &.accordion-header {
             @include accordion_header;
-        }
-
-        &:not(.accordion-header) {
-            margin-block: 1em;
         }
     }
 
@@ -105,10 +99,6 @@ body.wiki-font {
 
         &.accordion-header {
             @include accordion_header;
-        }
-
-        &:not(.accordion-header) {
-            margin-block: 1.33em;
         }
     }
 
