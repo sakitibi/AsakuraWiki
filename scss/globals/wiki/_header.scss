@@ -114,11 +114,11 @@ body.wiki-font {
 
     & .accordion-container{
         display: none;
-        & .accordion-container.accordion-close .icon-close {
+        & .accordion-container .accordion-close .icon-close {
             display: inline-block;
         }
 
-        & .accordion-container.accordion-open .icon-open {
+        & .accordion-container .accordion-open .icon-open {
             display: inline-block;
         }
     }
