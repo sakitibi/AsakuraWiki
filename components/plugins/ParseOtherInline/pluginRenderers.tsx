@@ -8,7 +8,7 @@ import IncludePage from '@/components/plugins/IncludePage';
 import calcPlugin from '@/components/plugins/calcPlugin';
 import { DATEDIF, DATEVALUE } from '@/utils/dateFunctions';
 import { extractBracedBlock, isValidLineRange } from "@/utils/parsePlugins";
-import { isSafari } from "@/pages/wiki/[wikiSlug]/[[...pageSlug]]";
+import { isSafari } from "@/utils/isSafari";
 import versions from "@/utils/version";
 import { PluginArgs } from '@/components/plugins/ParseOtherInline/types';
 import { ParserFn } from '@/components/plugins/Function';
