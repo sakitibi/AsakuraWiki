@@ -8,6 +8,7 @@ import HeaderJp from '@/utils/pageParts/top/jp/Header';
 import FooterJp from '@/utils/pageParts/top/jp/Footer';
 import { kokuseiChousaStr } from '@/pages/news/2025/10/08/1';
 import { GetServerSideProps } from 'next';
+import { company } from '@/utils/version';
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     res.setHeader(
@@ -46,7 +47,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『公式』あさクラニュース!</h1>
                         <ul>
-                            <li>2026/11/12 <a href="/news/2026/11/12/1">14ninstudio社内で大体育祭を実施します!</a></li>
+                            <li>2026/11/12 <a href="/news/2026/11/12/1">{company}社内で大体育祭を実施します!</a></li>
                             <li>2026/11/08 <a href="/news/2026/11/08/1">あさクラWikiのREST APIをv3にアップグレードしました。</a></li>
                             <li>2026/10/12 <a href="/news/2026/10/12/1">昨日、役員選挙をしました。今日、社員総会をしました。</a></li>
                             <li>2026/10/03 <a href="/news/2026/10/03/1">明日、内定式をします。</a></li>

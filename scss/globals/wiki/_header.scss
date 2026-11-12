@@ -111,6 +111,19 @@ body.wiki-font {
             margin-block: 1.33em;
         }
     }
+
+    & .accordion-container{
+        display: none;
+        & .accordion-container.accordion-close .icon-close {
+            display: inline-block;
+        }
+
+        & .accordion-container.accordion-open .icon-open {
+            display: inline-block;
+        }
+    }
+
+
 }
 
 /* =========================

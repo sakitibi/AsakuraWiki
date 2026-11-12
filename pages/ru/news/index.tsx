@@ -6,6 +6,7 @@ import LeftMenuRu from '@/utils/pageParts/top/ru/LeftMenu';
 import RightMenuRu from '@/utils/pageParts/top/ru/RightMenu';
 import HeaderRu from '@/utils/pageParts/top/ru/Header';
 import FooterRu from '@/utils/pageParts/top/ru/Footer';
+import { company } from '@/utils/version';
 
 export default function NewsPage() {
     const [menuStatus, setMenuStatus] = useState(false);
@@ -33,6 +34,7 @@ export default function NewsPage() {
                     <main style={{ padding: '2rem', flex: 1 }}>
                         <h1>『Официальные』новости Асакуры!</h1>
                         <ul>
+                            <li>2026/11/12 <a href="/ru/news/2026/11/12/1">{company} проведёт грандиозный спортивный фестиваль внутри компании!</a></li>
                             <li>2026/11/08 <a href="/ru/news/2026/11/08/1">Обновлен Asakura Wiki REST API до версии 3.</a></li>
                             <li>2026/10/12 <a href="/ru/news/2026/10/12/1">Вчера мы провели выборы в исполнительный орган. Сегодня мы провели общее собрание сотрудников.</a></li>
                             <li>2026/10/03 <a href="/ru/news/2026/10/03/1">Завтра я проведу церемонию предложения о работе.</a></li>
@@ -65,7 +67,7 @@ export default function NewsPage() {
                             <li>2025/08/17 <a href="/ru/news/2025/08/17/1">Хорошие новости! Кто-то<br/>вчера атаковал мою железную сеть!</a></li>
                             <li>2025/07/26 <a href='/ru/news/2025/07/26/1'>Отличные новости! Minecraft General Transportation (mgtn) забанен!</a></li>
                             <li>2025/07/23 <a href="/ru/news/2025/07/23/1">Внешний вид замка на юго-западной стороне второго города Новый город завершен!</a></li>
-                            <li>2025/07/22 <a href="/ru/news/2025/07/22/1">Строится замок на юго-западной стороне второго города Нового города..</a></li>
+                            {/*<li>2025/07/22 <a href="/ru/news/2025/07/22/1">Строится замок на юго-западной стороне второго города Нового города..</a></li>*/}
                             {/*<li>2025/07/18 <a href="/ru/news/2025/07/18/1">Собрание Асакура отложено из-за системных неполадок...</a></li>*/}
                             {/*<li>2025/07/16 <a href="/ru/news/2025/07/16/1">Сильный ветер нанес ущерб юго-востоку Асакуры, будьте осторожны</a></li>*/}
                         </ul>
