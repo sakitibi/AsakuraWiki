@@ -52,6 +52,8 @@ async function encrypt(FilePath) {
                 flag: 'w'
             }
         );
+        const FileDecoded = new TextDecoder().decode(fs.readFileSync(`${dirPath}/${FilePath}`));
+        console.log("FileDecoded: ", FileDecoded);
     } catch(e){
         console.error("Error", e);
     }
