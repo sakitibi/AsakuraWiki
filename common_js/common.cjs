@@ -64,7 +64,7 @@ async function encrypt(FilePath) {
         const files = fs.readdirSync(`${dirPath}/static`);
         const files2 = new fs.readdirSync(`${dirPath2}`);
         console.log("files2: ", files2);
-        const filtered = files.filter(value => value !== "chunks" && value !== "not-found.txt");
+        const filtered = files.filter(value => value !== "immutable" && value !== "not-found.txt");
         const buildManifestFile = new TextDecoder().decode(
             fs.readFileSync(`${dirPath}/static/${filtered[0]}/_buildManifest.js`)
         ).trim();
