@@ -13,6 +13,7 @@
     margin-inline: 0;
     margin-left: -19px;
     margin-right: -19px;
+    border-left: 15px solid;
 }
 
 @mixin accordion_header {
@@ -26,14 +27,12 @@
 @mixin header_h2 {
     font-size: 1.5em;
     border-bottom: 1px solid;
-    border-left: 15px solid;
     margin: .2em 0 .5em;
 }
 
 @mixin header_h3 {
     font-size: 1.17em;
     border: 1px solid;
-    border-left: 15px solid;
     margin: .2em 0 .5em;
 }
 
@@ -47,12 +46,8 @@
     border-right: 1px solid $bd;
 }
 
-@mixin heading_h3_color($bd) {
+@mixin heading_h3_or_h4_color($bd) {
     border-color: $bd;
-}
-
-@mixin heading_h4_color($bd) {
-    border-left: $bd;
 }
 
 /* =========================
@@ -130,11 +125,11 @@ body.wiki-font {
         }
 
         h3 {
-            @include heading_h3_color(list.nth($colors, 2));
+            @include heading_h3_or_h4_color(list.nth($colors, 2));
         }
 
         h4 {
-            @include heading_h4_color(list.nth($colors, 2));
+            @include heading_h3_or_h4_color(list.nth($colors, 2));
         }
     }
 }
