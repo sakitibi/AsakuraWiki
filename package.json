@@ -9,9 +9,8 @@
   "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "postbuild": "node ./common_js/common.cjs && next-sitemap"
+    "build": "next build && node ./common_js/common.cjs && next-sitemap",
+    "start": "next start"
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",

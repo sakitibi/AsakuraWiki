@@ -4,8 +4,8 @@ const { upack_js, pako } = require('./upack_template.cjs');
 const zlib = require('zlib');
 
 // 調べたいディレクトリの絶対パス
-const dirPath2 = '/vercel/path0/.next/output/static/_next';
-const dirPath = '/vercel/path0/.next';
+const dirPath = '/vercel/path0/.next/output/static/_next';
+const dirPath2 = '/vercel/path0/.next/static';
 
 function splitAtLastDoubleNewline(text) {
     const idx = text.lastIndexOf('\n\n');
@@ -62,7 +62,7 @@ async function encrypt(FilePath) {
         const files = fs.readdirSync(`${dirPath}/static`);
         const files2 = new fs.readdirSync(`${dirPath2}`);
         console.log("files2: ", files2);
-        const filtered = files.filter(value => value !== "immutable" && value !== "chunks" && value !== "not-found.txt");
+        const filtered = files.filter(value => value !== "immutable" && value !== "not-found.txt");
         const buildManifestFile = new TextDecoder().decode(
             fs.readFileSync(`${dirPath}/static/${filtered[0]}/_buildManifest.js`)
         ).trim();
