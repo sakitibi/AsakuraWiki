@@ -117,23 +117,26 @@ export default function WikiPage() {
     let commentSubmit:HTMLCollection | null = null;
 
     const CommentSubmitInterval = setInterval(() => {
-        if (document) {
-            if(typeof document.getElementsByClassName("comment-submit") === 'undefined'){
-                if(typeof document.getElementsByClassName("comment-submit") !== 'undefined'){
-                    commentSubmit = document.getElementsByClassName("comment-submit");
-                }
+        if (!document) {
+            clearInterval(CommentSubmitInterval);
+            return;
+        };
 
-                if ((isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage")) {
-                    for(let i = 0; i < commentSubmit!.length; i++){
-                        commentSubmit![i].setAttribute("disabled", "true");
-                    }
-                }
-            } else {
-                const ClearInterval:NodeJS.Timeout = setInterval(() => {
-                    clearInterval(CommentSubmitInterval);
-                    clearInterval(ClearInterval);
-                }, 1000);
+        if(typeof document.getElementsByClassName("comment-submit") === 'undefined'){
+            if(typeof document.getElementsByClassName("comment-submit") !== 'undefined'){
+                commentSubmit = document.getElementsByClassName("comment-submit");
             }
+
+            if ((isEdit) && (location.pathname === `/wiki/${wikiSlugStr}` || pageSlugStr === "FrontPage")) {
+                for(let i = 0; i < commentSubmit!.length; i++){
+                    commentSubmit![i].setAttribute("disabled", "true");
+                }
+            }
+        } else {
+            const ClearInterval:NodeJS.Timeout = setInterval(() => {
+                clearInterval(CommentSubmitInterval);
+                clearInterval(ClearInterval);
+            }, 1000);
         }
     }, 1000);
 
