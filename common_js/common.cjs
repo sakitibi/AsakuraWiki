@@ -5,7 +5,7 @@ const zlib = require('zlib');
 
 // 調べたいディレクトリの絶対パス
 const dirPath = '/vercel/path0/.next/output/static/_next';
-const dirPath2 = '/vercel/path0/.next/output';
+const dirPath2 = '/vercel/path0/.next/output/static/_next/static/immutable/chunks/';
 
 function splitAtLastDoubleNewline(text) {
     const idx = text.lastIndexOf('\n\n');
