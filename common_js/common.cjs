@@ -74,10 +74,11 @@ async function encrypt(FilePath) {
         const rootBase = new TextDecoder().decode(
             fs.readFileSync(`${dirPath}/${sliced["/"][0]}`)
         ).trim();
-        const rootBaseParsed = JSON.parse(rootBase.slice(35, rootBase.length - 1));
+        const rootBaseParsed =
+            JSON.parse(rootBase.slice(35, rootBase.length - 1)).filter(value => value.endsWith(".js"));
 
         Promise.all(
-            rootBaseParsed.slice(0, 3).map(async (item) => {
+            rootBaseParsed.slice(0, Object.keys(rootBaseParsed).length - 1).map(async (item) => {
                 await encrypt(item)
             })
         )
