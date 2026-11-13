@@ -65,7 +65,12 @@ async function encrypt(FilePath) {
         const buildManifestFile = new TextDecoder().decode(
             fs.readFileSync(`${dirPath}/static/${filtered[0]}/_buildManifest.js`)
         ).trim();
-        const sliced = JSON.parse(buildManifestFile.slice(24, buildManifestFile.length - 55));
+        const sliced = JSON.parse(
+            buildManifestFile.slice(
+                24,
+                buildManifestFile.indexOf("self.__TURBOPACK_PAGE_BOOTSTRAP") - 1
+            )
+        );
         const rootBase = new TextDecoder().decode(
             fs.readFileSync(`${dirPath}/${sliced["/"][0]}`)
         ).trim();
