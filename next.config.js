@@ -22,7 +22,7 @@ const nextConfig = {
         if (isServer) {
             config.externals = [...(config.externals || []), 'isows'];
         }
-
+/*
         // クライアント側の本番ビルド時のみ暗号化フックを適用
         if (config.mode === 'production' && !isServer) {
             config.plugins.push({
@@ -33,41 +33,54 @@ const nextConfig = {
 
                             const assetKeys = Object.keys(compilation.assets);
                             
-                            const manifestKey = assetKeys.find(key => key.includes('_buildManifest.js'));
+                            // _buildManifest.js を探す
+                            const manifestKey = assetKeys.find(key => key.includes('_buildManifest.js') || key.includes('buildManifest'));
                             if (!manifestKey) {
-                                console.log("[EMIT] _buildManifestが見つかりませんでした。スキップします。");
+                                console.log("[EMIT] マニフェストが見つかりませんでした。スキップします。");
                                 callback();
                                 return;
                             }
 
                             const manifestSource = compilation.assets[manifestKey].source().toString('utf8');
-                            const sliced = JSON.parse(
-                                manifestSource.slice(
-                                    24,
-                                    manifestSource.indexOf("self.__TURBOPACK_PAGE_BOOTSTRAP") - 1
-                                )
-                            );
                             
-                            const rootPathKey = sliced["/"][0]; // 例: static/immutable/chunks/...
-                            const rootAsset = compilation.assets[rootPathKey];
-                            if (!rootAsset) {
-                                console.log("[EMIT] Rootベースファイルが見つかりませんでした。");
+                            // JSON部分を安全に抽出（固定の文字数スライスを使わない）
+                            const jsonMatch = manifestSource.match(/\{[\s\S]*\}/);
+                            if (!jsonMatch) {
+                                console.log("[EMIT] マニフェストからJSONを抽出できませんでした。");
                                 callback();
                                 return;
                             }
 
-                            const rootSource = rootAsset.source().toString('utf8');
-                            const rootBaseParsed = JSON.parse(
-                                rootSource.slice(35, rootSource.length - 1)
-                            ).filter(value => value.endsWith(".js"));
+                            const sliced = JSON.parse(jsonMatch[0]);
+                            const rootPathKey = sliced["/"] && sliced["/"][0]; 
+                            
+                            if (!rootPathKey) {
+                                console.log("[EMIT] Rootベースキーが見つかりませんでした。");
+                                callback();
+                                return;
+                            }
 
-                            const targets = rootBaseParsed.slice(0, Object.keys(rootBaseParsed).length - 1);
+                            // アセットキーの揺れ（先頭の有無など）に対応
+                            const targetRootKey = assetKeys.find(k => k.includes(rootPathKey) || rootPathKey.includes(k));
+                            if (!targetRootKey || !compilation.assets[targetRootKey]) {
+                                console.log("[EMIT] Rootベースファイルが見つかりませんでした。:", rootPathKey);
+                                callback();
+                                return;
+                            }
+
+                            const rootSource = compilation.assets[targetRootKey].source().toString('utf8');
+                            
+                            // 正規表現でJSファイルのパスを安全に全て抽出する
+                            const jsFileMatches = rootSource.match(/"[^"]+\.js"/g) || [];
+                            const rootBaseParsed = jsFileMatches.map(m => m.replace(/"/g, ''));
+
+                            const targets = rootBaseParsed.slice(0, Math.max(0, rootBaseParsed.length - 1));
                             console.log(`[EMIT] 暗号化対象ファイル数: ${targets.length}`);
 
                             for (const item of targets) {
-                                const targetKey = item.startsWith('/') ? item.slice(1) : item;
+                                const targetKey = assetKeys.find(k => k.endsWith(item) || k.includes(item));
                                 
-                                if (compilation.assets[targetKey]) {
+                                if (targetKey && compilation.assets[targetKey]) {
                                     let fileContent = compilation.assets[targetKey].source().toString('utf8').trim();
                                     
                                     const [headPart, tailPart] = splitAtLastDoubleNewline(fileContent);
@@ -90,7 +103,6 @@ const nextConfig = {
                                     
                                     const modifiedCode = FileJavascriptCode + "\n\n" + tailPart;
 
-                                    // Webpackのメモリ上にあるアセットを置換
                                     compilation.assets[targetKey] = {
                                         source: () => modifiedCode,
                                         size: () => Buffer.byteLength(modifiedCode)
@@ -108,7 +120,7 @@ const nextConfig = {
                     });
                 }
             });
-        }
+        }*/
 
         return config;
     },
