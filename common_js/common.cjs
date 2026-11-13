@@ -28,8 +28,6 @@ async function encrypt(FilePath) {
             fs.readFileSync(`${dirPath}/${FilePath}`)
         ).trim();
         const [headPart, tailPart] = splitAtLastDoubleNewline(File);
-        console.log("headPart: ", headPart);
-        console.log("tailPart: ", tailPart);
         const FileEncoded = await upack.SEncoder.encodeSEncode(
             new TextEncoder().encode(headPart),
             KeyPair.publicKey,
@@ -45,7 +43,7 @@ async function encrypt(FilePath) {
         ;(async function(){async function importPrivateKey(e){const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])};
         eval(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]),{toText:true}), await importPrivateKey("${PrivateKeyB64}"), 10, true))})();`;
         const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + tailPart;
-        console.log("FileJavascriptFullVersion: ", FileJavascriptFullVersion);
+        console.log(`filePath: ${dirPath}/${FilePath}`);
         fs.writeFileSync(
             `${dirPath}/${FilePath}`,
             FileJavascriptFullVersion,
