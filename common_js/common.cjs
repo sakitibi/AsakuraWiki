@@ -5,7 +5,7 @@ const zlib = require('zlib');
 
 // 調べたいディレクトリの絶対パス
 const dirPath = '/vercel/path0/.next/output/static/_next';
-const dirPath2 = '/vercel/path0/.next/output/static/_next/static/immutable/chunks/';
+const dirPath2 = '/vercel/path0/.next/';
 
 function splitAtLastDoubleNewline(text) {
     const idx = text.lastIndexOf('\n\n');
@@ -52,8 +52,6 @@ async function encrypt(FilePath) {
                 flag: 'w'
             }
         );
-        const FileDecoded = new TextDecoder().decode(fs.readFileSync(`${dirPath}/${FilePath}`));
-        console.log("FileDecoded: ", FileDecoded);
     } catch(e){
         console.error("Error", e);
     }
