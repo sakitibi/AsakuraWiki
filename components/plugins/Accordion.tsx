@@ -102,6 +102,9 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
             </Tag>
             <div
                 className={`accordion-content ${open ? "accordion-open" : ""}`}
+                style={{
+                    display: isTargetOpen || open ? "block" : "hidden"
+                }}
                 {...(isAnimating ? {
                     style: {
                         display: "block",
