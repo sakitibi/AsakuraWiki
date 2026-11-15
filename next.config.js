@@ -68,15 +68,14 @@ const nextConfig = {
                                         { level: zlib.constants.Z_BEST_COMPRESSION }
                                     );
 
-                                    const base64Data = Buffer.from(compressedBuffer).toString('base64');
-
-                                    const CHUNK_SIZE = 40000;
+                                    const CHUNK_SIZE = 30000;
                                     const encodedChunksData = [];
 
-                                    for (let i = 0; i < base64Data.length; i += CHUNK_SIZE) {
-                                        const chunkStr = base64Data.slice(i, i + CHUNK_SIZE);
+                                    for (let i = 0; i < compressedBuffer.length; i += CHUNK_SIZE) {
+                                        const chunk = compressedBuffer.subarray(i, i + CHUNK_SIZE);
+                                        const base64Chunk = Buffer.from(chunk).toString('base64');
                                         const FileEncoded = await upack.SEncoder.encodeSEncode(
-                                            chunkStr,
+                                            base64Chunk,
                                             KeyPair.publicKey,
                                             10
                                         );
@@ -93,18 +92,28 @@ const nextConfig = {
                                         };
                                         const privateKey = await importPrivateKey("${PrivateKeyB64}");
                                         const chunkStrings = ${chunksJson};
-                                        let combinedBase64 = "";
+                                        const decryptedByteArrays = [];
+                                        let totalLength = 0;
+
                                         for (const encodedStr of chunkStrings) {
-                                            const decoded = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, true);
-                                            combinedBase64 += decoded;
+                                            const decodedBase64 = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, true);
+                                            const binaryString = atob(decodedBase64);
+                                            const len = binaryString.length;
+                                            const bytes = new Uint8Array(len);
+                                            for (let i = 0; i < len; i++) {
+                                                bytes[i] = binaryString.charCodeAt(i);
+                                            }
+                                            decryptedByteArrays.push(bytes);
+                                            totalLength += len;
                                         }
-                                        const binaryString = atob(combinedBase64);
-                                        const len = binaryString.length;
-                                        const bytes = new Uint8Array(len);
-                                        for (let i = 0; i < len; i++) {
-                                            bytes[i] = binaryString.charCodeAt(i);
+
+                                        const combined = new Uint8Array(totalLength);
+                                        let offset = 0;
+                                        for (const bytes of decryptedByteArrays) {
+                                            combined.set(bytes, offset);
+                                            offset += bytes.length;
                                         }
-                                        eval(pako.ungzip(bytes, {toText: true}));
+                                        eval(pako.ungzip(combined, {toText: true}));
                                     })();`;
                                     
                                     const modifiedCode = FileJavascriptCode + "\n\n" + tailPart;
