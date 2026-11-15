@@ -10,6 +10,7 @@
     background-color: transparent;
     color: #000;
     padding: .3em .3em .15em .5em;
+    margin: .2em 0 .5em;
     margin-inline: 0;
     margin-left: -19px;
     margin-right: -19px;
@@ -27,13 +28,11 @@
 @mixin header_h2 {
     font-size: 1.5em;
     border-bottom: 1px solid;
-    margin: .2em 0 .5em;
 }
 
 @mixin header_h3 {
     font-size: 1.17em;
     border: 1px solid;
-    margin: .2em 0 .5em;
 }
 
 /* =========================
