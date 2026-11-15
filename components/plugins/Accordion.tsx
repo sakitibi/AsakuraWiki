@@ -104,6 +104,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
                 className={`accordion-content ${open ? "accordion-open" : ""}`}
                 {...(isAnimating ? {
                     style: {
+                        display: "block",
                         overflow: "hidden",
                         height: currentHeight,
                         paddingTop: currentPaddingTop,
