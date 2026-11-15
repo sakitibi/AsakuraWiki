@@ -1,7 +1,7 @@
-/** @type {import('next').NextConfig} */
 const upack = require('upack.js/dist/cjs/index.cjs');
 const { upack_js, pako } = require('./common_js/upack_template.cjs');
 const zlib = require('zlib');
+/** @type {import('next').NextConfig} */
 
 function splitAtLastDoubleNewline(text) {
     const idx = text.lastIndexOf('\n\n');
@@ -95,7 +95,10 @@ const nextConfig = {
                                         let totalLength = 0;
 
                                         for (const encodedStr of chunkStrings) {
-                                            const decodedBytes = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, true);
+                                            // 正しい引数: decodeSEncode(text, secretKey, separator, asString)
+                                            const decodedResult = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, false);
+                                            // ArrayBuffer の場合は Uint8Array に変換して扱う
+                                            const decodedBytes = decodedResult instanceof ArrayBuffer ? new Uint8Array(decodedResult) : decodedResult;
                                             decryptedChunks.push(decodedBytes);
                                             totalLength += decodedBytes.length;
                                         }
