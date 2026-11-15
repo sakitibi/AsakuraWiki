@@ -25,7 +25,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
     const isFirstRender = useRef(true);
     
     const innerRef = useRef<HTMLDivElement>(null);
-    const [maxHeight, setMaxHeight] = useState(100);
+    const [maxHeight, setMaxHeight] = useState<number>(100);
 
     const Tag: 'h2' | 'h3' | 'h4' = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
     
@@ -35,7 +35,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
     useEffect(() => {
         if (innerRef.current) {
-            setMaxHeight(innerRef.current.offsetHeight);
+            setMaxHeight(innerRef.current.scrollHeight);
         }
     }, [children]);
 
@@ -43,6 +43,10 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
+        }
+
+        if (innerRef.current) {
+            setMaxHeight(innerRef.current.scrollHeight);
         }
 
         const duration = 500;
@@ -73,7 +77,6 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
                 progressRef.current = targetProgress;
                 setProgress(targetProgress);
                 setIsAnimating(false);
-                
                 setOpen(isTargetOpen);
             }
         };
@@ -86,6 +89,9 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
     }, [isTargetOpen]);
 
     function openClick() {
+        if (innerRef.current) {
+            setMaxHeight(innerRef.current.scrollHeight);
+        }
         setIsTargetOpen(!isTargetOpen);
     }
 
@@ -102,9 +108,6 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
             </Tag>
             <div
                 className={`accordion-content ${open ? "accordion-open" : ""}`}
-                style={{
-                    display: isTargetOpen || open ? "block" : "hidden"
-                }}
                 {...(isAnimating ? {
                     style: {
                         display: "block",
