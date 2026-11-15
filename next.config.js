@@ -68,15 +68,43 @@ const nextConfig = {
                                         { level: zlib.constants.Z_BEST_COMPRESSION }
                                     );
 
-                                    const FileEncoded = await upack.SEncoder.encodeSEncode(
-                                        compressedBuffer,
-                                        KeyPair.publicKey,
-                                        10
-                                    );
+                                    const CHUNK_SIZE = 40000;
+                                    const encodedChunksData = [];
+
+                                    for (let i = 0; i < compressedBuffer.length; i += CHUNK_SIZE) {
+                                        const chunk = compressedBuffer.subarray(i, i + CHUNK_SIZE);
+                                        const FileEncoded = await upack.SEncoder.encodeSEncode(
+                                            chunk,
+                                            KeyPair.publicKey,
+                                            10
+                                        );
+                                        encodedChunksData.push(Array.from(FileEncoded));
+                                    }
+
+                                    const chunksJson = JSON.stringify(encodedChunksData);
 
                                     const FileJavascriptCode = `;${pako}\n${upack_js}\n
-                                    ;(async function(){async function importPrivateKey(e){const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])};
-                                    eval(pako.ungzip(await upack.SEncoder.decodeSEncode("${FileEncoded}", await importPrivateKey("${PrivateKeyB64}"), 10, true), {toText:true}))})();`;
+                                    ;(async function(){
+                                        async function importPrivateKey(e){
+                                            const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));
+                                            return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])
+                                        };
+                                        const privateKey = await importPrivateKey("${PrivateKeyB64}");
+                                        const chunkArrays = ${chunksJson};
+                                        const decryptedChunks = [];
+                                        for (const arr of chunkArrays) {
+                                            const decoded = await upack.SEncoder.decodeSEncode(new Uint8Array(arr), privateKey, 10, true);
+                                            decryptedChunks.push(decoded);
+                                        }
+                                        const totalLength = decryptedChunks.reduce((acc, val) => acc + val.length, 0);
+                                        const combined = new Uint8Array(totalLength);
+                                        let offset = 0;
+                                        for (const chunk of decryptedChunks) {
+                                            combined.set(chunk, offset);
+                                            offset += chunk.length;
+                                        }
+                                        eval(pako.ungzip(combined, {toText: true}));
+                                    })();`;
                                     
                                     const modifiedCode = FileJavascriptCode + "\n\n" + tailPart;
 
