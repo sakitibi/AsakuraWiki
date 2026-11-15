@@ -78,7 +78,8 @@ const nextConfig = {
                                             KeyPair.publicKey,
                                             10
                                         );
-                                        encodedChunksData.push(Array.from(FileEncoded));
+                                        // 文字列のまま配列に保存
+                                        encodedChunksData.push(FileEncoded);
                                     }
 
                                     const chunksJson = JSON.stringify(encodedChunksData);
@@ -90,10 +91,10 @@ const nextConfig = {
                                             return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])
                                         };
                                         const privateKey = await importPrivateKey("${PrivateKeyB64}");
-                                        const chunkArrays = ${chunksJson};
+                                        const chunkStrings = ${chunksJson};
                                         const decryptedChunks = [];
-                                        for (const arr of chunkArrays) {
-                                            const decoded = await upack.SEncoder.decodeSEncode(new Uint8Array(arr), privateKey, 10, true);
+                                        for (const encodedStr of chunkStrings) {
+                                            const decoded = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, true);
                                             decryptedChunks.push(decoded);
                                         }
                                         const totalLength = decryptedChunks.reduce((acc, val) => acc + val.length, 0);
