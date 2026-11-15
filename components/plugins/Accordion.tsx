@@ -31,6 +31,26 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z';
 
     useEffect(() => {
+        if (contentRef.current && innerRef.current) {
+            const maxHeight = innerRef.current.scrollHeight;
+            console.log(`[Mount] title: "${title}", maxHeight:`, maxHeight);
+
+            contentRef.current.style.overflow = "hidden";
+            contentRef.current.style.marginTop = "0px";
+            contentRef.current.style.paddingBottom = "0px";
+            contentRef.current.style.marginBottom = "0px";
+
+            if (initiallyOpen) {
+                contentRef.current.style.height = `${maxHeight.toFixed(4)}px`;
+                contentRef.current.style.paddingTop = "10.00000px";
+            } else {
+                contentRef.current.style.height = "0.0000px";
+                contentRef.current.style.paddingTop = "0.00000px";
+            }
+        }
+    }, [title, initiallyOpen]);
+
+    useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
@@ -43,8 +63,8 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
         if (distance === 0) return;
 
-        // アニメーション開始直前に子要素の実際の高さを取得
         const maxHeight = innerRef.current ? innerRef.current.scrollHeight : 100;
+        console.log(`[Animation Start] title: "${title}", isTargetOpen:`, isTargetOpen, "maxHeight:", maxHeight, "startProgress:", startProgress);
 
         let startTime: number | null = null;
         let animationFrameId: number;
@@ -59,10 +79,13 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
             progressRef.current = currentProgress;
 
+            const hVal = `${(currentProgress * maxHeight).toFixed(4)}px`;
+            const pVal = `${(currentProgress * 10).toFixed(5)}px`;
+
             if (contentRef.current) {
                 contentRef.current.style.overflow = "hidden";
-                contentRef.current.style.height = `${(currentProgress * maxHeight).toFixed(4)}px`;
-                contentRef.current.style.paddingTop = `${(currentProgress * 10).toFixed(5)}px`;
+                contentRef.current.style.height = hVal;
+                contentRef.current.style.paddingTop = pVal;
                 contentRef.current.style.marginTop = "0px";
                 contentRef.current.style.paddingBottom = "0px";
                 contentRef.current.style.marginBottom = "0px";
@@ -71,7 +94,18 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
             if (timeRatio < 1) {
                 animationFrameId = requestAnimationFrame(animate);
             } else {
+                console.log(`[Animation End] title: "${title}", final height:`, hVal, "final paddingTop:", pVal);
                 progressRef.current = targetProgress;
+                
+                if (contentRef.current) {
+                    contentRef.current.style.overflow = "hidden";
+                    contentRef.current.style.height = targetProgress === 1 ? `${maxHeight.toFixed(4)}px` : "0.0000px";
+                    contentRef.current.style.paddingTop = targetProgress === 1 ? "10.00000px" : "0.00000px";
+                    contentRef.current.style.marginTop = "0px";
+                    contentRef.current.style.paddingBottom = "0px";
+                    contentRef.current.style.marginBottom = "0px";
+                }
+                
                 setOpen(isTargetOpen);
             }
         };
@@ -81,9 +115,10 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
         return () => {
             cancelAnimationFrame(animationFrameId);
         };
-    }, [isTargetOpen]);
+    }, [isTargetOpen, title]);
 
     function openClick() {
+        console.log(`[Click] title: "${title}", next target open:`, !isTargetOpen);
         setIsTargetOpen(!isTargetOpen);
     }
 
