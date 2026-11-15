@@ -117,10 +117,7 @@ export default function WikiPage() {
     let commentSubmit:HTMLCollection | null = null;
 
     const CommentSubmitInterval = setInterval(() => {
-        if (!document) {
-            clearInterval(CommentSubmitInterval);
-            return;
-        };
+        if (!document) return;
 
         if(typeof document.getElementsByClassName("comment-submit") === 'undefined'){
             if(typeof document.getElementsByClassName("comment-submit") !== 'undefined'){
