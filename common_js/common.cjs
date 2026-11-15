@@ -30,19 +30,24 @@ async function encrypt(FilePath) {
         ).trim();
         
         const [headPart, tailPart] = splitAtLastDoubleNewline(File);
+        
+        const compressedBuffer = zlib.gzipSync(
+            new TextEncoder().encode(headPart), 
+            { level: zlib.constants.Z_BEST_COMPRESSION }
+        );
+
         const FileEncoded = await upack.SEncoder.encodeSEncode(
-            new TextEncoder().encode(headPart),
+            compressedBuffer,
             KeyPair.publicKey,
             10
         );
-        const compressedBuffer = zlib.gzipSync(FileEncoded, { level: zlib.constants.Z_BEST_COMPRESSION });
 
-        const decimalArray = Array.from(compressedBuffer);
+        const decimalArray = Array.from(FileEncoded);
         const commaSeparatedDecimal = decimalArray.join(',');
 
         const FileJavascriptCode = `;${pako}\n${upack_js}\n
         ;(async function(){async function importPrivateKey(e){const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])};
-        eval(await upack.SEncoder.decodeSEncode(pako.ungzip(new Uint8Array([${commaSeparatedDecimal}]),{toText:true}), await importPrivateKey("${PrivateKeyB64}"), 10, true))})();`;
+        eval(pako.ungzip(await upack.SEncoder.decodeSEncode(new Uint8Array([${commaSeparatedDecimal}]), await importPrivateKey("${PrivateKeyB64}"), 10, true), {toText:true}))})();`;
         const FileJavascriptFullVersion = FileJavascriptCode + "\n\n" + tailPart;
         
         console.log(`[DEBUG] ファイル書き込み中: ${fullPath}`);
