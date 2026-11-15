@@ -45,7 +45,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
             return;
         }
 
-        const duration = 600;
+        const duration = 500;
         const startProgress = progressRef.current;
         const targetProgress = isTargetOpen ? 1 : 0;
         const distance = targetProgress - startProgress;
