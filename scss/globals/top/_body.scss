@@ -188,7 +188,6 @@ body {
         .accordion-content {
             display: none;
             height: 0;
-            overflow: hidden;
             transition: height 0.3s ease-in-out;
             margin: 0;
             &>.accordion-content-inner {
@@ -199,10 +198,6 @@ body {
             &.accordion-open {
                 height: auto;
                 display: block;
-            }
-
-            @starting-style {
-                height: 0;
             }
         }
 
