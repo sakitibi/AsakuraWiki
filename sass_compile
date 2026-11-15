@@ -1,0 +1,1 @@
+sass ./scss/globals/index.globals.scss:./static/css/index.globals.css --embed-sources --style=compressed
