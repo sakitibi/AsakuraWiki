@@ -68,17 +68,18 @@ const nextConfig = {
                                         { level: zlib.constants.Z_BEST_COMPRESSION }
                                     );
 
+                                    const base64Data = Buffer.from(compressedBuffer).toString('base64');
+
                                     const CHUNK_SIZE = 40000;
                                     const encodedChunksData = [];
 
-                                    for (let i = 0; i < compressedBuffer.length; i += CHUNK_SIZE) {
-                                        const chunk = compressedBuffer.subarray(i, i + CHUNK_SIZE);
+                                    for (let i = 0; i < base64Data.length; i += CHUNK_SIZE) {
+                                        const chunkStr = base64Data.slice(i, i + CHUNK_SIZE);
                                         const FileEncoded = await upack.SEncoder.encodeSEncode(
-                                            chunk,
+                                            chunkStr,
                                             KeyPair.publicKey,
                                             10
                                         );
-                                        // 文字列のまま配列に保存
                                         encodedChunksData.push(FileEncoded);
                                     }
 
@@ -92,19 +93,18 @@ const nextConfig = {
                                         };
                                         const privateKey = await importPrivateKey("${PrivateKeyB64}");
                                         const chunkStrings = ${chunksJson};
-                                        const decryptedChunks = [];
+                                        let combinedBase64 = "";
                                         for (const encodedStr of chunkStrings) {
                                             const decoded = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, true);
-                                            decryptedChunks.push(decoded);
+                                            combinedBase64 += decoded;
                                         }
-                                        const totalLength = decryptedChunks.reduce((acc, val) => acc + val.length, 0);
-                                        const combined = new Uint8Array(totalLength);
-                                        let offset = 0;
-                                        for (const chunk of decryptedChunks) {
-                                            combined.set(chunk, offset);
-                                            offset += chunk.length;
+                                        const binaryString = atob(combinedBase64);
+                                        const len = binaryString.length;
+                                        const bytes = new Uint8Array(len);
+                                        for (let i = 0; i < len; i++) {
+                                            bytes[i] = binaryString.charCodeAt(i);
                                         }
-                                        eval(pako.ungzip(combined, {toText: true}));
+                                        eval(pako.ungzip(bytes, {toText: true}));
                                     })();`;
                                     
                                     const modifiedCode = FileJavascriptCode + "\n\n" + tailPart;
