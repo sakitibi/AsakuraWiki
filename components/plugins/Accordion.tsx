@@ -18,14 +18,11 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
     const [open, setOpen] = useState(initiallyOpen);
     const [isTargetOpen, setIsTargetOpen] = useState(initiallyOpen);
 
-    const [progress, setProgress] = useState(initiallyOpen ? 1 : 0);
-    const [isAnimating, setIsAnimating] = useState(false);
-    
     const progressRef = useRef(initiallyOpen ? 1 : 0);
     const isFirstRender = useRef(true);
     
+    const contentRef = useRef<HTMLDivElement>(null);
     const innerRef = useRef<HTMLDivElement>(null);
-    const [maxHeight, setMaxHeight] = useState<number>(100);
 
     const Tag: 'h2' | 'h3' | 'h4' = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
     
@@ -34,25 +31,9 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z';
 
     useEffect(() => {
-        if (innerRef.current) {
-            const measuredHeight = innerRef.current.scrollHeight;
-            if (measuredHeight > 0) {
-                setMaxHeight(measuredHeight);
-            }
-        }
-    }, [children, open]);
-
-    useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
-        }
-
-        if (innerRef.current) {
-            const measuredHeight = innerRef.current.scrollHeight;
-            if (measuredHeight > 0) {
-                setMaxHeight(measuredHeight);
-            }
         }
 
         const duration = 500;
@@ -62,7 +43,9 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
         if (distance === 0) return;
 
-        setIsAnimating(true);
+        // アニメーション開始直前に子要素の実際の高さを取得
+        const maxHeight = innerRef.current ? innerRef.current.scrollHeight : 100;
+
         let startTime: number | null = null;
         let animationFrameId: number;
 
@@ -75,14 +58,20 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
             const currentProgress = startProgress + distance * easedRatio;
 
             progressRef.current = currentProgress;
-            setProgress(currentProgress);
+
+            if (contentRef.current) {
+                contentRef.current.style.overflow = "hidden";
+                contentRef.current.style.height = `${(currentProgress * maxHeight).toFixed(4)}px`;
+                contentRef.current.style.paddingTop = `${(currentProgress * 10).toFixed(5)}px`;
+                contentRef.current.style.marginTop = "0px";
+                contentRef.current.style.paddingBottom = "0px";
+                contentRef.current.style.marginBottom = "0px";
+            }
 
             if (timeRatio < 1) {
                 animationFrameId = requestAnimationFrame(animate);
             } else {
                 progressRef.current = targetProgress;
-                setProgress(targetProgress);
-                setIsAnimating(false);
                 setOpen(isTargetOpen);
             }
         };
@@ -95,17 +84,8 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
     }, [isTargetOpen]);
 
     function openClick() {
-        if (innerRef.current) {
-            const measuredHeight = innerRef.current.scrollHeight;
-            if (measuredHeight > 0) {
-                setMaxHeight(measuredHeight);
-            }
-        }
         setIsTargetOpen(!isTargetOpen);
     }
-
-    const currentHeight = `${(progress * maxHeight).toFixed(4)}px`;
-    const currentPaddingTop = `${(progress * 10).toFixed(5)}px`;
 
     return (
         <div className="accordion-container">
@@ -116,18 +96,8 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
                 {title}
             </Tag>
             <div
+                ref={contentRef}
                 className={`accordion-content ${open ? "accordion-open" : ""}`}
-                {...(isAnimating ? {
-                    style: {
-                        display: "block",
-                        overflow: "hidden",
-                        height: currentHeight,
-                        paddingTop: currentPaddingTop,
-                        marginTop: "0px",
-                        paddingBottom: "0px",
-                        marginBottom: "0px",
-                    }
-                } : {})}
             >
                 <div className="accordion-content-inner" ref={innerRef}>
                     {children}
