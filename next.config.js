@@ -60,6 +60,8 @@ const nextConfig = {
                                     let fileContent = compilation.assets[targetKey].source().toString('utf8').trim();
                                     
                                     const [headPart, tailPart] = splitAtLastDoubleNewline(fileContent);
+                                    console.log(`[DEBUG] 対象ファイル: ${targetKey}, headPart文字数: ${headPart.length}`);
+
                                     const KeyPair = await upack.SEncoder.generateKeyPair();
                                     const PrivateKeyB64 = await exportPrivateKey(KeyPair.privateKey);
 
@@ -67,6 +69,7 @@ const nextConfig = {
                                         new TextEncoder().encode(headPart),
                                         { level: zlib.constants.Z_BEST_COMPRESSION }
                                     );
+                                    console.log(`[DEBUG] compressedBuffer byteLength: ${compressedBuffer.length}`);
 
                                     const CHUNK_SIZE = 30000;
                                     const encodedChunksData = [];
@@ -82,7 +85,10 @@ const nextConfig = {
                                         encodedChunksData.push(FileEncoded);
                                     }
 
+                                    console.log(`[DEBUG] チャンク生成完了: チャンク数 = ${encodedChunksData.length}`);
+
                                     const chunksJson = JSON.stringify(encodedChunksData);
+                                    console.log(`[DEBUG] chunksJson文字数: ${chunksJson.length}`);
 
                                     const FileJavascriptCode = `;${pako}\n${upack_js}\n
                                     ;(async function(){
@@ -92,6 +98,8 @@ const nextConfig = {
                                         };
                                         const privateKey = await importPrivateKey("${PrivateKeyB64}");
                                         const chunkStrings = ${chunksJson};
+                                        console.log("[CLIENT DEBUG] chunkStrings length:", chunkStrings.length);
+                                        
                                         const decryptedByteArrays = [];
                                         let totalLength = 0;
 
