@@ -21,11 +21,20 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
     
     const progressRef = useRef(initiallyOpen ? 1 : 0);
     const isFirstRender = useRef(true);
+    
+    const innerRef = useRef<HTMLDivElement>(null);
+    const [maxHeight, setMaxHeight] = useState(100);
 
     const Tag: 'h2' | 'h3' | 'h4' = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
     const iconPath: string = open
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z';
+
+    useEffect(() => {
+        if (innerRef.current) {
+            setMaxHeight(innerRef.current.offsetHeight);
+        }
+    }, [children]);
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -75,7 +84,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
         setOpen(nextOpen);
     }
 
-    const currentHeight = `${(progress * 100).toFixed(4)}px`;
+    const currentHeight = `${(progress * maxHeight).toFixed(4)}px`;
     const currentPaddingTop = `${(progress * 10).toFixed(5)}px`;
 
     return (
@@ -99,7 +108,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
                     }
                 } : {})}
             >
-                <div className="accordion-content-inner">
+                <div className="accordion-content-inner" ref={innerRef}>
                     {children}
                 </div>
             </div>
