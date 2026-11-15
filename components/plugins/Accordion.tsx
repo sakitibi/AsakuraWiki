@@ -9,6 +9,7 @@ interface AccordionProps {
     designColor?: designColor;
 }
 
+/** イージング関数 (easeInOutCubic) */
 function easeInOutCubic(t: number): number {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
@@ -24,16 +25,19 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
     const contentRef = useRef<HTMLDivElement>(null);
     const innerRef = useRef<HTMLDivElement>(null);
 
+    const maxHeightRef = useRef<number>(100);
+
     const Tag: 'h2' | 'h3' | 'h4' = level === '*' ? 'h2' : level === '**' ? 'h3' : 'h4';
     
     const iconPath: string = open
         ? 'M384 32H64C28.7 32 0 60.7 0 96v320c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM320 272H128c-13.3 0-24-10.7-24-24s10.7-24 24-24h192c13.3 0 24 10.7 24 24s-10.7 24-24 24z'
         : 'M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z';
 
+    // 初期マウント時のスタイルを設定
     useEffect(() => {
         if (contentRef.current && innerRef.current) {
-            const maxHeight = innerRef.current.scrollHeight;
-            console.log(`[Mount] title: "${title}", maxHeight:`, maxHeight);
+            const h = innerRef.current.scrollHeight;
+            if (h > 0) maxHeightRef.current = h;
 
             contentRef.current.style.overflow = "hidden";
             contentRef.current.style.marginTop = "0px";
@@ -41,14 +45,14 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
             contentRef.current.style.marginBottom = "0px";
 
             if (initiallyOpen) {
-                contentRef.current.style.height = `${maxHeight.toFixed(4)}px`;
+                contentRef.current.style.height = `${maxHeightRef.current.toFixed(4)}px`;
                 contentRef.current.style.paddingTop = "10.00000px";
             } else {
                 contentRef.current.style.height = "0.0000px";
                 contentRef.current.style.paddingTop = "0.00000px";
             }
         }
-    }, [title, initiallyOpen]);
+    }, [initiallyOpen]);
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -63,8 +67,13 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
         if (distance === 0) return;
 
-        const maxHeight = innerRef.current ? innerRef.current.scrollHeight : 100;
-        console.log(`[Animation Start] title: "${title}", isTargetOpen:`, isTargetOpen, "maxHeight:", maxHeight, "startProgress:", startProgress);
+        if (innerRef.current) {
+            const h = innerRef.current.scrollHeight;
+            if (h > 0) {
+                maxHeightRef.current = h;
+            }
+        }
+        const maxHeight = maxHeightRef.current;
 
         let startTime: number | null = null;
         let animationFrameId: number;
@@ -79,13 +88,10 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
             progressRef.current = currentProgress;
 
-            const hVal = `${(currentProgress * maxHeight).toFixed(4)}px`;
-            const pVal = `${(currentProgress * 10).toFixed(5)}px`;
-
             if (contentRef.current) {
                 contentRef.current.style.overflow = "hidden";
-                contentRef.current.style.height = hVal;
-                contentRef.current.style.paddingTop = pVal;
+                contentRef.current.style.height = `${(currentProgress * maxHeight).toFixed(4)}px`;
+                contentRef.current.style.paddingTop = `${(currentProgress * 10).toFixed(5)}px`;
                 contentRef.current.style.marginTop = "0px";
                 contentRef.current.style.paddingBottom = "0px";
                 contentRef.current.style.marginBottom = "0px";
@@ -94,9 +100,9 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
             if (timeRatio < 1) {
                 animationFrameId = requestAnimationFrame(animate);
             } else {
-                console.log(`[Animation End] title: "${title}", final height:`, hVal, "final paddingTop:", pVal);
                 progressRef.current = targetProgress;
                 
+                // アニメーション終了時
                 if (contentRef.current) {
                     contentRef.current.style.overflow = "hidden";
                     contentRef.current.style.height = targetProgress === 1 ? `${maxHeight.toFixed(4)}px` : "0.0000px";
@@ -115,10 +121,9 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
         return () => {
             cancelAnimationFrame(animationFrameId);
         };
-    }, [isTargetOpen, title]);
+    }, [isTargetOpen]);
 
     function openClick() {
-        console.log(`[Click] title: "${title}", next target open:`, !isTargetOpen);
         setIsTargetOpen(!isTargetOpen);
     }
 
