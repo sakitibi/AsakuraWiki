@@ -35,9 +35,12 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
     useEffect(() => {
         if (innerRef.current) {
-            setMaxHeight(innerRef.current.scrollHeight);
+            const measuredHeight = innerRef.current.scrollHeight;
+            if (measuredHeight > 0) {
+                setMaxHeight(measuredHeight);
+            }
         }
-    }, [children]);
+    }, [children, open]);
 
     useEffect(() => {
         if (isFirstRender.current) {
@@ -46,7 +49,10 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
         }
 
         if (innerRef.current) {
-            setMaxHeight(innerRef.current.scrollHeight);
+            const measuredHeight = innerRef.current.scrollHeight;
+            if (measuredHeight > 0) {
+                setMaxHeight(measuredHeight);
+            }
         }
 
         const duration = 500;
@@ -90,7 +96,10 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
 
     function openClick() {
         if (innerRef.current) {
-            setMaxHeight(innerRef.current.scrollHeight);
+            const measuredHeight = innerRef.current.scrollHeight;
+            if (measuredHeight > 0) {
+                setMaxHeight(measuredHeight);
+            }
         }
         setIsTargetOpen(!isTargetOpen);
     }
