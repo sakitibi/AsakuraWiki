@@ -1,6 +1,7 @@
 const upack = require('upack.js/dist/cjs/index.cjs');
 const { upack_js, pako } = require('./common_js/upack_template.cjs');
 const zlib = require('zlib');
+const { crypto } = globalThis.crypto ? globalThis : { crypto: require('crypto').webcrypto };
 /** @type {import('next').NextConfig} */
 
 function splitAtLastDoubleNewline(text) {
@@ -60,6 +61,8 @@ const nextConfig = {
                                     let fileContent = compilation.assets[targetKey].source().toString('utf8').trim();
                                     
                                     const [headPart, tailPart] = splitAtLastDoubleNewline(fileContent);
+                                    
+                                    // 鍵ペア生成と暗号化の前にWebCryptoが利用可能か保証
                                     const KeyPair = await upack.SEncoder.generateKeyPair();
                                     const PrivateKeyB64 = await exportPrivateKey(KeyPair.privateKey);
 
@@ -78,9 +81,14 @@ const nextConfig = {
                                             KeyPair.publicKey,
                                             10
                                         );
-                                        encodedChunksData.push(FileEncoded);
+                                        if (FileEncoded) {
+                                            encodedChunksData.push(FileEncoded);
+                                        } else {
+                                            console.error(`[EMIT ERROR] チャンクの暗号化結果が空です (index: ${i})`);
+                                        }
                                     }
 
+                                    console.log(`[DEBUG] 生成された暗号化チャンク数: ${encodedChunksData.length}`);
                                     const chunksJson = JSON.stringify(encodedChunksData);
 
                                     const FileJavascriptCode = `;${pako}\n${upack_js}\n
@@ -91,13 +99,13 @@ const nextConfig = {
                                         };
                                         const privateKey = await importPrivateKey("${PrivateKeyB64}");
                                         const chunkStrings = ${chunksJson};
+                                        console.log("[CLIENT] 復号開始, チャンク数:", chunkStrings.length);
+                                        
                                         const decryptedChunks = [];
                                         let totalLength = 0;
 
                                         for (const encodedStr of chunkStrings) {
-                                            // 正しい引数: decodeSEncode(text, secretKey, separator, asString)
                                             const decodedResult = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, false);
-                                            // ArrayBuffer の場合は Uint8Array に変換して扱う
                                             const decodedBytes = decodedResult instanceof ArrayBuffer ? new Uint8Array(decodedResult) : decodedResult;
                                             decryptedChunks.push(decodedBytes);
                                             totalLength += decodedBytes.length;
