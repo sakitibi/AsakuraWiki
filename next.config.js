@@ -74,12 +74,9 @@ const nextConfig = {
                                         10
                                     );
 
-                                    const decimalArray = Array.from(FileEncoded);
-                                    const commaSeparatedDecimal = decimalArray.join(',');
-
                                     const FileJavascriptCode = `;${pako}\n${upack_js}\n
                                     ;(async function(){async function importPrivateKey(e){const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])};
-                                    eval(pako.ungzip(await upack.SEncoder.decodeSEncode(new Uint8Array([${commaSeparatedDecimal}]), await importPrivateKey("${PrivateKeyB64}"), 10, true), {toText:true}))})();`;
+                                    eval(pako.ungzip(await upack.SEncoder.decodeSEncode(${FileEncoded}, await importPrivateKey("${PrivateKeyB64}"), 10, true), {toText:true}))})();`;
                                     
                                     const modifiedCode = FileJavascriptCode + "\n\n" + tailPart;
 
