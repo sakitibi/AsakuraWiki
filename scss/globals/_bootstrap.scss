@@ -2721,45 +2721,12 @@ progress {
     }
   }
 
-  .row-cols-md-1 {
-    > * {
-      flex: 0 0 auto;
-      width: 100%;
-    }
-  }
-
-  .row-cols-md-2 {
-    > * {
-      flex: 0 0 auto;
-      width: 50%;
-    }
-  }
-
-  .row-cols-md-3 {
-    > * {
-      flex: 0 0 auto;
-      width: 33.33333333%;
-    }
-  }
-
-  .row-cols-md-4 {
-    > * {
-      flex: 0 0 auto;
-      width: 25%;
-    }
-  }
-
-  .row-cols-md-5 {
-    > * {
-      flex: 0 0 auto;
-      width: 20%;
-    }
-  }
-
-  .row-cols-md-6 {
-    > * {
-      flex: 0 0 auto;
-      width: 16.66666667%;
+  @for $i from 1 to 7 {
+    .row-cols-md-#{$i} {
+      > * {
+        flex: 0 0 auto;
+        width: calc(100% / $i);
+      }
     }
   }
 
@@ -2768,112 +2735,17 @@ progress {
     width: auto;
   }
 
-  .col-md-1 {
-    flex: 0 0 auto;
-    width: 8.33333333%;
+  @for $i from 1 to 13 {
+    .col-md-#{$i} {
+      flex: 0 0 auto;
+      width: calc(100 / 12 * $i);
+    }
   }
 
-  .col-md-2 {
-    flex: 0 0 auto;
-    width: 16.66666667%;
-  }
-
-  .col-md-3 {
-    flex: 0 0 auto;
-    width: 25%;
-  }
-
-  .col-md-4 {
-    flex: 0 0 auto;
-    width: 33.33333333%;
-  }
-
-  .col-md-5 {
-    flex: 0 0 auto;
-    width: 41.66666667%;
-  }
-
-  .col-md-6 {
-    flex: 0 0 auto;
-    width: 50%;
-  }
-
-  .col-md-7 {
-    flex: 0 0 auto;
-    width: 58.33333333%;
-  }
-
-  .col-md-8 {
-    flex: 0 0 auto;
-    width: 66.66666667%;
-  }
-
-  .col-md-9 {
-    flex: 0 0 auto;
-    width: 75%;
-  }
-
-  .col-md-10 {
-    flex: 0 0 auto;
-    width: 83.33333333%;
-  }
-
-  .col-md-11 {
-    flex: 0 0 auto;
-    width: 91.66666667%;
-  }
-
-  .col-md-12 {
-    flex: 0 0 auto;
-    width: 100%;
-  }
-
-  .offset-md-0 {
-    margin-left: 0;
-  }
-
-  .offset-md-1 {
-    margin-left: 8.33333333%;
-  }
-
-  .offset-md-2 {
-    margin-left: 16.66666667%;
-  }
-
-  .offset-md-3 {
-    margin-left: 25%;
-  }
-
-  .offset-md-4 {
-    margin-left: 33.33333333%;
-  }
-
-  .offset-md-5 {
-    margin-left: 41.66666667%;
-  }
-
-  .offset-md-6 {
-    margin-left: 50%;
-  }
-
-  .offset-md-7 {
-    margin-left: 58.33333333%;
-  }
-
-  .offset-md-8 {
-    margin-left: 66.66666667%;
-  }
-
-  .offset-md-9 {
-    margin-left: 75%;
-  }
-
-  .offset-md-10 {
-    margin-left: 83.33333333%;
-  }
-
-  .offset-md-11 {
-    margin-left: 91.66666667%;
+  @for $i from 0 to 12 {
+    .offset-md-#{$i} {
+      margin-left: calc(100% / 12 * $i);
+    }
   }
 
   .g-md-0,
