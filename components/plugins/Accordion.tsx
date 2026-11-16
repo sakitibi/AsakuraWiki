@@ -93,8 +93,8 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
                     contentRef.current.removeAttribute("style");
                 }
                 
-                setIsAnimating(false);
                 setOpen(isTargetOpen);
+                setIsAnimating(false);
             }
         };
 
