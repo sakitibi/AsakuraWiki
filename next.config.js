@@ -5,9 +5,9 @@ const { crypto } = globalThis.crypto ? globalThis : { crypto: require('crypto').
 /** @type {import('next').NextConfig} */
 
 function splitAtLastDoubleNewline(text) {
-    const idx = text.lastIndexOf('\n\n');
+    const idx = text.trim().lastIndexOf('\n//#');
     if (idx === -1) return [text, ''];
-    return [text.slice(0, idx), text.slice(idx + 2)];
+    return [text.slice(0, idx), text.slice(idx + 1)];
 }
 
 async function exportPrivateKey(key) {
