@@ -194,8 +194,20 @@ export default function WikiPage() {
         fetch(`https://counter.wikiwiki.jp/c/14ninstudio/pv/${wikiSlugStr}/${pageSlugStr}`).catch(err => console.error(err));
     }, [wikiSlugStr, pageSlugStr]);
 
-    if (error) return <div style={{ color: 'red', padding: '2rem' }}>{error}</div>;
-    if ((loading || !page) && content === beforeContent) return <div style={{ padding: '2rem' }}>読み込み中…</div>;
+    if (error) {
+        return (
+            <div style={{ color: '#d32f2f', backgroundColor: '#ffebee', padding: '1.5rem', margin: '2rem auto', maxWidth: '600px', borderRadius: '8px', border: '1px solid #ffcdd2' }}>
+                エラーが発生しました: {error}
+            </div>
+        );
+    }
+    if ((loading || !page) && content === beforeContent) {
+        return (
+            <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#666', fontSize: '0.95rem' }}>
+                読み込み中…
+            </div>
+        );
+    }
 
     return (
         <>
@@ -230,21 +242,25 @@ export default function WikiPage() {
                         />
                     ) : (
                         <>
-                            <div id="contents-wrapper" style={{ display: 'flex' }}>
-                                <div className="container" style={{ display: 'grid', gridTemplateColumns: sidebar ? '172px 1fr 170px' : '172px 1fr' }}>
-                                    <article style={{ padding: '2rem', minWidth: 700, maxWidth: 1000 }} className="columnCenter clearfix">
+                            <div id="contents-wrapper" className="wiki-wrapper">
+                                <div className="container wiki-grid" style={{
+                                    gridTemplateColumns: sidebar ? '180px minmax(0, 1fr) 180px' : '180px minmax(0, 1fr)'
+                                }}>
+                                    <article className="columnCenter clearfix wiki-article">
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
-                                        <WikiActions
-                                            router={router}
-                                            wikiSlugStr={wikiSlugStr}
-                                            pageSlugStr={pageSlugStr}
-                                            specialWikiFound={special_wiki_list_found}
-                                            user={user}
-                                            isAsakuraMember={Boolean(asakura_member_list_found)}
-                                            setIsButtonAction={setIsButtonAction}
-                                        />
+                                        <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee' }}>
+                                            <WikiActions
+                                                router={router}
+                                                wikiSlugStr={wikiSlugStr}
+                                                pageSlugStr={pageSlugStr}
+                                                specialWikiFound={special_wiki_list_found}
+                                                user={user}
+                                                isAsakuraMember={Boolean(asakura_member_list_found)}
+                                                setIsButtonAction={setIsButtonAction}
+                                            />
+                                        </div>
                                     </article>
                                     <WikiNavigation
                                         sidebar={sidebar}
@@ -260,13 +276,13 @@ export default function WikiPage() {
                                     )}
                                 </div>
                             </div>
-                            <div className={`footer_${designColor} clearfix`}>
-                                <div style={{ display: 'inline-block' }}>
+                            <footer className={`footer_${designColor} clearfix wiki-footer`}>
+                                <div>
                                     レンタルWiki by <a href="/" title="無料レンタルWikiサービス">あさクラWiki</a>
-                                    &nbsp;/&nbsp;
+                                    <span style={{ margin: '0 0.5rem', opacity: 0.5 }}>|</span>
                                     <a href="/about/ad" title="広告について">広告について</a>
                                 </div>
-                            </div>
+                            </footer>
                         </>
                     )}
                 </>
