@@ -91,34 +91,7 @@ const nextConfig = {
                                     console.log(`[DEBUG] 生成された暗号化チャンク数: ${encodedChunksData.length}`);
                                     const chunksJson = JSON.stringify(encodedChunksData);
 
-                                    const FileJavascriptCode = `;${pako}\n${upack_js}\n
-                                    ;(async function(){
-                                        async function importPrivateKey(e){
-                                            const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));
-                                            return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])
-                                        };
-                                        const privateKey = await importPrivateKey("${PrivateKeyB64}");
-                                        const chunkStrings = ${chunksJson};
-                                        console.log("[CLIENT] 復号開始, チャンク数:", chunkStrings.length);
-                                        
-                                        const decryptedChunks = [];
-                                        let totalLength = 0;
-
-                                        for (const encodedStr of chunkStrings) {
-                                            const decodedResult = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, false);
-                                            const decodedBytes = decodedResult instanceof ArrayBuffer ? new Uint8Array(decodedResult) : decodedResult;
-                                            decryptedChunks.push(decodedBytes);
-                                            totalLength += decodedBytes.length;
-                                        }
-
-                                        const combined = new Uint8Array(totalLength);
-                                        let offset = 0;
-                                        for (const chunk of decryptedChunks) {
-                                            combined.set(chunk, offset);
-                                            offset += chunk.length;
-                                        }
-                                        eval(pako.ungzip(combined, {toText: true}));
-                                    })();`;
+                                    const FileJavascriptCode = `;${pako}${upack_js};(async function(){async function importPrivateKey(e){const r=Uint8Array.from(atob(e),e=>e.charCodeAt(0));return await crypto.subtle.importKey("pkcs8",r,{name:"ECDH",namedCurve:"P-256"},!0,["deriveKey","deriveBits"])};const privateKey = await importPrivateKey("${PrivateKeyB64}");const chunkStrings = ${chunksJson};const decryptedChunks = [];let totalLength = 0;for (const encodedStr of chunkStrings){const decodedResult = await upack.SEncoder.decodeSEncode(encodedStr, privateKey, 10, false);const decodedBytes = decodedResult instanceof ArrayBuffer ? new Uint8Array(decodedResult) : decodedResult;decryptedChunks.push(decodedBytes);totalLength += decodedBytes.length;}const combined = new Uint8Array(totalLength);let offset = 0;for(const chunk of decryptedChunks){combined.set(chunk, offset);offset+=chunk.length;}eval(pako.ungzip(combined,{toText: true}));})();`.replaceAll("\n", "");
                                     
                                     const modifiedCode = FileJavascriptCode + "\n\n" + tailPart;
 
