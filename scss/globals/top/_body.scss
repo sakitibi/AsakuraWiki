@@ -88,10 +88,6 @@ body {
         color: #444;
         font-size: 13px;
 
-        @include mq('lg') {
-            font-size: 16px;
-        }
-
         .danger_list {
             color: red !important;
         }
@@ -116,16 +112,6 @@ body {
         width: 100%;
         padding-inline: calc($bs-gutter-x * 0.5);
     }
-
-    .container,
-    .container-sm {
-        @include mq('sm') { max-width: 540px; }
-    }
-
-    .container-md {
-        @include mq('md') { max-width: 720px; }
-    }
-
 
     // 条件付きスタイル
     &:not(.wiki-font) {

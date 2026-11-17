@@ -242,11 +242,9 @@ export default function WikiPage() {
                         />
                     ) : (
                         <>
-                            <div id="contents-wrapper" className="wiki-wrapper">
-                                <div className="container wiki-grid" style={{
-                                    gridTemplateColumns: sidebar ? '180px minmax(0, 1fr) 180px' : '180px minmax(0, 1fr)'
-                                }}>
-                                    <article className="columnCenter clearfix wiki-article">
+                            <div id="contents-wrapper">
+                                <div className="container" style={{ display: 'flex', width: '100%', maxWidth: '1280px', margin: '0 auto', gap: '20px' }}>
+                                    <article style={{ flex: 1, padding: '2rem', minWidth: 0 }} className="columnCenter clearfix">
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
                                         ))}
@@ -276,10 +274,10 @@ export default function WikiPage() {
                                     )}
                                 </div>
                             </div>
-                            <footer className={`footer_${designColor} clearfix wiki-footer`}>
+                            <footer className={`footer_${designColor} clearfix`} style={{ padding: '1.5rem', textAlign: 'center', fontSize: '0.85rem', borderTop: '1px solid rgba(0,0,0,0.08)' }}>
                                 <div>
                                     レンタルWiki by <a href="/" title="無料レンタルWikiサービス">あさクラWiki</a>
-                                    <span style={{ margin: '0 0.5rem', opacity: 0.5 }}>|</span>
+                                    &nbsp;/&nbsp;
                                     <a href="/about/ad" title="広告について">広告について</a>
                                 </div>
                             </footer>
