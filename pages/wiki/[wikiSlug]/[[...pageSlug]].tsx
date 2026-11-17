@@ -243,7 +243,13 @@ export default function WikiPage() {
                     ) : (
                         <>
                             <div id="contents-wrapper">
-                                <div className="container" style={{ display: 'flex', width: '100%', maxWidth: '1280px', margin: '0 auto', gap: '20px' }}>
+                                <div className="container" style={{ display: 'flex', width: '100%', maxWidth: '1280px', margin: '0 auto', gap: '20px', alignItems: 'flex-start' }}>
+                                    <WikiNavigation
+                                        type="menubar"
+                                        menubar={menubar}
+                                        parsedMenubar={parsedMenubar}
+                                    />
+
                                     <article style={{ flex: 1, padding: '2rem', minWidth: 0 }} className="columnCenter clearfix">
                                         {parsedPreview?.map((node, i) => (
                                             <React.Fragment key={i}>{node}</React.Fragment>
@@ -260,12 +266,13 @@ export default function WikiPage() {
                                             />
                                         </div>
                                     </article>
+
                                     <WikiNavigation
+                                        type="sidebar"
                                         sidebar={sidebar}
-                                        menubar={menubar}
                                         parsedSidebar={parsedSidebar}
-                                        parsedMenubar={parsedMenubar}
                                     />
+
                                     {!asakura_member_list_found && (
                                         <>
                                             <Script src="https://sakitibi.github.io/14ninadmanager.com/js/14nin_vignette_v2_main.js" />
