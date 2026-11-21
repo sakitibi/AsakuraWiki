@@ -40,7 +40,7 @@ export default function LoginedUI({
                 </button>
             </div>
 
-            <div className={styles.contentGrid}>
+            <div>
                 <section id="liked-wiki" className={styles.contentSection}>
                     <h2 className={styles.pLikedWiki__title}>Популярные Wiki</h2>
 
