@@ -86,12 +86,12 @@ export default function GreenLine(){
                     <PassingStation/>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}>メサ<ruby>湖<rt>こ</rt></ruby> GR16</th>
+                    <th style={{ color:LineColor }}>メサ<ruby>湖<rt>こ</rt></ruby> GR17</th>
                     <StopStation/>
                     <PassingStation/>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}><ruby>砂漠市北<rt>さばくしきた</rt></ruby> GR17</th>
+                    <th style={{ color:LineColor }}><ruby>砂漠市北<rt>さばくしきた</rt></ruby> GR18</th>
                     <StopStation/>
                     <StopStation/>
                 </tr>
@@ -102,27 +102,27 @@ export default function GreenLine(){
                     </td>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}><ruby>サバンナ海岸<rt>さばんなかいがん</rt></ruby> GR18</th>
+                    <th style={{ color:LineColor }}><ruby>サバンナ海岸<rt>さばんなかいがん</rt></ruby> GR19</th>
                     <StopStation/>
                     <StopStation/>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}><ruby>南サバンナ海岸<rt>みなみさばんなかいがん</rt></ruby> GR19</th>
+                    <th style={{ color:LineColor }}><ruby>南サバンナ海岸<rt>みなみさばんなかいがん</rt></ruby> GR20</th>
                     <StopStation/>
                     <PassingStation/>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}><ruby>海木<rt>かいき</rt></ruby> GR20</th>
+                    <th style={{ color:LineColor }}><ruby>海木<rt>かいき</rt></ruby> GR21</th>
                     <StopStation/>
                     <PassingStation/>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}><ruby>落合山<rt>おちあいやま</rt></ruby> GR21</th>
+                    <th style={{ color:LineColor }}><ruby>落合山<rt>おちあいやま</rt></ruby> GR22</th>
                     <StopStation/>
                     <PassingStation/>
                 </tr>
                 <tr>
-                    <th style={{ color:LineColor }}><ruby>サンゴ湾<rt>さんごわん</rt></ruby> GR22</th>
+                    <th style={{ color:LineColor }}><ruby>サンゴ湾<rt>さんごわん</rt></ruby> GR23</th>
                     <StopStation/>
                     <StopStation/>
                 </tr>
