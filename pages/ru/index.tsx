@@ -51,7 +51,7 @@ export default function Home() {
         console.log('[UA]', ua);
         console.log('[isBot]', bot);
     }, []);
-        /* ===============================
+    /* ===============================
         global error capture（人間のみ）
     =============================== */
     useEffect(() => {

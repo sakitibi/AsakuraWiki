@@ -74,7 +74,7 @@ export default function LoginedUI({
                 </button>
             </div>
 
-            <div className={styles.contentGrid}>
+            <div>
                 {/* みんなが評価しているWiki */}
                 <section id="liked-wiki" className={styles.contentSection}>
                     <h2 className={styles.pLikedWiki__title}>みんなが評価しているWiki</h2>
