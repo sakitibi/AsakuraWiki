@@ -1,6 +1,6 @@
 {
   "name": "AsakuraWiki",
-  "version": "2.1.38",
+  "version": "2.1.39",
   "description": "",
   "author": {
     "name": "14ninstudio, Inc",
@@ -20,14 +20,13 @@
     "@supabase/supabase-js": "^2.112.4",
     "@types/xml2js": "^0.4.14",
     "@zip.js/zip.js": "^2.8.26",
-    "bootstrap": "^5.3.8",
     "canvas-confetti": "^1.9.4",
     "cheerio": "^1.2.0",
     "cookie": "^1.1.1",
     "dotenv": "^17.2.1",
     "formidable": "^3.5.4",
     "is-plain-object": "^5.0.0",
-    "jose": "^6.2.15",
+    "jose": "^6.2.18",
     "mathjs": "^15.2.0",
     "next": "^16.4.6",
     "octokit": "^5.0.5",
@@ -35,7 +34,7 @@
     "react": "^19.3.1",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.3.1",
-    "undici": "^8.12.4",
+    "undici": "^8.13.0",
     "upack.js": "^1.0.79",
     "xml2js": "^0.6.2"
   },

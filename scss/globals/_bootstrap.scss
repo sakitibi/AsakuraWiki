@@ -15,6 +15,13 @@ $background-color-3: #000;
 $color-3: #000;
 $color-4: rgba(0, 0, 0, 0.5);
 $color-5: rgba(255, 255, 255, 0.5);
+$offsetList: (
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+  "xxl": 1400px,
+);
 
 [data-bs-theme=dark] {
 
@@ -96,6 +103,16 @@ h1,
 h1,
 .h1 {
   font-size: calc(1.375rem + 1.5vw);
+}
+
+@each $offset, $pixel in $offsetList {
+  @media (min-width: $pixel) {
+    @for $i from 0 to 12 {
+      .offset-#{$offset}-#{$i} {
+        margin-left: (math.div(100, 12) * $i) * 1%;
+      }
+    }
+  }
 }
 
 @media (min-width: 1200px) {
@@ -1730,54 +1747,6 @@ progress {
     width: 100%;
   }
 
-  .offset-sm-0 {
-    margin-left: 0;
-  }
-
-  .offset-sm-1 {
-    margin-left: 8.33333333%;
-  }
-
-  .offset-sm-2 {
-    margin-left: 16.66666667%;
-  }
-
-  .offset-sm-3 {
-    margin-left: 25%;
-  }
-
-  .offset-sm-4 {
-    margin-left: 33.33333333%;
-  }
-
-  .offset-sm-5 {
-    margin-left: 41.66666667%;
-  }
-
-  .offset-sm-6 {
-    margin-left: 50%;
-  }
-
-  .offset-sm-7 {
-    margin-left: 58.33333333%;
-  }
-
-  .offset-sm-8 {
-    margin-left: 66.66666667%;
-  }
-
-  .offset-sm-9 {
-    margin-left: 75%;
-  }
-
-  .offset-sm-10 {
-    margin-left: 83.33333333%;
-  }
-
-  .offset-sm-11 {
-    margin-left: 91.66666667%;
-  }
-
   .g-sm-0,
   .gx-sm-0 {
     --bs-gutter-x: 0;
@@ -2525,12 +2494,6 @@ progress {
     .col-md-#{$i} {
       flex: 0 0 auto;
       width: calc(100 / 12 * $i);
-    }
-  }
-
-  @for $i from 0 to 12 {
-    .offset-md-#{$i} {
-      margin-left: calc(100% / 12 * $i);
     }
   }
 
