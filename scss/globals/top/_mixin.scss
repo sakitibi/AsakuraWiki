@@ -45,10 +45,9 @@ $breakpoints: (
     @extend %gradient-body-base;
 }
 
-@mixin snowly($font-weight: bold) {
-    background-image: linear-gradient(to right, #82eeff, #26c7f3, #82eeff);
-    font-size: 15px;
-    @include background($font-weight);
+@mixin snowly {
+    background-image: linear-gradient(to right, #d5f9ff, #45cef3, #82b0ff);
+    @extend %gradient-body-base;
 }
 
 @mixin halloweenDark {

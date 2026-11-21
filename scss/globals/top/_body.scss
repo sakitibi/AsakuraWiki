@@ -120,12 +120,13 @@ body {
             font-family: "UDShingoKyokasho";
         }
         color: #ffffff;
-        &.dark_green {
+        /*&.dark_green {
             @include darkGreen;
         }
         &:not(.dark_green) {
             @include defaultGreen;
-        }
+        }*/
+        @include snowly;
 
         *,
         *::before,
