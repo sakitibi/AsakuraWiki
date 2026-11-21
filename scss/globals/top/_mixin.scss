@@ -46,7 +46,7 @@ $breakpoints: (
 }
 
 @mixin snowly {
-    background-image: linear-gradient(to right, #d5f9ff, #45cef3, #82b0ff);
+    background-image: linear-gradient(to right, #d5f9ff, #45cef3, #d5f9ff);
     @extend %gradient-body-base;
 }
 
