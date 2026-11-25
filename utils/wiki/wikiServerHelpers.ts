@@ -4,7 +4,10 @@ import { ungzip } from 'pako';
 import fetchColor from '@/utils/fetchColor';
 import { designColor } from '@/utils/wiki/wiki_settings';
 
-function decodePageContentServer(rawContent: any): string {
+/**
+ * サーバー側でコンテンツを解凍・文字列化するヘルパー
+ */
+function decodeContent(rawContent: any): string {
     if (!rawContent) return '';
     if (typeof rawContent !== 'string') return String(rawContent);
 
@@ -27,8 +30,34 @@ function decodePageContentServer(rawContent: any): string {
     }
 }
 
+/**
+ * サーバーサイドからを経由してページデータを取得する
+ */
+async function fetchPageDataFromServerApi(wSlug: string, pSlug: string): Promise<Page | null> {
+    try {
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wiki_v3/contents?wiki_slug=${encodeURIComponent(wSlug)}&page_slug=${encodeURIComponent(pSlug)}`;
+        const response = await fetch(url, { cache: 'no-store' });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const pageData = await response.json();
+        const decompressed = decodeContent(pageData.content);
+
+        return {
+            title: pageData.title,
+            content: decompressed,
+            author_id: pageData.author_id,
+            updated_at: pageData.updated_at,
+        };
+    } catch (err) {
+        console.error('fetchPageDataFromServerApi exception:', err);
+        return null;
+    }
+}
+
 export async function fetchWikiStaticData(wikiSlugStr: string, rawPageSlugStr: string) {
-    // URLエンコードされている場合に備えてデコードする
     let pageSlugStr = rawPageSlugStr;
     try {
         pageSlugStr = decodeURIComponent(rawPageSlugStr);
@@ -53,44 +82,13 @@ export async function fetchWikiStaticData(wikiSlugStr: string, rawPageSlugStr: s
         };
     }
 
-    const fetchPageDataServer = async (wSlug: string, pSlug: string): Promise<Page | null> => {
-        try {
-            const { data: pageRecord, error: pageError } = await supabaseServer
-                .from('wiki_pages')
-                .select('title, content, author_id, updated_at')
-                .eq('wiki_slug', wSlug)
-                .eq('page_slug', pSlug)
-                .maybeSingle();
-
-            if (pageError) {
-                console.error('Supabase wiki_pages error:', pageError);
-                return null;
-            }
-            if (!pageRecord) {
-                return null;
-            }
-
-            const decompressed = decodePageContentServer(pageRecord.content);
-
-            return {
-                title: pageRecord.title,
-                content: decompressed,
-                author_id: pageRecord.author_id,
-                updated_at: pageRecord.updated_at,
-            };
-        } catch (err) {
-            console.error('fetchPageDataServer exception:', err);
-            return null;
-        }
-    };
-
     const [colorResult, pageResult, menuResult, sideResult] = await Promise.allSettled([
         new Promise<designColor | null>((resolve) => {
             fetchColor(wikiSlugStr, (color) => resolve(color));
         }),
-        fetchPageDataServer(wikiSlugStr, pageSlugStr),
-        pageSlugStr !== 'FrontPage' ? fetchPageDataServer(wikiSlugStr, `${pageSlugStr}/MenuBar`) : Promise.resolve(null),
-        pageSlugStr !== 'FrontPage' ? fetchPageDataServer(wikiSlugStr, `${pageSlugStr}/SideBar`) : Promise.resolve(null),
+        fetchPageDataFromServerApi(wikiSlugStr, pageSlugStr),
+        pageSlugStr !== 'FrontPage' ? fetchPageDataFromServerApi(wikiSlugStr, `${pageSlugStr}/MenuBar`) : Promise.resolve(null),
+        pageSlugStr !== 'FrontPage' ? fetchPageDataFromServerApi(wikiSlugStr, `${pageSlugStr}/SideBar`) : Promise.resolve(null),
     ]);
 
     const fetchedColor = colorResult.status === 'fulfilled' ? colorResult.value : null;
@@ -109,12 +107,12 @@ export async function fetchWikiStaticData(wikiSlugStr: string, rawPageSlugStr: s
 
     let menuPage = menuResult.status === 'fulfilled' ? menuResult.value : null;
     if (!menuPage) {
-        menuPage = await fetchPageDataServer(wikiSlugStr, 'MenuBar').catch(() => null);
+        menuPage = await fetchPageDataFromServerApi(wikiSlugStr, 'MenuBar').catch(() => null);
     }
 
     let sidePage = sideResult.status === 'fulfilled' ? sideResult.value : null;
     if (!sidePage) {
-        sidePage = await fetchPageDataServer(wikiSlugStr, 'SideBar').catch(() => null);
+        sidePage = await fetchPageDataFromServerApi(wikiSlugStr, 'SideBar').catch(() => null);
     }
 
     return {
