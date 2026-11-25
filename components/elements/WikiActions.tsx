@@ -5,16 +5,15 @@ import { User } from '@supabase/auth-helpers-react';
 import { handleDelete, handleEdit, handleFreeze } from '@/utils/pageParts/wiki/wiki_handler';
 import { usePageLikeHandlers } from '@/utils/pageParts/wiki/like/page';
 import { useWikiLikeHandlers } from '@/utils/pageParts/wiki/like/wiki';
-import { special_wiki_list } from '@/utils/wiki_list';
+import { special_wiki_list } from '@/utils/wiki/wiki_list';
 
 interface WikiActionsProps {
     router: NextRouter;
     wikiSlugStr: string;
     pageSlugStr: string;
-    specialWikiFound?: string;
+    specialWikiFound: boolean;
     user: User | null;
     isAsakuraMember: boolean;
-    setIsButtonAction: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const WikiActions: React.FC<WikiActionsProps> = ({
@@ -24,7 +23,6 @@ export const WikiActions: React.FC<WikiActionsProps> = ({
     specialWikiFound,
     user,
     isAsakuraMember,
-    setIsButtonAction,
 }) => {
     const { handlePageLike, handlePageDisLike } = usePageLikeHandlers();
     const { handleWikiLike, handleWikiDisLike } = useWikiLikeHandlers();
@@ -38,8 +36,7 @@ export const WikiActions: React.FC<WikiActionsProps> = ({
             )}
             <button
                 onClick={() => {
-                    setIsButtonAction(true);
-                    handleEdit(router, wikiSlugStr, pageSlugStr, setIsButtonAction);
+                    handleEdit(router, wikiSlugStr, pageSlugStr);
                 }}
                 style={{ marginLeft: 8 }}
             >

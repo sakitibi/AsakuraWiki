@@ -2,7 +2,7 @@ import Header from "@/components/plugins/Header";
 import type { Context } from "@/components/plugins/parsePluginTypes";
 import type { ReactNode } from "react";
 import parseOtherInline, { preProcessFuncDefinitions } from "@/components/plugins/ParseOtherInline";
-import { designColor } from "@/utils/wiki_settings";
+import { designColor } from "@/utils/wiki/wiki_settings";
 
 interface parseInlineProps{
     text: string;

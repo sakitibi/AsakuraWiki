@@ -1,5 +1,5 @@
 import { supabaseServer } from "@/lib/supabaseClientServer";
-import type { editMode } from '@/utils/wiki_settings';
+import type { editMode } from '@/utils/wiki/wiki_settings';
 import { ungzip } from "pako";
 
 export interface Page {

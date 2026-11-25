@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import type { designColor, headerLevel } from "@/utils/wiki_settings";
+import type { designColor, headerLevel } from "@/utils/wiki/wiki_settings";
 
 interface AccordionProps {
     title: string;

@@ -1,9 +1,9 @@
 import { supabaseServer } from "@/lib/supabaseClientServer";
-import { designColor } from "@/utils/wiki_settings";
+import { designColor } from "@/utils/wiki/wiki_settings";
 
 export default async function fetchColor(
     wikiSlugStr: string,
-    setDesignColor: React.Dispatch<React.SetStateAction<designColor | null>>
+    setDesignColor: (color: designColor | null) => void
 ) {
     const { data, error } = await supabaseServer
     .from('wikis')
@@ -17,13 +17,11 @@ export default async function fetchColor(
     }
 
     setDesignColor(data.design_color as any);
-    console.log('wikiSlugStr:', wikiSlugStr); // ← これが undefined や空文字なら原因！
-    console.log('取得したdesign_color:', data?.design_color);
 }
 
 export async function fetchColorParsePlugin(
     slug: string,
-    setColor: React.Dispatch<React.SetStateAction<designColor | null>>
+    setColor: (color: designColor | null) => void
 ) {
     const { data, error } = await supabaseServer
         .from('wikis')

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { special_wiki_list } from "@/utils/wiki_list";
+import { special_wiki_list } from "@/utils/wiki/wiki_list";
 import { handleUpdate } from "@/utils/pageParts/wiki/wiki_handler";
-import { editMode } from "@/utils/wiki_settings";
+import { editMode } from "@/utils/wiki/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { NextRouter } from "next/router";
 import Editor, { Monaco } from "@monaco-editor/react";

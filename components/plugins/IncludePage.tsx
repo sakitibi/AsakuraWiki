@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { parseWikiContent } from '@/utils/parsePlugins'
-import { designColor } from '@/utils/wiki_settings'
+import { designColor } from '@/utils/wiki/wiki_settings'
 import { ungzip } from 'pako';
 
 interface IncludePageProps {

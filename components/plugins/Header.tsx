@@ -1,5 +1,5 @@
 import { NextRouter, useRouter } from "next/router";
-import type { designColor } from "@/utils/wiki_settings";
+import type { designColor } from "@/utils/wiki/wiki_settings";
 
 interface HeaderProps{
     title: string;

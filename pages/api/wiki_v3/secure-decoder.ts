@@ -1,4 +1,4 @@
-import { decrypt } from '@/utils/wiki_crypto';
+import { decrypt } from '@/utils/wiki/wiki_crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(

@@ -6,7 +6,7 @@ import ExportBlock from '@/components/plugins/ExportBlock';
 import ImportBlock from '@/components/plugins/ImportBlock';
 import Fold from '@/components/plugins/Fold';
 import { tokenize } from '@/utils/parsePlugins';
-import { designColor } from './wiki_settings';
+import { designColor } from './wiki/wiki_settings';
 
 export function buildAST(src: string): ASTNode[] {
     const tokens = tokenize(src);

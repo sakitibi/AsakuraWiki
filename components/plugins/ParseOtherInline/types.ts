@@ -1,4 +1,4 @@
-import { designColor } from "@/utils/wiki_settings";
+import { designColor } from "@/utils/wiki/wiki_settings";
 import type { Context as BaseContext } from "@/components/plugins/parsePluginTypes";
 
 // 関数の構造定義
