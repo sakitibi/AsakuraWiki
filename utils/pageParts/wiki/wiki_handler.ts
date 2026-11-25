@@ -1,8 +1,8 @@
-import { editMode } from "@/utils/wiki_settings";
+import { editMode } from "@/utils/wiki/wiki_settings";
 import { User } from "@supabase/supabase-js";
 import { NextRouter } from "next/router";
 import { supabaseClient } from "@/lib/supabaseClient";
-import { base64ToUint8Array } from "@/utils/wikiFetch";
+import { base64ToUint8Array } from "@/utils/wiki/wikiFetch";
 import { ungzip } from "pako";
 import { ScaptchaSessionProps } from "@/pages/login";
 import React from "react";
@@ -70,7 +70,6 @@ export const handleEdit = async (
     router: NextRouter,
     wikiSlugStr: string,
     pageSlugStr: string,
-    setIsButtonAction: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
     // 既存の独自エディタへのリダイレクトロジックを維持
     const scaptcha_token = localStorage.getItem("scaptcha_params") || "";
@@ -87,16 +86,13 @@ export const handleEdit = async (
         const date = new Date(scaptcha_session?.created_at).getTime();
         const now = new Date().getTime();
         if (now <= date + 18e5) {
-            setIsButtonAction(false);
             router.push(`/wiki/${wikiSlugStr}?cmd=edit&page=${pageSlugStr}`);
             return;
         } else {
-            setIsButtonAction(false);
             location.href = scaptcha_redirurl;
             return;
         }
     } else {
-        setIsButtonAction(false);
         location.href = scaptcha_redirurl;
         return;
     }
@@ -106,7 +102,7 @@ export const handleEdit = async (
  * ページ削除 (DELETE)
  */
 export const handleDelete = async (
-    special_wiki_list_found: string | undefined,
+    special_wiki_list_found: boolean,
     wikiSlugStr: string,
     pageSlugStr: string,
     router: NextRouter

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Context, Token, extractBracedBlockProps } from '@/components/plugins/parsePluginTypes';
 import { resolveImports } from '@/components/plugins/ImportBlock';
-import type { designColor } from '@/utils/wiki_settings';
+import type { designColor } from '@/utils/wiki/wiki_settings';
 import { buildAST, renderAST } from '@/utils/AST';
 
 export function isValidLineRange(range: string): boolean {

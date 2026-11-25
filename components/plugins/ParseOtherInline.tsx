@@ -1,5 +1,5 @@
 import React from 'react';
-import { designColor } from "@/utils/wiki_settings";
+import { designColor } from "@/utils/wiki/wiki_settings";
 import TableOfContents from '@/components/plugins/TableOfContents';
 import { PLUGIN_TRIGGER_REGEX, INDIVIDUAL_REGEX } from '@/components/plugins/ParseOtherInline/regex';
 import { ExtendedContext, PluginArgs } from '@/components/plugins/ParseOtherInline/types';

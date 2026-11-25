@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { App } from 'octokit'
-import { encrypt } from '@/utils/wiki_crypto'
+import { encrypt } from '@/utils/wiki/wiki_crypto'
 
 interface FileOperation {
     action: 'create' | 'update' | 'delete';

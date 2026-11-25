@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { NextRouter } from 'next/router';
-import { special_wiki_list } from '@/utils/wiki_list';
+import { special_wiki_list } from '@/utils/wiki/wiki_list';
 
 export function useWikiRedirect(
     wikiSlugStr: string,
