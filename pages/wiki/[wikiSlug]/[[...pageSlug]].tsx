@@ -47,13 +47,18 @@ export default function WikiPage(props: WikiPageProps) {
         asakura_member_list_found,
     } = useWikiPage(props);
 
-    if (props.errorMsg && !props.initialPage) {
+    const isPageNotFound = props.errorMsg === 'ページが見つかりませんでした';
+    const shouldShowError = props.errorMsg && !props.initialPage && !(isEdit && isPageNotFound);
+
+    if (shouldShowError) {
         return (
             <div style={{ color: '#d32f2f', backgroundColor: '#ffebee', padding: '1.5rem', margin: '2rem auto', maxWidth: '600px', borderRadius: '8px', border: '1px solid #ffcdd2' }}>
                 エラーが発生しました: {props.errorMsg}
             </div>
         );
     }
+
+    const displayTitle = title || pageSlugStr;
 
     return (
         <>
@@ -65,14 +70,14 @@ export default function WikiPage(props: WikiPageProps) {
                 <>
                     <Head>
                         <title>
-                            {title}
+                            {displayTitle}
                             {isEdit ? ' の編集' : null}
                         </title>
                         <link rel="stylesheet" href="https://sakitibi.github.io/static.asakurawiki.com/css/wikis.module.css" />
                     </Head>
                     {isEdit ? (
                         <WikiEditPage
-                            title={title}
+                            title={displayTitle}
                             setTitle={setTitle}
                             content={content}
                             beforeContent={beforeContent}
@@ -154,6 +159,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     const wikiSlugStr: string = Array.isArray(wikiSlug) ? wikiSlug.join('/') : wikiSlug ?? '';
     const pageSlugStr: string = Array.isArray(params) ? params.join('/') : params ?? 'FrontPage';
+
+    if (/\.(map|js|css|ico|png|jpg|jpeg|gif|json|svg|woff2?|ttf|eot)$/i.test(pageSlugStr)) {
+        return {
+            notFound: true,
+        };
+    }
 
     if (!wikiSlugStr || !pageSlugStr) {
         return {

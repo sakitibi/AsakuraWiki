@@ -13,7 +13,6 @@ function decodePageContentServer(rawContent: any): string {
         if (rawContent.startsWith('\\x')) {
             buffer = Buffer.from(rawContent.slice(2), 'hex');
         } else {
-            // Base64文字列の場合
             buffer = Buffer.from(rawContent, 'base64');
         }
 
@@ -28,7 +27,15 @@ function decodePageContentServer(rawContent: any): string {
     }
 }
 
-export async function fetchWikiStaticData(wikiSlugStr: string, pageSlugStr: string) {
+export async function fetchWikiStaticData(wikiSlugStr: string, rawPageSlugStr: string) {
+    // URLエンコードされている場合に備えてデコードする
+    let pageSlugStr = rawPageSlugStr;
+    try {
+        pageSlugStr = decodeURIComponent(rawPageSlugStr);
+    } catch {
+        pageSlugStr = rawPageSlugStr;
+    }
+
     const { data: wikiData, error: wikiError } = await supabaseServer
         .from('wikis')
         .select('edit_mode')
