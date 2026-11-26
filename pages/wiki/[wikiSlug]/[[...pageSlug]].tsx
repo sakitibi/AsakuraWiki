@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -47,6 +47,30 @@ export default function WikiPage(props: WikiPageProps) {
         asakura_member_list_found,
     } = useWikiPage(props);
 
+    /* ===============================
+        Bot 判定（state）
+    =============================== */
+    const [isBot, setIsBot] = useState(true);
+
+    /* ===============================
+        mount & bot detect
+    =============================== */
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            setIsBot(true);
+            return;
+        }
+
+        const ua = navigator.userAgent;
+        const bot =
+            /(Googlebot|Google-InspectionTool|AdsBot-Google|bingbot|Slurp|DuckDuckBot|YandexBot|Baiduspider|facebook\.com|HeadlessChrome)/i.test(ua);
+
+        setIsBot(bot);
+
+        console.log('[UA]', ua);
+        console.log('[isBot]', bot);
+    }, []);
+
     const isPageNotFound = props.errorMsg === 'ページが見つかりませんでした';
     const shouldShowError = props.errorMsg && !props.initialPage && !(isEdit && isPageNotFound);
 
@@ -94,12 +118,24 @@ export default function WikiPage(props: WikiPageProps) {
                     ) : (
                         <>
                             <div id="contents-wrapper">
-                                <div className="container" style={{ display: 'flex', width: '100%', maxWidth: '1280px', margin: '0 auto', gap: '20px', alignItems: 'flex-start' }}>
-                                    <WikiNavigation
-                                        type="menubar"
-                                        menubar={menubar}
-                                        parsedMenubar={parsedMenubar}
-                                    />
+                                <div
+                                    className="container"
+                                    style={{
+                                        display: 'flex',
+                                        width: '100%',
+                                        maxWidth: '1280px',
+                                        margin: '0 auto',
+                                        gap: '20px',
+                                        alignItems: 'flex-start'
+                                    }}>
+
+                                    {isBot ? null : (
+                                        <WikiNavigation
+                                            type="menubar"
+                                            menubar={menubar}
+                                            parsedMenubar={parsedMenubar}
+                                        />
+                                    )}
 
                                     <article style={{ flex: 1, padding: '2rem', minWidth: 0 }} className="columnCenter clearfix">
                                         {parsedPreview?.map((node, i) => (
@@ -117,11 +153,13 @@ export default function WikiPage(props: WikiPageProps) {
                                         </div>
                                     </article>
 
-                                    <WikiNavigation
-                                        type="sidebar"
-                                        sidebar={sidebar}
-                                        parsedSidebar={parsedSidebar}
-                                    />
+                                    {isBot ? null : (
+                                        <WikiNavigation
+                                            type="sidebar"
+                                            sidebar={sidebar}
+                                            parsedSidebar={parsedSidebar}
+                                        />
+                                    )}
 
                                     {!asakura_member_list_found && (
                                         <>
