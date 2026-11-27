@@ -69,7 +69,7 @@ export default function DashboardPage({ user, mywikis, developerData, serverHour
                                 hours >= 17 && hours <= 21 ? "こんばんは" : 
                                 hours <= 5 || hours >= 22 ? "おやすみなさい" :
                                 "こんにちは"
-                            }、{name} {isBoy ? "くん。" : isGirl ? "ちゃん" : "さん。"}
+                            }、{name} {isBoy ? "くん。" : isGirl ? "ちゃん。" : "さん。"}
                             {isGirl ? <i
                                 style={{
                                     color: "#efb3ff"
