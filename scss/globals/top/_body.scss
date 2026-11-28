@@ -172,20 +172,7 @@ body {
         letter-spacing: .04em;
         -webkit-text-size-adjust: none;
         word-wrap: break-word;
-        .accordion-content {
-            height: 0;
-            margin: 0;
-            &>.accordion-content-inner {
-                padding: 10px 0 0 10px;
-                min-height: 0;
-            }
-            
-            &.accordion-open {
-                height: auto;
-                display: block;
-            }
-        }
-
+        
         * {
             line-height: 1.6em;
         }
