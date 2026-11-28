@@ -96,17 +96,21 @@ body.wiki-font {
         }
     }
 
-    & .accordion-container{
-        & .accordion-close .icon-close {
-            display: inline-block;
+    & .accordion-content {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.3s ease-out;
+        /* 開いている状態 */
+        &.accordion-open {
+            grid-template-rows: 1fr;
         }
 
-        & .accordion-open .icon-open {
-            display: inline-block;
+        /* インナー要素のはみ出し防止 */
+        > .accordion-content-inner {
+            overflow: hidden;
+            min-height: 0;
         }
     }
-
-
 }
 
 /* =========================
