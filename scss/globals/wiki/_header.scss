@@ -12,8 +12,6 @@
     padding: .3em .3em .15em .5em;
     margin: .2em 0 .5em;
     margin-inline: 0;
-    margin-left: -19px;
-    margin-right: -19px;
     border-left: 15px solid;
 }
 
@@ -108,7 +106,8 @@ body.wiki-font {
         /* インナー要素のはみ出し防止 */
         > .accordion-content-inner {
             overflow: hidden;
-            min-height: 0;
+            margin-left: -10px;
+            margin-right: -10px;
         }
     }
 }
