@@ -10258,14 +10258,13 @@ fieldset:disabled .btn {
   width: 100vw;
   height: 100vh;
   background-color: $background-color-3;
-}
+  &.fade {
+    opacity: 0;
+  }
 
-.offcanvas-backdrop.fade {
-  opacity: 0;
-}
-
-.offcanvas-backdrop.show {
-  opacity: 0.5;
+  &.show {
+    opacity: 0.5;
+  }
 }
 
 .offcanvas-header {
@@ -10300,12 +10299,11 @@ fieldset:disabled .btn {
   cursor: wait;
   background-color: currentcolor;
   opacity: 0.5;
-}
-
-.placeholder.btn {
-  &::before {
-    display: inline-block;
-    content: "";
+  &.btn {
+    &::before {
+      display: inline-block;
+      content: "";
+    }
   }
 }
 
