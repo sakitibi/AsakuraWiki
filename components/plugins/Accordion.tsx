@@ -32,7 +32,7 @@ export default function Accordion({ title, level, initiallyOpen, children, desig
                 {title}
             </Tag>
             <div
-                className={`accordion-content ${open ? "accordion-open" : ""}`}
+                className={`accordion-content ${open ? "accordion-open" : "accordion-close"}`}
             >
                 <div className="accordion-content-inner">
                     {children}
