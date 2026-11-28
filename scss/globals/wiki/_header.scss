@@ -106,8 +106,8 @@ body.wiki-font {
         /* インナー要素のはみ出し防止 */
         > .accordion-content-inner {
             overflow: hidden;
-            margin-left: -10px;
-            margin-right: -10px;
+            padding-left: 10px;
+            padding-right: 10px;
         }
     }
 }
