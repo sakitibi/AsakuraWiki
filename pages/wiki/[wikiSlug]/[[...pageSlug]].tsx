@@ -119,15 +119,15 @@ export default function WikiPage(props: WikiPageProps) {
                         <>
                             <div id="contents-wrapper">
                                 <div
-                                    className="container"
+                                    className="container clearfix"
                                     style={{
-                                        display: 'flex',
-                                        width: '100%',
-                                        maxWidth: '1280px',
-                                        margin: '0 auto',
-                                        gap: '20px',
-                                        alignItems: 'flex-start'
-                                    }}>
+                                        display: "grid",
+                                        minHeight: "381px",
+                                        margin: "9px",
+                                        position: "relative",
+                                        gridTemplateColumns: sidebar ? "172px 1fr 170px" : "172px 1fr"
+                                    }}
+                                >
 
                                     {isBot ? null : (
                                         <WikiNavigation
