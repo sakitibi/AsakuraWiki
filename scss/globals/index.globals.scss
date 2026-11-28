@@ -64,6 +64,10 @@ header{
     display: block;
 }
 
+.strike-through {
+    text-decoration: line-through;
+}
+
 $spacers: (
     0: 0,
     1: .25rem,
